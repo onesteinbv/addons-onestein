@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+
+        <record id="web_service_transsmart" model="web.service">
+            <field name="name">Transsmart</field>
+            <field name="url">https://connect.test.api.transwise.eu/Api</field>
+            <field name="type">http_rest</field>
+            <field name="username">username</field>
+            <field name="password">password</field>
+        </record>
+
+        <record id="res_partner_category_transsmart_carrier" model="res.partner.category">
+            <field name="name">Transsmart Carrier</field>
+            <field name="active">1</field>
+        </record>
+
+        <record id="transsmart_default_carrier" model="ir.model.data">
+            <field name="name">transsmart_default_carrier</field>
+            <field name="model">res.partner</field>
+        </record>   
+        <record id="transsmart_default_service_level" model="ir.model.data">
+            <field name="name">transsmart_default_service_level</field>
+            <field name="model">delivery.service.level</field>
+        </record>        
+        <record id="transsmart_default_cost_center" model="ir.model.data">
+            <field name="name">transsmart_default_cost_center</field>
+            <field name="model">transsmart.cost.center</field>
+        </record>        
+        
+    </data>
+</openerp>

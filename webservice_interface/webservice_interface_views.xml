@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_web_service_tree" model="ir.ui.view">
+            <field name="name">web.service.tree</field>
+            <field name="model">web.service</field>
+            <field name="arch" type="xml">
+                <tree string="Web Service">
+                    <field name="name"/>
+                    <field name="url"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_web_service_form" model="ir.ui.view">
+            <field name="name">web.service.form</field>
+            <field name="model">web.service</field>
+            <field name="arch" type="xml">
+                <form string="Web Service">
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="type"/>
+                        <field name="url" colspan="4"/>
+                        <field name="description" colspan="4"/>
+                        <field name="username"/>
+                        <field name="password" password="True"/>
+                    </group>
+                </form>
+            </field>
+        </record>        
+        
+        <record model="ir.actions.act_window" id="action_web_services">
+          <field name="name">Web Services</field>
+          <field name="res_model">web.service</field>
+            <field name="view_type">form</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_web_services" parent="base.menu_custom" name="Web Services" sequence="10"
+                  action="action_web_services"/>
+
+    </data>
+</openerp>

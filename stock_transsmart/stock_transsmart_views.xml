@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+        <menuitem id="menu_transsmart_configuration" parent="stock.menu_stock_configuration" name="Transsmart" sequence="15"/>
+    
+        <record id="view_picking_transsmart_out_form" model="ir.ui.view">
+            <field name="name">transsmart.stock.picking.form.view</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='carrier_tracking_ref']" position="after">
+                    <field name="delivery_cost" />
+                    <field name="transsmart_confirmed" />
+                    <button name="action_get_transsmart_rate" string="Transsmart Prebooking" type="object" attrs="{'invisible':[('transsmart_confirmed','=',True)]}" />
+                    <button name="action_create_transsmart_document" string="Create in Transsmart" type="object" attrs="{'invisible':[('transsmart_confirmed','=',True)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='carrier_id']" position="replace">
+                  <field name="carrier_id" attrs="{'readonly':[('transsmart_confirmed','=',True)]}"/>
+                  <field name="delivery_service_level_time_id" attrs="{'readonly':[('transsmart_confirmed','=',True)]}"/>
+                  <field name="cost_center_id" attrs="{'readonly':[('transsmart_confirmed','=',True)]}"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_picking_transsmart_out_tree" model="ir.ui.view">
+            <field name="name">transsmart.stock.picking.tree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">      
+                <xpath expr="//field[@name='backorder_id']" position="after">
+                     <field name="carrier_id"/>
+                     <field name="transsmart_confirmed"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_picking_internal_search_transsmart" model="ir.ui.view">
+            <field name="name">view.picking.internal.search.trasnssmart</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">      
+                <xpath expr="//filter[@name='confirmed']" position="after">
+                    <!-- <separator/> -->
+                    <filter name="no_trasnssmart_confirmed" string="No Transsmart" domain="[('transsmart_confirmed','!=', True)]"/>
+                </xpath>
+                <xpath expr="//filter[@string='Procurement Group']" position="after">
+                    <filter name="carrier_id" string="Carrier" context="{'group_by':'carrier_id'}"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="product_transsmart_view" model="ir.ui.view">
+            <field name="name">product.product.transsmart.form</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                  <field name="service_level_id"/>
+                  <field name="service_level_time_id"/>
+                </field>
+            </field>
+        </record>
+        
+        <record id="sale_order_trasnssmart_view" model="ir.ui.view">
+            <field name="name">sale.order.transsmart.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_order']" position="after">
+                    <field name="cost_center_id"/>
+                    <field name="delivery_service_level_time_id"/>
+                </xpath>
+
+                <xpath expr="//label[@for='carrier_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='carrier_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        
+    </data>
+</openerp>

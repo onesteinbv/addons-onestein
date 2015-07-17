@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_delivery_service_level_tree" model="ir.ui.view">
+            <field name="name">delivery.service.level.tree</field>
+            <field name="model">delivery.service.level</field>
+            <field name="arch" type="xml">
+                <tree string="Service Level">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_delivery_service_level_form" model="ir.ui.view">
+            <field name="name">delivery.service.level.form</field>
+            <field name="model">delivery.service.level</field>
+            <field name="arch" type="xml">
+                <form string="Service Level">
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="description"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_delivery_service_level_form" model="ir.actions.act_window">
+            <field name="name">Service Levels</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">delivery.service.level</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a delivery Service Level.
+              </p><p>
+                Make sure the service level code matches
+                the transsmart name.
+              </p>
+            </field>
+        </record>
+        <menuitem action="action_delivery_service_level_form" id="menu_action_delivery_service_level_form" parent="menu_transsmart_configuration"/>
+
+
+        <!-- service level time -->
+
+        <record id="view_delivery_service_level_time_tree" model="ir.ui.view">
+            <field name="name">delivery.service.level.time.tree</field>
+            <field name="model">delivery.service.level.time</field>
+            <field name="arch" type="xml">
+                <tree string="Service Level Time">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_delivery_service_level_time_form" model="ir.ui.view">
+            <field name="name">delivery.service.level.time.form</field>
+            <field name="model">delivery.service.level.time</field>
+            <field name="arch" type="xml">
+                <form string="Service Level Time">
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="description"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_delivery_service_level_time_form" model="ir.actions.act_window">
+            <field name="name">Service Levels Time</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">delivery.service.level.time</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a delivery Service Level Time.
+              </p><p>
+                Make sure the service level time code matches
+                the transsmart name.
+              </p>
+            </field>
+        </record>
+        <menuitem action="action_delivery_service_level_time_form" id="menu_action_delivery_service_level_time_form" parent="menu_transsmart_configuration"/>
+
+        <!-- cost center -->
+
+        <record id="view_transsmart_cost_center_tree" model="ir.ui.view">
+            <field name="name">transsmart.cost.center.tree</field>
+            <field name="model">transsmart.cost.center</field>
+            <field name="arch" type="xml">
+                <tree string="Cost center">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_transsmart_cost_center_form" model="ir.ui.view">
+            <field name="name">transsmart.cost.center.form</field>
+            <field name="model">transsmart.cost.center</field>
+            <field name="arch" type="xml">
+                <form string="Cost center">
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="description"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="action_transsmart_cost_center_form" model="ir.actions.act_window">
+            <field name="name">Cost Centers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">transsmart.cost.center</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a Cost center.
+              </p><p>
+                Make sure the cost center code matches
+                the transsmart name.
+              </p>
+            </field>
+        </record>
+        <menuitem action="action_transsmart_cost_center_form" id="menu_action_transsmart_cost_center_form" parent="menu_transsmart_configuration"/>
+
+ 
+    </data>
+</openerp>

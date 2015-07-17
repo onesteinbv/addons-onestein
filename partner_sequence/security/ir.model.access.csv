@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_sequence_001,res_partner_requence all,model_res_partner_sequence,,1,0,0,0
+access_partner_sequence_002,res_partner_requence admin,model_res_partner_sequence,base.group_system,1,1,1,1
+

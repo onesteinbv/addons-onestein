@@ -1,0 +1,136 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
+import logging
+from openerp import models, fields, api
+from datetime import datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from dateutil.relativedelta import relativedelta
+
+_logger = logging.getLogger(__name__)
+
+
+class hr_holidays_status(models.Model):
+    _inherit = "hr.holidays.status"
+
+    @api.model
+    def _get_default_template(self):
+        cursor = self._cr
+        user = self.env.user
+        mod_obj = self.pool.get('ir.model.data')
+        try:
+            return mod_obj.get_object(cursor, user.id, 'hr_holidays_expiration', 'email_template_hr_holidays').id
+        except ValueError:
+            return self.env['email.template']
+
+    @api.model
+    def _get_default_warn_template(self):
+        cursor = self._cr
+        user = self.env.user
+        mod_obj = self.pool.get('ir.model.data')
+        try:
+            return mod_obj.get_object(
+                cursor, user.id, 'hr_holidays_expiration', 'email_template_hr_holidays_expired').id
+        except ValueError:
+            return self.env['email.template']
+
+    expirable = fields.Boolean("Expirable", help="These holidays can expire after a set amount of months.")
+    email_notify = fields.Boolean("Notify Expiration via Email")
+    template_id = fields.Many2one('email.template', string="Notify Email Template", default=_get_default_template)
+    expired_template_id = fields.Many2one(
+        'email.template', string="Expired Email Template", default=_get_default_warn_template)
+    validity = fields.Integer("Validity in months", help="The allocated holidays will become invalid after the amount\
+        of months set in this field.")
+    notify_period = fields.Integer("Notify period (days)", help="The amount of days before the holidays expire to send\
+         out the notification email.")
+
+    @api.cr_uid_ids_context
+    def get_days(self, cr, uid, ids, employee_id, context=None):
+        """Override this method to not show expired holidays in the max allocated holidays."""
+        _logger.debug("ONESTEiN hr_holidays_status get_days")
+        result = dict((id, dict(max_leaves=0, leaves_taken=0, remaining_leaves=0,
+                                virtual_remaining_leaves=0)) for id in ids)
+        holiday_ids = self.pool['hr.holidays'].search(cr, uid, [('employee_id', '=', employee_id),
+                                                                ('state', 'in', ['confirm', 'validate1', 'validate']),
+                                                                ('holiday_status_id', 'in', ids),
+                                                                ('expired', '=', False)
+                                                                ], context=context)
+        for holiday in self.pool['hr.holidays'].browse(cr, uid, holiday_ids, context=context):
+            status_dict = result[holiday.holiday_status_id.id]
+            if holiday.type == 'add':
+                status_dict['virtual_remaining_leaves'] += holiday.number_of_days
+                if holiday.state == 'validate':
+                    status_dict['max_leaves'] += holiday.number_of_days
+                    status_dict['remaining_leaves'] += holiday.number_of_days
+            elif holiday.type == 'remove':  # number of days is negative
+                status_dict['virtual_remaining_leaves'] += holiday.number_of_days
+                if holiday.state == 'validate':
+                    status_dict['leaves_taken'] -= holiday.number_of_days
+                    status_dict['remaining_leaves'] += holiday.number_of_days
+        return result
+
+
+class hr_holidays(models.Model):
+    _inherit = "hr.holidays"
+
+    @api.multi
+    def holidays_validate(self):
+        self.approval_date = datetime.today()
+        self.expiration_date = datetime.strptime(
+            self.approval_date, DEFAULT_SERVER_DATE_FORMAT) + relativedelta(months=self.holiday_status_id.validity)
+        res = super(hr_holidays, self).holidays_validate()
+        return res
+
+    @api.cr_uid_ids_context
+    def send_notifications(self, cr, uid, ids, holiday_id, tmpl_id=False, context=None):
+        if holiday_id and tmpl_id:
+            _logger.debug("ONESTEiN hr_holidays send_notifications")
+            mtp = self.pool.get('email.template')
+            mtp.send_mail(cr, uid, tmpl_id, holiday_id, context=context)
+        return {}
+
+    @api.cr_uid_ids_context
+    def check_expiring(self, cr, uid, ids, context=None):
+        _logger.debug("ONESTEiN hr_holidays check_expiring")
+        for holiday in self.browse(cr, uid, self.search(cr, uid, [('expirable', '=', True), ('expired', '=', False)])):
+            if holiday.approval_date and holiday.holiday_status_id.validity:
+                holiday.expiration_date = datetime.strptime(
+                    holiday.approval_date, DEFAULT_SERVER_DATE_FORMAT) + relativedelta(
+                        months=holiday.holiday_status_id.validity)
+                if holiday.holiday_status_id.email_notify and not holiday.notification_sent and datetime.strptime(
+                        holiday.expiration_date, DEFAULT_SERVER_DATE_FORMAT) <= datetime.today() + timedelta(
+                            holiday.holiday_status_id.notify_period):
+                    holiday.send_notifications(holiday_id=holiday.id, tmpl_id=holiday.holiday_status_id.template_id.id)
+                    holiday.notification_sent = True
+                if holiday.holiday_status_id.email_notify and datetime.strptime(
+                        holiday.expiration_date, DEFAULT_SERVER_DATE_FORMAT) <= datetime.today():
+                    holiday.expired = True
+                    holiday.send_notifications(
+                        holiday_id=holiday.id, tmpl_id=holiday.holiday_status_id.expired_template_id.id,
+                        context=context)
+        return {}
+
+    expiration_date = fields.Date(string='Expiration Date')
+    expired = fields.Boolean(string="Expired")
+    notify_to = fields.Many2one('hr.employee', string="Notify Expiration to")
+    approval_date = fields.Date(string="Date Approved")
+    notification_sent = fields.Boolean(string="Expiration Notification Sent")
+    expired_sent = fields.Boolean(string="Expiration Warning Sent")
+    expirable = fields.Boolean(related='holiday_status_id.expirable', string="Expirable")

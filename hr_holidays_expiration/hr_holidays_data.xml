@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="email_template_hr_holidays" model="email.template">
+            <field name="name">Holidays Expiration Notification</field>
+            <field name="email_from">${(object.user_id.email or object.company_id.email or 'noreply@localhost')|safe}</field>
+            <field name="subject">Holiday Expiration (${object.employee_id.name or 'n/a'})</field>
+            <field name="partner_to">${object.notify_to and object.notify_to.id or ''}</field>
+            <field name="model_id" ref="hr_holidays_expiration.model_hr_holidays"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.notify_to and object.notify_to.title_id and object.notify_to.title_id.name or ''} ${object.notify_to and object.notify_to.name},</p>
+
+    <p>The holidays (${object.holiday_status_id.name}, ${object.name}) of ${object.employee_id.name} are going to expire on ${object.expiration_date}.</p>
+
+</div>
+            ]]></field>
+        </record>
+
+        <record id="email_template_hr_holidays_expired" model="email.template">
+            <field name="name">Holidays Expired Notification</field>
+            <field name="email_from">${(object.user_id.email or object.company_id.email or 'noreply@localhost')|safe}</field>
+            <field name="subject">Holidays Expired (${object.employee_id.name or 'n/a'})</field>
+            <field name="partner_to">${object.notify_to and object.notify_to.id or ''}</field>
+            <field name="model_id" ref="hr_holidays_expiration.model_hr_holidays"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.notify_to and object.notify_to.title_id and object.notify_to.title_id.name or ''} ${object.notify_to and object.notify_to.name},</p>
+
+    <p>The holidays (${object.holiday_status_id.name}, ${object.name}) of ${object.employee_id.name} have expired on ${object.expiration_date}.</p>
+
+</div>
+            ]]></field>
+        </record>
+
+    </data>
+</openerp>
