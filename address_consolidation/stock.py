@@ -132,7 +132,7 @@ class stock_move(models.Model):
     _inherit = "stock.move"
 
     @api.model
-    def _picking_assign(self, move_ids, procurement_group, location_from, location_to, sale_ids=None, context=None):
+    def _picking_assign(self, move_ids, procurement_group, location_from, location_to, context=None):
         """Assign a picking on the given move_ids, which is a list of move supposed to share the same procurement_group,
         location_from and location_to
         (and company). Those attributes are also given as parameters.
@@ -158,8 +158,8 @@ class stock_move(models.Model):
                 'picking_type_id': move.picking_type_id and move.picking_type_id.id or False,
             }
 
-            if sale_ids:
-                order = order_obj.browse(sale_ids)
+            if self._context.get('sale_ids', None):
+                order = order_obj.browse(self._context['sale_ids'])
 
                 if order.partner_shipping_id:
                     values.update({
@@ -175,7 +175,7 @@ class stock_move(models.Model):
         move_rec = self.browse(move_ids)
         return move_rec.write({'picking_id': pick.id})
 
-    def action_confirm(self, cr, uid, ids, sale_ids=None, context=None):
+    def action_confirm(self, cr, uid, ids, context=None):
         """Override method to pass sale_id to stock._picking_assign() in order to pass historical
         values when creating picking. Starts with sale_order.action_ship_create().
         Confirms stock move or put it in waiting if it's linked to another move.
@@ -224,7 +224,7 @@ class stock_move(models.Model):
         # assign picking in batch for all confirmed move that share the same details
         for key, move_ids in to_assign.items():
             procurement_group, location_from, location_to = key
-            self._picking_assign(cr, uid, move_ids, procurement_group, location_from, location_to, sale_ids=sale_ids,
+            self._picking_assign(cr, uid, move_ids, procurement_group, location_from, location_to,
                                  context=context)
         moves = self.browse(cr, uid, ids, context=context)
         self._push_apply(cr, uid, moves, context=context)

@@ -31,7 +31,7 @@ displays these on the respective reports.
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
     'category': 'Custom',
-    'version': '1.0',
+    'version': '1.0.1',
     'depends': [
         'stock',
         'account',

@@ -177,7 +177,7 @@ class sale_order(models.Model):
             # Confirm procurement order such that rules will be applied on it
             # note that the workflow normally ensure proc_ids isn't an empty list
             procurement_rec = procurement_obj.browse([proc.id for proc in proc_ids])
-            procurement_rec.run(autocommit=None, sale_ids=self.ids)
+            procurement_rec.with_context(sale_ids=self.ids).run(autocommit=None)
 
             # if shipping was in exception and the user choose to recreate the delivery order,
             # write the new status of SO

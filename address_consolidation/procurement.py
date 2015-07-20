@@ -35,7 +35,7 @@ class procurement_order(models.Model):
         return True
 
     @api.model
-    def run(self, autocommit=False, sale_ids=None):
+    def run(self, autocommit=False):
         """Override of stock.procurement.run()."""
         cursor = self._cr
         _logger.debug("ONESTEiN procurement_order run")
@@ -78,6 +78,6 @@ class procurement_order(models.Model):
                 move_to_confirm_ids += [m.id for m in procurement.move_ids if m.state == 'draft']
         if move_to_confirm_ids:
             moves_to_confirm = self.env['stock.move'].browse(move_to_confirm_ids)
-            moves_to_confirm.action_confirm(sale_ids=sale_ids)
+            moves_to_confirm.action_confirm()
         return True
 
