@@ -20,6 +20,7 @@
 
 {
     'name': "Customer profit segmentation",
+    'images': ['static/desciption/main_screenshot.png'],
     'summary': """Customer segmentation based on profit""",
     'description': """
     Customer profit segmentation
@@ -29,9 +30,9 @@ This module automatically assigns customers to profit categories based on profit
     """,
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'category': 'Custom',
-    'version': '1.0',
-    'depends': ['base', 'account'],
+    'category': 'Sales',
+    'version': '1.1',
+    'depends': ['base', 'account', 'sale'],
     'data': [
         'security/ir.model.access.csv',
         'res_partner_profitseg_view.xml',

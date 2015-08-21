@@ -20,18 +20,20 @@
 
 {
     'name': "Address Consolidation",
-    'summary': """Keep the original partner addresses.
-    """,
+    'price': 49.00,
+    'currency': 'EUR',
+    'images': ['static/desciption/main_screenshot.png'],
+    'summary': """Keep the original partner addresses.""",
     'description': """
 Address Consolidation
 =====================
 Saves the originally used address information for Sale, Stock and Invoicing, and
-displays these on the respective reports.
+displays these on the related reports.
     """,
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'category': 'Custom',
-    'version': '1.0.1',
+    'category': 'Sales',
+    'version': '1.1',
     'depends': [
         'stock',
         'account',

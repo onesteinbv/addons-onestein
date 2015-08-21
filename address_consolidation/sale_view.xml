@@ -15,13 +15,13 @@
                         <div name="div_legal_address">
                             <field name="legal_partner_street" invisible="0" placeholder="Street..." attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
                             <field name="legal_partner_street2" invisible="0" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
-                        <div class="address_format">
-                            <field name="legal_partner_city" invisible="0" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
-                            <field name="legal_partner_state_id" invisible="0" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
-                            <field name="legal_partner_zip" invisible="0" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <div class="address_format">
+                                <field name="legal_partner_city" invisible="0" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                                <field name="legal_partner_state_id" invisible="0" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                                <field name="legal_partner_zip" invisible="0" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            </div>
+                            <field name="legal_partner_country_id" invisible="0" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
                         </div>
-                        <field name="legal_partner_country_id" invisible="0" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
-                    </div>
                 </xpath>
 
                 <xpath expr="//sheet/group/group/field[@name='partner_invoice_id']" position="after">

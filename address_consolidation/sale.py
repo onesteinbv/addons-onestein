@@ -60,7 +60,8 @@ class sale_order(models.Model):
     # Methods to make a method of another class available in the sale order report:
     @api.multi
     def _display_invoice_partner_address(self, invoice, without_company=False, context=None):
-        return self.env['account.invoice']._display_invoice_partner_address(invoice, without_company=False, context=None)
+        return self.env['account.invoice']._display_invoice_partner_address(
+            invoice, without_company=False, context=None)
 
     @api.multi
     def _display_picking_partner_address(self, picking, without_company=False, context=None):

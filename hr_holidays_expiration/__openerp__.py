@@ -21,18 +21,20 @@
 
 {
     'name': "Holidays expiration",
-    'summary': """Automatic management of holidays expiration""",
+    'images': ['static/desciption/main_screenshot.png'],
+    'summary': """Management of holidays expiration""",
     'description': """
 Holidays expiration
 ===============================================
-This module adds the possibility to manage the expiration of the holidays including
+This module adds the possibility to manage the expiration of the holidays, including
 the possibility to send a customizable warning email to the HR responsible.
  """,
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
     'category': 'Human Resources',
-    'version': '1.0',
+    'version': '1.1',
     'depends': [
+        'email_template',
         'hr_holidays',
     ],
     'data': [

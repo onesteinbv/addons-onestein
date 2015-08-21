@@ -20,17 +20,20 @@
 
 {
     'name': "Foldable menu",
-    'summary': """Foldable second level menu""",
+    'price': 5.00,
+    'currency': 'EUR',
+    'images': ['static/desciption/main_screenshot.png'],
+    'summary': """Foldable second level Odoo menu""",
     'description': """
 Foldable menu
 =============================
 
-This module allows to fold the second level menu items.  
+This module allows to fold the second level menu items.
     """,
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'category': "Custom",
-    'version': "1.0.1",
+    'category': "Extra Tools",
+    'version': "1.1",
     'depends': ['web'],
     'data': ['views/menu_collapsible.xml'],
     'demo': [],

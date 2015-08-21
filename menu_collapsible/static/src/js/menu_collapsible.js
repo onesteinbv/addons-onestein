@@ -4,10 +4,10 @@ openerp.menu_collapsible = function(instance) {
         start: function() {
             //Secundary menu
             $(".oe_secondary_submenu").hide();
-			
+
             $(".oe_secondary_menu_section").unbind("click");
             $(".oe_secondary_menu_section").click(this.section_clicked);
-			
+
             return this._super.apply(this, arguments);
         },
         section_clicked: function() {

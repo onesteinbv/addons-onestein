@@ -12,7 +12,7 @@
                 </xpath>
             </field>
         </record>
-        
+
         <record id="view_partner_profitseg_segment_tree" model="ir.ui.view">
             <field name="name">view.partner.profitseg.segment.tree</field>
             <field name="model">res.partner.profitseg.segment</field>
@@ -31,7 +31,7 @@
             <field name="arch" type="xml">
                 <form string="Customer profit segment">
                     <group>
-                        <field name="name"/> 
+                        <field name="name"/>
                     </group>
                     <group>
                         <field name="lower_limit"/>

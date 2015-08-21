@@ -25,6 +25,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+
 class res_partner_sequence(osv.osv):
     _name = 'res.partner.sequence'
 
@@ -33,9 +34,10 @@ class res_partner_sequence(osv.osv):
         'sequence_id': fields.many2one('ir.sequence', 'Sequence', required=True)
         }
 
+
 class res_partner(osv.osv):
     _inherit = 'res.partner'
-    
+
     def _check_ref(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -50,7 +52,7 @@ class res_partner(osv.osv):
                         return True
                     return False
         return True
-    
+
     def create(self, cr, uid, vals, context=None):
         if context is None:
             context = {}
@@ -74,7 +76,7 @@ class res_partner(osv.osv):
                                 break
         # If no number was found with the specific country approach the default sequence will be used
         if vals.get('ref', '[Auto]') == '[Auto]':
-             while True:
+            while True:
                 vals['ref'] = self.pool.get('ir.sequence').next_by_code(cr, uid, 'res.partner', context=context)
                 if self.search(cr,uid,[('ref','=',vals['ref'])],context=context):
                     _logger.debug("partner get next by code res.partner code already exists in database")
@@ -83,12 +85,12 @@ class res_partner(osv.osv):
 
         ## If no sequence was found
         if vals.get('ref', '[Auto]') == '[Auto]':
-             raise osv.except_osv(
-                 _('Error !'),
-                 _('No partner sequence is defined'))
+            raise osv.except_osv(
+                _('Error !'),
+                _('No partner sequence is defined'))
 
         return super(res_partner, self).create(cr, uid, vals, context)
-    
+
     _columns = {
         'ref': fields.char("Reference", required=True),
         }
@@ -100,4 +102,3 @@ class res_partner(osv.osv):
     _constraints = [
         (_check_ref, 'A customer number can only be used once', ['ref'])
         ]
-    

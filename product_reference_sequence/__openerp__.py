@@ -20,14 +20,15 @@
 ##############################################################################
 
 {
-    'name': 'Product sequence',
-    'version': '1.0.1',
-    'summary': """Generates unique identifiers for products""",
-    'category': 'Custom',
+    'name': 'Product unique reference',
+    'images': ['static/desciption/main_screenshot.png'],
+    'version': '1.1',
+    'summary': """Generates unique identifier for product reference""",
+    'category': 'Accounting',
     'description': """
 Product sequence
-===============================================
-Adding Product Sequence to the default_code field
+================
+Adding Product Sequence to the default_code field.
 """,
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
@@ -38,7 +39,7 @@ Adding Product Sequence to the default_code field
     'data': [
         'product_sequence.xml',
     ],
-    
+
     'installable': True,
-    'application': True,
+    'application': False,
 }

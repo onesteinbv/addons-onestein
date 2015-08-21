@@ -24,14 +24,15 @@ from openerp import tools
 
 _logger = logging.getLogger(__name__)
 
+
 class MassMailing(osv.Model):
     _name = 'mail.mass_mailing'
     _inherit = 'mail.mass_mailing'
-    
+
     _columns = {
         'allow_unsubscribe': fields.boolean('Allow unsubscribe')
     }
-  
+
 
 class MailMail(osv.Model):
     _name = 'mail.mail'

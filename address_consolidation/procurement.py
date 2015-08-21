@@ -80,4 +80,3 @@ class procurement_order(models.Model):
             moves_to_confirm = self.env['stock.move'].browse(move_to_confirm_ids)
             moves_to_confirm.action_confirm()
         return True
-

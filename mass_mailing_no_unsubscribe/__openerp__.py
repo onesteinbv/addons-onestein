@@ -19,13 +19,19 @@
 ##############################################################################
 
 {
-    'name': 'Mass Mailing No Unsubscribe',
-    'summary': 'Configurable unsubscribe possibility for mass-mailing',
-    'description': """ """,
-    'version': '1.0',
+    'name': 'Mass mailing unsubscription',
+    'images': ['static/desciption/main_screenshot.png'],
+    'summary': """Configurable unsubscribe possibility for mass mailing""",
+    'description': """
+Mass mailing unsubscribe
+========================
+This module lets you configure whether you want to have the standard unsubscribe link or
+add your own link to the mass mailing emails.
+""",
+    'version': '1.1',
     'author': 'ONESTEiN BV',
     'website': 'http://onestein.eu',
-    'category': 'Extra tools',
+    'category': 'Extra Tools',
     'depends': [
         'mass_mailing'
     ],

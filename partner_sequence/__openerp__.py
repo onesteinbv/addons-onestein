@@ -20,22 +20,25 @@
 ##############################################################################
 
 {
-    'name': 'Partner sequence',
-    'version': '1.0.1',
+    'name': 'Partner unique reference',
+    'price': 49.00,
+    'currency': 'EUR',
+    'images': ['static/desciption/main_screenshot.png'],
+    'version': '1.1',
     'summary': """Generates unique identifiers for partners""",
-    'category': 'Custom',
+    'category': 'Extra Tools',
     'description': """
 Partner sequence
 ===============================================
-Use the standard reference field on partner for the unique partner number.
-Adds extra sequence type: Partner and a sequence with code res.partner. As default this sequence will be
-used to assign to partners. You can use the Partner Sequence forms to set different sequence for a country.
-The partner number will be added to the partner just like with the Products in Odoo.
+Use the standard reference field on the partner form as a unique partner number.
+Adds extra sequence type: 'Partner' and a sequence with code on res.partner. 
+As default this sequence will be used to assign to partners. 
+The partner reference will be added to the partner just like the reference for a product in Odoo.
 """,
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'depends': [
-        'base',        
+        'base',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -43,5 +46,5 @@ The partner number will be added to the partner just like with the Products in O
         'partner_sequence.xml',
     ],
     'installable': True,
-    'application': True,
+    'application': False,
 }
