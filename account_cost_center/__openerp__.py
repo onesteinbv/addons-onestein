@@ -20,25 +20,28 @@
 
 {
     'name': 'Costcenter',
-    'summary': """Costcenter info for invoice lines""",
+    'images': ['static/desciption/main_screenshot.png'],
+    'summary': """Costcenter information for invoice lines""",
     'description': """
-    Costcenter
+Costcenter
 ================================================================
-
-This module allow the user to link every invoice line to a costcenter
+This module allows the user to link every invoice line to a cost center
 providing an extra dimension for the analysis.
     """,
-    'depends': ['account','account_accountant'],
+    'depends': [
+        'account',
+        'account_accountant'
+    ],
     'author': "ONESTEiN BV",
     'website': 'http://www.onestein.eu',
-    'category': 'Accounting & Finance',
-    'version': '1.0.1',
+    'category': 'Accounting',
+    'version': '1.1',
     'data': [
         'security/ir.model.access.csv',
-        'views/costcenter_view.xml',
-        'views/account_view.xml',
-        'views/account_invoice_view.xml',
-        'views/account_invoice_report_view.xml'
+        'costcenter_view.xml',
+        'account_view.xml',
+        'account_invoice_view.xml',
+        'account_invoice_report_view.xml'
     ],
     'demo': [],
     'installable': True,

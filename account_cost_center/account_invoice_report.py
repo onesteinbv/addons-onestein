@@ -21,6 +21,7 @@
 from openerp.osv import fields, osv
 from openerp import tools
 
+
 class account_invoice_report(osv.osv):
     _inherit = "account.invoice.report"
     _columns = {
@@ -29,10 +30,13 @@ class account_invoice_report(osv.osv):
     }
 
     def _select(self):
-        return  super(account_invoice_report, self)._select() + ", sub.cost_center_id as cost_center_id, sub.account_analytic_id as account_analytic_id"
+        return super(account_invoice_report, self)._select() + \
+            ", sub.cost_center_id as cost_center_id, sub.account_analytic_id as account_analytic_id"
 
     def _sub_select(self):
-        return  super(account_invoice_report, self)._sub_select() + ", ail.cost_center_id as cost_center_id, ail.account_analytic_id as account_analytic_id"
+        return super(account_invoice_report, self)._sub_select() + \
+            ", ail.cost_center_id as cost_center_id, ail.account_analytic_id as account_analytic_id"
 
     def _group_by(self):
-        return super(account_invoice_report, self)._group_by() + ", ail.cost_center_id, ail.account_analytic_id"
+        return super(account_invoice_report, self)._group_by() + \
+            ", ail.cost_center_id, ail.account_analytic_id"
