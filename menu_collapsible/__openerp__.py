@@ -22,7 +22,7 @@
     'name': "Foldable menu",
     'price': 5.00,
     'currency': 'EUR',
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Foldable second level Odoo menu""",
     'description': """
 Foldable menu

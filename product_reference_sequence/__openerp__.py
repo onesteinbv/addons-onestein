@@ -21,7 +21,7 @@
 
 {
     'name': 'Product unique reference',
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'version': '1.1',
     'summary': """Generates unique identifier for product reference""",
     'category': 'Accounting',

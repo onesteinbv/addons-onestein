@@ -20,7 +20,7 @@
 
 {
     'name': "Customer profit segmentation",
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Customer segmentation based on profit""",
     'description': """
     Customer profit segmentation

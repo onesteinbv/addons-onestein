@@ -23,7 +23,7 @@
     'name': 'Partner unique reference',
     'price': 49.00,
     'currency': 'EUR',
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'version': '1.1',
     'summary': """Generates unique identifiers for partners""",
     'category': 'Extra Tools',

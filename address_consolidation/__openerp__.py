@@ -22,7 +22,7 @@
     'name': "Address Consolidation",
     'price': 49.00,
     'currency': 'EUR',
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Keep the original partner addresses.""",
     'description': """
 Address Consolidation

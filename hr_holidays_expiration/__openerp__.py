@@ -21,7 +21,7 @@
 
 {
     'name': "Holidays expiration",
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Management of holidays expiration""",
     'description': """
 Holidays expiration

@@ -20,7 +20,7 @@
 
 {
     'name': 'Mass mailing unsubscription',
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Configurable unsubscribe possibility for mass mailing""",
     'description': """
 Mass mailing unsubscribe

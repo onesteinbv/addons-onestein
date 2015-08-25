@@ -20,7 +20,7 @@
 
 {
     'name': 'Costcenter',
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Costcenter information for invoice lines""",
     'description': """
 Costcenter

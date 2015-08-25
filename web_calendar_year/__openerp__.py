@@ -20,7 +20,7 @@
 
 {
     'name': "Web Calendar Year",
-    'images': ['static/desciption/main_screenshot.png'],
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Year view on Odoo calendar""",
     'description': """
 Year calendar view
