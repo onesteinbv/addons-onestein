@@ -23,7 +23,6 @@ from openerp import models, fields, api, _
 import openerp.addons.decimal_precision as dp
 from openerp.exceptions import Warning
 
-# New models
 
 class delivery_service_level(models.Model):
     _name = 'delivery.service.level'
@@ -50,9 +49,7 @@ class transsmart_cost_center(models.Model):
     transsmart_id = fields.Integer("Transsmart ID")
     code = fields.Char(size=128, string="Code", help="This code should match the code in the Transsmart configuration.")
     description = fields.Char(size=256, string="Description")
-    
 
-# Inherited models
 
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -60,11 +57,13 @@ class product_product(models.Model):
     service_level_id = fields.Many2one('delivery.service.level', string='Service Level')
     service_level_time_id = fields.Many2one('delivery.service.level.time', string='Service Level Time')
 
+
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
     transsmart_code = fields.Char(size=128, string="Transsmart Code")
     transsmart_id = fields.Integer("Transsmart ID")
+
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
@@ -75,4 +74,13 @@ class sale_order(models.Model):
     @api.multi
     def action_ship_create(self, context=None):
         sales = self.with_context(action_ship_create = self)
-        return super(sale_order, sales).action_ship_create(context)
+        r = super(sale_order, sales).action_ship_create(context)
+        for sale in self:
+            sale.picking_ids.action_get_transsmart_rate()
+        return r
+
+
+class res_company(models.Model):
+    _inherit = 'res.company'
+
+    transsmart_enabled = fields.Boolean('Use Transsmart', default=True)

@@ -23,16 +23,17 @@
     'name': "Transsmart Wave",
     'summary': """Picking Wave support for Transsmart integration""",
     'description': """
-        Transsmart Wave
-================================================================
+Transsmart Wave
+===============
 
 This module allows the user to send delivvery orders to transsmart from using the Picking waves
 
     """,
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'category': 'Custom',
+    'category': 'Warehouse',
     'version': '1.0',
+    'images': ['static/description/main_screenshot.png'],
     'depends': [
         'stock_transsmart',
         'stock_picking_wave'

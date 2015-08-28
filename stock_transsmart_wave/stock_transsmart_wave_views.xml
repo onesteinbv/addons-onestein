@@ -15,7 +15,7 @@
                   <field name="transsmart_confirmed" invisible="1"/>
                 </xpath>
                 <xpath expr="//button[@name='print_picking']" position="before">
-                    <button name="action_create_transsmart_document" string="Create in Transsmart" type="object" attrs="{'invisible': ['|', ('state','!=','in_progress'), ('transsmart_confirmed','=',True)]}"/>
+                    <button name="action_create_transsmart_document" string="Create in Transsmart" type="object" attrs="{'invisible': ['|', ('state','=','in_progress'), ('transsmart_confirmed','=',True)]}"/>
                 </xpath>
             </field>
         </record>

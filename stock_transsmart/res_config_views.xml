@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-    
         <record id="view_stock_transsmart_config_settings" model="ir.ui.view">
             <field name="name">stock transsmart settings</field>
             <field name="model">stock.transsmart.config.settings</field>
@@ -28,10 +27,8 @@
                                 <button type="object" name="sync_transsmart_models" string="Refresh transsmart data"/>
                             </div>
                         </div>
-
                     </group>
                </form>
-               
            </field>
        </record>
        

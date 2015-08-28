@@ -33,8 +33,9 @@ stock_transsmart communication instead off the standard res_partner_address.
     """,
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'category': 'Custom',
-    'version': '0.9',
+    'category': 'Warehouse',
+    'version': '1.0',
+    'images': ['static/description/main_screenshot.png'],
     'depends': [
         'stock_transsmart',
         'address_consolidation'

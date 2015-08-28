@@ -128,7 +128,7 @@ class stock_picking(models.Model):
 
     @api.one
     def action_get_transsmart_rate(self):
-        if self.picking_type_id.code != 'outgoing':
+        if not self.company_id.transsmart_enabled or self.picking_type_id.code != 'outgoing':
             return
 
         document = self._transsmart_document_from_stock_picking()
@@ -144,7 +144,7 @@ class stock_picking(models.Model):
 
     @api.one
     def action_create_transsmart_document(self):
-        if self.picking_type_id.code != 'outgoing':
+        if not self.company_id.transsmart_enabled or self.picking_type_id.code != 'outgoing':
             return
 
         if self.transsmart_id:
@@ -163,6 +163,11 @@ class stock_picking(models.Model):
             'delivery_cost': r['ShipmentTariff']
         })
 
+    @api.multi
+    def action_confirm(self):
+        self.action_get_transsmart_rate()
+        return super(stock_picking, self).action_confirm()
+
     @api.model
     def create(self, vals):        
         if 'action_ship_create' in self.env.context:
@@ -171,7 +176,6 @@ class stock_picking(models.Model):
                 'delivery_service_level_time_id': self.env.context['action_ship_create'].delivery_service_level_time_id.id
             })
         r = super(stock_picking, self).create(vals)
-        r.action_get_transsmart_rate()
         return r
 
 

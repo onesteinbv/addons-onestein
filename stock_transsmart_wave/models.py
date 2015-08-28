@@ -25,12 +25,14 @@ from openerp.exceptions import Warning
 class stock_picking_wave(models.Model):
     _inherit = "stock.picking.wave"
 
-    transsmart_confirmed = fields.Boolean("Transsmart Confirmed", compute="_compute_transsmart_confirmed", readonly=True)
+    transsmart_confirmed = fields.Boolean("Transsmart Confirmed", 
+                     compute="_compute_transsmart_confirmed", readonly=True)
 
     @api.depends('picking_ids')
     def _compute_transsmart_confirmed(self):
         for rec in self:
-            rec.transsmart_confirmed = all([bool(picking.transsmart_id) for picking in self.picking_ids]) 
+            rec.transsmart_confirmed = all([bool(picking.transsmart_id) 
+                                           for picking in self.picking_ids]) 
 
 
     @api.one
@@ -46,7 +48,8 @@ class stock_picking(models.Model):
     def _transsmart_document_from_stock_picking(self):
         """Add wave reference to transsmart document.
         """
-        document = super(stock_picking, self)._transsmart_document_from_stock_picking()
+        document = super(stock_picking, 
+                         self)._transsmart_document_from_stock_picking()
         document.update({
             "RefOther": self.wave_id and self.wave_id.name or ''
         })

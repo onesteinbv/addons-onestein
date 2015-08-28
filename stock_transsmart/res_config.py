@@ -33,11 +33,12 @@ class stock_transsmart_configuration(models.TransientModel):
                                         help='Default service level time.')
     carrier_id = fields.Many2one('res.partner', string='Default Prebooking Carrier',                        
                                  help='Default carrier.')
+    disable = fields.Boolean('Disable')
 
     @api.multi
     def get_default_transsmart(self):
         return {'carrier_id': self.env['ir.model.data'].xmlid_to_object('stock_transsmart.transsmart_default_carrier').res_id,
-                'service_level_time_id': self.env['ir.model.data'].xmlid_to_object('stock_transsmart.transsmart_default_service_level').res_id
+                'service_level_time_id': self.env['ir.model.data'].xmlid_to_object('stock_transsmart.transsmart_default_service_level').res_id,
             }
    
     @api.multi
