@@ -18,6 +18,6 @@
 #
 ##############################################################################
 
-from . import stock_picking
 from . import models
+from . import stock_picking
 from . import res_config
