@@ -33,8 +33,9 @@ displays these on the related reports.
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
     'category': 'Sales',
-    'version': '1.1',
+    'version': '1.1.1',
     'depends': [
+        'sale_stock',
         'stock',
         'account',
         'sale',
