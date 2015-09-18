@@ -167,7 +167,7 @@ class sale_order(models.Model):
                     procurement_obj.check([x.id for x in line.procurement_ids if x.state not in ['cancel', 'done']])
                     line.refresh()
                     # run again procurement that are in exception in order to trigger another move
-                    proc_ids += [x.id for x in line.procurement_ids if x.state in ('exception', 'cancel')]
+                    proc_ids += [x for x in line.procurement_ids if x.state in ('exception', 'cancel')]
                 elif sale_line_rec.need_procurement():
                     if (line.state == 'done') or not line.product_id:
                         continue

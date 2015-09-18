@@ -53,13 +53,13 @@ class stock_picking(models.Model):
         return res
 
     @api.model
-    def _get_invoice_vals(self, key, inv_type, journal_id, origin, picking=None, context=None):
+    def _get_invoice_vals(self, key, inv_type, journal_id, move, picking=None):
         """Override method to pass historical address data to invoice.
         Called by stock_picking._invoice_create_line()
         No correct way to get the picking record, so override _invoice_create_line() below.
         """
         _logger.debug("ONESTEiN stock_picking _get_invoice_vals")
-        res = super(stock_picking, self)._get_invoice_vals(key, inv_type, journal_id, origin)
+        res = super(stock_picking, self)._get_invoice_vals(key, inv_type, journal_id, move)
         res.update({
             'invoice_partner_street': picking.shipping_partner_street,
             'invoice_partner_street2': picking.shipping_partner_street2,
@@ -85,8 +85,7 @@ class stock_picking(models.Model):
 
             if key not in invoices:
                 # Get account and payment terms
-                invoice_vals = self._get_invoice_vals(key, inv_type, journal_id, origin, picking=move.picking_id,
-                                                      context=context)
+                invoice_vals = self._get_invoice_vals(key, inv_type, journal_id, move, picking=move.picking_id)
                 invoice_id = self._create_invoice_from_picking(move.picking_id, invoice_vals, context=context)
                 invoices[key] = invoice_id
 
