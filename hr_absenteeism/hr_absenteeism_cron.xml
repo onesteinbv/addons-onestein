@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="1">
+        <record forcecreate="True" id="ir_cron_hr_absenteeism" model="ir.cron">
+            <field name="name">Update Running Absenteeism end date</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'hr.holidays'"/>
+            <field name="function" eval="'increase_date_to'"/>
+            <field name="args" eval="'(False,)'"/>
+        </record>
+    </data>
+</openerp>

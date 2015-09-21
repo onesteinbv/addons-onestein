@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="edit_holiday_status_form_absence" model="ir.ui.view">
+            <field name="name">edit.holiday.status.form.absence
+            </field>
+            <field name="model">hr.holidays.status</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Misc']" position="after">
+                    <group name="absence" string="Absence Control">
+                        <field name="absenteeism_control" />
+                        <field name="notification_ids" attrs="{'invisible':[('absenteeism_control', '!=', True)]}">
+                            <form string="Absenteeism Notifications">
+                                <group>
+                                    <field name="name"/>
+                                    <field name="interval"/>
+                                    <field name="leave_type_id" invisible="1"/>
+                                </group>
+                            </form>
+                            <tree string="Absenteeism Notifications" editable="bottom">
+                                <field name="name"/>
+                                <field name="interval"/>
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
