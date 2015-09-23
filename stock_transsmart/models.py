@@ -44,7 +44,7 @@ class delivery_service_level_time(models.Model):
 
 class transsmart_cost_center(models.Model):
     _name = 'transsmart.cost.center'
-    
+
     name = fields.Char(size=128, string="Name")
     transsmart_id = fields.Integer("Transsmart ID")
     code = fields.Char(size=128, string="Code", help="This code should match the code in the Transsmart configuration.")
@@ -67,15 +67,17 @@ class res_partner(models.Model):
 
 class sale_order(models.Model):
     _inherit = 'sale.order'
-    
+
     delivery_service_level_time_id = fields.Many2one('delivery.service.level.time', string='Delivery Service Level')
     cost_center_id = fields.Many2one('transsmart.cost.center', string='Delivery Cost Center')
 
-    @api.multi
-    def action_ship_create(self, context=None):
-        sales = self.with_context(action_ship_create = self)
-        r = super(sale_order, sales).action_ship_create(context)
-        for sale in self:
+
+    def action_ship_create(self, cr, uid, ids, context=None):
+        context = context.copy() or {}
+        sales = self.browse(cr, uid, ids, context=context)
+        context['action_ship_create'] = sales
+        r = super(sale_order, self).action_ship_create(cr, uid, ids, context=context)
+        for sale in sales:
             sale.picking_ids.action_get_transsmart_rate()
         return r
 

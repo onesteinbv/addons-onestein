@@ -29,7 +29,7 @@
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
     'category': 'Warehouse',
-    'version': '1.0.1',
+    'version': '1.0.2',
     'images': ['static/description/main_screenshot.png'],
     'depends': [
         'webservice_interface',
