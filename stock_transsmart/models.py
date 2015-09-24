@@ -68,7 +68,7 @@ class res_partner(models.Model):
 class sale_order(models.Model):
     _inherit = 'sale.order'
 
-    delivery_service_level_time_id = fields.Many2one('delivery.service.level.time', string='Delivery Service Level')
+    delivery_service_level_time_id = fields.Many2one('delivery.service.level.time', string='Delivery Service Level Time')
     cost_center_id = fields.Many2one('transsmart.cost.center', string='Delivery Cost Center')
 
 
