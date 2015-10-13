@@ -20,7 +20,7 @@
 
 
 {
-    'name': "Absense Management",
+    'name': "Absence Management",
     'summary': """Create time based absence notifications""",
     'description': """
 Absense Management
