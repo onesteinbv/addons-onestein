@@ -20,6 +20,7 @@
 
 {
     'name': "Web-Services Interface",
+    'images': ['static/description/main_screenshot.png'],
     'summary': """Web-Services Interface""",
     'description': """
     Provide to the user methods and structure to easy integrate odoo with several type of web-services
