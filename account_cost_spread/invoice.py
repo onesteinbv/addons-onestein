@@ -595,7 +595,8 @@ class account_invoice_spread_line(models.Model):
         string='Spread Entry', readonly=True)
     move_check = fields.Boolean(
         compute='_move_check',
-        string='Posted')
+        string='Posted',
+        store=True)
     type = fields.Selection(
         [('create', 'Value'),
          ('depreciate', 'Depreciation'),
