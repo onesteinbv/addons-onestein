@@ -20,5 +20,4 @@
 #
 ##############################################################################
 
-from . import invoice
-from . import res_config
+from . import models

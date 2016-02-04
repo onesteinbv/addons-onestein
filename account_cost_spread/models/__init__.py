@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
+#    Cost Spreading for ODOO / OpenERP
+#
 #    Copyright (C) 2014 ONESTEiN BV (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -17,25 +19,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Cost / Income Spread',
-    'summary': """Cost and Income spreading""",
-    'description': """
-Allows for spreading cost or income over a customizable period. The computation code in this module is based on
-the Assets Management module by Noviat: https://apps.openerp.com/apps/modules/8.0/account_asset_management/
-    """,
-    'version': '1.0',
-    'depends': ['account','account_accountant'],
-    'author': "ONESTEiN BV",
-    'website': 'http://www.onestein.eu',
-    'images': ['static/description/main_screenshot.png'],
-    'category': 'Accounting',
-    'sequence': 34,
-    'data': [
-        'security/ir.model.access.csv',
-        'views/account_invoice_line_view.xml',
-        'views/invoice_view.xml',
-        'views/res_config_view.xml',
-        'data/spread_cron.xml',
-    ],
-}
+
+from . import account_invoice
+from . import account_invoice_line
+from . import account_invoice_spread_line
+from . import res_config
