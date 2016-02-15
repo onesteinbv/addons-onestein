@@ -24,13 +24,13 @@
             $.getScript(datejs_locale, function(data) {
                 var shortTimeformat = Date.CultureInfo.formatPatterns.shortTime;
                 var dateFormat = Date.CultureInfo.formatPatterns.shortDate;
+                console.log(dateFormat);
                 $calendar.fullCalendar({
                     events: function(start, end, callback) {
                         $.ajax({
                             url: '/calendar_block/get_events/' + Math.round(start.getTime() / 1000) + '/' + Math.round(end.getTime() / 1000),
                             dataType: 'json',
                             success: function(result) {
-                                console.log(result);
                                 //Setup colors
                                 all_filters[0] = get_color(result.contacts[0]);
                                 all_filters[-1] = get_color(-1);
@@ -39,12 +39,14 @@
                                         all_filters[c] = get_color(c);
                                     }
                                 });
-                                console.log(all_filters);
                                 
-                                
+                                var date_delay = 1.0;
+
                                 //Mutate data for calendar
                                 var events = result.events;
                                 for(var i = 0; i < events.length; i++) {
+                                    events[i].start = new Date(events[i].start).addHours(date_delay);
+                                    events[i].end = new Date(events[i].end).addHours(date_delay);
                                     for(var j = 0; j < events[i].attendees.length; j++) {
                                         events[i].title += '<img title="' + events[i].attendees[j].name + '" class="attendee_head" src="/web/binary/image?model=res.partner&field=image_small&id=' + events[i].attendees[j].id + '" />';
                                         if (all_filters[events[i].color] !== undefined) {

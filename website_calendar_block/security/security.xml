@@ -4,7 +4,7 @@
         <record model="ir.rule" id="website_calendar_block_event_public">
             <field name="name">Calendar event public</field>
             <field name="model_id" ref="calendar.model_calendar_event"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="domain_force">[('class', '=', 'public')]</field>
             <field name="groups" eval="[(4, ref('base.group_public'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
@@ -12,10 +12,11 @@
             <field name="perm_unlink" eval="False"/>
         </record>
         
+        
         <record model="ir.rule" id="website_calendar_block_attendee_public">
             <field name="name">Calendar attendee public</field>
             <field name="model_id" ref="calendar.model_calendar_attendee"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="domain_force">[('event_id.class', '=', 'public')]</field>
             <field name="groups" eval="[(4, ref('base.group_public'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="False"/>
@@ -34,6 +35,7 @@
             <field name="perm_unlink" eval="False"/>
         </record>
         
+        <!--
         <record model="ir.rule" id="website_calendar_block_contact_public">
             <field name="name">Calendar contact public</field>
             <field name="model_id" ref="calendar.model_calendar_contacts"/>
@@ -44,17 +46,7 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
-        
-        <record model="ir.rule" id="website_calendar_block_user_public">
-            <field name="name">User public</field>
-            <field name="model_id" ref="base.model_res_users"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('base.group_public'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-        
+         -->
+
     </data>
 </openerp>
