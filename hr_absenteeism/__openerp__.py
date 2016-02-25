@@ -39,6 +39,7 @@ field.
         'hr_holidays',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'hr_absenteeism_view.xml',
         'hr_absenteeism_cron.xml',
     ],
