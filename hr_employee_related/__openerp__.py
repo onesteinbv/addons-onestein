@@ -18,30 +18,26 @@
 #
 ##############################################################################
 
-
 {
-    'name': "Absence Management",
-    'summary': """Create time based absence notifications""",
+    'name': "Employee Relatives",
+    'images': ['static/description/main_screenshot.png'],
+    'summary': """Store employee relatives for communication.""",
     'description': """
-Absense Management
-==================
-Allows to set up intervals which can be used with the Task Alert module to create a task.
-You can set up the intervals in the Human Resources Leave Types Configuration form under the Absence Control header.
-To have the tasks created, it is required to set up a Task Alert or a Automated Action on the Absent Notification Date
-field.
- """,
+Store employee relatives
+========================
+
+This module creates a table for storing eployee relatives for communication
+in case of need.
+
+    """,
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'images': ['static/description/main_screenshot.png'],
     'category': 'Human Resources',
     'version': '1.0',
-    'depends': [
-        'hr_holidays',
-    ],
+    'depends': ['hr'],
     'data': [
         'security/ir.model.access.csv',
-        'hr_absenteeism_view.xml',
-        'hr_absenteeism_cron.xml',
+        'hr_employee_related_view.xml',
     ],
     'demo': [],
     'installable': True,

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2016 ONESTEiN BV (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,30 +18,24 @@
 #
 ##############################################################################
 
-
 {
-    'name': "Absence Management",
-    'summary': """Create time based absence notifications""",
+    'name': 'Calendar Block',
+    'category': 'Website',
+    'summary': 'Calendar (based on Messaging -> Calendar) on website.',
+    'version': '1.0',
     'description': """
-Absense Management
-==================
-Allows to set up intervals which can be used with the Task Alert module to create a task.
-You can set up the intervals in the Human Resources Leave Types Configuration form under the Absence Control header.
-To have the tasks created, it is required to set up a Task Alert or a Automated Action on the Absent Notification Date
-field.
- """,
+Calendar Block
+===============================================
+This block is based on Messaging -> Calendar. Use field 'Privacy' to determine publicity.
+Since it's a block it can be placed anywhere on your website.
+""",
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'images': ['static/description/main_screenshot.png'],
-    'category': 'Human Resources',
-    'version': '1.0',
-    'depends': [
-        'hr_holidays',
-    ],
+    'depends': ['website', 'calendar', 'web'],
     'data': [
+        'views/website_calendar_block.xml',
         'security/ir.model.access.csv',
-        'hr_absenteeism_view.xml',
-        'hr_absenteeism_cron.xml',
+        'security/security.xml',
     ],
     'demo': [],
     'installable': True,

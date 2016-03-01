@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2016 ONESTEiN BV (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,30 +18,22 @@
 #
 ##############################################################################
 
-
 {
-    'name': "Absence Management",
-    'summary': """Create time based absence notifications""",
+    'name': "Fullscreen",
+    'summary': """""",
     'description': """
-Absense Management
-==================
-Allows to set up intervals which can be used with the Task Alert module to create a task.
-You can set up the intervals in the Human Resources Leave Types Configuration form under the Absence Control header.
-To have the tasks created, it is required to set up a Task Alert or a Automated Action on the Absent Notification Date
-field.
- """,
+Adds a fullscreen mode button that toggles the primary and secondary menu.
+""",
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'images': ['static/description/main_screenshot.png'],
-    'category': 'Human Resources',
+    'category': 'Extra Tools',
     'version': '1.0',
-    'depends': [
-        'hr_holidays',
-    ],
+    'depends': ['web'],
     'data': [
-        'security/ir.model.access.csv',
-        'hr_absenteeism_view.xml',
-        'hr_absenteeism_cron.xml',
+        'views/web_fullscreen_views.xml'
+    ],
+    'qweb': [
+        'views/web_fullscreen_templates.xml'
     ],
     'demo': [],
     'installable': True,

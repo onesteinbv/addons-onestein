@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_hr_employee_related_form" model="ir.ui.view">
+            <field name="name">view.hr.employee.related.form</field>
+            <field name="model">hr.employee.related</field>
+            <field name="arch" type="xml">
+                <form string="Relatives">
+                    <sheet>
+                        <group string="Related">
+                            <group>
+                                <field name="name"/>
+                                <field name="last_name"/>
+                                <field name="birth_name"/>
+                                <field name="relation"/>
+                            </group>
+                            <group>
+                                <field name="birth_date"/>
+                                <field name="gender"/>
+                                <field name="telephone"/>
+                                <field name="bsn_number"/>
+                            </group>
+                            <group>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_employee_form_employee_related" model="ir.ui.view">
+            <field name="name">hr.employee.form.employee.related</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Birth']" position="after">
+                    <group string="Related" colspan="4" groups="base.group_hr_manager">
+                        <field name="related_ids" nolabel="1">
+                            <form string="Employee related">
+                                <group>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="last_name"/>
+                                        <field name="birth_name"/>
+                                        <field name="relation"/>
+                                    </group>
+                                    <group>
+                                        <field name="birth_date"/>
+                                        <field name="gender"/>
+                                        <field name="telephone"/>
+                                        <field name="bsn_number"/>
+                                    </group>
+                                    <group>
+                                        <field name="note"/>
+                                    </group>
+                                </group>
+                            </form>
+                            <tree string="Employee related">
+                                <field name="name"/>
+                                <field name="last_name"/>
+                                <field name="gender"/>
+                                <field name="relation"/>
+                                <field name="birth_date"/>
+                                <field name="telephone"/>
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
