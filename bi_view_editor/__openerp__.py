@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.eu>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -18,30 +18,28 @@
 #
 ##############################################################################
 
-
 {
-    'name': "Absence Management",
-    'summary': """Create time based absence notifications""",
-    'description': """
-Absense Management
-==================
-Allows to set up intervals which can be used with the Task Alert module to create a task.
-You can set up the intervals in the Human Resources Leave Types Configuration form under the Absence Control header.
-To have the tasks created, it is required to set up a Task Alert or a Automated Action on the Absent Notification Date
-field.
- """,
+    'name': "BI View Editor",
+    'summary': """Graphical BI views builder for Odoo 8""",
+    'images': ['static/description/main_screenshot.png'],
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
-    'images': ['static/description/main_screenshot.png'],
-    'category': 'Human Resources',
-    'version': '1.0',
+    'category': 'Reporting',
+    'version': '0.1',
     'depends': [
-        'hr_holidays',
+        'base',
+        'web',
     ],
     'data': [
+        'views/bve_view.xml',
         'security/ir.model.access.csv',
-        'hr_absenteeism_view.xml',
-        'hr_absenteeism_cron.xml',
+        'security/rules.xml'
+    ],
+    'qweb': [
+        'templates.xml'
+     ],
+    'js': [
+        'static/src/js/bve.js'
     ],
     'demo': [],
     'installable': True,
