@@ -1,0 +1,74 @@
+<openerp>
+    <data>
+
+        <!-- Holidays: Allocation Request -->
+        <record model="ir.ui.view" id="edit_public_holiday_new">
+            <field name="name">Public Holiday</field>
+            <field name="model">hr.public.holiday</field>
+            <field name="arch" type="xml">
+                <form string="Public holiday">
+                <header>
+                    <button string="Approve" name="validate" states="draft" type="object" groups="base.group_hr_user" class="oe_highlight"/>
+                    <button string="Reset to Draft" name="reset" type="object"
+                            attrs="{'invisible': [('state', 'not in', ['validate'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validate" statusbar_colors='{"validate":"blue"}'/>
+                </header>
+                <sheet>
+                    <group>
+                        <group name="general">
+                            <field name="name" attrs="{'readonly':[('state','!=','draft')]}" required="1"/>
+                            <field name="date_from" required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+                            <field name="date_to" required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_public_holiday">
+            <field name="name">hr.public.holidays.tree</field>
+            <field name="model">hr.public.holiday</field>
+            <field name="arch" type="xml">
+                <tree colors="red:state == 'refuse';blue:state == ' draft';black:state in ('confirm','validate','validate1')" string="Public Holidays">
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_open_public_holidays">
+            <field name="name">Public Holidays</field>
+            <field name="res_model">hr.public.holiday</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="edit_public_holiday_new"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new public holiday.
+              </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_open_public_holidays_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_public_holiday"/>
+            <field name="act_window_id" ref="action_open_public_holidays"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_open_public_holidays_form">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="edit_public_holiday_new"/>
+            <field name="act_window_id" ref="action_open_public_holidays"/>
+        </record>
+
+        <menuitem parent="hr_holidays.menu_open_ask_holidays" id="menu_open_public_holidays_new" action="action_open_public_holidays"/>
+
+    </data>
+</openerp>

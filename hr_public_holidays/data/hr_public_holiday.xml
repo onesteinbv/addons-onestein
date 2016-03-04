@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="hr_public_holiday" model="hr.holidays.status">
+            <field name="name">Public Holiday</field>
+        </record>
+
+    </data>
+</openerp>
