@@ -24,6 +24,7 @@ import math
 from openerp import models, fields, api
 from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools.translate import _
 from openerp.exceptions import Warning
 
 _logger = logging.getLogger(__name__)
