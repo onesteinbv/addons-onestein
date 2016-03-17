@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>    
+    <record id="hr_holidays_signature_form_extension" model="ir.ui.view">
+        <field name="name">Holidays Form Extension</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
+        <field name="model">hr.holidays</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='report_note']/.." position="after">
+                <div groups="base.group_hr_manager" attrs="{'invisible':[('type','=','add')]}">
+                    <separator string="Signature of Manager"/>
+                    <field name="manager_signature" widget="draw" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
