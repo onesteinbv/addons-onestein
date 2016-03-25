@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
-  <t t-name="JoinNodePopup">
-    <div class="oe_form_nosheet">
-        <p>Please choose the join node</p>
-        <div id="join-nodes">
+    <t t-name="JoinNodePopup">
+        <div class="oe_form_nosheet">
+            <p>Please choose the join node</p>
+            <div id="join-nodes">
+            </div>
         </div>
-    </div>
-  </t>
+    </t>
 
 
     <t t-name="BVEEditor">

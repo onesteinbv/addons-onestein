@@ -1,73 +1,79 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.eu>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2015-2016 ONESTEiN BV (<http://www.onestein.eu>)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import json
 
 from openerp import tools
 from openerp import SUPERUSER_ID
 from openerp import models, fields, api
-from openerp.exceptions import Warning
+from openerp.exceptions import Warning as UserError
+from openerp.tools.translate import _
 
 
-class bve_view(models.Model):
+class BveView(models.Model):
     _name = 'bve.view'
+    _description = "BI View Editor"
 
     @api.depends('group_ids')
-    @api.one
+    @api.multi
     def _compute_users(self):
-        if self.sudo().group_ids:
-            self.user_ids = self.env['res.users'].sudo().browse(list(set([u.id for group in self.sudo().group_ids for u in group.users])))
-        else:
-            self.user_ids = self.env['res.users'].sudo().search([])
+        for bve_view in self:
+            if bve_view.sudo().group_ids:
+                bve_view.user_ids = self.env['res.users'].sudo().browse(
+                    list(set([u.id for group in bve_view.sudo().group_ids
+                              for u in group.users])))
+            else:
+                bve_view.user_ids = self.env['res.users'].sudo().search([])
 
     name = fields.Char(size=128, string="Name", required=True)
     model_name = fields.Char(size=128, string="Model Name")
 
     note = fields.Text(string="Notes")
 
-    state = fields.Selection([('draft','Draft'),('created','Created')], string="State", default="draft")
-    data = fields.Text(string="Data",
-        help="Use the special Onestein query builder to define the query to generate your report dataset. "
-            "NOTE: Te be edited, the query should be in 'Draft' status.")
+    state = fields.Selection(
+        [('draft', 'Draft'),
+         ('created', 'Created')],
+        string="State",
+        default="draft")
+    data = fields.Text(
+        string="Data",
+        help="Use the special query builder to define the query "
+             "to generate your report dataset. "
+             "NOTE: Te be edited, the query should be in 'Draft' status.")
 
     action_id = fields.Many2one('ir.actions.act_window', string="Action")
     view_id = fields.Many2one('ir.ui.view', string="View")
-    
-    group_ids = fields.Many2many('res.groups', string="Groups",
-        help="User groups allowed to see the generated report; "
-        "if NO groups are specified the report will be public for everyone.")
 
-    user_ids = fields.Many2many('res.users', string="Users", compute=_compute_users, store=True)
+    group_ids = fields.Many2many(
+        'res.groups',
+        string="Groups",
+        help="User groups allowed to see the generated report; "
+             "if NO groups are specified the report will be public "
+             "for everyone.")
+
+    user_ids = fields.Many2many(
+        'res.users',
+        string="Users",
+        compute=_compute_users,
+        store=True)
 
     _sql_constraints = [
-        ('name_uniq', 'unique(name)',
-            'Custom BI View names must be unique!'),
-    ]    
+        ('name_uniq',
+         'unique(name)',
+         'Custom BI View names must be unique!'),
+    ]
 
     @api.multi
     def unlink(self):
         for view in self:
             if view.state == 'created':
-                raise Warning('Error', 'You cannot delete a created view! Reset the view to draft first.')
+                raise UserError(
+                    _('Error'),
+                    _('You cannot delete a created view! '
+                      'Reset the view to draft first.'))
 
-        super(bve_view, self).unlink()
+        super(BveView, self).unlink()
 
     @api.multi
     def action_edit_query(self):
@@ -85,9 +91,12 @@ class bve_view(models.Model):
                 self.action_id.view_id.sudo().unlink()
             self.action_id.sudo().unlink()
 
-        self.env['ir.model'].sudo().search([('model','=',self.model_name)]).unlink()
+        models = self.env['ir.model'].sudo().search(
+            [('model', '=', self.model_name)])
+        for model in models:
+            model.sudo().unlink()
 
-        table_name = self.model_name.replace(".","_")
+        table_name = self.model_name.replace(".", "_")
         tools.drop_view_if_exists(self.env.cr, table_name)
 
         self.write({
@@ -97,7 +106,13 @@ class bve_view(models.Model):
 
     def _create_graph_view(self):
         fields_info = json.loads(self.data)
-        return ["""<field name="x_{}" type="{}" />""".format(field_info['name'], (field_info['row'] and 'row') or (field_info['column'] and 'col') or (field_info['measure'] and 'measure')) for field_info in fields_info if field_info['row'] or field_info['column'] or field_info['measure']]
+        return ["""<field name="x_{}" type="{}" />""".format(
+            field_info['name'],
+            (field_info['row'] and 'row') or
+            (field_info['column'] and 'col') or
+            (field_info['measure'] and 'measure'))
+            for field_info in fields_info if field_info['row'] or
+            field_info['column'] or field_info['measure']]
 
     @api.multi
     def action_create(self):
@@ -105,14 +120,14 @@ class bve_view(models.Model):
         def _get_fields_info(fields_data):
             fields_info = []
             for field_data in fields_data:
-                field_obj = self.env['ir.model.fields'].browse(field_data["id"])
+                field = self.env['ir.model.fields'].browse(field_data["id"])
                 vals = {
-                    "table": self.env[field_obj.model_id.model]._table,
+                    "table": self.env[field.model_id.model]._table,
                     "table_alias": field_data["table_alias"],
-                    "select_field": field_obj.name,
+                    "select_field": field.name,
                     "as_field": "x_" + field_data["name"],
                     "join": False,
-                    "model": field_obj.model_id.model
+                    "model": field.model_id.model
                 }
                 if field_data.get("join_node"):
                     vals.update({"join": field_data["join_node"]})
@@ -122,11 +137,16 @@ class bve_view(models.Model):
         def _build_query():
 
             info = _get_fields_info(json.loads(self.data))
-            fields = [("{}.{}".format(f["table_alias"], f["select_field"]), f["as_field"]) for f in info if not 'join_node' in f]
+            fields = [("{}.{}".format(f["table_alias"],
+                       f["select_field"]),
+                       f["as_field"]) for f in info if 'join_node' not in f]
             tables = set([(f["table"], f["table_alias"]) for f in info])
-            join_nodes = [(f["table_alias"], f["join"], f["select_field"]) for f in info if f["join"] != False]
+            join_nodes = [
+                (f["table_alias"],
+                 f["join"],
+                 f["select_field"]) for f in info if f["join"] is not False]
 
-            table_name = self.model_name.replace(".","_")        
+            table_name = self.model_name.replace(".", "_")
             tools.drop_view_if_exists(self.env.cr, table_name)
 
             basic_fields = [
@@ -139,28 +159,37 @@ class bve_view(models.Model):
 
             q = """CREATE or REPLACE VIEW %s as (
                 SELECT %s
-                FROM  %s 
+                FROM  %s
                 WHERE %s
-                )""" % (table_name, ','.join(["{} AS {}".format(f[0], f[1]) for f in basic_fields + fields]), ','.join(["{} AS {}".format(t[0], t[1]) for t in list(tables)]), " AND ".join(["{}.{} = {}.id".format(j[0], j[2], j[1]) for j in join_nodes] + ["TRUE"]))
+                )""" % (table_name, ','.join(
+                ["{} AS {}".format(f[0], f[1])
+                 for f in basic_fields + fields]), ','.join(
+                ["{} AS {}".format(t[0], t[1])
+                 for t in list(tables)]), " AND ".join(
+                ["{}.{} = {}.id".format(j[0], j[2], j[1])
+                 for j in join_nodes] + ["TRUE"]))
 
             self.env.cr.execute(q)
-        
+
         def _prepare_field(field_data):
             if not field_data["custom"]:
                 field = self.env['ir.model.fields'].browse(field_data["id"])
                 vals = {
                     "name": "x_" + field_data["name"],
                     "complete_name": field.complete_name,
-                    'model': self.model_name, 
+                    'model': self.model_name,
                     'relation': field.relation,
-                    "field_description": field_data.get("description", field.field_description),
+                    "field_description": field_data.get(
+                        "description", field.field_description),
                     "ttype": field.ttype,
                     "selection": field.selection,
                     "size": field.size,
                     'state': "manual"
                 }
                 if field.ttype == 'selection' and not field.selection:
-                    selection_domain = str(self.env[field.model_id.model]._columns[field.name].selection)
+                    model_obj = self.env[field.model_id.model]
+                    selection = model_obj._columns[field.name].selection
+                    selection_domain = str(selection)
                     vals.update({"selection": selection_domain})
                 return vals
 
@@ -168,32 +197,36 @@ class bve_view(models.Model):
             return {
                 'name': self.name,
                 'model': self.model_name,
-                'field_id': [(0, 0, _prepare_field(field)) for field in json.loads(self.data) if not 'join_node' in field]
+                'field_id': [
+                    (0, 0, _prepare_field(field))
+                    for field in json.loads(self.data)
+                    if 'join_node' not in field]
             }
 
         def _build_object():
             res_id = self.env['ir.model'].sudo().create(_prepare_object())
-            return res_id 
+            return res_id
 
         # read access
         def group_ids_with_access(model_name, access_mode):
             self.env.cr.execute('''SELECT
-                        g.id
-                      FROM
-                        ir_model_access a
-                        JOIN ir_model m ON (a.model_id=m.id)
-                        JOIN res_groups g ON (a.group_id=g.id)
-                        LEFT JOIN ir_module_category c ON (c.id=g.category_id)
-                      WHERE
-                        m.model=%s AND
-                        a.active IS True AND
-                        a.perm_''' + access_mode, (model_name,))
+                  g.id
+                FROM
+                  ir_model_access a
+                  JOIN ir_model m ON (a.model_id=m.id)
+                  JOIN res_groups g ON (a.group_id=g.id)
+                  LEFT JOIN ir_module_category c ON (c.id=g.category_id)
+                WHERE
+                  m.model=%s AND
+                  a.active IS True AND
+                  a.perm_''' + access_mode, (model_name,))
             return [x[0] for x in self.env.cr.fetchall()]
 
         def _build_access_rules(obj):
             info = json.loads(self.data)
             models = list(set([f["model"] for f in info]))
-            read_groups = set.intersection(*[set(group_ids_with_access(model, 'read')) for model in models])
+            read_groups = set.intersection(*[set(
+                group_ids_with_access(model, 'read')) for model in models])
 
             for group in read_groups:
                 self.env['ir.model.access'].sudo().create({
@@ -215,7 +248,9 @@ class bve_view(models.Model):
 
             return
 
-        self.model_name = "x_bve." + ''.join([x for x in self.name.lower() if x.isalnum()]).replace("_", ".").replace(" ", ".")
+        self.model_name = "x_bve." + ''.join(
+            [x for x in self.name.lower()
+             if x.isalnum()]).replace("_", ".").replace(" ", ".")
 
         _build_query()
         obj = _build_object()
@@ -224,15 +259,21 @@ class bve_view(models.Model):
 
         from openerp.modules.registry import RegistryManager
         self.env.registry = RegistryManager.new(self.env.cr.dbname)
+        RegistryManager.signal_registry_change(self.env.cr.dbname)
         self.pool = self.env.registry
 
-        view_id = self.pool.get('ir.ui.view').create(self.env.cr, SUPERUSER_ID, {
-            'name': "Analysis",
-            'type': 'graph',
-            'model': self.model_name,
-            'priority': 16,
-            'arch': """<?xml version="1.0"?> <graph string="Analysis" type="pivot" stacked="True"> {} </graph>""".format("".join(self._create_graph_view()))
-        }, context={})
+        view_id = self.pool.get('ir.ui.view').create(
+            self.env.cr, SUPERUSER_ID,
+            {'name': "Analysis",
+             'type': 'graph',
+             'model': self.model_name,
+             'priority': 16,
+             'arch': """<?xml version="1.0"?>
+                        <graph string="Analysis"
+                               type="pivot"
+                               stacked="True"> {} </graph>
+                     """.format("".join(self._create_graph_view()))
+             }, context={})
         view_ids = [view_id]
 
         action_vals = {'name': self.name,
@@ -243,14 +284,15 @@ class bve_view(models.Model):
                        'view_id': view_ids and view_ids[0] or 0,
                        'context': "{'service_name': '%s'}" % self.name,
                        }
-        action_id = self.env['ir.actions.act_window'].sudo().create(action_vals)
+        act_window = self.env['ir.actions.act_window']
+        action_id = act_window.sudo().create(action_vals)
 
         self.write({
             'action_id': action_id.id,
             'view_id': view_id,
             'state': 'created'
         })
-        
+
         return True
 
     @api.multi
