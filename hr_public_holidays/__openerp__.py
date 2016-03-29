@@ -12,11 +12,12 @@
     'category': 'Human Resources',
     'version': '8.0.1.0.0',
     'depends': [
-        'hr_holidays'
+        'hr_holidays',
     ],
     'data': [
         'security/ir.model.access.csv',
-        'data/hr_public_holiday.xml',
+        'security/hr_public_holiday_security.xml',
+        'data/hr_holidays_status.xml',
         'views/hr_public_holiday.xml'
     ],
     'demo': [],

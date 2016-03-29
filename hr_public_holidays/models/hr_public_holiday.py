@@ -2,8 +2,10 @@
 # © 2016 ONESTEiN BV (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields, api
 import logging
+from openerp import models, fields, api
+from openerp.exceptions import Warning
+from openerp.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -50,8 +52,12 @@ class HrPublicHoliday(models.Model):
 
     @api.multi
     def reinit(self):
-        imd_id, model, res_id = self.env['ir.model.data'].xmlid_lookup(
-            'hr_public_holidays.hr_public_holiday')
+        try:
+            res_id = self.env['ir.model.data'].get_object(
+                'hr_public_holidays', 'hr_public_holiday').id
+        except ValueError:
+            raise Warning(
+                _("Leave Type for Public Holiday not found!"))
         for holiday in self:
             _logger.debug("hr_public_holiday reinit: %s" % (self.name,))
 

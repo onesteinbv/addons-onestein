@@ -3,6 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp import models, fields, api
+from openerp.exceptions import Warning
+from openerp.tools.translate import _
 
 
 class HrHolidays(models.Model):
@@ -25,10 +27,11 @@ class HrHolidays(models.Model):
             return super(HrHolidays, self).holidays_validate()
 
         try:
-            imd_id, model, res_id = self.env['ir.model.data'].xmlid_lookup(
-                'hr_public_holidays.hr_public_holiday')
+            res_id = self.env['ir.model.data'].get_object(
+                'hr_public_holidays', 'hr_public_holiday').id
         except ValueError:
-            return super(HrHolidays, self).holidays_validate()
+            raise Warning(
+                _("Leave Type for Public Holiday not found!"))
 
         if self.holiday_status_id.id != res_id:
             return super(HrHolidays, self).holidays_validate()
