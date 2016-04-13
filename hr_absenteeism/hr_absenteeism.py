@@ -104,12 +104,13 @@ class hr_holidays(models.Model):
         res = super(hr_holidays, self).create(cr, uid, vals, context)
         holiday = self.browse(cr, uid, res, context)
         for notification in holiday.holiday_status_id.notification_ids:
-            notify_date = self._compute_notify_date(notification, holiday)
-            absent_vals = {
-                "name": notification.name, "holiday_id": res, "absent_notify_date": notify_date,
-                "notification_id": notification.id
-            }
-            self.pool.get("hr.absenteeism.dates").create(cr, uid, absent_vals, context)
+            if holiday.date_from:
+                notify_date = self._compute_notify_date(notification, holiday)
+                absent_vals = {
+                    "name": notification.name, "holiday_id": res, "absent_notify_date": notify_date,
+                    "notification_id": notification.id
+                }
+                self.pool.get("hr.absenteeism.dates").create(cr, uid, absent_vals, context)
         return res
 
     @api.multi
