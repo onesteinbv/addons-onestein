@@ -19,6 +19,7 @@
 ##############################################################################
 
 from openerp import models, fields, api
+from openerp.exceptions import Warning
 
 import requests
 from requests.auth import HTTPBasicAuth
