@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+    <!-- partner sequences -->
+
+    <record id="view_partner_sequence_tree" model="ir.ui.view">
+        <field name="name">res.partner.sequence.tree</field>
+        <field name="model">res.partner.sequence</field>
+        <field name="arch" type="xml">
+            <tree string="Sequences">
+                <field name="sequence_id"/>
+                <field name="country_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_partner_sequence_form" model="ir.ui.view">
+        <field name="name">res.partner.sequence.form</field>
+        <field name="model">res.partner.sequence</field>
+        <field name="arch" type="xml">
+            <form string="Sequence">
+                <group>
+                    <field name="sequence_id"/>
+                </group>
+                <group>
+                    <field name="country_id"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_sequence" model="ir.actions.act_window">
+        <field name="name">Partner Sequences</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner.sequence</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem action="action_partner_sequence" id="menu_partner_sequence_form" name="Partner Sequences" sequence="50" parent="base.menu_config_address_book" />
+    
+    </data>
+</openerp>

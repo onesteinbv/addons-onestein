@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_order_form_address_consolidation" model="ir.ui.view">
+            <field name="name">view.order.form.address.consolidation</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group/group/field[@name='partner_id']" position="attributes">
+                    <attribute name="context">"{'search_default_customer':1, 'show_address': 0}"</attribute>
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='partner_id']" position="after">
+                    <label for="legal_partner_street" string=" "/>
+                        <div name="div_legal_address">
+                            <field name="legal_partner_street" invisible="0" placeholder="Street..." attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="legal_partner_street2" invisible="0" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <div class="address_format">
+                                <field name="legal_partner_city" invisible="0" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                                <field name="legal_partner_state_id" invisible="0" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                                <field name="legal_partner_zip" invisible="0" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            </div>
+                            <field name="legal_partner_country_id" invisible="0" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        </div>
+                </xpath>
+
+                <xpath expr="//sheet/group/group/field[@name='partner_invoice_id']" position="after">
+                    <label for="invoice_partner_street" string=" " groups="sale.group_delivery_invoice_address"/>
+                    <div name="div_invoice_address" groups="sale.group_delivery_invoice_address">
+                        <field name="invoice_partner_street" placeholder="Street..." attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <field name="invoice_partner_street2" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <div class="address_format">
+                            <field name="invoice_partner_city" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="invoice_partner_state_id" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="invoice_partner_zip" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        </div>
+                        <field name="invoice_partner_country_id" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='partner_shipping_id']" position="replace">
+                </xpath>
+
+                <xpath expr="//sheet/group/group/field[@name='date_order']" position="before">
+                    <field name="partner_shipping_id" on_change="onchange_delivery_id(company_id, partner_id, partner_shipping_id, fiscal_position)" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}"/>
+                    <label for="shipping_partner_street" string=" " groups="sale.group_delivery_invoice_address"/>
+                    <div name="div_shipping_address" groups="sale.group_delivery_invoice_address">
+                        <field name="shipping_partner_street" placeholder="Street..." attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <field name="shipping_partner_street2" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <div class="address_format">
+                            <field name="shipping_partner_city" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="shipping_partner_state_id" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="shipping_partner_zip" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        </div>
+                        <field name="shipping_partner_country_id" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

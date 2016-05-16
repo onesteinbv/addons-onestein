@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="stock_picking_form_address_consolidation" model="ir.ui.view">
+            <field name="name">stock.picking.form.address.consolidation</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group/group/field[@name='partner_id']" position="attributes">
+                    <attribute name="on_change">onchange_partner_id(partner_id)</attribute>
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='partner_id']" position="after">
+                    <label for="street" string="Address"/>
+                    <div name="div_address">
+                        <field name="shipping_partner_street" placeholder="Street..." attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <field name="shipping_partner_street2" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <div class="address_format">
+                            <field name="shipping_partner_city" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="shipping_partner_state_id" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="shipping_partner_zip" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        </div>
+                        <field name="shipping_partner_country_id" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="invoice_form_address_consolidation" model="ir.ui.view">
+            <field name="name">account.invoice.form.address.consolidation</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet[@string='Invoice']/group/group/field[@name='partner_id']" position="attributes">
+                    <attribute name="context">{'search_default_customer':1, 'show_address': 0}</attribute>
+                </xpath>
+
+                <xpath expr="//sheet[@string='Invoice']/group/group/field[@name='partner_id']" position="after">
+                    <label for="street" string="Address"/>
+                    <div name="div_address">
+                        <field name="invoice_partner_street" placeholder="Street..." attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <field name="invoice_partner_street2" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <div class="address_format">
+                            <field name="invoice_partner_city" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="invoice_partner_state_id" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="invoice_partner_zip" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        </div>
+                        <field name="invoice_partner_country_id" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="invoice_supplier_form_address_consolidation" model="ir.ui.view">
+            <field name="name">invoice.supplier.form.address.consolidation</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <label for="street" string="Address"/>
+                    <div name="div_address">
+                        <field name="invoice_partner_street" placeholder="Street..." attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <field name="invoice_partner_street2" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        <div class="address_format">
+                            <field name="invoice_partner_city" placeholder="City" style="width: 40%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="invoice_partner_state_id" placeholder="State" style="width: 36%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                            <field name="invoice_partner_zip" placeholder="ZIP" style="width: 20%%" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                        </div>
+                        <field name="invoice_partner_country_id" placeholder="Country" attrs="{'readonly': [('state', 'not in', ['draft'])]}"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
