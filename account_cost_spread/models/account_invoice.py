@@ -17,25 +17,20 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-{
-    'name': 'Cost / Income Spread',
-    'summary': """Cost and Income spreading""",
-    'description': """
-Allows for spreading cost or income over a customizable period. The computation code in this module is based on
-the Assets Management module by Noviat: https://apps.openerp.com/apps/modules/8.0/account_asset_management/
-    """,
-    'version': '1.0',
-    'depends': ['account','account_accountant'],
-    'author': "ONESTEiN BV",
-    'website': 'http://www.onestein.eu',
-    'images': ['static/description/main_screenshot.png'],
-    'category': 'Accounting',
-    'sequence': 34,
-    'data': [
-        'security/ir.model.access.csv',
-        'views/account_invoice_line_view.xml',
-        'views/invoice_view.xml',
-        'views/res_config_view.xml',
-        'data/spread_cron.xml',
-    ],
-}
+
+from openerp import models, api
+import logging
+_logger = logging.getLogger(__name__)
+
+
+class account_invoice(models.Model):
+    _inherit = 'account.invoice'
+
+    @api.multi
+    def action_move_create(self):
+        """Override, button Validate on invoices."""
+        return_value = super(account_invoice, self).action_move_create()
+        for rec in self:
+            for line in rec.invoice_line:
+                line.compute_spread_board()
+        return return_value
