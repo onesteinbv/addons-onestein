@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="view_employee_number_form" model="ir.ui.view">
+            <field name="name">hr.employee.number.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='category_ids']" position="before">
+                    <group>
+                        <group>
+                            <field name="employee_number" readonly="1" />
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
