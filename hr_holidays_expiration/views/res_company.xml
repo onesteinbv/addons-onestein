@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="edit_res_company_form_expiration" model="ir.ui.view">
+            <field name="name">edit.res.company.form.expiration</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Configuration']" position="inside">
+                    <group name="validity" string="Validity">
+                        <group>
+                            <field name="notify_template_id" />
+                        </group>
+                        <group>
+                            <field name="expire_template_id" />
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
