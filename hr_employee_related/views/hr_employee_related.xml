@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_hr_employee_related_form" model="ir.ui.view">
+        <field name="name">view.hr.employee.related.form</field>
+        <field name="model">hr.employee.related</field>
+        <field name="arch" type="xml">
+            <form string="Relatives">
+                <sheet>
+                    <group string="Related">
+                        <group>
+                            <field name="name"/>
+                            <field name="last_name"/>
+                            <field name="birth_name"/>
+                            <field name="relation"/>
+                        </group>
+                        <group>
+                            <field name="birth_date"/>
+                            <field name="gender"/>
+                            <field name="telephone"/>
+                            <field name="bsn_number"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

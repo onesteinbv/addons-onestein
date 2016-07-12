@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record forcecreate="True" id="ir_cron_check_holiday_expiration" model="ir.cron">
+            <field name="name">Set expired holidays</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="model" eval="'hr.holidays'"/>
+            <field name="function" eval="'check_expiring'"/>
+            <field name="args" eval="'()'"/>
+        </record>
+
+    </data>
+</openerp>

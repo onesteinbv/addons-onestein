@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_employee_form_employee_related" model="ir.ui.view">
+        <field name="name">hr.employee.form.employee.related</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[2]" position="inside">
+                <group string="Related" colspan="4" groups="base.group_hr_manager">
+                    <field name="related_ids" nolabel="1">
+                        <form string="Employee related">
+                            <group>
+                                <group>
+                                    <field name="name"/>
+                                    <field name="last_name"/>
+                                    <field name="birth_name"/>
+                                    <field name="relation"/>
+                                </group>
+                                <group>
+                                    <field name="birth_date"/>
+                                    <field name="gender"/>
+                                    <field name="telephone"/>
+                                    <field name="bsn_number"/>
+                                </group>
+                                <group>
+                                    <field name="note"/>
+                                </group>
+                            </group>
+                        </form>
+                        <tree string="Employee related">
+                            <field name="name"/>
+                            <field name="last_name"/>
+                            <field name="gender"/>
+                            <field name="relation"/>
+                            <field name="birth_date"/>
+                            <field name="telephone"/>
+                        </tree>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
