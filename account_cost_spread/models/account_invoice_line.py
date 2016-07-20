@@ -1,39 +1,21 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2014 ONESTEiN BV (<http://www.onestein.nl>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2014 ONESTEiN BV (<http://www.onestein.eu>)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import calendar
 from openerp import models, fields, api, _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import openerp.addons.decimal_precision as dp
-import logging
-_logger = logging.getLogger(__name__)
 
 
-class dummy_fy(object):
+class DummyFy(object):
     def __init__(self, *args, **argv):
         for key, arg in argv.items():
             setattr(self, key, arg)
 
 
-class account_invoice_line(models.Model):
+class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     spread_date = fields.Date(string='Alternative Start Date')
@@ -57,7 +39,7 @@ class account_invoice_line(models.Model):
         string='Residual Amount',
         digits=dp.get_precision('Account'))
     spreaded_amount = fields.Float(
-        string='Spreaded Amount',
+        string='Spread Amount',
         digits=dp.get_precision('Account'))
     spread_line_ids = fields.One2many(
         comodel_name='account.invoice.spread.line',
@@ -66,8 +48,10 @@ class account_invoice_line(models.Model):
 
     @api.multi
     def spread_details(self):
-        """Button on the invoice lines tree view on the invoice form to show the spread form view."""
-        view_obj = self.env['ir.ui.view'].search([('name','=','account.invoice.line.spread')])
+        """Button on the invoice lines tree view on the invoice
+        form to show the spread form view."""
+        view_obj = self.env['ir.ui.view'].search(
+            [('name', '=', 'account.invoice.line.spread')])
         view_id = False
         if view_obj:
             view_id = view_obj.id
@@ -87,7 +71,7 @@ class account_invoice_line(models.Model):
 
     @api.model
     def move_line_get_item(self, line):
-        res = super(account_invoice_line, self).move_line_get_item(line)
+        res = super(AccountInvoiceLine, self).move_line_get_item(line)
         if line.spread_account_id:
             res.update({'account_id': line.spread_account_id.id})
         return res
@@ -146,15 +130,15 @@ class account_invoice_line(models.Model):
                                     fy_date_start).days + 1
                     factor = float(duration) / cy_days
                 elif i == cnt - 1:  # last year
-                    duration = (fy_date_stop - datetime(year, 01, 01)).days + 1
-                    factor += float(duration) / cy_days
+                    duration = fy_date_stop - datetime(year, 01, 01)
+                    duration_days = duration.days + 1
+                    factor += float(duration_days) / cy_days
                 else:
                     factor += 1.0
                 year += 1
             return factor
 
-    def _get_fy_duration_factor(self, entry,
-                                line, firstyear):
+    def _get_fy_duration_factor(self, entry, line, firstyear):
 
         duration_factor = 1.0
         fy_id = entry['fy_id']
@@ -184,12 +168,14 @@ class account_invoice_line(models.Model):
 
         return duration_factor
 
+    @api.model
     def _get_spread_start_date(self, line, fy):
 
         if line.spread_date:
             spread_start_date = datetime.strptime(line.spread_date, '%Y-%m-%d')
         elif line.invoice_id.date_invoice:
-            spread_start_date = datetime.strptime(line.invoice_id.date_invoice, '%Y-%m-%d')
+            spread_start_date = datetime.strptime(
+                line.invoice_id.date_invoice, '%Y-%m-%d')
         else:
             fy_date_start = datetime.strptime(fy.date_start, '%Y-%m-%d')
             spread_start_date = datetime(
@@ -197,6 +183,7 @@ class account_invoice_line(models.Model):
             )
         return spread_start_date
 
+    @api.model
     def _get_spread_stop_date(self, line, spread_start_date):
         if line.period_type == 'month':
             spread_stop_date = spread_start_date + relativedelta(
@@ -209,6 +196,7 @@ class account_invoice_line(models.Model):
                 years=line.period_number, days=-1)
         return spread_stop_date
 
+    @api.model
     def _compute_year_amount(self, line):
         if line.period_type == 'month':
             factor = line.period_number / 12.0
@@ -224,7 +212,9 @@ class account_invoice_line(models.Model):
     def _compute_spread_table(self, invline):
 
         table = []
-        if not invline.period_number or not invline.spread_account_id or not invline.period_type:
+        if not invline.period_number or \
+                not invline.spread_account_id or \
+                not invline.period_type:
             return table
 
         fy_obj = self.env['account.fiscalyear']
@@ -248,7 +238,8 @@ class account_invoice_line(models.Model):
             first_fy = self.env.cr.dictfetchone()
             first_fy_date_start = datetime.strptime(
                 first_fy['date_start'], '%Y-%m-%d')
-            spread_start = invline.spread_date or invline.invoice_id.date_invoice
+            spread_start = invline.spread_date or \
+                invline.invoice_id.date_invoice
             spread_date_start = datetime.strptime(spread_start, '%Y-%m-%d')
             fy_date_start = first_fy_date_start
 
@@ -256,7 +247,7 @@ class account_invoice_line(models.Model):
                 fy_date_start = fy_date_start - relativedelta(years=1)
             fy_date_stop = fy_date_start + relativedelta(years=1, days=-1)
             fy_id = False
-            fy = dummy_fy(
+            fy = DummyFy(
                 date_start=fy_date_start.strftime('%Y-%m-%d'),
                 date_stop=fy_date_stop.strftime('%Y-%m-%d'),
                 id=False,
@@ -333,8 +324,9 @@ class account_invoice_line(models.Model):
         for i, entry in enumerate(table):
             period_amount = entry['period_amount']
             fy_amount = entry['fy_amount']
-            period_duration = (invline.period_type == 'year' and 12) \
-                              or (invline.period_type == 'quarter' and 3) or 1
+            period_duration = (
+                invline.period_type == 'year' and 12) \
+                or (invline.period_type == 'quarter' and 3) or 1
             if period_duration == 12:
                 if invoice_sign * (fy_amount - fy_residual_amount) > 0:
                     fy_amount = fy_residual_amount
@@ -348,21 +340,22 @@ class account_invoice_line(models.Model):
                         m = [x for x in [3, 6, 9, 12]
                              if x >= spread_start_date.month][0]
                         line_date = spread_start_date + \
-                                    relativedelta(month=m, day=31)
+                            relativedelta(month=m, day=31)
                     else:
                         line_date = spread_start_date + \
-                                    relativedelta(months=0, day=31)
+                            relativedelta(months=0, day=31)
                 while line_date <= \
                         min(entry['date_stop'], spread_stop_date) and \
-                                        invoice_sign * (fy_residual_amount - period_amount) > 0:
+                        invoice_sign * (
+                            fy_residual_amount - period_amount) > 0:
                     lines.append({'date': line_date, 'amount': period_amount})
                     fy_residual_amount -= period_amount
                     fy_amount_check += period_amount
                     line_date = line_date + \
-                                relativedelta(months=period_duration, day=31)
+                        relativedelta(months=period_duration, day=31)
                 if i == i_max and \
-                        (not lines or
-                                 spread_stop_date > lines[-1]['date']):
+                    (not lines or
+                     spread_stop_date > lines[-1]['date']):
                     # last year, last entry
                     period_amount = fy_residual_amount
                     lines.append({'date': line_date, 'amount': period_amount})
@@ -389,6 +382,7 @@ class account_invoice_line(models.Model):
 
         return table
 
+    @api.model
     def _get_spread_entry_name(self, line, seq):
         """ use this method to customise the name of the accounting entry """
         return (line.name or str(line.id)) + '/' + str(seq)
@@ -421,14 +415,15 @@ class account_invoice_line(models.Model):
             old_spreads = spread_obj.search(domain)
             if old_spreads:
                 for spread in old_spreads:
-                    spread.unlink
+                    spread.unlink()
 
             table = self._compute_spread_table(invline)
             if not table:
                 continue
 
             # group lines prior to spread start period
-            spread_start = invline.spread_date or invline.invoice_id.date_invoice
+            spread_start = invline.spread_date or \
+                invline.invoice_id.date_invoice
             spread_start_date = datetime.strptime(
                 spread_start, '%Y-%m-%d')
             lines = table[0]['lines']
@@ -452,7 +447,7 @@ class account_invoice_line(models.Model):
 
             # check table with posted entries and
             # recompute in case of deviation
-            if (len(posted_spreads) > 0):
+            if len(posted_spreads) > 0:
                 last_spread_date = datetime.strptime(
                     last_spread_line.line_date, '%Y-%m-%d')
                 last_date_in_table = table[-1]['lines'][-1]['date']
@@ -499,8 +494,10 @@ class account_invoice_line(models.Model):
                     if entry['fy_id']:
                         fy_amount_check = 0.0
                         for posted_spread in posted_spreads:
-                            if posted_spread.line_date >= entry['date_start'] and posted_spread.line_date <= entry['date_stop']:
-                                fy_amount_check += posted_spread.amount
+                            line_date = posted_spread.line_date
+                            if line_date >= entry['date_start']:
+                                if line_date <= entry['date_stop']:
+                                    fy_amount_check += posted_spread.amount
 
                     lines = entry['lines']
                     for line in lines[line_i_start:-1]:
@@ -526,16 +523,18 @@ class account_invoice_line(models.Model):
                     if line['date'] == last_date:
                         # ensure that the last entry of the table always
                         # depreciates the remaining value
-                        existing_amount=0.0
+                        existing_amount = 0.0
                         for existspread in spread_obj.search(
-                                [('line_date','<',last_date),('invoice_line_id','=',invline.id)]):
+                            [('line_date', '<', last_date),
+                             ('invoice_line_id', '=', invline.id)]):
                             existing_amount += existspread.amount
 
                         amount = invline.price_subtotal - existing_amount
                     else:
                         amount = line['amount']
+                    previous_id = spread_line_id and spread_line_id.id or False
                     vals = {
-                        'previous_id': spread_line_id and spread_line_id.id or False,
+                        'previous_id': previous_id,
                         'amount': amount,
                         'invoice_line_id': invline.id,
                         'name': name,
@@ -546,4 +545,3 @@ class account_invoice_line(models.Model):
                 line_i_start = 0
 
         return True
-

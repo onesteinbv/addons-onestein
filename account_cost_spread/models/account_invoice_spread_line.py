@@ -1,22 +1,6 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2014 ONESTEiN BV (<http://www.onestein.nl>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2014 ONESTEiN BV (<http://www.onestein.eu>)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp import models, fields, api, _
 import openerp.addons.decimal_precision as dp
@@ -24,7 +8,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class account_invoice_spread_line(models.Model):
+class AccountInvoiceSpreadLine(models.Model):
     _name = 'account.invoice.spread.line'
     _description = 'Account Invoice Spread Lines'
 
@@ -40,9 +24,9 @@ class account_invoice_spread_line(models.Model):
         string='Previous Spread Line',
         readonly=True)
     amount = fields.Float(
-            string='Amount',
-            digits_compute=dp.get_precision('Account'),
-            required=True)
+        string='Amount',
+        digits_compute=dp.get_precision('Account'),
+        required=True)
     remaining_value = fields.Float(
         string='Next Period Spread',
         digits_compute=dp.get_precision('Account'))
@@ -63,7 +47,7 @@ class account_invoice_spread_line(models.Model):
         [('create', 'Value'),
          ('depreciate', 'Depreciation'),
          ('remove', 'Asset Removal'),
-        ],
+         ],
         string='Type',
         readonly=True,
         defaults='depreciate')
@@ -80,6 +64,7 @@ class account_invoice_spread_line(models.Model):
         else:
             self.move_check = False
 
+    @api.model
     def _setup_move_data(self, spread_line, spread_date,
                          period_id):
 
@@ -94,6 +79,7 @@ class account_invoice_spread_line(models.Model):
             }
         return move_data
 
+    @api.model
     def _setup_move_line_data(self, spread_line, spread_date,
                               period_id, account_id, type, move_id):
         invoice_line = spread_line.invoice_line_id
@@ -121,7 +107,8 @@ class account_invoice_spread_line(models.Model):
 
     @api.multi
     def create_move(self):
-        """Used by a button to manually create a move from a spread line entry. Also called by a cron job."""
+        """Used by a button to manually create a move from a spread line entry.
+        Also called by a cron job."""
         period_obj = self.env['account.period']
         move_obj = self.env['account.move']
         move_line_obj = self.env['account.move.line']
@@ -141,9 +128,9 @@ class account_invoice_spread_line(models.Model):
             move_id = move_obj.create(
                 self._setup_move_data(line, spread_date, period_id.id)
             )
-            _logger.debug('MoveID: %s',(move_id.id))
+            _logger.debug('MoveID: %s', (move_id.id))
 
-            if invoice_line.invoice_id.type in ('in_invoice','out_refund'):
+            if invoice_line.invoice_id.type in ('in_invoice', 'out_refund'):
                 debit_acc_id = invoice_line.account_id.id
                 credit_acc_id = invoice_line.spread_account_id.id
             else:
@@ -153,7 +140,7 @@ class account_invoice_spread_line(models.Model):
             move_line_obj.create(
                 self._setup_move_line_data(
                     line, spread_date, period_id.id, debit_acc_id,
-                'debit', move_id.id
+                    'debit', move_id.id
                 )
             )
             move_line_obj.create(
@@ -163,7 +150,7 @@ class account_invoice_spread_line(models.Model):
                 )
             )
 
-            #Add move_id to spread line
+            # Add move_id to spread line
             line.write({'move_id': move_id.id})
 
             created_move_ids.append(move_id.id)
@@ -172,7 +159,8 @@ class account_invoice_spread_line(models.Model):
 
     @api.multi
     def open_move(self):
-        """Used by a button to manually view a move from a spread line entry."""
+        """Used by a button to manually view a move from a
+        spread line entry."""
         for line in self:
             return {
                 'name': _("Journal Entry"),
@@ -187,7 +175,8 @@ class account_invoice_spread_line(models.Model):
 
     @api.multi
     def unlink_move(self):
-        """Used by a button to manually unlink a move from a spread line entry."""
+        """Used by a button to manually unlink a move
+        from a spread line entry."""
         for line in self:
             move = line.move_id
             if move.state == 'posted':
@@ -198,14 +187,15 @@ class account_invoice_spread_line(models.Model):
 
     @api.multi
     def _create_entries(self):
-        """Find spread line entries where date is in the past and create moves for them."""
+        """Find spread line entries where date is in the past and
+        create moves for them."""
         period_obj = self.env['account.period']
         periods = period_obj.with_context(
             account_period_prefer_normal=True).find(
             fields.Date.today()
         )
         period = periods and periods[0] or False
-        lines = self.search([('line_date','<=', period.date_stop),
+        lines = self.search([('line_date', '<=', period.date_stop),
                              ('move_id', '=', False)])
 
         result = []
