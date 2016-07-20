@@ -43,11 +43,11 @@ class WebService(models.Model):
             headers = {'content-type': 'application/json'}
 
             response = requests.post(
-                self.url + method, 
+                self.url + method,
                 params=params,
-                data=payload and json.dumps(payload) or None, 
-                headers=headers, 
-                verify=False, 
+                data=payload and json.dumps(payload) or None,
+                headers=headers,
+                verify=False,
                 auth=HTTPBasicAuth(self.username, self.password))
 
             if response.status_code < 200 or response.status_code >= 300:
