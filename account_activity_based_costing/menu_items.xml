@@ -1,0 +1,11 @@
+<odoo>
+
+        <menuitem
+            name="Analytic Accounts"
+            parent="account.account_reports_business_intelligence_menu"
+            action="analytic_account_reporting_pivot"
+            id="menu_action_analytic_account_reporting"
+            sequence="30"
+            groups="analytic.group_analytic_accounting"/>
+
+</odoo>
