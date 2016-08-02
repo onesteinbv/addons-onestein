@@ -81,7 +81,7 @@ class stock_picking(models.Model):
             origin = move.picking_id.name
             partner, user_id, currency_id = move_obj._get_master_data(move=move, company=company)
 
-            key = (partner, currency_id, company.id, user_id)
+            key = (partner, currency_id, company.id)
 
             if key not in invoices:
                 # Get account and payment terms
