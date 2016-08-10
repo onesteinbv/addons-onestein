@@ -33,7 +33,8 @@
         'base'
     ],
     'data': [
-        "webservice_interface_views.xml",
+        'security/ir.model.access.csv',
+        'webservice_interface_views.xml',
     ],
     'demo': [],
     'installable': True,
