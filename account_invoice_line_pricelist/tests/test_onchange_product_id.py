@@ -62,7 +62,8 @@ class TestOnchangeProductId(TransactionCase):
         res = self.invoice_line.product_id_change(
             self.product.id, self.product.uom_id.id, qty=1.0,
             partner_id=self.partner.id, currency_id=self.eur,
-            price_unit=price_unit, company_id=self.env.user.company_id.id)
+            price_unit=price_unit,
+            company_id=self.env.user.company_id.id)
 
         self.assertLessEqual(
             abs(exp_value - res['value']['price_unit']), 0.0001,
@@ -80,7 +81,8 @@ class TestOnchangeProductId(TransactionCase):
             .product_id_change(
                 self.product.id, self.product.uom_id.id, qty=1.0,
                 partner_id=self.partner.id, currency_id=self.usd,
-                price_unit=price_unit, company_id=self.env.user.company_id.id)
+                price_unit=price_unit,
+                company_id=self.env.user.company_id.id)
         )
 
         self.assertLessEqual(
@@ -96,7 +98,8 @@ class TestOnchangeProductId(TransactionCase):
         res = self.invoice_line.product_id_change(
             self.product.id, self.product.uom_id.id, qty=1.0,
             partner_id=self.partner.id, currency_id=self.usd,
-            price_unit=price_unit, company_id=self.env.user.company_id.id)
+            price_unit=price_unit,
+            company_id=self.env.user.company_id.id)
 
         self.assertLessEqual(
             abs(exp_value - res['value']['price_unit']), 0.0001,

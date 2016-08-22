@@ -2,14 +2,7 @@
 # © 2016 ONESTEiN BV (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields, api
-
-
-class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
-
-    pricelist_id = fields.Many2one('product.pricelist', 'Pricelist',
-                                   help="Pricelist for current invoice.")
+from openerp import models, api
 
 
 class AccountInvoiceLine(models.Model):
@@ -25,8 +18,11 @@ class AccountInvoiceLine(models.Model):
             partner_id=partner_id, fposition_id=fposition_id,
             price_unit=price_unit, currency_id=currency_id,
             company_id=company_id)
-        if not res or not res['value'] or type != 'out_invoice'\
-                or not partner_id or not product:
+        if not res or not res['value']:
+            return res
+        if type not in ['out_invoice', 'out_refund']:
+            return res
+        if not partner_id or not product:
             return res
 
         if currency_id:

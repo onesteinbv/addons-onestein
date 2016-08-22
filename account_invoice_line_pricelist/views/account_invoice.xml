@@ -8,6 +8,7 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='fiscal_position']" position="after">
+                    <field name="partner_pricelist_id"/>
                     <field name="pricelist_id" domain="[('type','=','sale')]"/>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line']/tree/field[@name='product_id']" position="attributes">
