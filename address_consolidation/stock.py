@@ -81,7 +81,8 @@ class stock_picking(models.Model):
             origin = move.picking_id.name
             partner, user_id, currency_id = move_obj._get_master_data(move=move, company=company)
 
-            key = (partner, currency_id, company.id)
+            key = (partner, currency_id, company.id, user_id) # works with standard Odoo
+            # key = (partner, currency_id, company.id) # Adaptation for OCB
 
             if key not in invoices:
                 # Get account and payment terms
