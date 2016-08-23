@@ -18,7 +18,7 @@
         'static/src/xml/web_draw.xml',
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     'application': True,
 }

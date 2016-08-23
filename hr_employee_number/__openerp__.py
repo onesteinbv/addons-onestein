@@ -17,4 +17,5 @@
         'data/hr_employee_sequence.xml',
         'views/hr_employee.xml',
     ],
+    'installable': False,
 }

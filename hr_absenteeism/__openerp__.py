@@ -19,7 +19,7 @@
         'data/hr_absenteeism_cron.xml',
     ],
     'demo': [],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     'application': False,
 }
