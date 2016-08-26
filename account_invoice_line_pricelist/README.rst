@@ -23,6 +23,7 @@ price lists. This is the standard behavior on Odoo. Only for the invoices
 created manually, the pricelist is not take in consideration.
 This module aims to fix this behavior.
 
+The same functionality, as described above, is provided for sale refunds.
 
 Configuration
 =============
