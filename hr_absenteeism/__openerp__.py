@@ -9,17 +9,18 @@
     'website': "http://www.onestein.eu",
     'images': ['static/description/main_screenshot.png'],
     'category': 'Human Resources',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'depends': [
         'hr_holidays',
     ],
     'data': [
         'security/ir.model.access.csv',
         'views/hr_holidays_status.xml',
+        'views/hr_holidays.xml',
         'data/hr_absenteeism_cron.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': False,
 }

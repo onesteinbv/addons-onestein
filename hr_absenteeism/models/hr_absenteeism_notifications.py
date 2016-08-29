@@ -11,4 +11,5 @@ class hr_absenteeism_notifications(models.Model):
 
     name = fields.Char("Notification Name")
     interval = fields.Integer("Interval (days)")
-    leave_type_id = fields.Many2one("hr.holidays.status", string="Leave Type", readonly=True)
+    leave_type_id = fields.Many2one(
+        "hr.holidays.status", string="Leave Type", readonly=True)

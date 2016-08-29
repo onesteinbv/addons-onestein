@@ -5,8 +5,9 @@
 from openerp import models, fields
 
 
-class hr_holidays_status(models.Model):
+class HrHolidaysStatus(models.Model):
     _inherit = "hr.holidays.status"
 
     absenteeism_control = fields.Boolean(string="Absence Control")
-    notification_ids = fields.One2many("hr.absenteeism.notifications", "leave_type_id", "Notifications")
+    notification_ids = fields.One2many(
+        "hr.absenteeism.notifications", "leave_type_id", "Notifications")

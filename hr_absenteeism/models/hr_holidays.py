@@ -5,7 +5,7 @@
 import logging
 import math
 
-from openerp import models, api
+from openerp import fields, models, api
 from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from openerp.exceptions import Warning
@@ -53,9 +53,14 @@ class hr_holidays(models.Model):
                 _logger.warning('ONESTEiN hr_holidays increase_date_to no date_from set')
 
     def _compute_notify_date(self, notification, holiday):
-        notify_date = datetime.strptime(holiday.date_from, DEFAULT_SERVER_DATETIME_FORMAT) + timedelta(
+        notify_date = datetime.strptime(
+            holiday.date_from, DEFAULT_SERVER_DATETIME_FORMAT) + timedelta(
             days=notification.interval)
         return notify_date
+
+    absenteeism_control = fields.Boolean(related="holiday_status_id.absenteeism_control", string="Absence Control")
+    absenteeism_date_ids = fields.One2many(
+        "hr.absenteeism.dates", "holiday_id", "Absenteeism Notification Dates")
 
     @api.model
     def create(self, vals):
