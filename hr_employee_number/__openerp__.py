@@ -9,7 +9,7 @@
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
     'category': 'Human Resources',
-    'version': '1.2',
+    'version': '8.0.1.0.0',
     'depends': [
         'hr',
     ],

@@ -14,7 +14,7 @@ As stated in the help comment for the field (Odoo code, module email_template):
     help="If opt-out is checked, this contact has refused to receive emails for mass mailing and marketing campaign. "
 `
 
-By installing this module, partners by default will not receive marketing emails or other kind of automated emails.
+By installing this module, newly created partners by default will not receive marketing emails or other kind of automated emails.
 
 
 Configuration

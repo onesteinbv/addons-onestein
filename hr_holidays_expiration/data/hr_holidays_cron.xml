@@ -11,7 +11,7 @@
             <field name="doall" eval="False"/>
             <field name="model" eval="'hr.holidays'"/>
             <field name="function" eval="'check_expiring'"/>
-            <field name="args" eval="'(True,)'"/>
+            <field name="args" eval="'()'"/>
         </record>
 
     </data>

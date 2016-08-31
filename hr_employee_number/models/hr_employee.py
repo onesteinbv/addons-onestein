@@ -13,8 +13,13 @@ class HrEmployee(models.Model):
 
     @api.model
     def create(self, vals):
-        number = self.env['ir.sequence'].next_by_code('hr.employee') or '/'
-        vals['employee_number'] = number
+        if 'employee_number' not in vals or not vals['employee_number']:
+            searching = True
+            while searching:
+                number = self.env['ir.sequence'].next_by_code('hr.employee') or '/'
+                if not self.search([('employee_number','=',number)]):
+                    vals['employee_number'] = number
+                    searching = False
         return super(HrEmployee, self).create(vals)
 
     _sql_constraints = [

@@ -4,6 +4,7 @@
 
 {
     'name': "HR Business Unit",
+    'images': [],
     'summary': """HR Business Unit""",
     'author': "ONESTEiN BV",
     'website': "http://www.onestein.eu",
