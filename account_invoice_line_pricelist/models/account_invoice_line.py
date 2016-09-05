@@ -30,9 +30,12 @@ class AccountInvoiceLine(models.Model):
             rounded_price_unit = currency.round(res['value']['price_unit'])
             if 'price_unit' not in res['value']\
                     or not res['value']['price_unit']\
+                    or 'uos_id' in res['value']\
+                    or 'quantity' in res['value']\
                     or rounded_price_unit == price_unit:
                 product_data = self.env['product.product'].browse(product)
                 price_unit = product_data.lst_price
+
                 partner = self.env['res.partner'].browse(partner_id)
                 pricelist = self._context.get('pricelist_id', False) or \
                     (partner.property_product_pricelist and
@@ -40,7 +43,10 @@ class AccountInvoiceLine(models.Model):
                     or None
                 if pricelist:
                     pricelist = self.env['product.pricelist'].browse(pricelist)
-                    pricedict = pricelist.price_get(product, qty, partner_id)
+                    if 'uos_id' in res['value'] and res['value']['uos_id'] and res['value']['uos_id'] != product_data.uom_id.id:
+                        pricedict = pricelist.with_context(uom=res['value']['uos_id']).price_get(product, qty, partner_id)
+                    else:
+                        pricedict = pricelist.price_get(product, qty, partner_id)
                     price_unit = pricedict[pricelist.id]
 
                 price_unit = pricelist.currency_id.compute(
