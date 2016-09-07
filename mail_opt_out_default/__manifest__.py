@@ -5,14 +5,17 @@
 {
     'name': 'Restrict automatic emails to partner',
     'images': [],
-    'summary': 'Set field Opt-Out as true by default while creating a partner',
+    'summary': 'Configure the default value of Opt-Out for new partners',
     'license': 'AGPL-3',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'category': 'Marketing',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.1.0',
     'depends': [
+        'base_setup',
         'mail',
     ],
-    'installable': False,
+    'data': [
+        'views/res_config_views.xml',
+    ]
 }
