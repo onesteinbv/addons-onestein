@@ -9,7 +9,7 @@
             <xpath expr="//field[@name='category_ids']" position="before">
                 <group>
                     <group>
-                        <field name="employee_number" readonly="1" />
+                        <field name="employee_number" />
                     </group>
                     <group>
                     </group>

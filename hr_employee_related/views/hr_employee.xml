@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[2]" position="inside">
-                <group string="Related" colspan="4" groups="base.group_hr_manager">
+                <group string="Related" colspan="4" groups="hr.group_hr_manager">
                     <field name="related_ids" nolabel="1">
                         <form string="Employee related">
                             <group>

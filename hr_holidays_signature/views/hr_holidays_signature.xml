@@ -6,7 +6,7 @@
         <field name="model">hr.holidays</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='report_note']/.." position="after">
-                <div groups="base.group_hr_manager" attrs="{'invisible':[('type','=','add')]}">
+                <div groups="hr.group_hr_manager" attrs="{'invisible':[('type','=','add')]}">
                     <separator string="Signature of Manager"/>
                     <field name="manager_signature" widget="draw" />
                 </div>

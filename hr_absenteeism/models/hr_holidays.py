@@ -5,11 +5,11 @@
 import logging
 import math
 
-from openerp import fields, models, api
+from odoo import fields, models, api
 from datetime import datetime, timedelta
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-from openerp.exceptions import Warning
-from openerp.tools.translate import _
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.exceptions import Warning
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
