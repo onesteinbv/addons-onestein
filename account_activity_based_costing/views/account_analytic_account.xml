@@ -13,16 +13,17 @@
                     <field name="end_date" required="1"/>
                 </xpath>
                 <xpath expr="//notebook" position='before'>
-                    <separator string="Accounting Budget" colspan="4"/>
                     <group name="accounting_budget" col="3">
-                        <group>
+                        <group string="Hours">
                             <field name="expected_hours"/>
                             <field name="consumed_hours"/>
                            <div>___________________ </div>
                            <div>_______________</div>
                             <field name="hours_left" options="{'load_defaults':True}"/>
                         </group>
-                        <group>
+                    </group>
+                    <group name="account_budget" col="3">
+                        <group string="Expected">
                             <field name="expected_turnover"/>
                             <field name="expected_costs"/>
                            <div>___________________ </div>
@@ -30,13 +31,21 @@
                             <field name="expected_contribution" options="{'load_defaults':True}"/>
                             <field name="expected_contribution_perc"/>
                         </group>
-                        <group>
+                        <group string="Realized">
                             <field name="realized_turnover"/>
                             <field name="realized_costs"/>
                            <div>___________________ </div>
                            <div>_______________</div>
                             <field name="contribution" options="{'load_defaults':True}"/>
                             <field name="contribution_perc"/>
+                        </group>
+                        <group string="Budget">
+                            <field name="budget_result_turnover" options="{'load_defaults':True}"/>
+                            <field name="budget_result_cost" options="{'load_defaults':True}"/>
+                           <div>___________________ </div>
+                           <div>_______________</div>
+                            <field name="budget_result_contribution" options="{'load_defaults':True}"/>
+                            <field name="budget_result_contribution_perc"/>
                         </group>
                     </group>
                 </xpath>
@@ -47,17 +56,20 @@
             <field name="name">account.analytic.account.pivot</field>
             <field name="model">account.analytic.account</field>
             <field name="arch" type="xml">
-                <pivot string="Analytic Accounts" >
+                <pivot string="Analytic Accounts" options='{"load_defaults":"true"}'>
                     <field name="name" type="row"/>
                     <field name="expected_hours" type="measure"/>
                     <field name="consumed_hours" type="measure"/>
-                    <field name="hours_left" type="measure"/>
+                    <field name="hours_left" type="measure" highlight="true"/>
                     <field name="expected_turnover" type="measure"/>
                     <field name="expected_costs" type="measure"/>
-                    <field name="expected_contribution" type="measure"/>
+                    <field name="expected_contribution" type="measure" highlight="true"/>
                     <field name="realized_turnover" type="measure"/>
                     <field name="realized_costs" type="measure"/>
-                    <field name="contribution" type="measure"/>
+                    <field name="contribution" type="measure" highlight="true"/>
+                    <field name="budget_result_turnover" type="measure" highlight="true"/>
+                    <field name="budget_result_cost" type="measure" highlight="true"/>
+                    <field name="budget_result_contribution" type="measure" highlight="true"/>
                 </pivot>
             </field>
         </record>

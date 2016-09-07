@@ -1,29 +1,58 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_activity_based_costing
+# 	* account_activity_based_costing
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0alpha1e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-06 12:27+0000\n"
-"PO-Revision-Date: 2016-07-06 12:27+0000\n"
+"POT-Creation-Date: 2016-08-24 14:19+0000\n"
+"PO-Revision-Date: 2016-08-29 16:54+0200\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-
-#. module: account_activity_based_costing
-#: model:ir.ui.view,arch_db:account_activity_based_costing.view_account_analytic_account_form
-msgid "Accounting Budget"
-msgstr "Accounting Budget"
+"Language: nl\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #. module: account_activity_based_costing
 #: model:ir.model,name:account_activity_based_costing.model_account_analytic_account
 msgid "Analytic Account"
 msgstr "Kostenplaatsen"
+
+#. module: account_activity_based_costing
+#: model:ir.actions.act_window,name:account_activity_based_costing.analytic_account_reporting_pivot
+#: model:ir.ui.menu,name:account_activity_based_costing.menu_action_analytic_account_reporting
+#: model:ir.ui.view,arch_db:account_activity_based_costing.view_account_analytic_account_pivot
+msgid "Analytic Accounts"
+msgstr "Kostenplaatsen"
+
+#. module: account_activity_based_costing
+#: model:ir.ui.view,arch_db:account_activity_based_costing.view_account_analytic_account_form
+msgid "Budget"
+msgstr "Afwijking"
+
+#. module: account_activity_based_costing
+#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_budget_result_contribution
+msgid "Budget Result Contribution"
+msgstr "Afwijking Contributie"
+
+#. module: account_activity_based_costing
+#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_budget_result_contribution_perc
+msgid "Budget Result Contribution [%]"
+msgstr "Afwijking Contributie [%]"
+
+#. module: account_activity_based_costing
+#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_budget_result_cost
+msgid "Budget Result Costs"
+msgstr "Afwijking Kosten"
+
+#. module: account_activity_based_costing
+#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_budget_result_turnover
+msgid "Budget Result Turnover"
+msgstr "Afwijking Omzet"
 
 #. module: account_activity_based_costing
 #: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_consumed_hours
@@ -32,8 +61,6 @@ msgstr "Uren Verbruikt"
 
 #. module: account_activity_based_costing
 #: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_contribution
-#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_contribution_error
-#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_contribution_ok
 msgid "Contribution"
 msgstr "Contributie"
 
@@ -48,9 +75,12 @@ msgid "End Date"
 msgstr "Einddatum"
 
 #. module: account_activity_based_costing
+#: model:ir.ui.view,arch_db:account_activity_based_costing.view_account_analytic_account_form
+msgid "Expected"
+msgstr "Verwacht"
+
+#. module: account_activity_based_costing
 #: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_expected_contribution
-#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_expected_contribution_error
-#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_expected_contribution_ok
 msgid "Expected Contribution"
 msgstr "Verwachte Contributie"
 
@@ -75,21 +105,44 @@ msgid "Expected Turnover"
 msgstr "Verwachte Omzet"
 
 #. module: account_activity_based_costing
+#: model:ir.ui.view,arch_db:account_activity_based_costing.view_account_analytic_account_form
+msgid "Hours"
+msgstr "Uren"
+
+#. module: account_activity_based_costing
 #: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_hours_left
-#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_hours_left_error
-#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_hours_left_ok
 msgid "Hours Left"
 msgstr "Uren Resterend"
 
 #. module: account_activity_based_costing
+#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_imported_consumed_hours
+msgid "Imported Consumed Hours"
+msgstr "Verbruikte Uren Import"
+
+#. module: account_activity_based_costing
+#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_imported_realized_costs
+msgid "Imported Realized Costs"
+msgstr "Gerealiseerde Kosten Import"
+
+#. module: account_activity_based_costing
+#: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_imported_realized_turnover
+msgid "Imported Realized Turnover"
+msgstr "Imported Realized Turnover"
+
+#. module: account_activity_based_costing
+#: model:ir.ui.view,arch_db:account_activity_based_costing.view_account_analytic_account_form
+msgid "Realized"
+msgstr "Gerealiseerd"
+
+#. module: account_activity_based_costing
 #: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_realized_costs
 msgid "Realized Costs"
-msgstr "Kosten Gerealiseerd"
+msgstr "Gerealiseerde Kosten"
 
 #. module: account_activity_based_costing
 #: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_realized_turnover
 msgid "Realized Turnover"
-msgstr "Omzet Gerealiseerd"
+msgstr "Gerealiseerde Omzet"
 
 #. module: account_activity_based_costing
 #: model:ir.model.fields,field_description:account_activity_based_costing.field_account_analytic_account_start_date
@@ -105,4 +158,3 @@ msgstr "_______________"
 #: model:ir.ui.view,arch_db:account_activity_based_costing.view_account_analytic_account_form
 msgid "___________________"
 msgstr "___________________"
-

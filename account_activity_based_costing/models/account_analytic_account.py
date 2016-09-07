@@ -2,7 +2,7 @@
 # © 2016 ONESTEiN BV (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields, api
+from odoo import models, fields, api
 
 
 class account_analytic_account(models.Model):
@@ -54,6 +54,16 @@ class account_analytic_account(models.Model):
             else:
                 analytic_account.contribution_perc = 0.0
 
+    @api.depends('expected_turnover', 'expected_costs', 'realized_turnover', 'realized_costs', 'expected_contribution', 'expected_contribution_perc', 'contribution', 'contribution_perc')
+    def _get_budget_results(self):
+        for analytic_account in self:
+            analytic_account.budget_result_turnover = analytic_account.expected_turnover - analytic_account.realized_turnover
+            analytic_account.budget_result_cost = analytic_account.expected_costs - analytic_account.realized_costs
+            analytic_account.budget_result_contribution = analytic_account.expected_contribution - analytic_account.contribution
+            analytic_account.budget_result_contribution_perc = 0.0
+            if analytic_account.expected_contribution:
+                analytic_account.budget_result_contribution_perc = 100 * (analytic_account.contribution - analytic_account.expected_contribution) / analytic_account.expected_contribution
+
     start_date = fields.Date(string='Start Date', default=fields.Date.context_today)
     end_date = fields.Date(string='End Date')
     currency_id = fields.Many2one(related="company_id.currency_id", string="Currency", readonly=True)
@@ -62,12 +72,17 @@ class account_analytic_account(models.Model):
     consumed_hours = fields.Float(compute='_get_consumed_hours', store=True, string='Consumed Hours')
     hours_left = fields.Float(compute='_get_hours_left', store=True, string='Hours Left')
 
-    expected_turnover = fields.Monetary(string='Expected Turnover')
-    expected_costs = fields.Monetary(string='Expected Costs')
-    expected_contribution = fields.Monetary(compute='_get_expected_contribution', store=True, string='Expected Contribution')
-    expected_contribution_perc = fields.Float(compute='_get_expected_contribution', store=True, string='Expected Contribution [%]')
+    expected_turnover = fields.Monetary(string='Turnover')
+    expected_costs = fields.Monetary(string='Costs')
+    expected_contribution = fields.Monetary(compute='_get_expected_contribution', store=True, string='Contribution')
+    expected_contribution_perc = fields.Float(compute='_get_expected_contribution', store=True, string='Contribution [%]')
 
-    realized_turnover = fields.Monetary(compute='_get_realized_data', store=True, string='Realized Turnover')
-    realized_costs = fields.Monetary(compute='_get_realized_data', store=True, string='Realized Costs')
+    realized_turnover = fields.Monetary(compute='_get_realized_data', store=True, string='Turnover')
+    realized_costs = fields.Monetary(compute='_get_realized_data', store=True, string='Costs')
     contribution = fields.Monetary(compute='_get_realized_data', store=True, string='Contribution')
     contribution_perc = fields.Float(compute='_get_realized_data', store=True, string='Contribution [%]')
+
+    budget_result_turnover = fields.Monetary(compute='_get_budget_results', store=True, string='Result Turnover')
+    budget_result_cost = fields.Monetary(compute='_get_budget_results', store=True, string='Result Costs')
+    budget_result_contribution = fields.Monetary(compute='_get_budget_results', store=True, string='Result Contribution')
+    budget_result_contribution_perc = fields.Float(compute='_get_budget_results', store=True, string='Result Contribution [%]')
