@@ -6,7 +6,7 @@
     'name': 'Draw Field',
     'images': [],
     'category': 'Extra Tools',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'author': 'ONESTEiN BV,Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
@@ -18,7 +18,7 @@
         'static/src/xml/web_draw.xml',
     ],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
-    'application': True,
+    'application': False,
 }
