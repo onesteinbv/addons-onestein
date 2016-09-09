@@ -1,36 +1,12 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
-#              (C) 2015 1200wd.com
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2016 ONESTEiN BV (<http://www.onestein.eu>)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import logging
 from openerp import models, fields, api
 import re
 
-_logger = logging.getLogger(__name__)
 
-
-class sale_order_line(models.Model):
-    _inherit = 'sale.order.line'
-
-
-class sale_order(models.Model):
+class SaleOrder(models.Model):
     _inherit = "sale.order"
 
     # Legal to be used when no invoice/delivery address is filled
@@ -96,9 +72,8 @@ class sale_order(models.Model):
     @api.multi
     def onchange_partner_id(self, partner_id):
         """Fill invoice and shipping address data, or legal if invoice or shipping not set."""
-        _logger.debug('ONESTEiN onchange_partner_id')
         partner_obj = self.env['res.partner']
-        res = super(sale_order, self).onchange_partner_id(partner_id)
+        res = super(SaleOrder, self).onchange_partner_id(partner_id)
 
         if partner_id:
             if res['value'].get('partner_invoice_id', False):
@@ -148,7 +123,6 @@ class sale_order(models.Model):
 
         :return: True
         """
-        _logger.debug("ONESTEiN sale_order action_ship_create")
         procurement_obj = self.env['procurement.order']
         sale_line_obj = self.env['sale.order.line']
         for order in self:
@@ -195,8 +169,7 @@ class sale_order(models.Model):
 
     @api.model
     def _prepare_invoice(self, order, lines, context=None):
-        _logger.debug('ONESTEiN sale_order prepare_invoice')
-        val = super(sale_order, self)._prepare_invoice(order, lines, context=context)
+        val = super(SaleOrder, self)._prepare_invoice(order, lines, context=context)
 
         if order.partner_invoice_id:
             val.update({
