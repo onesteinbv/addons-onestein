@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='payment_term_id']" position="after">
-                <field name="pricelist_id" domain="[('type','=','sale')]"/>
+                <field name="pricelist_id"/>
             </xpath>
         </field>
     </record>
