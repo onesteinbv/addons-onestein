@@ -17,6 +17,27 @@ _logger = logging.getLogger(__name__)
 class hr_holidays(models.Model):
     _inherit = 'hr.holidays'
 
+    @api.multi
+    def compute_interval(self):
+        self.ensure_one()
+
+        date_from = self.date_from
+        date_to = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
+        # Compute and update the number of days
+        if (date_to and date_from) and (date_from <= date_to):
+            from_dt = datetime.strptime(date_from, DEFAULT_SERVER_DATETIME_FORMAT)
+            to_dt = datetime.strptime(date_to, DEFAULT_SERVER_DATETIME_FORMAT)
+            timedelta = to_dt - from_dt
+            diff_day = timedelta.days + float(timedelta.seconds) / 86400
+
+            number_of_days_temp = round(math.floor(diff_day)) + 1
+        else:
+            number_of_days_temp = 0
+
+        self.write({'date_to': date_to,
+                    'number_of_days_temp': number_of_days_temp})
+
     @api.model
     def increase_date_to(self):
         """For running sick days not yet APPROVED increase date_to to today"""
@@ -35,20 +56,7 @@ class hr_holidays(models.Model):
                 if (date_from and date_to) and (date_from > date_to):
                     _logger.warning('The start date must be anterior to the end date.')
                     raise Warning(_('The start date must be anterior to the end date.'))
-
-                # Compute and update the number of days
-                if (date_to and date_from) and (date_from <= date_to):
-                    from_dt = datetime.strptime(date_from, DEFAULT_SERVER_DATETIME_FORMAT)
-                    to_dt = datetime.strptime(date_to, DEFAULT_SERVER_DATETIME_FORMAT)
-                    timedelta = to_dt - from_dt
-                    diff_day = timedelta.days + float(timedelta.seconds) / 86400
-
-                    number_of_days_temp = round(math.floor(diff_day))+1
-                else:
-                    number_of_days_temp = 0
-
-                    sick_day.write({'date_to': date_to,
-                                    'number_of_days_temp': number_of_days_temp})
+                sick_day.compute_interval()
             else:
                 _logger.warning('ONESTEiN hr_holidays increase_date_to no date_from set')
 

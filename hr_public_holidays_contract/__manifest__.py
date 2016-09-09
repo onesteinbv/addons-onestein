@@ -10,14 +10,15 @@
     'license': 'AGPL-3',
     'website': "http://www.onestein.eu",
     'category': 'Human Resources',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'depends': [
-        'hr_public_holidays',
+        'hr_public_holidays_leaves',
         'hr_contract',
+        'hr_contract_accessibility', # for access rules on contracts
     ],
     'data': [],
     'demo': [],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': False,
 }

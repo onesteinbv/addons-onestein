@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hr employee inherit Legal Leaves -->
+    <record id="hr_holidays.view_employee_form_leave_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.leave.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='active_group']" position="after">
+                <group string="Leaves" groups="base.group_no_one" invisible="1">
+                    <label for="remaining_leaves"/>
+                    <div>
+                        <field name="remaining_leaves" class="oe_inline"/> days
+                    </div>
+                </group>
+                <field name="remaining_hours_ids" nolabel="1" readonly="1">
+                    <tree>
+                        <field name="employee_id"/>
+                        <field name="leave_type"/>
+                        <field name="no_of_hours"/>
+                        <field name="no_of_leaves"/>
+                        <field name="virtual_hours"/>
+                    </tree>
+                    <form>
+                        <group>
+                            <group>
+                                <field name="name" invisible="1"/>
+                                <field name="employee_id"/>
+                                <field name="leave_type"/>
+                                <field name="no_of_hours"/>
+                                <field name="no_of_leaves"/>
+                            </group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="virtual_hours"/>
+                                <field name="leave_type"/>
+                            </group>
+                        </group>
+                    </form>
+                </field>
+            </xpath>
+            <div name="button_box" position="inside">
+                <field name="show_leaves" invisible="1"/>
+                <button name="%(hr_holidays.act_hr_employee_holiday_request)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-calendar"
+                        attrs="{'invisible': [('show_leaves','=', False)]}"
+                        groups="base.group_user"
+                        help="Remaining leaves">
+                    <field string="Leaves Left" name="leaves_count" widget="statinfo"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

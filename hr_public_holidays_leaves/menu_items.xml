@@ -1,0 +1,7 @@
+<odoo>
+
+    <menuitem id="menu_public_holidays_leaves_view"
+              action="hr_public_holidays.open_public_holidays_view"
+              parent="hr_holidays.menu_hr_holidays_configuration"/>
+
+</odoo>

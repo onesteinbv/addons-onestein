@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_contract_view_form" model="ir.ui.view">
+        <field name="name">hr.contract.view.form</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position='before'>
+                    <button name="action_request_approval" string="Request Approval" type="object" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <button name="action_approve" string="Approve" type="object" attrs="{'invisible':[('state','!=','wait_approval')]}" groups="hr_contract_approval.group_hr_contract_approver"/>
+                    <button name="action_disapprove" string="Disapprove" type="object" attrs="{'invisible':[('state','!=','wait_approval')]}" groups="hr_contract_approval.group_hr_contract_approver"/>
+                    <button name="action_reset_to_new" string="Reset to New" type="object" attrs="{'invisible':[('state','not in',['open','pending','close'])]}"/>
+            </xpath>
+            <xpath expr="//field[@name='state']" position='attributes'>
+                    <attribute name="clickable"></attribute>
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="statusbar_visible">draft,open,close</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_contract_view_tree" model="ir.ui.view">
+        <field name="name">hr.contract.view.tree</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='message_needaction']" position='after'>
+                <field name="state"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
