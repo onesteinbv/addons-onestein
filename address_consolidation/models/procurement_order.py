@@ -1,31 +1,13 @@
 # -*- coding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# © 2016 ONESTEiN BV (<http://www.onestein.eu>)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
 from openerp import models, api, _
 from psycopg2 import OperationalError
 
-_logger = logging.getLogger(__name__)
 
-
-class procurement_order(models.Model):
+class ProcurementOrder(models.Model):
     _inherit = "procurement.order"
 
     def legacy_message_post(self, cr, uid, ids, thread_id, body):
@@ -38,7 +20,6 @@ class procurement_order(models.Model):
     def run(self, autocommit=False):
         """Override of stock.procurement.run()."""
         cursor = self._cr
-        _logger.debug("ONESTEiN procurement_order run")
         procurements = self.search([('state', 'not in', ('running', 'done', 'cancel'))])
         # Override of a super to procurement.procurement.run() (because we want the superclass's superclass):
         for procurement in procurements:
