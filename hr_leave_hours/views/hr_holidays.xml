@@ -7,15 +7,6 @@
         <field name="model">hr.holidays</field>
         <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='date_from']" position="attributes">
-                <attribute name="on_change"></attribute>
-            </xpath>
-            <xpath expr="//field[@name='date_to']" position="attributes">
-                <attribute name="on_change"></attribute>
-            </xpath>
-            <xpath expr="//field[@name='employee_id']" position="attributes">
-                <attribute name="on_change"></attribute>
-            </xpath>
             <xpath expr="//form/sheet/group/group/div/div[2]" position="after">
                 <label for="number_of_hours_temp" string="Hours"/>
                 <field name="number_of_hours_temp"/>
