@@ -22,10 +22,10 @@ class HrHolidays(models.Model):
         return calendar
 
     @api.multi
-    def holidays_validate(self):
+    def action_validate(self):
         for holiday in self:
             if not holiday.holiday_type == 'employee':
-                return super(HrHolidays, self).holidays_validate()
+                return super(HrHolidays, self).action_validate()
 
             try:
                 res_id = self.env['ir.model.data'].get_object(
@@ -35,7 +35,7 @@ class HrHolidays(models.Model):
                     _("Leave Type for Public Holiday not found!"))
 
             if holiday.holiday_status_id.id != res_id:
-                return super(HrHolidays, self).holidays_validate()
+                return super(HrHolidays, self).action_validate()
 
             calendar = self.get_employee_calendar(holiday.employee_id)
 
