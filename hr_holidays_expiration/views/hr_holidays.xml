@@ -11,7 +11,11 @@
                     <notebook colspan="4">
                         <page autofocus="autofocus" name='expiration' string="Expiration" attrs="{'invisible':[('type','!=','add')]}">
                             <group name="validity">
-                                <field name="approval_date" readonly="1" invisible="0"/>
+                                <group>
+                                    <field name="approval_date" readonly="1" invisible="0"/>
+                                </group>
+                                <group>
+                                </group>
                                 <group string="Expiring">
                                     <field name="expiration_date"/>
                                     <field name="expire_template_id" attrs="{'required':[('expiration_date','!=',False)]}"/>

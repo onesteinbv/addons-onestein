@@ -13,40 +13,18 @@ can set their different expiry types (eg.: statutory / non - statutory) per allo
 
 The holiday allocations are consumed according first expiration first.
 
-The persons responsible for managing leaves are informed automatically by email.
 
 
 
-Configuration
--------------
-
-To use this module you have to set an expiration date on the leave allocations.
-Please add the period in which the leave is valid.
-
-When a manager want to be informed about a leave which is about to expire, tick the "Notify Expiration via Email" box.
-Apply the period in days and the email templates.
-
-A cron job called "Set expired holidays" will be executed every day.
-This can be checked in the Setting menu:
-
-    **Automation > Scheduled actions**
-
-|
-
-
-
-Test scenario
--------------
-
-
+Test scenario:
 1. Create multiple holiday allocation with different expiration dates
 2. Create leave requests and check allocation consumption. First expiring allocation should be consumed.
 
 
 
-Contact us
-----------
-
-When you have any remark about this module, please let us know on http://www.onestein.eu/feedback
-
+The new version contains the following changes/modifications:
+1. Removed the following fields (full Validity field group) from the leave type:
+           expirable, validity in Month, notify expiration via email, notify period, Notify email template, expired email template
+2. Added Notify email template, expired email template to the Company configuration form
+3. When creating a leave allocation the Notify email template, the default expired email template is copied from the Company.
 
