@@ -45,7 +45,7 @@
                            <div>___________________ </div>
                            <div>_______________</div>
                             <field name="budget_result_contribution" options="{'load_defaults':True}"/>
-                            <field name="budget_result_contribution_perc"/>
+                            <!--<field name="budget_result_contribution_perc"/>-->
                         </group>
                     </group>
                 </xpath>

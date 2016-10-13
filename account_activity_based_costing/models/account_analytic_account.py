@@ -57,9 +57,9 @@ class account_analytic_account(models.Model):
     @api.depends('expected_turnover', 'expected_costs', 'realized_turnover', 'realized_costs', 'expected_contribution', 'expected_contribution_perc', 'contribution', 'contribution_perc')
     def _get_budget_results(self):
         for analytic_account in self:
-            analytic_account.budget_result_turnover = analytic_account.expected_turnover - analytic_account.realized_turnover
+            analytic_account.budget_result_turnover = analytic_account.realized_turnover - analytic_account.expected_turnover
             analytic_account.budget_result_cost = analytic_account.expected_costs - analytic_account.realized_costs
-            analytic_account.budget_result_contribution = analytic_account.expected_contribution - analytic_account.contribution
+            analytic_account.budget_result_contribution = analytic_account.contribution - analytic_account.expected_contribution
             analytic_account.budget_result_contribution_perc = 0.0
             if analytic_account.expected_contribution:
                 analytic_account.budget_result_contribution_perc = 100 * (analytic_account.contribution - analytic_account.expected_contribution) / analytic_account.expected_contribution
