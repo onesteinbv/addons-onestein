@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2016 ONESTEiN BV (<http://www.onestein.eu>)
+# Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
@@ -113,7 +113,7 @@ class hr_holidays(models.Model):
         string='Working hours', digits=(2, 2))
 
     @api.one
-    @api.constrains('holiday_type', 'type', 'employee_id', 'holiday_status_id', 'holiday_status_id.limit')
+    @api.constrains('holiday_type', 'type', 'employee_id', 'holiday_status_id', 'holiday_status_id')
     def _check_holidays(self):
         if not(self.holiday_type != 'employee' or self.type != 'remove' or not self.employee_id or self.holiday_status_id.limit):
             leave_hours = self.holiday_status_id.get_hours(self.employee_id.id)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2016 ONESTEiN BV (<http://www.onestein.eu>)
+# Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
@@ -67,3 +67,15 @@ class hr_holidays(models.Model):
         'mail.template', string="Expired Email Template",
         default=lambda self: self.env.user.company_id.expire_template_id)
     approval_date = fields.Date(string="Date Approved")
+
+    @api.multi
+    def action_approve(self):
+        res = super(hr_holidays, self).action_approve()
+        self.write({'approval_date': fields.Datetime.now()})
+        return res
+
+    @api.multi
+    def action_draft(self):
+        res = super(hr_holidays, self).action_draft()
+        self.write({'approval_date': None})
+        return res
