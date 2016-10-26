@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="edit_holiday_new_repeated" model="ir.ui.view">
+        <field name="name">edit.holiday.new.repeated</field>
+        <field name="model">hr.holidays</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='holiday_status_id']" position="after">
+                <field name="holiday_type_repeat" invisible="1"/>
+                <field name="repeat_every" attrs="{'invisible':['|',('holiday_type_repeat','!=',True),('type','=','add')]}"/>
+                <field name="repeat_limit" attrs="{'invisible':['|',('holiday_type_repeat','!=',True),('type','=','add')]}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
