@@ -10,7 +10,6 @@ python:
 
 addons:
   apt:
-
     packages:
       - expect-dev  # provides unbuffer utility
       - python-lxml
