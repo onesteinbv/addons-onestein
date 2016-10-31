@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <record model="ir.ui.view" id="view_holiday_status_form_expiration_date">
+    <record id="view_holiday_status_form_expiration_date" model="ir.ui.view">
         <field name="name">hr.holidays.status.form.expiration.date</field>
         <field name="model">hr.holidays.status</field>
         <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
@@ -12,7 +12,7 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="view_holiday_status_tree_expiration_date">
+    <record id="view_holiday_status_tree_expiration_date" model="ir.ui.view">
         <field name="name">hr.holidays.status.tree.expiration.date</field>
         <field name="model">hr.holidays.status</field>
         <field name="inherit_id" ref="hr_holidays.view_holiday_status_tree"/>

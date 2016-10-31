@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'HR Holidays Type Expiration Date',
+    'name': 'HR Holidays Type Expiration',
     'summary': '''HR Holidays Type Sort''',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',

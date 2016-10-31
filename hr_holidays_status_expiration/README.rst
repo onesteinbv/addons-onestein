@@ -1,6 +1,6 @@
 
-HR Holidays Type Expiration Date
-================================
+HR Holidays Type Expiration
+===========================
 
 This module adds field 'expiration_date' on the holiday type model.
 The sorting method for hr.holidays.status model is changed to "expiration_date asc";
