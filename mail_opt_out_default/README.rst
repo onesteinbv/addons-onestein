@@ -25,9 +25,9 @@ Configuration
 To configure this module, you need to:
 
 #. Go to the Settings main menu and open the General Settings form;
-#. check the field 'Default Opt-out for partners'
-#. by default its value is True: new partners by default will not receive automatic emails
-#. set the value to False to allow new created partners to receive automatic emails by default
+#. check the field 'Default Opt-out for partners';
+#. by default its value is True: new partners by default will not receive automatic emails;
+#. set the value to False to allow new created partners to receive automatic emails by default.
 
 
 Usage
