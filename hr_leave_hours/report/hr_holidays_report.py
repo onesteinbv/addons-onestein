@@ -23,8 +23,17 @@ class hr_holidays_remaining_leaves_user(models.Model):
                     min(hrs.id) as id,
                     rr.name as name,
                     sum(hrs.number_of_hours) as no_of_leaves,
-                    sum(case when type='remove' and extract(year from date_from) = extract(year from current_date) then hrs.number_of_hours else 0 end) as no_of_hours,
-                    sum(case when (type='remove' and extract(year from date_from) = extract(year from current_date)) or (type='add' and extract(year from approval_date) = extract(year from current_date)) then hrs.virtual_hours else 0 end) as virtual_hours,
+                    sum(case when type='remove' and
+                            extract(year from date_from) =
+                            extract(year from current_date)
+                        then hrs.number_of_hours else 0 end) as no_of_hours,
+                    sum(case when (type='remove' and
+                            extract(year from date_from) =
+                            extract(year from current_date))
+                          or (type='add' and
+                            extract(year from approval_date) =
+                            extract(year from current_date))
+                        then hrs.virtual_hours else 0 end) as virtual_hours,
                     rr.user_id as user_id,
                     hhs.name as leave_type,
                     hre.id as employee_id

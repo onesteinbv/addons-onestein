@@ -13,8 +13,10 @@ class hr_employee(models.Model):
         leaves = self.env['hr.holidays'].read_group([
             ('employee_id', 'in', self.ids),
             ('holiday_status_id.limit', '=', False),
-            ('state', '=', 'validate')
-        ], fields=['number_of_hours', 'employee_id'], groupby=['employee_id'])
+            ('state', '=', 'validate')],
+            fields=['number_of_hours', 'employee_id'],
+            groupby=['employee_id']
+        )
         mapping = dict([(leave['employee_id'][0], leave['number_of_hours']) for leave in leaves])
         for employee in self:
             employee.leaves_count = mapping.get(employee.id)

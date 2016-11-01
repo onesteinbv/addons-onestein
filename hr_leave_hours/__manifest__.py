@@ -13,8 +13,8 @@
         'hr_holidays',
         'hr_contract',
         'hr_employee_holidays',
-        'hr_holidays_expiration', # for approval_date
-        'hr_contract_accessibility', # for access rules on contracts
+        'hr_holidays_expiration',  # for approval_date
+        'hr_contract_accessibility',  # for access rules on contracts
     ],
     'data': [
         'security/ir.model.access.csv',
