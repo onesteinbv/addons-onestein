@@ -91,11 +91,11 @@ class hr_holidays(models.Model):
 
             if from_dt and to_dt:
                 working_hours = None
+                contract = employee.contract_id
                 if employee.calendar_id:
                     working_hours = employee.calendar_id
-                elif employee.contract_id:
-                    if employee.contract_id.working_hours:
-                        working_hours = employee.contract_id.working_hours
+                elif contract and contract.working_hours:
+                    working_hours = contract.working_hours
                 if working_hours:
                     work_hours = working_hours.get_working_hours(
                         from_dt,
@@ -146,18 +146,16 @@ class hr_holidays(models.Model):
         'holiday_status_id',
         'holiday_status_id')
     def _check_holidays(self):
-        if not(self.holiday_type != 'employee'
-            or self.type != 'remove'
-            or not self.employee_id
-            or self.holiday_status_id.limit):
+        if not(self.holiday_type != 'employee' or self.type != 'remove' or
+               not self.employee_id or self.holiday_status_id.limit):
 
             leave_hours = self.holiday_status_id.get_hours(
                 self.employee_id.id
             )
             _logger.debug('Leave Hours: %s', (leave_hours))
 
-            if leave_hours['remaining_hours'] < 0 \
-                or leave_hours['virtual_remaining_hours'] < 0:
+            if (leave_hours['remaining_hours'] < 0 or
+                    leave_hours['virtual_remaining_hours'] < 0):
                 # Raising a warning gives a more user-friendly
                 # feedback than the default constraint error
                 raise ValidationError(_(

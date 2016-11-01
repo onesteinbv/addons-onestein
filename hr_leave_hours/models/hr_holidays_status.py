@@ -14,7 +14,7 @@ class hr_holidays_status(models.Model):
             'max_hours': 0,
             'remaining_hours': 0,
             'hours_taken': 0,
-            'virtual_remaining_hours':0,
+            'virtual_remaining_hours': 0,
         }
 
         holiday_ids = self.env['hr.employee'].browse(
@@ -26,7 +26,7 @@ class hr_holidays_status(models.Model):
                 'validate'
             ] and x.holiday_status_id == self)
 
-        for holiday in  holiday_ids:
+        for holiday in holiday_ids:
             if holiday.type == 'add':
                 result['virtual_remaining_hours'] += \
                     holiday.number_of_hours_temp
@@ -43,7 +43,7 @@ class hr_holidays_status(models.Model):
 
     @api.multi
     def _user_left_hours(self):
-        employee_id = self._context.get('employee_id',False)
+        employee_id = self._context.get('employee_id', False)
         if not employee_id:
             employees = self.env['hr.employee'].search([
                 ('user_id', '=', self._uid)
@@ -67,13 +67,16 @@ class hr_holidays_status(models.Model):
 
     max_hours = fields.Float(
         compute="_user_left_hours",
-        string='Maximum Allowed Hours')
+        string='Maximum Allowed Hours'
+    )
     hours_taken = fields.Float(
         compute="_user_left_hours",
-        string='Hours Already Taken')
-    remaining_hours = fields.Float\
-        (compute="_user_left_hours",
-         string='Remaining Hours')
+        string='Hours Already Taken'
+    )
+    remaining_hours = fields.Float(
+        compute="_user_left_hours",
+        string='Remaining Hours'
+    )
     virtual_remaining_hours = fields.Float(
         compute="_user_left_hours",
         string='Virtual Remaining Hours'
@@ -81,7 +84,7 @@ class hr_holidays_status(models.Model):
 
     @api.multi
     def name_get(self):
-        if not self._context.get('employee_id',False):
+        if not self._context.get('employee_id', False):
             # leave counts is based on employee_id, would be
             # inaccurate if not based on correct employee
             return super(hr_holidays_status, self).name_get()

@@ -17,12 +17,22 @@ class hr_employee(models.Model):
             fields=['number_of_hours', 'employee_id'],
             groupby=['employee_id']
         )
-        mapping = dict([(leave['employee_id'][0], leave['number_of_hours']) for leave in leaves])
+        mapping = dict(
+            [(
+                 leave['employee_id'][0],
+                 leave['number_of_hours']
+             )
+             for leave in leaves]
+        )
         for employee in self:
             employee.leaves_count = mapping.get(employee.id)
 
-    leaves_count = fields.Integer('Number of Leaves', compute='_compute_leaves_count')
+    leaves_count = fields.Integer(
+        'Number of Leaves',
+        compute='_compute_leaves_count'
+    )
     remaining_hours_ids = fields.One2many(
         'hr.holidays.remaining.leaves.user',
         'employee_id',
-        string='Remaining hours per Leave Type')
+        string='Remaining hours per Leave Type'
+    )
