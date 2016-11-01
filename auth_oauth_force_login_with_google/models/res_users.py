@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
-from odoo import api, models, tools, SUPERUSER_ID, _
+from odoo import api, models, SUPERUSER_ID
 from odoo.exceptions import AccessDenied
 
 _logger = logging.getLogger(__name__)

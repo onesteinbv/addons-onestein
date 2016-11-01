@@ -11,5 +11,12 @@ class hr_absenteeism_dates(models.Model):
 
     name = fields.Char("Notification Name")
     absent_notify_date = fields.Datetime("Absent Notification Date")
-    holiday_id = fields.Many2one("hr.holidays", string="Related Holiday", ondelete="cascade")
-    notification_id = fields.Many2one("hr.absenteeism.notifications", string="Related notification")
+    holiday_id = fields.Many2one(
+        "hr.holidays",
+        string="Related Holiday",
+        ondelete="cascade"
+    )
+    notification_id = fields.Many2one(
+        "hr.absenteeism.notifications",
+        string="Related notification"
+    )

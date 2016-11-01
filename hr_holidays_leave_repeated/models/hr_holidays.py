@@ -115,9 +115,10 @@ class HrHolidays(models.Model):
             date_to = vals.get('date_to')
             employee = self.env['hr.employee'].browse(vals.get('employee_id'))
             working_hours = employee.calendar_id
-            working_hours = working_hours or \
-                            employee.contract_id and \
-                            employee.contract_id.working_hours or None
+            working_hours = \
+                working_hours or \
+                employee.contract_id and \
+                employee.contract_id.working_hours or None
             if working_hours:
                 user = self.env.user
                 from_dt = fields.Datetime.from_string(date_from)

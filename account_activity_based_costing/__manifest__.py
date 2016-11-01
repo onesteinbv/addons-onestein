@@ -13,6 +13,7 @@
         'account_budget',
         'analytic',
         'web_widget_float_highlight',
+        'project',
     ],
     'data': [
         'views/account_analytic_account.xml',

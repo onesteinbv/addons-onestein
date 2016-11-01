@@ -7,7 +7,7 @@ import math
 
 from odoo import fields, models, api
 from datetime import datetime, timedelta
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTS
 from odoo.exceptions import Warning
 from odoo.tools.translate import _
 
@@ -22,12 +22,12 @@ class hr_holidays(models.Model):
         self.ensure_one()
 
         date_from = self.date_from
-        date_to = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+        date_to = datetime.today().strftime(DTS)
 
         # Compute and update the number of days
         if (date_to and date_from) and (date_from <= date_to):
-            from_dt = datetime.strptime(date_from, DEFAULT_SERVER_DATETIME_FORMAT)
-            to_dt = datetime.strptime(date_to, DEFAULT_SERVER_DATETIME_FORMAT)
+            from_dt = datetime.strptime(date_from, DTS)
+            to_dt = datetime.strptime(date_to, DTS)
             timedelta = to_dt - from_dt
             diff_day = timedelta.days + float(timedelta.seconds) / 86400
 
@@ -49,26 +49,38 @@ class hr_holidays(models.Model):
 
         for sick_day in sick_day_ids:
             date_from = sick_day.date_from
-            date_to = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+            date_to = datetime.today().strftime(DTS)
             if date_from:
                 # The following is based on addons/hr_holidays/hr_holidays.py
                 # date_to has to be greater than date_from
                 if (date_from and date_to) and (date_from > date_to):
-                    _logger.warning('The start date must be anterior to the end date.')
-                    raise Warning(_('The start date must be anterior to the end date.'))
+                    _logger.warning(
+                        'The start date must be anterior to the end date.'
+                    )
+                    raise Warning(
+                        _('The start date must be anterior to the end date.')
+                    )
                 sick_day.compute_interval()
             else:
-                _logger.warning('ONESTEiN hr_holidays increase_date_to no date_from set')
+                _logger.warning(
+                    'ONESTEiN hr_holidays increase_date_to no date_from set'
+                )
 
     def _compute_notify_date(self, notification, holiday):
         notify_date = datetime.strptime(
-            holiday.date_from, DEFAULT_SERVER_DATETIME_FORMAT) + timedelta(
+            holiday.date_from, DTS) + timedelta(
             days=notification.interval)
         return notify_date
 
-    absenteeism_control = fields.Boolean(related="holiday_status_id.absenteeism_control", string="Absence Control")
+    absenteeism_control = fields.Boolean(
+        related="holiday_status_id.absenteeism_control",
+        string="Absence Control"
+    )
     absenteeism_date_ids = fields.One2many(
-        "hr.absenteeism.dates", "holiday_id", "Absenteeism Notification Dates")
+        "hr.absenteeism.dates",
+        "holiday_id",
+        "Absenteeism Notification Dates"
+    )
 
     @api.model
     def create(self, vals):
@@ -76,7 +88,10 @@ class hr_holidays(models.Model):
         holiday = super(hr_holidays, self).create(vals)
         if holiday.date_from:
             for notification in holiday.holiday_status_id.notification_ids:
-                notify_date = self._compute_notify_date(notification, holiday)
+                notify_date = self._compute_notify_date(
+                    notification,
+                    holiday
+                )
                 absent_vals = {
                     'name': notification.name,
                     'holiday_id': holiday.id,
@@ -88,6 +103,7 @@ class hr_holidays(models.Model):
 
     @api.multi
     def _validate_fields(self, field_names):
-        # monkey patch hr_holidays constraints
-        self._constraints = [t for t in self._constraints if t[1] != 'You can not have 2 leaves that overlaps on same day!']
+        ### monkey patch hr_holidays constraints
+        str = 'You can not have 2 leaves that overlaps on same day!'
+        self._constraints = [t for t in self._constraints if t[1] != str]
         return super(hr_holidays, self)._validate_fields(field_names)

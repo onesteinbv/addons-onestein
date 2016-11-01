@@ -48,14 +48,13 @@ class HRContract(models.Model):
 
     @api.model
     def check_expiring(self):
-        contract_list = self.search([('state','in',['open','pending'])])
+        contract_list = self.search([('state', 'in', ['open', 'pending'])])
         for contract in contract_list:
             # notification
-            if contract.date_end and \
-                datetime.strptime(
-                    contract.date_end[:10],
-                    DEFAULT_SERVER_DATE_FORMAT
-                ) <= datetime.today() + timedelta(1):
+            if contract.date_end and datetime.strptime(
+                contract.date_end[:10],
+                DEFAULT_SERVER_DATE_FORMAT
+            ) <= datetime.today() + timedelta(1):
                 contract.state = 'close'
 
     @api.model

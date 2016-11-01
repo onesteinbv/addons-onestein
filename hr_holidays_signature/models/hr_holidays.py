@@ -7,5 +7,5 @@ from odoo import fields, models
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
-    
+
     manager_signature = fields.Binary('Signature manager')

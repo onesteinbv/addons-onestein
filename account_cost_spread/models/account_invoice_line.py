@@ -86,10 +86,11 @@ class AccountInvoiceLine(models.Model):
         days = (fy_dates['date_to'] - date_invoice_formatted).days + 1
 
         months = (int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4]) -
-                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])) * 12 \
-                 + \
+                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
+                  ) * 12 + \
                  (int(fy_dates['date_to'].strftime('%Y-%m-%d')[5:7]) -
-                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[5:7])) + 1
+                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[5:7])
+                  ) + 1
         if option == 'days':
             return days
         elif option == 'months':
