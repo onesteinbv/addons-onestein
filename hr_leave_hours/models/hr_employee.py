@@ -18,10 +18,7 @@ class hr_employee(models.Model):
             groupby=['employee_id']
         )
         mapping = dict(
-            [(
-                 leave['employee_id'][0],
-                 leave['number_of_hours']
-             )
+            [(leave['employee_id'][0], leave['number_of_hours'])
              for leave in leaves]
         )
         for employee in self:
