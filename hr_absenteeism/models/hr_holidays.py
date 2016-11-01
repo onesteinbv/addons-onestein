@@ -88,6 +88,6 @@ class hr_holidays(models.Model):
 
     @api.multi
     def _validate_fields(self, field_names):
-        ### monkey patch hr_holidays constraints
+        # monkey patch hr_holidays constraints
         self._constraints = [t for t in self._constraints if t[1] != 'You can not have 2 leaves that overlaps on same day!']
         return super(hr_holidays, self)._validate_fields(field_names)

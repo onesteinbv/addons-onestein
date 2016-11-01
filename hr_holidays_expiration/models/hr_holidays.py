@@ -29,13 +29,14 @@ class hr_holidays(models.Model):
             ('type', '!=', 'remove')])
         for holiday in allocation_req_list:
             # notification
-            if holiday.email_notify and not holiday.notification_sent and datetime.strptime(
+            if holiday.email_notify and not holiday.notification_sent:
+                if datetime.strptime(
                     holiday.expiration_date,
-                    DEFAULT_SERVER_DATE_FORMAT) <= datetime.today() + timedelta(
-                        holiday.notify_period):
-                if holiday.notify_template_id:
-                    holiday.notify_template_id.send_mail(holiday.id)
-                    holiday.notification_sent = True
+                    DEFAULT_SERVER_DATE_FORMAT
+                ) <= datetime.today() + timedelta(holiday.notify_period):
+                    if holiday.notify_template_id:
+                        holiday.notify_template_id.send_mail(holiday.id)
+                        holiday.notification_sent = True
             # expiring
             if datetime.strptime(
                     holiday.expiration_date,

@@ -3,10 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': "Activity Based Costing",
-    'summary': """Activity Based Costing""",
-    'author': "ONESTEiN BV",
-    'website': "http://www.onestein.eu",
+    'name': 'Activity Based Costing',
+    'summary': '''Activity Based Costing''',
+    'author': 'ONESTEiN BV',
+    'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',
     'version': '10.0.1.0.0',
     'depends': [
@@ -18,8 +18,5 @@
         'views/account_analytic_account.xml',
         'menu_items.xml',
     ],
-    'demo': [],
     'installable': True,
-    'auto_install': False,
-    'application': False,
 }

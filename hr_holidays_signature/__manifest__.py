@@ -13,5 +13,11 @@
     'data': [
         'views/hr_holidays_signature.xml'
     ],
-    'installable': False,
+    'qweb': [
+    ],
+    'demo': [],
+    'test': [],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
 }

@@ -15,7 +15,7 @@ class HrHolidays(models.Model):
         ('workday', 'Every workday'),
         ('week', 'Every week'),
         ('biweek', 'Every two weeks'),
-        ('month', 'Every month')],
+        ('month', 'Every four weeks')],
         string='Repeat Every'
     )
     holiday_type_repeat = fields.Boolean(
@@ -28,7 +28,10 @@ class HrHolidays(models.Model):
     )
 
     @api.model
-    def _get_workday_vals(self, vals, employee, working_hours, from_dt, to_dt, work_hours, diff):
+    def _get_workday_vals(
+            self, vals, employee, working_hours,
+            from_dt, to_dt, work_hours, diff
+    ):
         while True:
             from_dt = from_dt + relativedelta(days=1)
             to_dt = to_dt + relativedelta(days=1)
@@ -45,7 +48,10 @@ class HrHolidays(models.Model):
         return vals
 
     @api.model
-    def _get_week_vals(self, vals, employee, working_hours, from_dt, to_dt, work_hours, diff):
+    def _get_week_vals(
+            self, vals, employee, working_hours,
+            from_dt, to_dt, work_hours, diff
+    ):
         while True:
             from_dt = from_dt + relativedelta(days=7)
             to_dt = to_dt + relativedelta(days=7)
@@ -62,7 +68,10 @@ class HrHolidays(models.Model):
         return vals
 
     @api.model
-    def _get_biweek_vals(self, vals, employee, working_hours, from_dt, to_dt, work_hours, diff):
+    def _get_biweek_vals(
+            self, vals, employee, working_hours,
+            from_dt, to_dt, work_hours, diff
+    ):
         while True:
             from_dt = from_dt + relativedelta(days=14)
             to_dt = to_dt + relativedelta(days=14)
@@ -79,10 +88,13 @@ class HrHolidays(models.Model):
         return vals
 
     @api.model
-    def _get_month_vals(self, vals, employee, working_hours, from_dt, to_dt, work_hours, diff):
+    def _get_month_vals(
+            self, vals, employee, working_hours,
+            from_dt, to_dt, work_hours, diff
+    ):
         while True:
-            from_dt = from_dt + relativedelta(months=1)
-            to_dt = to_dt + relativedelta(months=1)
+            from_dt = from_dt + relativedelta(days=28)
+            to_dt = to_dt + relativedelta(days=28)
             new_work_hours = working_hours.get_working_hours(
                 from_dt,
                 to_dt,
@@ -103,7 +115,9 @@ class HrHolidays(models.Model):
             date_to = vals.get('date_to')
             employee = self.env['hr.employee'].browse(vals.get('employee_id'))
             working_hours = employee.calendar_id
-            working_hours = working_hours or employee.contract_id and employee.contract_id.working_hours or None
+            working_hours = working_hours or \
+                            employee.contract_id and \
+                            employee.contract_id.working_hours or None
             if working_hours:
                 user = self.env.user
                 from_dt = fields.Datetime.from_string(date_from)
@@ -128,35 +142,49 @@ class HrHolidays(models.Model):
                     if holiday_duration and holiday_duration.days > 1:
                         raise UserError(
                             _('''The repetition is based on workdays:
-                             the duration of the leave request must not exceed 1 day.
+                             the duration of the leave request
+                             must not exceed 1 day.
                             '''))
                     vals = self._get_workday_vals(
-                        vals, employee, working_hours, from_dt, to_dt, work_hours, diff)
+                        vals, employee, working_hours,
+                        from_dt, to_dt, work_hours, diff
+                    )
                 elif vals.get('repeat_every') == 'week':
                     if holiday_duration and holiday_duration.days > 7:
                         raise UserError(
                             _('''The repetition is every week:
-                             the duration of the leave request must not exceed 1 week.
+                             the duration of the leave request
+                             must not exceed 1 week.
                             '''))
                     vals = self._get_week_vals(
-                        vals, employee, working_hours, from_dt, to_dt, work_hours, diff)
+                        vals, employee, working_hours,
+                        from_dt, to_dt, work_hours, diff
+                    )
                 elif vals.get('repeat_every') == 'biweek':
                     if holiday_duration and holiday_duration.days > 14:
                         raise UserError(
                             _('''The repetition is based on 2 weeks:
-                             the duration of the leave request must not exceed 2 weeks.
+                             the duration of the leave request
+                             must not exceed 2 weeks.
                             '''))
                     vals = self._get_biweek_vals(
-                        vals, employee, working_hours, from_dt, to_dt, work_hours, diff)
+                        vals, employee, working_hours,
+                        from_dt, to_dt, work_hours, diff
+                    )
                 elif vals.get('repeat_every') == 'month':
                     if holiday_duration and holiday_duration.days > 28:
                         raise UserError(
-                            _('''The repetition is every month:
-                             the duration of the leave request must not exceed 28 days.
+                            _('''The repetition is every four weeks:
+                             the duration of the leave request
+                             must not exceed 28 days.
                             '''))
                     vals = self._get_month_vals(
-                        vals, employee, working_hours, from_dt, to_dt, work_hours, diff)
-                self.with_context({"skip_create_handler":True}).create(vals)
+                        vals, employee, working_hours,
+                        from_dt, to_dt, work_hours, diff
+                    )
+                self.with_context({
+                    "skip_create_handler": True
+                }).create(vals)
             count += 1
 
     @api.model

@@ -16,8 +16,9 @@ class HrEmployee(models.Model):
         if 'employee_number' not in vals or not vals['employee_number']:
             searching = True
             while searching:
-                number = self.env['ir.sequence'].next_by_code('hr.employee') or '/'
-                if not self.search([('employee_number','=',number)]):
+                Sequence = self.env['ir.sequence']
+                number = Sequence.next_by_code('hr.employee') or '/'
+                if not self.search([('employee_number', '=', number)]):
                     vals['employee_number'] = number
                     searching = False
         return super(HrEmployee, self).create(vals)

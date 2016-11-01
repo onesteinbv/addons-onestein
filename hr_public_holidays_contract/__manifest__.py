@@ -3,22 +3,18 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': "Public Holidays Contract",
+    'name': 'Public Holidays Contract',
     'images': [],
-    'summary': """Integration with contracts to manage public holidays""",
-    'author': "ONESTEiN BV",
+    'summary': '''Integration with contracts to manage public holidays''',
+    'author': 'ONESTEiN BV',
     'license': 'AGPL-3',
-    'website': "http://www.onestein.eu",
+    'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
     'version': '10.0.1.0.0',
     'depends': [
         'hr_public_holidays_leaves',
         'hr_contract',
-        'hr_contract_accessibility', # for access rules on contracts
+        'hr_contract_accessibility',  # for access rules on contracts
     ],
-    'data': [],
-    'demo': [],
     'installable': True,
-    'auto_install': False,
-    'application': False,
 }

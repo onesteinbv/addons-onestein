@@ -17,5 +17,8 @@
     'qweb': [
         'static/src/xml/web_draw.xml',
     ],
-    'installable': False,
+    'demo': [],
+    'installable': True,
+    'auto_install': False,
+    'application': False,
 }

@@ -32,7 +32,9 @@ class HrHolidaysPublic(models.Model):
             _logger.debug("hr_public_holiday reinit: %s" %
                           (public_holiday.display_name,))
 
-            public_holiday.line_ids.with_context(company_id=public_holiday.company_id).reinit()
+            public_holiday.line_ids.with_context(
+                company_id=public_holiday.company_id
+            ).reinit()
 
     @api.multi
     def _reset(self):

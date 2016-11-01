@@ -4,8 +4,7 @@
 
 import logging
 import datetime
-from dateutil.relativedelta import relativedelta
-from odoo import models, api, fields
+from odoo import models, api
 from odoo.exceptions import Warning
 from odoo.tools.translate import _
 
@@ -36,7 +35,9 @@ class HrHolidaysPublicLine(models.Model):
         except ValueError:
             raise Warning(
                 _("Leave Type for Public Holiday not found!"))
-        employees = self._employees_for_public_holiday(self._context.get('company_id',False))
+        employees = self._employees_for_public_holiday(
+            self._context.get('company_id', False)
+        )
 
         existing = self.env['hr.holidays'].search(
             [('public_holiday_id', 'in', self.ids)])
@@ -58,8 +59,12 @@ class HrHolidaysPublicLine(models.Model):
                         date_tz_stop = datetime.datetime.strptime(
                             holiday_line.date,
                             "%Y-%m-%d")
-                        holiday_line_date_from = date_tz_start.strftime('%Y-%m-%d 06:00:00')
-                        holiday_line_date_to = date_tz_stop.strftime('%Y-%m-%d 19:00:00')
+                        holiday_line_date_from = date_tz_start.strftime(
+                            '%Y-%m-%d 06:00:00'
+                        )
+                        holiday_line_date_to = date_tz_stop.strftime(
+                            '%Y-%m-%d 19:00:00'
+                        )
                         vals = {
                             'name': holiday_line.name,
                             'type': 'remove',
@@ -71,9 +76,11 @@ class HrHolidaysPublicLine(models.Model):
                             'public_holiday_id': holiday_line.id
                         }
                         vals = self.holiday_vals_hook(vals, emp)
-                        new_holiday = self.env['hr.holidays'].with_context(tz=('UTC')).create(vals)
+                        new_holiday = self.env['hr.holidays'].with_context(
+                            tz=('UTC')).create(vals)
                         new_holiday.onchange_date()
-                        new_holiday.number_of_hours = new_holiday.number_of_hours_temp
+                        new_holiday.number_of_hours = \
+                            new_holiday.number_of_hours_temp
                         new.append(new_holiday)
 
         for leave in existing:

@@ -54,9 +54,12 @@ class AccountInvoiceSpreadLine(models.Model):
     @api.model
     def create(self, values):
         context = self.env.context.copy()
-        if 'default_type' in context and context['default_type'] == 'in_invoice':
+        if context.get('default_type', '') == 'in_invoice':
             context.pop('default_type')
-        return super(AccountInvoiceSpreadLine, self.with_context(context)).create(values)
+        return super(
+            AccountInvoiceSpreadLine,
+            self.with_context(context)
+        ).create(values)
 
     @api.model
     def _setup_move_data(self, spread_line, spread_date):
@@ -98,8 +101,10 @@ class AccountInvoiceSpreadLine(models.Model):
 
     @api.multi
     def create_move(self):
-        """Used by a button to manually create a move from a spread line entry.
-        Also called by a cron job."""
+        """
+        Used by a button to manually create a move from a spread line entry.
+        Also called by a cron job.
+        """
 
         move_obj = self.env['account.move']
 #         currency_obj = self.env['res.currency']
@@ -123,12 +128,12 @@ class AccountInvoiceSpreadLine(models.Model):
                 credit_acc_id = invoice_line.account_id.id
 
             line_list = []
-            line_list +=  [(0,0, self._setup_move_line_data(
+            line_list += [(0, 0, self._setup_move_line_data(
                 line, spread_date, debit_acc_id,
                 'debit', move_id.id
             ))]
 
-            line_list +=  [(0,0, self._setup_move_line_data(
+            line_list += [(0, 0, self._setup_move_line_data(
                 line, spread_date, credit_acc_id,
                 'credit', move_id.id
             ))]

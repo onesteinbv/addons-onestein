@@ -4,13 +4,13 @@
 
 {
     'name': 'Cost / Income Spread',
-    'summary': """Cost and Income spreading""",
+    'summary': '''Cost and Income spreading''',
     'version': '10.0.1.0.0',
     'depends': [
         'account',
         'account_accountant'
     ],
-    'author': "ONESTEiN BV,Odoo Community Association (OCA)",
+    'author': 'ONESTEiN BV',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'images': ['static/description/main_screenshot.png'],
@@ -22,8 +22,5 @@
         'views/account_config_settings.xml',
         'data/spread_cron.xml',
     ],
-    'demo': [],
     'installable': True,
-    'auto_install': False,
-    'application': False,
 }

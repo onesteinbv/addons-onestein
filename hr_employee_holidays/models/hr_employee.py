@@ -8,4 +8,8 @@ from odoo import models, fields
 class hr_employee(models.Model):
     _inherit = "hr.employee"
 
-    holiday_ids = fields.One2many('hr.holidays', 'employee_id', string='Holidays')
+    holiday_ids = fields.One2many(
+        'hr.holidays',
+        'employee_id',
+        string='Holidays'
+    )

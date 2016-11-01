@@ -2,7 +2,7 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, models, fields, api
+from odoo import models, fields, api
 from datetime import datetime, timedelta
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 
@@ -10,7 +10,9 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 class HRContract(models.Model):
     _inherit = "hr.contract"
 
-    state = fields.Selection(selection_add=[('wait_approval', 'Waiting for Approval')])
+    state = fields.Selection(
+        selection_add=[('wait_approval', 'Waiting for Approval')]
+    )
 
     @api.multi
     def write(self, values):
@@ -50,7 +52,10 @@ class HRContract(models.Model):
         for contract in contract_list:
             # notification
             if contract.date_end and \
-                datetime.strptime(contract.date_end[:10],DEFAULT_SERVER_DATE_FORMAT) <= datetime.today() + timedelta(1):
+                datetime.strptime(
+                    contract.date_end[:10],
+                    DEFAULT_SERVER_DATE_FORMAT
+                ) <= datetime.today() + timedelta(1):
                 contract.state = 'close'
 
     @api.model
@@ -58,7 +63,8 @@ class HRContract(models.Model):
         contract_list = self.search([('state', 'in', ['open'])])
         for contract in contract_list:
             # notification
-            if contract.date_end and \
-                            datetime.strptime(contract.date_end[:10],
-                                              DEFAULT_SERVER_DATE_FORMAT) <= datetime.today() + timedelta(7):
+            if contract.date_end and datetime.strptime(
+                    contract.date_end[:10],
+                    DEFAULT_SERVER_DATE_FORMAT
+            ) <= datetime.today() + timedelta(7):
                 contract.state = 'pending'

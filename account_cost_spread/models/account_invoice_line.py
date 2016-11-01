@@ -80,11 +80,14 @@ class AccountInvoiceLine(models.Model):
         - years: duration in calendar years, considering also leap years
         """
         date_invoice_formatted = datetime.strptime(invoice_date, DF).date()
-        fy_dates = self.company_id.compute_fiscalyear_dates(date_invoice_formatted)
+        fy_dates = self.company_id.compute_fiscalyear_dates(
+            date_invoice_formatted
+        )
         days = (fy_dates['date_to'] - date_invoice_formatted).days + 1
 
         months = (int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4]) -
-                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])) * 12 + \
+                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])) * 12 \
+                 + \
                  (int(fy_dates['date_to'].strftime('%Y-%m-%d')[5:7]) -
                   int(fy_dates['date_from'].strftime('%Y-%m-%d')[5:7])) + 1
         if option == 'days':
@@ -137,7 +140,8 @@ class AccountInvoiceLine(models.Model):
                 float(first_fy_spread_days) / first_fy_duration
 
         else:
-            duration_factor = self._get_fy_duration(date_invoice, option='years')
+            duration_factor = self._get_fy_duration(
+                date_invoice, option='years')
 
         return duration_factor
 
@@ -145,7 +149,8 @@ class AccountInvoiceLine(models.Model):
     def _get_spread_start_date(self, line, date_start):
 
         if line.spread_date:
-            spread_start_date = datetime.strptime(line.spread_date, '%Y-%m-%d')
+            spread_start_date = datetime.strptime(
+                line.spread_date, '%Y-%m-%d')
         elif line.invoice_id.date_invoice:
             spread_start_date = datetime.strptime(
                 line.invoice_id.date_invoice, '%Y-%m-%d')
@@ -192,7 +197,8 @@ class AccountInvoiceLine(models.Model):
 
         date_invoice = invline.invoice_id.date_invoice
         date_invoice_formatted = datetime.strptime(date_invoice, DF).date()
-        fy_dates = self.company_id.compute_fiscalyear_dates(date_invoice_formatted)
+        fy_dates = self.company_id.compute_fiscalyear_dates(
+            date_invoice_formatted)
 
         init_flag = True
         fy_date_start = fy_dates['date_from']
