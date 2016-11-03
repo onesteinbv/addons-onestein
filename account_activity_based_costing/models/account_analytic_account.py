@@ -11,9 +11,9 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('expected_hours', 'consumed_hours')
     def _get_hours_left(self):
         for analytic_account in self:
-            analytic_account.hours_left = \
-                analytic_account.expected_hours - \
-                analytic_account.consumed_hours
+            expected_hours = analytic_account.expected_hours
+            consumed_hours = analytic_account.consumed_hours
+            analytic_account.hours_left = expected_hours - consumed_hours
 
     @api.depends('line_ids', 'line_ids.unit_amount')
     def _get_consumed_hours(self):
@@ -30,13 +30,15 @@ class AccountAnalyticAccount(models.Model):
     @api.depends('expected_turnover', 'expected_costs')
     def _get_expected_contribution(self):
         for analytic_account in self:
-            analytic_account.expected_contribution = \
-                analytic_account.expected_turnover - \
-                analytic_account.expected_costs
-            if analytic_account.expected_turnover != 0:
+            expected_turnover = analytic_account.expected_turnover
+            expected_costs = analytic_account.expected_costs
+            expected_contribution = expected_turnover - expected_costs
+
+            analytic_account.expected_contribution = expected_contribution
+
+            if expected_turnover != 0:
                 analytic_account.expected_contribution_perc = \
-                    100 * analytic_account.expected_contribution / \
-                    analytic_account.expected_turnover
+                    100 * expected_contribution / expected_turnover
             else:
                 analytic_account.expected_contribution_perc = 0.0
 
@@ -57,8 +59,8 @@ class AccountAnalyticAccount(models.Model):
             analytic_account.realized_costs = - debit
             analytic_account.contribution = credit + debit
             if credit != 0:
-                analytic_account.contribution_perc = \
-                    100 * (credit + debit) / credit
+                contribution_perc = 100 * (credit + debit) / credit
+                analytic_account.contribution_perc = contribution_perc
             else:
                 analytic_account.contribution_perc = 0.0
 
@@ -73,21 +75,26 @@ class AccountAnalyticAccount(models.Model):
         'contribution_perc')
     def _get_budget_results(self):
         for analytic_account in self:
-            analytic_account.budget_result_turnover = \
-                analytic_account.realized_turnover - \
-                analytic_account.expected_turnover
-            analytic_account.budget_result_cost = \
-                analytic_account.expected_costs - \
-                analytic_account.realized_costs
-            analytic_account.budget_result_contribution = \
-                analytic_account.contribution - \
-                analytic_account.expected_contribution
-            analytic_account.budget_result_contribution_perc = 0.0
-            if analytic_account.expected_contribution:
-                analytic_account.budget_result_contribution_perc = \
-                    100 * (analytic_account.contribution -
-                           analytic_account.expected_contribution) / \
-                    analytic_account.expected_contribution
+            realized_turnover = analytic_account.realized_turnover
+            expected_turnover = analytic_account.expected_turnover
+            expected_costs = analytic_account.expected_costs
+            realized_costs = analytic_account.realized_costs
+            contribution = analytic_account.contribution
+            expected_contribution = analytic_account.expected_contribution
+
+            br_turnover = realized_turnover - expected_turnover
+            br_cost = expected_costs - realized_costs
+            br_contribution = contribution - expected_contribution
+
+            analytic_account.budget_result_turnover = br_turnover
+            analytic_account.budget_result_cost = br_cost
+            analytic_account.budget_result_contribution = br_contribution
+
+            brc_perc = 0.0
+            if expected_contribution:
+                contrib_diff = contribution - expected_contribution
+                brc_perc = 100 * contrib_diff / expected_contribution
+            analytic_account.budget_result_contribution_perc = brc_perc
 
     start_date = fields.Date(
         string='Start Date',
@@ -167,4 +174,5 @@ class AccountAnalyticAccount(models.Model):
     budget_result_contribution_perc = fields.Float(
         compute='_get_budget_results',
         store=True,
-        string='Result Contribution [%]')
+        string='Result Contribution [%]'
+    )
