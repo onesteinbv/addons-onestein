@@ -1,0 +1,22 @@
+<odoo>
+
+        <menuitem id="menu_analytic_account_reports"
+                  name="Reports"
+                  sequence="5"
+                  parent="account_analytic_account_accessibility.menu_hr_analytic_account_root"/>
+
+        <menuitem id="menu_action_analytic_lines_reporting"
+                  name="Analytic Entries"
+                  parent="menu_analytic_account_reports"
+                  action="account.analytic_line_reporting_pivot"
+                  sequence="35"
+                  groups="analytic.group_analytic_accounting"/>
+
+        <menuitem id="menu_action_analytic_account_reporting"
+                  name="Analytic Accounts"
+                  parent="menu_analytic_account_reports"
+                  action="account_activity_based_costing.analytic_account_reporting_pivot"
+                  sequence="30"
+                  groups="analytic.group_analytic_accounting"/>
+
+</odoo>
