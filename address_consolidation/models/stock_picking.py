@@ -18,7 +18,7 @@ class StockPicking(models.Model):
 
     @api.multi
     def onchange_partner_id(self, partner_id):
-        _logger.debug('ONESTEiN onchange_partner_id')
+
         res = {'value': {}}
 
         if partner_id:
