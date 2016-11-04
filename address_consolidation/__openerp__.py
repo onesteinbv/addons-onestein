@@ -27,7 +27,7 @@ displays these on the related reports.
     'data': [
         'views/account_invoice_view.xml',
         'views/sale_view.xml',
-        'stock_view.xml',
+        'views/stock_view.xml',
         'views/report_invoice.xml',
         'views/report_saleorder.xml',
         'views/report_stockpicking.xml',
