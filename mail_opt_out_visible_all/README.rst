@@ -2,9 +2,9 @@
    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
    :alt: License: AGPL-3
 
-===================================
-Disable automatic emails to partner
-===================================
+=============================
+Display opt_out to all groups
+=============================
 
 This module sets the field "Opt-Out" always visible for existing Partners.
 
