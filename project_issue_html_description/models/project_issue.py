@@ -7,5 +7,5 @@ from openerp import fields, models
 
 class ProjectIssue(models.Model):
     _inherit = 'project.issue'
-    
+
     description = fields.Html(sanitize=False)
