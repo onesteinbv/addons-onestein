@@ -18,7 +18,7 @@ class HrHolidays(models.Model):
     def get_employee_calendar(self, employee):
         calendar = None
         if employee.resource_id.calendar_id:
-            calendar = employee.resource_id.calendar_id.id
+            calendar = employee.resource_id.calendar_id
         return calendar
 
     @api.multi
@@ -44,7 +44,7 @@ class HrHolidays(models.Model):
                 'date_from': holiday.date_from,
                 'date_to': holiday.date_to,
                 'resource_id': holiday.employee_id.resource_id.id,
-                'calendar_id': calendar,
+                'calendar_id': calendar.id,
                 'holiday_id': holiday.id
             })
             holiday.state = 'validate'

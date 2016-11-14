@@ -29,9 +29,10 @@ class HrHolidaysPublic(models.Model):
     @api.multi
     def _reinit(self):
         for public_holiday in self:
-            _logger.debug("hr_public_holiday reinit: %s" %
-                          (public_holiday.display_name,))
-
+            _logger.debug(
+                "hr_public_holiday reinit: %s" %
+                (public_holiday.display_name,)
+            )
             public_holiday.line_ids.with_context(
                 company_id=public_holiday.company_id
             ).reinit()
@@ -39,17 +40,16 @@ class HrHolidaysPublic(models.Model):
     @api.multi
     def _reset(self):
         for public_holiday in self:
-            _logger.debug("hr_public_holiday reset: %s" %
-                          (public_holiday.display_name,))
-
+            _logger.debug(
+                "hr_public_holiday reset: %s" %
+                (public_holiday.display_name,)
+            )
             public_holiday.line_ids.reset()
 
-    @api.one
     def validate(self):
         self._reinit()
         self.state = 'validate'
 
-    @api.one
     def reset(self):
         self._reset()
         self.state = 'draft'

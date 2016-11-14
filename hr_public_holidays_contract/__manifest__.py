@@ -5,7 +5,7 @@
 {
     'name': 'Public Holidays Contract',
     'images': [],
-    'summary': '''Integration with contracts to manage public holidays''',
+    'summary': '''Public holidays leaves integrated with contracts''',
     'author': 'ONESTEiN BV',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',

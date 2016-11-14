@@ -13,5 +13,5 @@ class HrHolidays(models.Model):
         calendar = super(HrHolidays, self).get_employee_calendar(employee)
         if not calendar:
             if employee.contract_id and employee.contract_id.working_hours:
-                calendar = employee.contract_id.working_hours.id
+                calendar = employee.contract_id.working_hours
         return calendar

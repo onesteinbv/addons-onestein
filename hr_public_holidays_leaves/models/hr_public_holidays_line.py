@@ -15,7 +15,7 @@ class HrHolidaysPublicLine(models.Model):
     _inherit = 'hr.holidays.public.line'
 
     @api.model
-    def _employees_for_public_holiday(self, company):
+    def _get_employees_public_holiday(self, company):
         company_id = company and company.id or None
         employees = self.env['hr.employee'].search(
             ['|',
@@ -35,7 +35,7 @@ class HrHolidaysPublicLine(models.Model):
         except ValueError:
             raise Warning(
                 _("Leave Type for Public Holiday not found!"))
-        employees = self._employees_for_public_holiday(
+        employees = self._get_employees_public_holiday(
             self._context.get('company_id', False)
         )
 
@@ -45,7 +45,6 @@ class HrHolidaysPublicLine(models.Model):
         new = []
 
         for holiday_line in self:
-
             for emp in employees:
                     matches = [h for h in existing
                                if h.employee_id.id == emp.id and

@@ -19,7 +19,7 @@
         'security/hr_public_holiday_security.xml',
         'data/hr_holidays_status.xml',
         'views/hr_public_holiday.xml',
-        'menu_items.xml',
+        'views/menu.xml',
     ],
     'demo': [],
     'installable': True,
