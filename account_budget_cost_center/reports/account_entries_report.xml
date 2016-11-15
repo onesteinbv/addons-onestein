@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+     <data>
+
+        <record id="view_account_entries_report_cost_center_budget_search" model="ir.ui.view">
+			<field name="name">account.entries.report.cost.center.budget.search</field>
+			<field name="model">account.entries.report</field>
+            <field name="inherit_id" ref="account.view_account_entries_report_search"/>
+            <field name="arch" type="xml">
+                <filter name="group_journal" position="after">
+                    <filter string="Cost Center" context="{'group_by':'cost_center_id'}" />
+                    <filter string="Cost Center Budget" context="{'group_by':'cost_center_budget_id'}" />
+				</filter>
+            </field>
+        </record>
+
+     </data>
+</openerp>

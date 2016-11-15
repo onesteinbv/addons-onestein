@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record id="account_budget_cost_center_budget_form" model="ir.ui.view">
+            <field name="name">account.budget.cost.center.budget.form</field>
+            <field name="model">account.cost.center</field>
+            <field name="inherit_id" ref="account_cost_center.account_cost_center_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='main_group2']" position="inside">
+                    <field name="date_start" required="1"/>
+                    <field name="date_end" required="1"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Budgets">
+                        <group>
+                            <field name="budget_ids" nolabel="1" context="{'enable_cost_center':1}">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="period_start"/>
+                                    <field name="period_stop"/>
+                                    <field name="creating_user_id"/>
+                                    <field name="amount_planned"/>
+                                    <field name="amount_practical"/>
+                                    <field name="running_state" string="Status"/>
+                                    <field name="amount_practical_perc"/>
+                                    <field name="forecast"/>
+                                    <field name="date_from" invisible="1"/>
+                                    <field name="date_to" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

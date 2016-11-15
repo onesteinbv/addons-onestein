@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <menuitem id="menu_budget_cost_center_form"
+                  action="act_crossovered_budget_cost_center_view"
+                  parent="account_budget.next_id_31"
+                  sequence="25"/>
+
+    </data>
+</openerp>

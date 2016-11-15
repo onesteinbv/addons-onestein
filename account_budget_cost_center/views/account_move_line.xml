@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="move_line_form_cost_center_budget" model="ir.ui.view">
+            <field name="name">account.move.line.form.cost.center.budget</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account_cost_center.move_line_form_cost_center"/>
+            <field name="arch" type="xml">
+                <field name="cost_center_id" position="after">
+                    <field name="cost_center_budget_id" context="{'filter_draft_running':1}"/>
+                </field>
+                <field name="cost_center_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="move_line_tree_cost_center_budget" model="ir.ui.view">
+            <field name="name">account.move.line.tree.cost.center.budget</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account_cost_center.move_line_tree_cost_center"/>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <field name="cost_center_id" position="after">
+                    <field name="cost_center_budget_id" context="{'filter_draft_running':1}"/>
+                </field>
+                <field name="cost_center_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

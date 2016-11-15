@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record id="crossovered_budget_cost_center_view_form" model="ir.ui.view">
+            <field name="name">crossovered.budget.cost.center.view.form</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget_totals.crossovered_budget_totals_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='group_totals2']" position="inside">
+                    <field name="cost_center_id" required="context.get('enable_cost_center',False)" invisible="not context.get('enable_cost_center',False)"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="crossovered_budget_cost_center_view_tree" model="ir.ui.view">
+            <field name="name">crossovered.budget.cost.center.view.tree</field>
+            <field name="model">crossovered.budget</field>
+            <field name="arch" type="xml">
+               <tree colors="blue:state == 'draft';gray:state in ('done','cancel')" string="Budget">
+                    <field name="name"/>
+                    <field name="cost_center_id"/>
+                    <field name="amount_planned"/>
+                    <field name="amount_practical"/>
+                    <field name="amount_practical_perc"/>
+                    <field name="amount_practical"/>
+                    <field name="amount_practical_perc"/>
+                    <field name="period_start"/>
+                    <field name="period_stop"/>
+                    <field name="creating_user_id"/>
+                    <field name="company_id" widget="selection" groups="base.group_multi_company"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="act_crossovered_budget_cost_center_view" model="ir.actions.act_window">
+            <field name="name">Cost Center Budgets</field>
+            <field name="res_model">crossovered.budget</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'enable_cost_center':1}</field>
+            <field name="domain">[('cost_center_id','!=',False)]</field>
+            <field name="view_id" ref="crossovered_budget_cost_center_view_tree"/>
+            <field name="search_view_id" ref="account_budget.view_crossovered_budget_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new budget.
+              </p><p>
+                A budget is a forecast of your company's income and/or expenses
+                expected for a period in the future. A budget is defined on some
+                financial accounts and/or analytic accounts (that may represent
+                projects, departments, categories of products, etc.)
+              </p><p>
+                By keeping track of where your money goes, you may be less
+                likely to overspend, and more likely to meet your financial
+                goals. Forecast a budget by detailing the expected revenue per
+                analytic account and monitor its evolution based on the actuals
+                realised during that period.
+              </p>
+            </field>
+        </record>
+
+        <record id="account_budget.act_crossovered_budget_view" model="ir.actions.act_window">
+            <field name="domain">[('cost_center_id','=',False)]</field>
+        </record>
+
+    </data>
+</openerp>
