@@ -19,7 +19,7 @@ class AccountBudgetPost(models.Model):
     def _set_account_id(self):
         for bp in self:
             if bp.account_id:
-                bp.account_ids += bp.account_id
+                bp.account_ids = bp.account_id
             else:
                 bp.account_ids = None
 
@@ -30,3 +30,11 @@ class AccountBudgetPost(models.Model):
         string='Account',
         store=True
     )
+
+    @api.model
+    def create(self, vals):
+        account_id = vals.get('account_id')
+        if account_id:
+            vals['account_ids'] = [(4, account_id)]
+
+        return super(AccountBudgetPost, self).create(vals)

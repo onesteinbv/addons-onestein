@@ -17,5 +17,6 @@
     'data': [
         'views/account_budget_post.xml',
     ],
+    'post_init_hook': 'post_init_hook',
     'installable': True,
 }
