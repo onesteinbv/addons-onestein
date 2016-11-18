@@ -47,6 +47,10 @@ class CrossoveredBudget(models.Model):
             context = {}
         if context.get('enable_cost_center'):
             args += [('cost_center_id','!=',False)]
+        date = context.get('filter_invoice_date')
+        if date:
+            args += [('date_from','<=',date)]
+            args += [('date_to','>=',date)]
 
         return super(CrossoveredBudget, self).name_search(
             cr, uid, name, args=args, operator=operator,

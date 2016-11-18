@@ -106,17 +106,3 @@ class CrossoveredBudget(models.Model):
                     vals['date_to'] = period_stop.date_stop
 
         return super(CrossoveredBudget, self).write(vals)
-
-    @api.multi
-    @api.constrains('date_from', 'date_to')
-    def _check_dates(self):
-        for budget in self:
-            pids = self.search([
-                ('date_to', '>=', budget.date_from),
-                ('date_from', '<=', budget.date_to),
-                ('company_id', '=', budget.company_id.id),
-                ('id', '<>', budget.id)])
-            if pids:
-                message = _('You can not have 2 budgets that overlaps on same dates!')
-                raise ValidationError(message)
-        return True

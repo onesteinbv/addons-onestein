@@ -26,3 +26,20 @@ class AccountInvoiceLine(models.Model):
         if line.cost_center_budget_id:
             res['cost_center_budget_id'] = line.cost_center_budget_id.id
         return res
+
+    @api.multi
+    @api.onchange('cost_center_id')
+    def _onchange_cost_center_budget_id(self):
+        for line in self:
+            if line.cost_center_id:
+                if line.cost_center_id != line.cost_center_budget_id.cost_center_id:
+                    line.cost_center_budget_id = None
+            else:
+                line.cost_center_budget_id = None
+
+    @api.multi
+    @api.onchange('cost_center_budget_id')
+    def _onchange_cost_center_budget_id(self):
+        for line in self:
+            if line.cost_center_budget_id:
+                line.cost_center_id = line.cost_center_budget_id.cost_center_id

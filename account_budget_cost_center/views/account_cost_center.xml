@@ -14,7 +14,7 @@
                 <xpath expr="//notebook" position="inside">
                     <page string="Budgets">
                         <group>
-                            <field name="budget_ids" nolabel="1" context="{'enable_cost_center':1}">
+                            <field name="budget_ids" nolabel="1" context="{'enable_cost_center':1,'default_cost_center_id':active_id}">
                                 <tree>
                                     <field name="name"/>
                                     <field name="code"/>

@@ -18,6 +18,7 @@
         'account_budget_totals',
     ],
     'data': [
+        'security/ir.model.access.csv',
         'views/crossovered_budget.xml',
         'views/account_cost_center.xml',
         'views/account_invoice.xml',

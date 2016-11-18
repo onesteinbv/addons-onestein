@@ -11,7 +11,7 @@
                     <field name="cost_center_budget_id"/>
                 </field>
                 <xpath expr="//page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='account_id']" position="after">
-                    <field name="cost_center_budget_id"/>
+                    <field name="cost_center_budget_id" context="{'filter_invoice_date': parent.date_invoice}"/>
                 </xpath>
             </field>
         </record>
@@ -25,7 +25,7 @@
                     <field name="cost_center_budget_id"/>
                 </field>
                 <xpath expr="//tree[@string='Invoice lines']/field[@name='account_id']" position="after">
-                    <field name="cost_center_budget_id"/>
+                    <field name="cost_center_budget_id" context="{'filter_invoice_date': parent.date_invoice}"/>
                 </xpath>
             </field>
         </record>
