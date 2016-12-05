@@ -7,7 +7,7 @@
             <field name="inherit_id" ref="account.view_account_config_settings"/>
             <field name="model">account.config.settings</field>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='module_account_asset']/.." position="after">
+                <xpath expr="//field[starts-with(@name, 'module_account_asset')]/.." position="after">
                     <div>
                         <field name="module_account_cost_spread" class="oe_inline"/>
                         <label for="module_account_cost_spread"/>
