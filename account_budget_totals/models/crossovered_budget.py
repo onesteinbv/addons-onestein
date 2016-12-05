@@ -34,7 +34,7 @@ class CrossoveredBudget(models.Model):
     amount_practical = fields.Float(
         compute='_get_amounts',
         string='Practical amount',
-        store=True,
+        store=False,
         digits=dp.get_precision('Account')
     )
     amount_practical_perc = fields.Float(
