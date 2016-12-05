@@ -27,14 +27,14 @@ class AccountInvoiceSpreadLine(models.Model):
         readonly=True)
     amount = fields.Float(
         string='Amount',
-        digits_compute=dp.get_precision('Account'),
+        digits=dp.get_precision('Account'),
         required=True)
     remaining_value = fields.Float(
         string='Next Period Spread',
-        digits_compute=dp.get_precision('Account'))
+        digits=dp.get_precision('Account'))
     spreaded_value = fields.Float(
         string='Amount Already Spread',
-        digits_compute=dp.get_precision('Account'))
+        digits=dp.get_precision('Account'))
     line_date = fields.Date(
         string='Date',
         required=True)
