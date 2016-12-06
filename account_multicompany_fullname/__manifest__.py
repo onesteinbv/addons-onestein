@@ -4,7 +4,9 @@
 
 {
     'name': 'Account Multicompany Fullname',
-    'summary': '''Display full name in a multicompany accounting environment''',
+    'summary': '''
+    Display full name in a multicompany accounting environment
+    ''',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',
