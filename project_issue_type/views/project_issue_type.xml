@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="project_issue_type_form" model="ir.ui.view">
+        <field name="name">Project Issue Type Form</field>
+        <field name="model">project.issue.type</field>
+        <field name="arch" type="xml">
+            <form string="Issue Type">
+                <group>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <group>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="project_issue_type_tree" model="ir.ui.view">
+        <field name="name">Project Issue Type Tree</field>
+        <field name="model">project.issue.type</field>
+        <field name="arch" type="xml">
+            <tree string="Issue Type">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="project_issue_type_search" model="ir.ui.view">
+        <field name="name">Project Issue Type Search</field>
+        <field name="model">project.issue.type</field>
+        <field name="arch" type="xml">
+            <search string="Issue Type">
+                <field name="name" string="Issue Type"/>
+           </search>
+        </field>
+    </record>
+
+    <record id="project_issue_type_action" model="ir.actions.act_window">
+        <field name="name">Project Issue Type</field>
+        <field name="res_model">project.issue.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="project_issue_type_search"/>
+    </record>
+
+</odoo>

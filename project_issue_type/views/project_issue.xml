@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="project_issue_type_form_view" model="ir.ui.view">
+        <field name="name">project.issue.type.form</field>
+        <field name="model">project.issue</field>
+        <field name="inherit_id" ref="project_issue.project_issue_form_view"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="before">
+                <field name="issue_type_id" required="1"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
