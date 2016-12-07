@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <menuitem action="project_issue_type_action"
+                  id="menu_project_issue_type"
+                  parent="project_issue.menu_project_confi"
+                  groups="base.group_no_one"/>
+
+    </data>
+</openerp>
