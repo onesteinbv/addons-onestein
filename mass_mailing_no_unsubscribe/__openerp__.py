@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2015 ONESTEiN BV (<http://www.onestein.eu>)
+# Copyright 2016 ONESTEiN BV (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
@@ -17,8 +17,5 @@
     'data': [
         'views/mail_mass_mailing.xml'
     ],
-    'demo': [],
     'installable': True,
-    'auto_install': False,
-    'application': False,
 }

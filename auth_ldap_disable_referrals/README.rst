@@ -26,3 +26,14 @@ Usage
 To use this module, you need to:
 
 #. Login with an ldap user
+
+
+
+Credits
+=======
+
+
+Contributors
+------------
+
+* Andrea Stirpe <a.stirpe@onestein.nl>
