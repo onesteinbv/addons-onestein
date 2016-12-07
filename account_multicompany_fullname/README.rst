@@ -6,16 +6,17 @@
 Account Multicompany Fullname
 =============================
 
-Within a Multicompany environment, some of the models of accounting
-usually belong to a particular company.
-For example, an account record (of model account.account) is per company
-and its field 'company_id' refers to the Company which the record belongs to.
+Within a Multicompany environment, the records of some accounting models
+belong to a certain company. For example, one account (record of
+model account.account) is defined per company: its field 'company_id' refers
+to one of the Companies present in the system.
 
-By installing this module, while selecting one record, its name
-is enriched by displaying also the name of the related company.
+By installing this module, while selecting one of such records, its name
+also contains the name of its related company.
 This is done by extending the name_get() method.
 
 The name_get() method is extended for the following models:
+
 * account.account
 * account.analytic.account
 * account.fiscal.position
