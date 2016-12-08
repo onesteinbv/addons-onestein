@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="account_analytic_account_expected_hours_form" model="ir.ui.view">
+            <field name="name">account.analytic.account.invoice.expected.hours.form</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="account_analytic_analysis.account_analytic_account_form_form"/>
+            <field eval="40" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="to_invoice"]' position="after">
+                    <field name="limit_percentage"
+                           class="oe_inline"
+                           attrs="{'required': [('alert_writing_hours','in',['block','alert']),('invoice_on_timesheets','=',True)], 'invisible': [('invoice_on_timesheets','!=',True)]}"/>
+                    <label for="date_start" string="Dates"/>
+                    <group>
+                        <field name="limit_date_start"
+                               class="oe_inline"
+                               nolabel="1"
+                               attrs="{'invisible': [('invoice_on_timesheets','!=',True)]}"/>
+                        <field name="limit_date_end"
+                               class="oe_inline"
+                               nolabel="1"
+                               attrs="{'invisible': [('invoice_on_timesheets','!=',True)]}"/>
+                    </group>
+                    <field name="alert_writing_hours"
+                           class="oe_inline"
+                           widget="selection"
+                           attrs="{'invisible': [('invoice_on_timesheets','!=',True)]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
