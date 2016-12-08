@@ -6,8 +6,29 @@
 HR Holidays leave repeated
 ==========================
 
+This module allows to create periodical leaves.
 
 
-HR Holidays leave repeated
+Configuration
+=============
+
+To configure this module, you need to:
+
+#. No configuration needed. Just install the module.
 
 
+Usage
+=====
+
+#. Set a particular leave type with the flag Repeating set as True.
+#. Fill a leave request selecting the above type
+#. Set the proper values for 'Repeat Every' and 'Repeat # times'
+#. Create (save) the leave request
+
+Credits
+=======
+
+Contributors
+------------
+
+* Andrea Stirpe <a.stirpe@onestein.nl>
