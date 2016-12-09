@@ -8,5 +8,5 @@ from odoo.api import Environment
 
 def post_init_hook(cr, pool):
     env = Environment(cr, SUPERUSER_ID, {})
-    env['mail.followers']._align_analytic_to_project()
     env['mail.followers']._align_project_to_analytic()
+    env['mail.followers']._align_analytic_to_project()
