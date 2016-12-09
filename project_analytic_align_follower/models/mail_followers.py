@@ -107,6 +107,7 @@ class MailFollowers(models.Model):
                 foll.res_model = 'project.project' AND
                 foll.res_id = proj.id AND
                 proj.analytic_account_id = acc.id AND
+                foll.partner_id IS NOT NULL AND
                 NOT EXISTS(
                     SELECT *
                     FROM mail_followers AS foll2
@@ -139,6 +140,7 @@ class MailFollowers(models.Model):
                 foll.res_model = 'account.analytic.account' AND
                 foll.res_id = acc.id AND
                 proj.analytic_account_id = acc.id AND
+                foll.partner_id IS NOT NULL AND
                 NOT EXISTS(
                     SELECT *
                     FROM mail_followers AS foll2
