@@ -7,7 +7,7 @@ HR Analytic Timesheet Self-Destroy
 ==================================
 
 With this module, the timesheet lines are automatically removed
-in case their amount is set as zero.
+in case their amount is set to zero.
 
 
 Credits

@@ -9,7 +9,7 @@
     'author': 'ONESTEiN BV',
     'license': 'AGPL-3',
     'website': "http://www.onestein.eu",
-    'category': 'Sales Management',
+    'category': 'Human Resources',
     'version': '8.0.1.0.0',
     'depends': [
         'hr_timesheet',
