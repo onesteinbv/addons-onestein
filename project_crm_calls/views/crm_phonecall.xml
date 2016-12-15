@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- Phonecalls Form View -->
+        <record id="crm_project_phone_form_view" model="ir.ui.view">
+            <field name="name">crm.project.phone.form.view</field>
+            <field name="model">crm.phonecall</field>
+            <field name="inherit_id" ref="crm.crm_case_phone_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="is_project_call" invisible="1"/>
+                </field>
+                <field name="user_id" position="after">
+                    <field name="project_id" />
+                    <field name="is_processed" />
+                    <field name="project_issue_id" readonly="1" attrs="{'invisible':[('is_project_call','!=',True)]}"/>
+                </field>
+                <button name="action_button_convert2opportunity" position="after">
+                    <button class="oe_inline oe_stat_button"
+                            type="object"
+                            name="action_button_convert2issue"
+                            icon="fa-star"
+                            attrs="{'invisible':[ '|', ('opportunity_id','!=',False), ('state', 'not in', ('open', 'done'))]}"
+                            help="Convert To Issue">
+                        <div>Convert To<br/>Issue</div>
+                    </button>
+                </button>
+                <button name="action_button_convert2opportunity" position="attributes">
+                    <attribute name="attrs">{'invisible':[ '|', ('is_project_call','=',True), '|', ('opportunity_id','!=',False), ('state', 'not in', ('open', 'done'))]}</attribute>
+                </button>
+            </field>
+        </record>
+
+        <!-- Phonecalls Tree View -->
+        <record id="crm_project_inbound_phone_tree_view" model="ir.ui.view">
+            <field name="name">crm.project.inbound.phone.tree.view</field>
+            <field name="model">crm.phonecall</field>
+            <field name="inherit_id" ref="crm.crm_case_inbound_phone_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="is_project_call" invisible="1"/>
+                </field>
+                <field name="user_id" position="after">
+                    <field name="project_id" />
+                    <field name="is_processed" />
+                    <field name="project_issue_id" readonly="1" attrs="{'invisible':[('is_project_call','!=',True)]}"/>
+                </field>
+                <button string="Schedule Other Call" position="attributes">
+                    <attribute name="groups">base.group_user</attribute>
+                </button>
+                <button name="action_make_meeting" position="attributes">
+                    <attribute name="groups">base.group_user</attribute>
+                </button>
+                <button name="action_button_convert2opportunity" position="attributes">
+                    <attribute name="groups">base.group_user</attribute>
+                </button>
+                <button name="action_button_convert2opportunity" position="after">
+                    <button string="Convert to Issue"
+                        name="action_button_convert2issue"
+                        states="open,pending"
+                        icon="terp-camera_test"
+                        groups="base.group_user"
+                        type="object" attrs="{'invisible':[('is_project_call','!=',True)]}"/>
+                </button>
+            </field>
+        </record>
+
+        <!-- Phonecalls Search View  -->
+        <record id="view_crm_project_phonecalls_filter" model="ir.ui.view">
+            <field name="name">view.crm.project.phonecalls.filter</field>
+            <field name="model">crm.phonecall</field>
+            <field name="inherit_id" ref="crm.view_crm_case_phonecalls_filter"/>
+            <field name="arch" type="xml">
+                <filter string="Unassigned" position="after">
+                    <separator/>
+                    <filter name="processed" string="Processed" domain="[('is_processed','=',True)]"/>
+                    <filter name="unprocessed" string="Unprocessed" domain="[('is_processed','!=',True)]"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="project_calls_action" model="ir.actions.act_window">
+            <field name="name">Calls</field>
+            <field name="res_model">crm.phonecall</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,calendar</field>
+            <field name="view_id" ref="crm.crm_case_inbound_phone_tree_view"/>
+            <field name="domain">[('is_project_call','=',True)]</field>
+            <field name="context">{'search_default_unprocessed': 1, 'default_state': 'done', 'default_is_project_call': 1}</field>
+            <field name="search_view_id" ref="crm.view_crm_case_phonecalls_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to log the summary of a phone call.
+              </p><p>
+                OpenERP allows you to log inbound calls on the fly to track the
+                history of the communication with a customer or to inform another
+                team member.
+              </p><p>
+                In order to follow up on the call, you can trigger a request for
+                another call, a meeting or an opportunity.
+              </p>
+            </field>
+        </record>
+
+        <record id="crm.crm_case_categ_phone_incoming0" model="ir.actions.act_window">
+            <field name="name">Logged Calls</field>
+            <field name="res_model">crm.phonecall</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,calendar</field>
+            <field name="view_id" ref="crm.crm_case_inbound_phone_tree_view"/>
+            <field name="domain">[('is_project_call','!=',True)]</field>
+            <field name="context">{'search_default_state': 'done', 'default_state': 'done'}</field>
+            <field name="search_view_id" ref="crm.view_crm_case_phonecalls_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to log the summary of a phone call.
+              </p><p>
+                Odoo allows you to log inbound calls on the fly to track the
+                history of the communication with a customer or to inform another
+                team member.
+              </p><p>
+                In order to follow up on the call, you can trigger a request for
+                another call, a meeting or an opportunity.
+              </p>
+            </field>
+        </record>
+
+        <record id="crm.crm_case_categ_phone_outgoing0" model="ir.actions.act_window">
+            <field name="name">Scheduled Calls</field>
+            <field name="res_model">crm.phonecall</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,calendar</field>
+            <field name="view_id" ref="crm.crm_case_phone_tree_view"/>
+            <field name="domain">[('state','!=','done'),('is_project_call','!=',True)]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="crm.view_crm_case_phonecalls_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to schedule a call
+              </p><p>
+                Odoo allows you to easily define all the calls to be done
+                by your sales team and follow up based on their summary.
+              </p><p>
+                You can use the import feature to massively import a new list of
+                prospects to qualify.
+              </p>
+            </field>
+        </record>
+
+        <record id="act_project_phonecalls_all" model="ir.actions.act_window">
+            <field name="res_model">crm.phonecall</field>
+            <field name="view_type">form</field>
+            <field name="name">Calls</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('project_id','=',active_id)]</field>
+            <field name="context">{
+                    'default_project_id': active_id,
+                }
+            </field>
+        </record>
+
+    </data>
+</openerp>
