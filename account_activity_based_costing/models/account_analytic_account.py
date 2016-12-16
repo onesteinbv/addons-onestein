@@ -2,7 +2,8 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 
 class AccountAnalyticAccount(models.Model):
@@ -122,17 +123,17 @@ class AccountAnalyticAccount(models.Model):
         string='Hours Left'
     )
 
-    expected_turnover = fields.Monetary(string='Turnover')
-    expected_costs = fields.Monetary(string='Costs')
+    expected_turnover = fields.Monetary(string='Expected Turnover')
+    expected_costs = fields.Monetary(string='Expected Costs')
     expected_contribution = fields.Monetary(
         compute='_get_expected_contribution',
         store=True,
-        string='Contribution'
+        string='Expected Contribution'
     )
     expected_contribution_perc = fields.Float(
         compute='_get_expected_contribution',
         store=True,
-        string='Contribution [%]'
+        string='Expected Contribution [%]'
     )
 
     realized_turnover = fields.Monetary(
@@ -176,3 +177,14 @@ class AccountAnalyticAccount(models.Model):
         store=True,
         string='Result Contribution [%]'
     )
+
+    @api.constrains('start_date', 'end_date')
+    def _check_dates(self):
+        if any(self.filtered(
+                lambda account: account.start_date and
+                account.end_date and
+                account.start_date > account.end_date
+        )):
+            raise ValidationError(
+                _('Error ! Starting date must be lower than ending date.')
+            )
