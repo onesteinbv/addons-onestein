@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_project_issue_stage_user,project.issue.stage.user,model_project_issue_stage,base.group_user,1,0,0,0
+access_project_issue_stage_project_user,project.issue.stage.project.user,model_project_issue_stage,project.group_project_user,1,0,0,0
+access_project_issue_stage_manager,project.task.issue manager,model_project_issue_stage,project.group_project_manager,1,1,1,1
