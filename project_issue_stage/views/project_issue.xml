@@ -72,7 +72,7 @@
                  <attribute name="context">{'group_by':'issue_stage_id'}</attribute>
             </xpath>
             <xpath expr="//field[@name='stage_id']" position="after">
-                 <field name="issue_stage_id" domain="[]"/>
+                 <field name="issue_stage_id" widget="statusbar" clickable="True" domain="[]"/>
             </xpath>
         </field>
     </record>
