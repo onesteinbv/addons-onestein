@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="swnowflakes_website_layout" inherit_id="website.layout">
+            <xpath expr="//meta[1]" position="before">
+                <script src="/web/static/lib/jquery/jquery.js"></script>
+                <script>
+                    $(document).ready( function(){
+                        now = new Date();
+                        if((now.getMonth() == 11 &amp;&amp; now.getDate() &gt; 7) || (now.getMonth() == 0 &amp;&amp; now.getDate() &lt; 7))
+                            $.fn.snow();
+                    });
+                </script>
+            </xpath>
+        </template>
+
+    </data>
+</openerp>
