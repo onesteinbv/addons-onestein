@@ -1,0 +1,11 @@
+<openerp>
+    <data>
+        <menuitem action="open_issue_stage_form"
+                  id="menu_project_config_issue"
+                  name="Issue Stages"
+                  parent="base.menu_project_config_project"
+                  sequence="4"
+                  groups="project.group_project_manager"/>
+
+    </data>
+</openerp>

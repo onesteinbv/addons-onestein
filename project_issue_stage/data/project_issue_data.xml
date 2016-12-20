@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="mt_issue_stage" model="mail.message.subtype">
+            <field name="name">Stage Changed</field>
+            <field name="res_model">project.issue</field>
+            <field name="default" eval="False"/>
+            <field name="description">Stage changed</field>
+        </record>
+
+        <record id="mt_project_issue_stage" model="mail.message.subtype">
+            <field name="name">Issue Stage Changed</field>
+            <field name="sequence">31</field>
+            <field name="res_model">project.project</field>
+            <field name="description">Stage changed</field>
+            <field name="parent_id" eval="ref('mt_issue_stage')"/>
+            <field name="relation_field">project_id</field>
+        </record>
+        
+    </data>
+</openerp>
