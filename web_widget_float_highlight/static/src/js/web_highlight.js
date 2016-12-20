@@ -7,6 +7,20 @@ odoo.define("web.float.highlight", function (require) {
         init: function () {
             this._super.apply(this, arguments);
 
+            var internal_apply = false
+            if (this.options)
+            {
+                if (this.options.lower_threshold) internal_apply = true;
+                if (this.options.upper_threshold) internal_apply = true;
+                if (this.options.lower_bg_color) internal_apply = true;
+                if (this.options.middle_bg_color) internal_apply = true;
+                if (this.options.upper_bg_color) internal_apply = true;
+                if (this.options.lower_font_color) internal_apply = true;
+                if (this.options.middle_font_color) internal_apply = true;
+                if (this.options.upper_font_color) internal_apply = true;
+                if (this.options.load_defaults) internal_apply = true;
+            }
+
             var load_defaults = (this.options && this.options.load_defaults) || false;
 
             var options = {
@@ -19,7 +33,8 @@ odoo.define("web.float.highlight", function (require) {
                 middle_font_color: (this.options && this.options.middle_font_color) || "#666666",
                 upper_font_color: (this.options && this.options.upper_font_color) || load_defaults && "white" || "#666666",
                 always_work: (this.options && this.options.always_work) || false,
-                load_defaults: load_defaults
+                load_defaults: load_defaults,
+                apply: internal_apply
             };
 
             this.options = options;
@@ -28,19 +43,20 @@ odoo.define("web.float.highlight", function (require) {
         start: function () {
             var self = this;
             this._super.apply(this, arguments);
+
             self.render_value();
-
-            this.on("change:value", this, function () {
-                self.render_value();
-            });
-
+            if (self.options.apply)
+            {
+                this.on("change:value", this, function () {
+                    self.render_value();
+                });
+            }
         },
 
         render_value: function () {
             this._super();
             var self = this;
-            if (this.get("effective_readonly") || self.options.always_work) {
-
+            if ((this.get("effective_readonly") && self.options.apply )|| self.options.always_work) {
                 var bg_color = null;
                 var font_color = null;
                 var val = this.get("value");
