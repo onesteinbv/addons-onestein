@@ -9,6 +9,7 @@
     'website': "http://www.onestein.eu",
     'category': 'Accounting & Finance',
     'version': '10.0.1.0.0',
+    'license': 'AGPL-3',
     'depends': [
         'account',
         'account_activity_based_costing',

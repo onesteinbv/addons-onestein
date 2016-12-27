@@ -3,10 +3,11 @@
 # Copyright 2014 ICTSTUDIO (<http://www.ictstudio.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.exceptions import UserError, ValidationError
 import logging
+
+from odoo import api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 

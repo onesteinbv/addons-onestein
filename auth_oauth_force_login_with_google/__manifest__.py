@@ -7,6 +7,7 @@
     'version': '10.0.1.0.0',
     'category': 'Tools',
     'author': 'ONESTEiN BV',
+    'license': 'AGPL-3',
     'depends': [
         'auth_oauth',
     ],

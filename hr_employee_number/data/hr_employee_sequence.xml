@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data noupdate="1">
-        <!-- Sequences for HR Employee numbes -->
-        <record id="seq_hr_employee" model="ir.sequence">
-            <field name="name">HR Employee</field>
-            <field name="code">hr.employee</field>
-        </record>
-    </data>
-</openerp>
+<odoo noupdate="1">
+
+    <!-- Sequences for HR Employee numbes -->
+    <record id="seq_hr_employee" model="ir.sequence">
+        <field name="name">HR Employee</field>
+        <field name="code">hr.employee</field>
+    </record>
+
+</odoo>

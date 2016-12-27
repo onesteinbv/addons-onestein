@@ -8,6 +8,7 @@
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'category': 'Project Management',
+    'license': 'AGPL-3',
     'version': '10.0.1.0.0',
     'depends': [
         'project'

@@ -9,6 +9,7 @@
     'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
     'version': '10.0.1.0.0',
+    'license': 'AGPL-3',
     'depends': [
         'hr_contract',
     ],

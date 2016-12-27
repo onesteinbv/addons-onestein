@@ -8,3 +8,20 @@ Store employee relatives
 
 This module creates a table for storing employee relatives for communication
 in case of need.
+
+
+Configuration
+=============
+
+To configure this module, you need to:
+
+#. No configuration needed. Just install the module.
+
+
+Credits
+=======
+
+Contributors
+------------
+
+* Andrea Stirpe <a.stirpe@onestein.nl>

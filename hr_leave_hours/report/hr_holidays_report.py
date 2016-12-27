@@ -2,8 +2,7 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import tools
-from odoo import fields, models
+from odoo import fields, models, tools
 
 
 class hr_holidays_remaining_leaves_user(models.Model):

@@ -4,11 +4,11 @@
 
 import logging
 import math
-
-from odoo import fields, models, api
 from datetime import datetime, timedelta
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTS
+
+from odoo import api, fields, models
 from odoo.exceptions import Warning
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTS
 from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
