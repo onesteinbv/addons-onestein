@@ -3,9 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import calendar
-from odoo import models, fields, api, _
-import odoo.addons.decimal_precision as dp
 import logging
+
+import odoo.addons.decimal_precision as dp
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
