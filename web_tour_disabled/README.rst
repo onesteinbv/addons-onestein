@@ -8,6 +8,16 @@ Web Tours Disabled
 
 This module disables (hides) the animations of the Odoo Web Tours.
 
+In the standard Odoo there is already an UI option to disable the tour. It is
+present in a menu item called "Consume Tours" and is available by enabling the
+Developer mode. But such functionality requires some steps to be done by the user (admin).
+
+For our Saas service we needed a way to disable the tour without any required
+interaction by the user. This way, we don't need to instruct the user to disable the tour
+manually, following the standard procedure. When we create a fresh database in our Saas,
+the module web_tour_disabled in installed by default and the newly created admin user
+is not annoyed by the tour tips.
+
 
 Configuration
 =============
