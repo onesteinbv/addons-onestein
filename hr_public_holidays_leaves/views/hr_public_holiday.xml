@@ -1,0 +1,49 @@
+<odoo>
+
+    <record id="hr_public_holidays.view_public_holidays_form" model="ir.ui.view">
+        <field name="name">hr.holidays.public.form</field>
+        <field name="model">hr.holidays.public</field>
+        <field name="arch" type="xml">
+            <form string="Public Holidays">
+                <header>
+                    <button string="Approve" name="validate" states="draft" type="object" groups="base.group_hr_user" class="oe_highlight"/>
+                    <button string="Reset to Draft" name="reset" type="object"
+                            attrs="{'invisible': [('state', 'not in', ['validate'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,validate" statusbar_colors='{"validate":"blue"}'/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <field name="year"/>
+                        <field name="country_id"/>
+                    </group>
+                    <newline />
+                    <group string="Public Holidays">
+                        <field name="line_ids" nolabel="1">
+                            <tree string="Public Holidays"
+                                editable="top">
+                                <field name="date" />
+                                <field name="name" />
+                                <field name="variable" />
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_public_holidays.view_public_holidays_tree" model="ir.ui.view">
+        <field name="name">hr.holidays.public.tree</field>
+        <field name="model">hr.holidays.public</field>
+        <field name="arch" type="xml">
+            <tree colors="red:state == 'refuse';blue:state == ' draft';black:state in ('confirm','validate','validate1')" string="Public Holidays">
+                <field name="display_name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="country_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
