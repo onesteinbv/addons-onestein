@@ -6,8 +6,10 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//kanban//field[@name='name']" position="after">
-                <field name="type"/>
+            <xpath expr="//kanban//templates//field[@name='name']" position="after">
+                <div>
+                    <field name="type"/>
+                </div>
             </xpath>
         </field>
     </record>
