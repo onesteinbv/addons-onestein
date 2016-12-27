@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2016 ONESTEiN BV (<http://www.onestein.eu>)
+# Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp import models, fields, api
@@ -16,10 +16,8 @@ class AccountInvoice(models.Model):
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):
         res = super(AccountInvoice, self)._onchange_partner_id()
-        partner = self.partner_id
         if self.type in ['out_invoice', 'out_refund']:
-            if partner:
-                self.pricelist_id = partner.property_product_pricelist
-            else:
-                self.pricelist_id = None
+            self.pricelist_id = None
+            if self.partner_id:
+                self.pricelist_id = self.partner_id.property_product_pricelist
         return res
