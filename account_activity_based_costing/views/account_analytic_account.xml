@@ -20,14 +20,14 @@
                             <field name="consumed_hours"/>
                            <div>___________________ </div>
                            <div>_______________</div>
-                            <field name="hours_left" options="{'load_defaults':True}"/>
+                            <field name="hours_left" options="{'highlight':True}"/>
                         </group>
                         <group>
                             <field name="expected_turnover"/>
                             <field name="expected_costs"/>
                            <div>___________________ </div>
                            <div>_______________</div>
-                            <field name="expected_contribution" options="{'load_defaults':True}"/>
+                            <field name="expected_contribution" options="{'highlight':True}"/>
                             <field name="expected_contribution_perc"/>
                         </group>
                         <group>
@@ -35,7 +35,7 @@
                             <field name="realized_costs"/>
                            <div>___________________ </div>
                            <div>_______________</div>
-                            <field name="contribution" options="{'load_defaults':True}"/>
+                            <field name="contribution" options="{'highlight':True}"/>
                             <field name="contribution_perc"/>
                         </group>
                     </group>

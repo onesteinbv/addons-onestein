@@ -16,12 +16,9 @@ class account_analytic_account(models.Model):
     @api.depends('line_ids', 'line_ids.unit_amount')
     def _get_consumed_hours(self):
         for analytic_account in self:
-            # total quantity of timesheet lines on projects of this analytic account
             consumed_hours = 0.0
-            projects = analytic_account.project_ids
             for line in analytic_account.line_ids:
-                if line.project_id in projects:
-                    consumed_hours += line.unit_amount
+                consumed_hours += line.unit_amount
             analytic_account.consumed_hours = consumed_hours
 
     @api.depends('expected_turnover', 'expected_costs')
