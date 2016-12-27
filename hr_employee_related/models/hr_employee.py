@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-# © 2016 ONESTEiN BV (<http://www.onestein.eu>)
+# Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields
+from openerp import fields, models
 
 
-class hr_employee(models.Model):
+class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     related_ids = fields.One2many(
-        'hr.employee.related', 'employee_id', string='Related')
+        'hr.employee.related',
+        'employee_id',
+        string='Related'
+    )

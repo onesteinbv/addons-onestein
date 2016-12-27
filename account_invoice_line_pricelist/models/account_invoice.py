@@ -2,7 +2,7 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import models, fields, api
+from openerp import api, fields, models
 
 
 class AccountInvoice(models.Model):
@@ -11,7 +11,8 @@ class AccountInvoice(models.Model):
     pricelist_id = fields.Many2one(
         'product.pricelist',
         'Pricelist',
-        help="Pricelist for current invoice.")
+        help='Pricelist for current invoice.'
+    )
 
     @api.onchange('partner_id', 'company_id')
     def _onchange_partner_id(self):

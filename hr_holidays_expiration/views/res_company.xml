@@ -6,15 +6,17 @@
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form" />
         <field name="arch" type="xml">
-            <xpath expr="//page[2]" position="inside">
-                <group name="validity" string="Validity">
-                    <group>
-                        <field name="notify_template_id" />
+            <xpath expr="//notebook" position="inside">
+                <page string="Holiday Expiration" name="holiday_expiration">
+                    <group name="validity" string="Validity">
+                        <group>
+                            <field name="notify_template_id" />
+                        </group>
+                        <group>
+                            <field name="expire_template_id" />
+                        </group>
                     </group>
-                    <group>
-                        <field name="expire_template_id" />
-                    </group>
-                </group>
+                </page>
             </xpath>
         </field>
     </record>
