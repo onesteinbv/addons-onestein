@@ -6,15 +6,17 @@
 Restrict automatic emails to partner
 ====================================
 
-This module sets the default value of the field "Opt-Out" to True while creating a Partner.
-In standard Odoo, that field is defined in the module email_template and its default value is False.
+This module allows to configure the default value of the field "Opt-Out" while creating a new Partner.
+The configuration is per-company, allowing different settings in a multi-company environment.
+
+In standard Odoo, that field is defined in the module mail and its default value is False.
 
 As stated in the help comment for the field (Odoo code, module email_template):
 `
     help="If opt-out is checked, this contact has refused to receive emails for mass mailing and marketing campaign. "
 `
 
-By installing this module, partners by default will not receive marketing emails or other kind of automated emails.
+If "Opt-Out" is True, newly created partners by default will not receive marketing emails or other kind of automated emails.
 
 
 Configuration
@@ -22,7 +24,10 @@ Configuration
 
 To configure this module, you need to:
 
-#. No configuration needed.
+#. Go to the Company form and open the Settings tab;
+#. check the field 'Enable Opt-out by default'
+#. by default its value is True: new partners by default will not receive automatic emails
+#. set the value to False to allow new created partners to receive automatic emails by default
 
 
 Usage
@@ -31,3 +36,4 @@ Usage
 To use this module, you need to:
 
 #. Create a Partner
+#. check the Opt-out field in the Partner form
