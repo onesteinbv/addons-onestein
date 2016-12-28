@@ -14,4 +14,5 @@ class SaleOrderConfirmWizard(models.TransientModel):
         self.ensure_one()
         active_ids = self._context.get('active_ids')
         orders = self.env['sale.order'].browse(active_ids)
-        orders.action_confirm()
+        for order in orders:
+            order.action_confirm()
