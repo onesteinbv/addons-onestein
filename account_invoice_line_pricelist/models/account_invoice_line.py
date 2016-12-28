@@ -2,7 +2,7 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import models, api
+from odoo import api, models
 
 
 class AccountInvoiceLine(models.Model):
@@ -34,6 +34,6 @@ class AccountInvoiceLine(models.Model):
         self.price_unit = self.env['account.tax']._fix_tax_included_price(
             product.price,
             product.taxes_id,
-            self.invoice_line_tax_ids)
-
+            self.invoice_line_tax_ids
+        )
         return res
