@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem action="project_issue_type_action"
+              id="menu_project_issue_type"
+              parent="project.menu_project_config"
+              sequence="5"
+              groups="base.group_no_one"/>
+
+</odoo>
