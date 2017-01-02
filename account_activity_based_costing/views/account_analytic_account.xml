@@ -1,75 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
-        <record id="view_account_analytic_account_form" model="ir.ui.view">
-            <field name="name">view.account.analytic.account.form</field>
-            <field name="model">account.analytic.account</field>
-            <field name="inherit_id" ref="account_budget.view_account_analytic_account_form_inherit_budget"/>
-            <field name="priority">6</field>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='partner_id']" position='after'>
-                    <field name="start_date"/>
-                    <field name="end_date" required="1"/>
-                </xpath>
-                <xpath expr="//notebook" position='before'>
-                    <separator string="Accounting Budget" colspan="4"/>
+    <record id="view_account_analytic_account_form" model="ir.ui.view">
+        <field name="name">view.account.analytic.account.form</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="account_budget.view_account_analytic_account_form_inherit_budget"/>
+        <field name="priority">26</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position='after'>
+                <field name="start_date"/>
+                <field name="end_date" required="1"/>
+            </xpath>
+            <xpath expr="//page[1]" position='before'>
+                <page name="activity_based_costing" string="Activity Based Costing">
                     <group name="accounting_budget" col="3">
-                        <group>
+                        <group string="Hours">
                             <field name="expected_hours"/>
                             <field name="consumed_hours"/>
                            <div>___________________ </div>
                            <div>_______________</div>
-                            <field name="hours_left" options="{'highlight':True}"/>
+                            <field name="hours_left" options="{'load_defaults':True}"/>
                         </group>
-                        <group>
+                    </group>
+                    <group name="account_budget" col="3">
+                        <group string="Expected">
                             <field name="expected_turnover"/>
                             <field name="expected_costs"/>
                            <div>___________________ </div>
                            <div>_______________</div>
-                            <field name="expected_contribution" options="{'highlight':True}"/>
+                            <field name="expected_contribution" options="{'load_defaults':True}"/>
                             <field name="expected_contribution_perc"/>
                         </group>
-                        <group>
+                        <group string="Realized">
                             <field name="realized_turnover"/>
                             <field name="realized_costs"/>
                            <div>___________________ </div>
                            <div>_______________</div>
-                            <field name="contribution" options="{'highlight':True}"/>
+                            <field name="contribution" options="{'load_defaults':True}"/>
                             <field name="contribution_perc"/>
                         </group>
+                        <group string="Budget">
+                            <field name="budget_result_turnover" options="{'load_defaults':True}"/>
+                            <field name="budget_result_cost" options="{'load_defaults':True}"/>
+                           <div>___________________ </div>
+                           <div>_______________</div>
+                            <field name="budget_result_contribution" options="{'load_defaults':True}"/>
+                            <!--<field name="budget_result_contribution_perc"/>-->
+                        </group>
                     </group>
-                </xpath>
-            </field>
-        </record>
+                </page>
+            </xpath>
+        </field>
+    </record>
 
-        <record id="view_account_analytic_account_pivot" model="ir.ui.view">
-            <field name="name">account.analytic.account.pivot</field>
-            <field name="model">account.analytic.account</field>
-            <field name="arch" type="xml">
-                <pivot string="Analytic Accounts" >
-                    <field name="name" type="row"/>
-                    <field name="expected_hours" type="measure"/>
-                    <field name="consumed_hours" type="measure"/>
-                    <field name="hours_left" type="measure"/>
-                    <field name="expected_turnover" type="measure"/>
-                    <field name="expected_costs" type="measure"/>
-                    <field name="expected_contribution" type="measure"/>
-                    <field name="realized_turnover" type="measure"/>
-                    <field name="realized_costs" type="measure"/>
-                    <field name="contribution" type="measure"/>
-                </pivot>
-            </field>
-        </record>
+    <record id="view_account_analytic_account_pivot" model="ir.ui.view">
+        <field name="name">account.analytic.account.pivot</field>
+        <field name="model">account.analytic.account</field>
+        <field name="arch" type="xml">
+            <pivot string="Analytic Accounts" options='{"load_defaults":"true"}'>
+                <field name="name" type="row"/>
+                <field name="expected_hours" type="measure"/>
+                <field name="consumed_hours" type="measure"/>
+                <field name="hours_left" type="measure" highlight="true"/>
+                <field name="expected_turnover" type="measure"/>
+                <field name="expected_costs" type="measure"/>
+                <field name="expected_contribution" type="measure" highlight="true"/>
+                <field name="realized_turnover" type="measure"/>
+                <field name="realized_costs" type="measure"/>
+                <field name="contribution" type="measure" highlight="true"/>
+                <field name="budget_result_turnover" type="measure" highlight="true"/>
+                <field name="budget_result_cost" type="measure" highlight="true"/>
+                <field name="budget_result_contribution" type="measure" highlight="true"/>
+            </pivot>
+        </field>
+    </record>
 
-        <record model="ir.actions.act_window" id="analytic_account_reporting_pivot">
-            <field name="name">Analytic Accounts</field>
-            <field name="res_model">account.analytic.account</field>
-            <field name="view_mode">pivot</field>
-            <field name="view_id" ref="view_account_analytic_account_pivot"/>
-            <field name="view_type">form</field>
-            <field name="search_view_id" ref="analytic.view_account_analytic_account_search"/>
-        </record>
+    <record model="ir.actions.act_window" id="analytic_account_reporting_pivot">
+        <field name="name">Analytic Accounts</field>
+        <field name="res_model">account.analytic.account</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_account_analytic_account_pivot"/>
+        <field name="view_type">form</field>
+        <field name="search_view_id" ref="analytic.view_account_analytic_account_search"/>
+    </record>
 
     </data>
-</openerp>
+</odoo>

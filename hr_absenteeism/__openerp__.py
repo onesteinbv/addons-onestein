@@ -17,10 +17,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/hr_holidays_status.xml',
+        'views/hr_holidays.xml',
         'data/hr_absenteeism_cron.xml',
     ],
-    'demo': [],
     'installable': True,
-    'auto_install': False,
-    'application': False,
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
 
     <record id="edit_holiday_new_expiration" model="ir.ui.view">
         <field name="name">edit.holiday.new.expiration</field>
@@ -44,4 +45,5 @@
         </field>
     </record>
 
+    </data>
 </odoo>

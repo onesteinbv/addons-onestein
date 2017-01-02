@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
 
     <record id="edit_holiday_status_form_absence" model="ir.ui.view">
         <field name="name">edit.holiday.status.form.absence</field>
@@ -27,4 +28,5 @@
         </field>
     </record>
 
+    </data>
 </odoo>

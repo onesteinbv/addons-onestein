@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <data>
 
     <record id="edit_res_company_form_expiration" model="ir.ui.view">
         <field name="name">edit.res.company.form.expiration</field>
@@ -21,4 +22,5 @@
         </field>
     </record>
 
+    </data>
 </odoo>
