@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
-# © 2015-2016 ONESTEiN BV (<http://www.onestein.eu>)
+# Copyright 2015-2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import json
 
-from openerp import tools
-from openerp import SUPERUSER_ID
-from openerp import models, fields, api
+from openerp import SUPERUSER_ID, api, fields, models, tools
 from openerp.exceptions import Warning as UserError
 from openerp.modules.registry import RegistryManager
 from openerp.tools.translate import _
