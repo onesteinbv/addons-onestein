@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/onesteinbv/addons-onestein.svg?branch=9.0)](https://travis-ci.org/onesteinbv/addons-onestein)
+[![Coverage Status](https://coveralls.io/repos/github/onesteinbv/addons-onestein/badge.svg?branch=9.0)](https://coveralls.io/github/onesteinbv/addons-onestein?branch=9.0)
 
 ======================
 Onestein - Odoo addons
