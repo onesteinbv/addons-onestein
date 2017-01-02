@@ -11,16 +11,19 @@ class TestBiViewEditor(common.TransactionCase):
 
         partner_model_name = 'res.partner'
         partner_field_name = 'name'
+        partner_company_id_field_name = 'company_id'
         company_model_name = 'res.company'
         company_field_name = 'name'
 
         partner_model = self.env['ir.model'].search([
             ('model', '=', partner_model_name)
         ], limit=1)
+        self.assertIsNotNone(partner_model)
 
         company_model = self.env['ir.model'].search([
             ('model', '=', company_model_name)
         ], limit=1)
+        self.assertIsNotNone(company_model)
 
         self.env['ir.model'].get_fields(partner_model.id)
 
@@ -28,11 +31,19 @@ class TestBiViewEditor(common.TransactionCase):
             ('model', '=', partner_model_name),
             ('name', '=', partner_field_name)
         ], limit=1)
+        self.assertIsNotNone(partner_field)
+
+        partner_company_id_field = self.env['ir.model.fields'].search([
+            ('model', '=', partner_model_name),
+            ('name', '=', partner_company_id_field_name)
+        ], limit=1)
+        self.assertIsNotNone(partner_company_id_field)
 
         company_field = self.env['ir.model.fields'].search([
             ('model', '=', company_model_name),
             ('name', '=', company_field_name)
         ], limit=1)
+        self.assertIsNotNone(company_field)
 
         new_field = {
             'model_id': partner_model.id,
@@ -52,7 +63,7 @@ class TestBiViewEditor(common.TransactionCase):
             't1': company_model.id
         })
 
-        self.env['bve.view'].create({
+        bi_view1 = self.env['bve.view'].create({
             'name': 'View Test1',
             'state': 'draft',
             'data': [
@@ -70,31 +81,32 @@ class TestBiViewEditor(common.TransactionCase):
                  'measure': False
                  },
                 {'model_id': partner_model.id,
-                 'name': 'company_id',
+                 'name': partner_company_id_field_name,
                  'table_alias': 't0',
                  'custom': False,
                  'relation': company_model_name,
                  'model': partner_model_name,
                  'model_name': partner_model.name,
-                 'type': 'many2one',
-                 'id':938,
-                 'join_node':'t1',
-                 'description':'Company',
+                 'type': partner_company_id_field.ttype,
+                 'id': partner_company_id_field.id,
+                 'join_node': 't1',
+                 'description': partner_company_id_field.field_description,
                  'row': False,
                  'column': False,
                  'measure': False
                  },
-                {'model_id': 89,
+                {'model_id': company_model.id,
                  'name': 'name_1',
-                 'model_name': 'Companies',
+                 'model_name': company_model.name,
                  'model': company_model_name,
                  'custom': False,
-                 'type': 'char',
-                 'id': 1103,
-                 'description': 'Company Name',
+                 'type': company_field.ttype,
+                 'id': company_field.id,
+                 'description': company_field.field_description,
                  'table_alias': 't1',
                  'row': True,
                  'column': False,
                  'measure': False}]
                  }
         )
+        self.assertIsNotNone(bi_view1)
