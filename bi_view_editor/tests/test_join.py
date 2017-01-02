@@ -106,7 +106,8 @@ class TestBiViewEditor(common.TransactionCase):
                  'table_alias': 't1',
                  'row': True,
                  'column': False,
-                 'measure': False}]
+                 'measure': False
                  }
-        )
+            ]
+        })
         self.assertIsNotNone(bi_view1)
