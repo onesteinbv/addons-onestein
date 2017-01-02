@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <record id="view_budget_post_one_account_form" model="ir.ui.view">
+        <field name="name">account.budget.post.one.account.form</field>
+        <field name="model">account.budget.post</field>
+        <field name="inherit_id" ref="account_budget.view_budget_post_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="account_id" required="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
