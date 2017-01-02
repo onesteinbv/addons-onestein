@@ -4,7 +4,7 @@
 
 {
     'name': 'BI View Editor',
-    'summary': '''Graphical BI views builder for Odoo 9''',
+    'summary': '''Graphical BI views builder for Odoo''',
     'images': ['static/description/main_screenshot.png'],
     'author': 'ONESTEiN BV,Odoo Community Association (OCA)',
     'license': 'AGPL-3',
