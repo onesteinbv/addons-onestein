@@ -1,0 +1,10 @@
+<odoo>
+
+    <menuitem action="open_issue_stage_form"
+              id="menu_project_config_issue"
+              name="Issue Stages"
+              parent="project.menu_project_config"
+              sequence="4"
+              groups="project.group_project_manager"/>
+
+</odoo>
