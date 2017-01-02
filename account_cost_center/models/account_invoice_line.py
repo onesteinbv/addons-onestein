@@ -16,14 +16,3 @@ class AccountInvoiceLine(models.Model):
     cost_center_id = fields.Many2one(
         'account.cost.center', string='Cost Center',
         default=_default_cost_center)
-
-    @api.model
-    def move_line_get_item(self):
-        res = super(AccountInvoiceLine, self).invoice_line_move_line_get()
-
-        InvoiceLine = self.env['account.invoice.line']
-        for move_line_dict in res:
-            line = InvoiceLine.browse(move_line_dict['invl_id'])
-            move_line_dict['cost_center_id'] = line.cost_center_id.id
-
-        return res

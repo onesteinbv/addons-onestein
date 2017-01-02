@@ -45,3 +45,14 @@ class AccountInvoice(models.Model):
                     el.set('context', str(ctx))
                     res['arch'] = etree.tostring(view_obj)
         return res
+
+    @api.model
+    def invoice_line_move_line_get(self):
+        res = super(AccountInvoice, self).invoice_line_move_line_get()
+
+        InvoiceLine = self.env['account.invoice.line']
+        for move_line_dict in res:
+            line = InvoiceLine.browse(move_line_dict['invl_id'])
+            move_line_dict['cost_center_id'] = line.cost_center_id.id
+
+        return res
