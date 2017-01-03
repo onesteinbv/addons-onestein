@@ -1,45 +1,52 @@
 # -*- coding: utf-8 -*-
-# Copyright 2015-2016 Onestein (<http://www.onestein.eu>)
+# Copyright 2015-2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp import api, models
-from openerp.modules.registry import RegistryManager
 
 NO_BI_MODELS = [
-    "temp.range",
-    "account.statement.operation.template",
-    "fetchmail.server"
+    'temp.range',
+    'account.statement.operation.template',
+    'fetchmail.server'
 ]
 
 NO_BI_FIELDS = [
-    "id",
-    "create_uid",
-    "create_date",
-    "write_uid",
-    "write_date"
+    'id',
+    'create_uid',
+    'create_date',
+    'write_uid',
+    'write_date'
+]
+
+NO_BI_TTYPES = [
+    'many2many',
+    'one2many',
+    'html',
+    'binary',
+    'reference'
 ]
 
 
 def dict_for_field(field):
     return {
-        "id": field.id,
-        "name": field.name,
-        "description": field.field_description,
-        "type": field.ttype,
-        "relation": field.relation,
-        "custom": False,
+        'id': field.id,
+        'name': field.name,
+        'description': field.field_description,
+        'type': field.ttype,
+        'relation': field.relation,
+        'custom': False,
 
-        "model_id": field.model_id.id,
-        "model": field.model_id.model,
-        "model_name": field.model_id.name
+        'model_id': field.model_id.id,
+        'model': field.model_id.model,
+        'model_name': field.model_id.name
     }
 
 
 def dict_for_model(model):
     return {
-        "id": model.id,
-        "name": model.name,
-        "model": model.model
+        'id': model.id,
+        'name': model.name,
+        'model': model.model
     }
 
 
@@ -57,20 +64,20 @@ class IrModel(models.Model):
 
     @api.model
     def _filter_bi_models(self, model):
-        model_name = model["model"]
+        model_name = model['model']
         if model_name in NO_BI_MODELS or \
-                model_name.startswith("workflow") or \
-                model_name.startswith("ir.") or \
-                model["name"] == "Unknow" or \
-                "report" in model_name or \
-                model_name.startswith("base_") or \
-                "_" in model_name or \
-                "." in model["name"] or \
-                "mail" in model_name or \
-                "edi." in model_name:
+                model_name.startswith('workflow') or \
+                model_name.startswith('ir.') or \
+                model['name'] == 'Unknow' or \
+                'report' in model_name or \
+                model_name.startswith('base_') or \
+                '_' in model_name or \
+                '.' in model['name'] or \
+                'mail' in model_name or \
+                'edi.' in model_name:
             return False
         return self.env['ir.model.access'].check(
-            model["model"], 'read', False)
+            model['model'], 'read', False)
 
     @api.model
     def get_related_fields(self, model_ids):
@@ -123,7 +130,7 @@ class IrModel(models.Model):
         related_fields = self.get_related_fields(model_ids)
         return sorted(filter(
             self._filter_bi_models,
-            [{"id": model.id, "name": model.name, "model": model.model}
+            [{'id': model.id, 'name': model.name, 'model': model.model}
              for model in self.env['ir.model'].sudo().search(
                 ['|',
                  ('id', 'in', model_ids.values() + [
@@ -172,47 +179,40 @@ class IrModel(models.Model):
     def get_fields(self, model_id):
         bi_field_domain = [
             ('model_id', '=', model_id),
-            ("name", "not in", NO_BI_FIELDS),
-            ('ttype', 'not in', [
-                'many2many', "one2many", "html", "binary", "reference"])
+            ('name', 'not in', NO_BI_FIELDS),
+            ('ttype', 'not in', NO_BI_TTYPES)
         ]
         filter_bi_fields = self._filter_bi_fields
         fields_obj = self.env['ir.model.fields']
         fields = filter(filter_bi_fields,
                         fields_obj.sudo().search(bi_field_domain))
-        return sorted([{"id": field.id,
-                        "model_id": model_id,
-                        "name": field.name,
-                        "description": field.field_description,
-                        "type": field.ttype,
-                        "custom": False,
-                        "model": field.model_id.model,
-                        "model_name": field.model_id.name}
-                       for field in fields], key=lambda x: x['description'],
-                      reverse=True)
+        return sorted(
+            [{'id': field.id,
+              'model_id': model_id,
+              'name': field.name,
+              'description': field.field_description,
+              'type': field.ttype,
+              'custom': False,
+              'model': field.model_id.model,
+              'model_name': field.model_id.name
+              } for field in fields],
+            key=lambda x: x['description'],
+            reverse=True
+        )
 
-    def create(self, cr, user, vals, context=None):
-        if context is None:
-            context = {}
-        if context and context.get('bve'):
+    @api.model
+    @api.returns('self', lambda value: value.id)
+    def create(self, vals):
+        if self._context and self._context.get('bve'):
             vals['state'] = 'base'
-        res = super(IrModel, self).create(cr, user, vals, context)
-        if vals.get('state', 'base') == 'bve':
-            vals['state'] = 'manual'
+        res = super(IrModel, self).create(vals)
 
-            # add model in registry
-            self.instanciate(cr, user, vals['model'], context)
-            self.pool.setup_models(cr, partial=(not self.pool.ready))
-
-            RegistryManager.signal_registry_change(cr.dbname)
-
-        # Following commented line (write method) is not working anymore
-        # as in Odoo V9 a new orm constraint is restricting the modification
-        # of the state while updating ir.model
-        # self.write(cr, user, [res], {'state': 'manual'})
+        # this sql update is necessary since a write method here would
+        # be not working (an orm constraint is restricting the modification
+        # of the state field while updating ir.model)
         q = ("""UPDATE ir_model SET state = 'manual'
-               WHERE id = """ + str(res))
+               WHERE id = """ + str(res.id))
 
-        cr.execute(q)
+        self.env.cr.execute(q)
 
         return res

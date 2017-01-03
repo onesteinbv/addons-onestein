@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2015-2016 Onestein (<http://www.onestein.eu>)
+# Copyright 2015-2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import json
@@ -12,48 +12,55 @@ from openerp.tools.translate import _
 
 class BveView(models.Model):
     _name = 'bve.view'
-    _description = "BI View Editor"
+    _description = 'BI View Editor'
 
     @api.depends('group_ids')
     @api.multi
     def _compute_users(self):
         for bve_view in self:
-            if bve_view.sudo().group_ids:
-                bve_view.user_ids = self.env['res.users'].sudo().browse(
-                    list(set([u.id for group in bve_view.sudo().group_ids
-                              for u in group.users])))
+            group_ids = bve_view.sudo().group_ids
+            if group_ids:
+                user_id_list = []
+                for group in group_ids:
+                    user_id_list += group.users.ids
+
+                # remove duplicated ids from user_id_list
+                user_id_list = list(set(user_id_list))
+
+                ResUsers = self.env['res.users']
+                bve_view.user_ids = ResUsers.sudo().browse(user_id_list)
             else:
                 bve_view.user_ids = self.env['res.users'].sudo().search([])
 
-    name = fields.Char(size=128, string="Name", required=True)
-    model_name = fields.Char(size=128, string="Model Name")
+    name = fields.Char(size=128, string='Name', required=True)
+    model_name = fields.Char(size=128, string='Model Name')
 
-    note = fields.Text(string="Notes")
+    note = fields.Text(string='Notes')
 
     state = fields.Selection(
         [('draft', 'Draft'),
          ('created', 'Created')],
-        string="State",
-        default="draft")
+        string='State',
+        default='draft')
     data = fields.Text(
-        string="Data",
+        string='Data',
         help="Use the special query builder to define the query "
              "to generate your report dataset. "
              "NOTE: Te be edited, the query should be in 'Draft' status.")
 
-    action_id = fields.Many2one('ir.actions.act_window', string="Action")
-    view_id = fields.Many2one('ir.ui.view', string="View")
+    action_id = fields.Many2one('ir.actions.act_window', string='Action')
+    view_id = fields.Many2one('ir.ui.view', string='View')
 
     group_ids = fields.Many2many(
         'res.groups',
-        string="Groups",
+        string='Groups',
         help="User groups allowed to see the generated report; "
              "if NO groups are specified the report will be public "
              "for everyone.")
 
     user_ids = fields.Many2many(
         'res.users',
-        string="Users",
+        string='Users',
         compute=_compute_users,
         store=True)
 
@@ -74,15 +81,6 @@ class BveView(models.Model):
         super(BveView, self).unlink()
 
     @api.multi
-    def action_edit_query(self):
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'bi_view_editor.open',
-            'target': 'new',
-            'params': {'bve_view_id': self.id}
-        }
-
-    @api.multi
     def action_reset(self):
         if self.action_id:
             if self.action_id.view_id:
@@ -94,7 +92,7 @@ class BveView(models.Model):
         for model in models:
             model.sudo().unlink()
 
-        table_name = self.model_name.replace(".", "_")
+        table_name = self.model_name.replace('.', '_')
         tools.drop_view_if_exists(self.env.cr, table_name)
 
         self.write({
@@ -130,17 +128,17 @@ class BveView(models.Model):
         def _get_fields_info(fields_data):
             fields_info = []
             for field_data in fields_data:
-                field = self.env['ir.model.fields'].browse(field_data["id"])
+                field = self.env['ir.model.fields'].browse(field_data['id'])
                 vals = {
-                    "table": self.env[field.model_id.model]._table,
-                    "table_alias": field_data["table_alias"],
-                    "select_field": field.name,
-                    "as_field": "x_" + field_data["name"],
-                    "join": False,
-                    "model": field.model_id.model
+                    'table': self.env[field.model_id.model]._table,
+                    'table_alias': field_data['table_alias'],
+                    'select_field': field.name,
+                    'as_field': 'x_' + field_data['name'],
+                    'join': False,
+                    'model': field.model_id.model
                 }
-                if field_data.get("join_node"):
-                    vals.update({"join": field_data["join_node"]})
+                if field_data.get('join_node'):
+                    vals.update({'join': field_data['join_node']})
                 fields_info.append(vals)
             return fields_info
 
@@ -149,16 +147,16 @@ class BveView(models.Model):
             if not data:
                 raise UserError(_('No data to process.'))
             info = _get_fields_info(json.loads(data))
-            fields = [("{}.{}".format(f["table_alias"],
-                       f["select_field"]),
-                       f["as_field"]) for f in info if 'join_node' not in f]
-            tables = set([(f["table"], f["table_alias"]) for f in info])
+            fields = [("{}.{}".format(f['table_alias'],
+                       f['select_field']),
+                       f['as_field']) for f in info if 'join_node' not in f]
+            tables = set([(f['table'], f['table_alias']) for f in info])
             join_nodes = [
-                (f["table_alias"],
-                 f["join"],
-                 f["select_field"]) for f in info if f["join"] is not False]
+                (f['table_alias'],
+                 f['join'],
+                 f['select_field']) for f in info if f['join'] is not False]
 
-            table_name = self.model_name.replace(".", "_")
+            table_name = self.model_name.replace('.', '_')
             tools.drop_view_if_exists(self.env.cr, table_name)
 
             basic_fields = [
@@ -184,19 +182,19 @@ class BveView(models.Model):
             self.env.cr.execute(q)
 
         def _prepare_field(field_data):
-            if not field_data["custom"]:
-                field = self.env['ir.model.fields'].browse(field_data["id"])
+            if not field_data['custom']:
+                field = self.env['ir.model.fields'].browse(field_data['id'])
                 vals = {
-                    "name": "x_" + field_data["name"],
-                    "complete_name": field.complete_name,
+                    'name': 'x_' + field_data['name'],
+                    'complete_name': field.complete_name,
                     'model': self.model_name,
                     'relation': field.relation,
-                    "field_description": field_data.get(
-                        "description", field.field_description),
-                    "ttype": field.ttype,
-                    "selection": field.selection,
-                    "size": field.size,
-                    'state': "manual"
+                    'field_description': field_data.get(
+                        'description', field.field_description),
+                    'ttype': field.ttype,
+                    'selection': field.selection,
+                    'size': field.size,
+                    'state': 'manual'
                 }
                 if vals['ttype'] == 'monetary':
                     vals.update({'ttype': 'float'})
@@ -204,7 +202,7 @@ class BveView(models.Model):
                     model_obj = self.env[field.model_id.model]
                     selection = model_obj._columns[field.name].selection
                     selection_domain = str(selection)
-                    vals.update({"selection": selection_domain})
+                    vals.update({'selection': selection_domain})
                 return vals
 
         def _prepare_object():
@@ -238,7 +236,7 @@ class BveView(models.Model):
 
         def _build_access_rules(obj):
             info = json.loads(self.data)
-            models = list(set([f["model"] for f in info]))
+            models = list(set([f['model'] for f in info]))
             read_groups = set.intersection(*[set(
                 group_ids_with_access(model, 'read')) for model in models])
 
@@ -262,9 +260,9 @@ class BveView(models.Model):
 
             return
 
-        self.model_name = "x_bve." + ''.join(
+        self.model_name = 'x_bve.' + ''.join(
             [x for x in self.name.lower()
-             if x.isalnum()]).replace("_", ".").replace(" ", ".")
+             if x.isalnum()]).replace('_', '.').replace(' ', '.')
 
         _build_query()
         obj = _build_object()
@@ -286,7 +284,7 @@ class BveView(models.Model):
         view_ids = []
         view_id = self.pool.get('ir.ui.view').create(
             self.env.cr, SUPERUSER_ID,
-            {'name': "Pivot Analysis",
+            {'name': 'Pivot Analysis',
              'type': 'pivot',
              'model': self.model_name,
              'priority': 16,
@@ -297,7 +295,7 @@ class BveView(models.Model):
         view_ids.append(view_id)
         view_id = self.pool.get('ir.ui.view').create(
             self.env.cr, SUPERUSER_ID,
-            {'name': "Graph Analysis",
+            {'name': 'Graph Analysis',
              'type': 'graph',
              'model': self.model_name,
              'priority': 16,
@@ -311,7 +309,7 @@ class BveView(models.Model):
 
         view_id = self.pool.get('ir.ui.view').create(
             self.env.cr, SUPERUSER_ID,
-            {'name': "Tree Analysis",
+            {'name': 'Tree Analysis',
              'type': 'tree',
              'model': self.model_name,
              'priority': 16,
