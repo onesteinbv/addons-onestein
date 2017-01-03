@@ -44,52 +44,52 @@ class TestBiViewEditor(common.TransactionCase):
         ], limit=1)
 
         self.bi_view1_vals = {
-                'name': 'View Test1',
-                'state': 'draft',
-                'data': [
-                    {'model_id': self.partner_model.id,
-                     'name': self.partner_field_name,
-                     'model_name': self.partner_model.name,
-                     'model': self.partner_model_name,
-                     'custom': False,
-                     'type': self.partner_field.ttype,
-                     'id': self.partner_field.id,
-                     'description': self.partner_field.field_description,
-                     'table_alias': 't0',
-                     'row': False,
-                     'column': True,
-                     'measure': False
-                     },
-                    {'model_id': self.partner_model.id,
-                     'name': self.partner_company_field_name,
-                     'table_alias': 't0',
-                     'custom': False,
-                     'relation': self.company_model_name,
-                     'model': self.partner_model_name,
-                     'model_name': self.partner_model.name,
-                     'type': self.partner_company_field.ttype,
-                     'id': self.partner_company_field.id,
-                     'join_node': 't1',
-                     'description': self.partner_company_field.field_description,
-                     'row': False,
-                     'column': False,
-                     'measure': False
-                     },
-                    {'model_id': self.company_model.id,
-                     'name': 'name_1',
-                     'model_name': self.company_model.name,
-                     'model': self.company_model_name,
-                     'custom': False,
-                     'type': self.company_field.ttype,
-                     'id': self.company_field.id,
-                     'description': self.company_field.field_description,
-                     'table_alias': 't1',
-                     'row': True,
-                     'column': False,
-                     'measure': False
-                     }
-                ]
-            }
+            'name': 'View Test1',
+            'state': 'draft',
+            'data': [
+                {'model_id': self.partner_model.id,
+                 'name': self.partner_field_name,
+                 'model_name': self.partner_model.name,
+                 'model': self.partner_model_name,
+                 'custom': False,
+                 'type': self.partner_field.ttype,
+                 'id': self.partner_field.id,
+                 'description': self.partner_field.field_description,
+                 'table_alias': 't0',
+                 'row': False,
+                 'column': True,
+                 'measure': False
+                 },
+                {'model_id': self.partner_model.id,
+                 'name': self.partner_company_field_name,
+                 'table_alias': 't0',
+                 'custom': False,
+                 'relation': self.company_model_name,
+                 'model': self.partner_model_name,
+                 'model_name': self.partner_model.name,
+                 'type': self.partner_company_field.ttype,
+                 'id': self.partner_company_field.id,
+                 'join_node': 't1',
+                 'description': self.partner_company_field.field_description,
+                 'row': False,
+                 'column': False,
+                 'measure': False
+                 },
+                {'model_id': self.company_model.id,
+                 'name': 'name_1',
+                 'model_name': self.company_model.name,
+                 'model': self.company_model_name,
+                 'custom': False,
+                 'type': self.company_field.ttype,
+                 'id': self.company_field.id,
+                 'description': self.company_field.field_description,
+                 'table_alias': 't1',
+                 'row': True,
+                 'column': False,
+                 'measure': False
+                 }
+            ]
+        }
 
     def test_01_setup(self):
         self.assertIsNotNone(self.partner_model)
