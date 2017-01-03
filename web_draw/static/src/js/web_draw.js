@@ -107,7 +107,7 @@ odoo.define('web.draw', function (require) {
                 var ctx = self.get('ctx');
                 ctx.drawImage(current_drawing, 0, 0);
             }
-        },
+        }
     });
     
     core.form_widget_registry.add('draw', FieldDraw);
