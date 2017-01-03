@@ -106,6 +106,7 @@ class AccountInvoiceLine(models.Model):
             fy_year_stop = int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4])
             year = fy_year_start
             cnt = fy_year_stop - fy_year_start + 1
+            factor = 0
             for i in range(cnt):
                 cy_days = calendar.isleap(year) and 366 or 365
                 if i == 0:  # first year
@@ -116,7 +117,7 @@ class AccountInvoiceLine(models.Model):
                                     fy_date_start).days + 1
                     factor = float(duration) / cy_days
                 elif i == cnt - 1:  # last year
-                    duration = fy_date_stop - datetime(year, 01, 01)
+                    duration = fy_date_stop - datetime(year, 1, 1)
                     duration_days = duration.days + 1
                     factor += float(duration_days) / cy_days
                 else:
@@ -166,6 +167,7 @@ class AccountInvoiceLine(models.Model):
 
     @api.model
     def _get_spread_stop_date(self, line, spread_start_date):
+        spread_stop_date = None
         if line.period_type == 'month':
             spread_stop_date = spread_start_date + relativedelta(
                 months=line.period_number, days=-1)
@@ -179,6 +181,7 @@ class AccountInvoiceLine(models.Model):
 
     @api.model
     def _compute_year_amount(self, line):
+        factor = 1
         if line.period_type == 'month':
             factor = line.period_number / 12.0
         elif line.period_type == 'quarter':
@@ -230,6 +233,7 @@ class AccountInvoiceLine(models.Model):
         invoice_sign = invline.price_subtotal >= 0 and 1 or -1
         for i, entry in enumerate(table):
             year_amount = self._compute_year_amount(invline)
+            period_amount = year_amount
             if invline.period_type == 'year':
                 period_amount = year_amount
             elif invline.period_type == 'quarter':
