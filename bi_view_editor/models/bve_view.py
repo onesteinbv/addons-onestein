@@ -78,7 +78,7 @@ class BveView(models.Model):
                     _('You cannot delete a created view! '
                       'Reset the view to draft first.'))
 
-        super(BveView, self).unlink()
+        return super(BveView, self).unlink()
 
     @api.multi
     def action_reset(self):
