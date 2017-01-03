@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_move_line_form" model="ir.ui.view">
+            <field name="name">account.move.line.form.analytic_policy</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account_cost_center.move_line_form_cost_center"/>
+            <field name="arch" type="xml">
+                <field name="cost_center_id" position="after">
+                    <field name="costcenter_policy" invisible="1"/>
+                </field>
+                <field name="cost_center_id" position="attributes">
+                    <attribute name="attrs">{'required': [('costcenter_policy', '=', 'always'), ('move_state',  'in', ['draft', False])], 'invisible': [('costcenter_policy', '=', 'never')]}</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_move_line_tree" model="ir.ui.view">
+            <field name="name">account.move.line.tree.analytic_policy</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account_cost_center.move_line_tree_cost_center"/>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <field name="cost_center_id" position="after">
+                    <field name="costcenter_policy" invisible="1"/>
+                </field>
+                <field name="cost_center_id" position="attributes">
+                    <attribute name="attrs">{'required': [('costcenter_policy', '=', 'always'), ('move_state',  'in', ['draft', False])], 'invisible': [('costcenter_policy', '=', 'never')]}</attribute>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <template id="assets_backend" name="account assets" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/account_bank_statement_cost_center/static/src/js/cost_center.js"></script>
+      </xpath>
+    </template>
+
+  </data>
+</openerp>
