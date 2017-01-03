@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="account_common_report_view" model="ir.ui.view">
+            <field name="name">Common Report</field>
+            <field name="model">account.common.report</field>
+            <field name="inherit_id" ref="account.account_common_report_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_ids']" position="after">
+                    <notebook>
+                        <page string="Cost Centers" name="cost_center_ids">
+                            <field name="cost_center_ids"/>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
