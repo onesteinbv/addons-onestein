@@ -22,6 +22,9 @@ Admin user can always use the export option.
 Credits
 =======
 
+Original code from module web_disable_export by Noviat,
+reviewed and modified by Onestein.
+
 Contributors
 ------------
 
