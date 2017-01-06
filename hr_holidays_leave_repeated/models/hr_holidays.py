@@ -29,13 +29,12 @@ class HrHolidays(models.Model):
     )
 
     @api.model
-    def _get_workday_vals(
-            self, vals, employee, working_hours,
-            from_dt, to_dt, work_hours, diff
-    ):
+    def _get_workday_from_to(
+            self, employee, working_hours,
+            from_dt, to_dt, work_hours, delta_days):
         while True:
-            from_dt = from_dt + relativedelta(days=1)
-            to_dt = to_dt + relativedelta(days=1)
+            from_dt = from_dt + relativedelta(days=delta_days)
+            to_dt = to_dt + relativedelta(days=delta_days)
             new_work_hours = working_hours.get_working_hours(
                 from_dt,
                 to_dt,
@@ -44,6 +43,17 @@ class HrHolidays(models.Model):
             )
             if new_work_hours and work_hours <= new_work_hours:
                 break
+        return from_dt, to_dt
+
+    @api.model
+    def _get_workday_vals(
+            self, vals, employee, working_hours,
+            from_dt, to_dt, work_hours, diff
+    ):
+        delta_days = 1
+        from_dt, to_dt = self._get_workday_from_to(
+            employee, working_hours,
+            from_dt, to_dt, work_hours, delta_days)
         vals['date_from'] = fields.Datetime.to_string(from_dt - diff)
         vals['date_to'] = fields.Datetime.to_string(to_dt - diff)
         return vals
@@ -53,17 +63,10 @@ class HrHolidays(models.Model):
             self, vals, employee, working_hours,
             from_dt, to_dt, work_hours, diff
     ):
-        while True:
-            from_dt = from_dt + relativedelta(days=7)
-            to_dt = to_dt + relativedelta(days=7)
-            new_work_hours = working_hours.get_working_hours(
-                from_dt,
-                to_dt,
-                compute_leaves=True,
-                resource_id=employee.resource_id.id,
-            )
-            if new_work_hours and work_hours <= new_work_hours:
-                break
+        delta_days = 7
+        from_dt, to_dt = self._get_workday_from_to(
+            employee, working_hours,
+            from_dt, to_dt, work_hours, delta_days)
         vals['date_from'] = fields.Datetime.to_string(from_dt - diff)
         vals['date_to'] = fields.Datetime.to_string(to_dt - diff)
         return vals
@@ -73,17 +76,10 @@ class HrHolidays(models.Model):
             self, vals, employee, working_hours,
             from_dt, to_dt, work_hours, diff
     ):
-        while True:
-            from_dt = from_dt + relativedelta(days=14)
-            to_dt = to_dt + relativedelta(days=14)
-            new_work_hours = working_hours.get_working_hours(
-                from_dt,
-                to_dt,
-                compute_leaves=True,
-                resource_id=employee.resource_id.id,
-            )
-            if new_work_hours and work_hours <= new_work_hours:
-                break
+        delta_days = 14
+        from_dt, to_dt = self._get_workday_from_to(
+            employee, working_hours,
+            from_dt, to_dt, work_hours, delta_days)
         vals['date_from'] = fields.Datetime.to_string(from_dt - diff)
         vals['date_to'] = fields.Datetime.to_string(to_dt - diff)
         return vals
@@ -93,19 +89,62 @@ class HrHolidays(models.Model):
             self, vals, employee, working_hours,
             from_dt, to_dt, work_hours, diff
     ):
-        while True:
-            from_dt = from_dt + relativedelta(days=28)
-            to_dt = to_dt + relativedelta(days=28)
-            new_work_hours = working_hours.get_working_hours(
-                from_dt,
-                to_dt,
-                compute_leaves=True,
-                resource_id=employee.resource_id.id,
-            )
-            if new_work_hours and work_hours <= new_work_hours:
-                break
+        delta_days = 28
+        from_dt, to_dt = self._get_workday_from_to(
+            employee, working_hours,
+            from_dt, to_dt, work_hours, delta_days)
         vals['date_from'] = fields.Datetime.to_string(from_dt - diff)
         vals['date_to'] = fields.Datetime.to_string(to_dt - diff)
+        return vals
+
+    @api.model
+    def _update_leave_vals(
+            self, vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff):
+        if vals.get('repeat_every') == 'workday':
+            if holiday_duration and holiday_duration.days > 1:
+                raise UserError(
+                    _('''The repetition is based on workdays:
+                     the duration of the leave request
+                     must not exceed 1 day.
+                    '''))
+            vals = self._get_workday_vals(
+                vals, employee, working_hours,
+                from_dt, to_dt, work_hours, diff
+            )
+        elif vals.get('repeat_every') == 'week':
+            if holiday_duration and holiday_duration.days > 7:
+                raise UserError(
+                    _('''The repetition is every week:
+                     the duration of the leave request
+                     must not exceed 1 week.
+                    '''))
+            vals = self._get_week_vals(
+                vals, employee, working_hours,
+                from_dt, to_dt, work_hours, diff
+            )
+        elif vals.get('repeat_every') == 'biweek':
+            if holiday_duration and holiday_duration.days > 14:
+                raise UserError(
+                    _('''The repetition is based on 2 weeks:
+                     the duration of the leave request
+                     must not exceed 2 weeks.
+                    '''))
+            vals = self._get_biweek_vals(
+                vals, employee, working_hours,
+                from_dt, to_dt, work_hours, diff
+            )
+        elif vals.get('repeat_every') == 'month':
+            if holiday_duration and holiday_duration.days > 28:
+                raise UserError(
+                    _('''The repetition is every four weeks:
+                     the duration of the leave request
+                     must not exceed 28 days.
+                    '''))
+            vals = self._get_month_vals(
+                vals, employee, working_hours,
+                from_dt, to_dt, work_hours, diff
+            )
         return vals
 
     @api.model
@@ -140,50 +179,9 @@ class HrHolidays(models.Model):
                                       compute_leaves=True,
                                       resource_id=employee.resource_id.id,
                                       )
-                if vals.get('repeat_every') == 'workday':
-                    if holiday_duration and holiday_duration.days > 1:
-                        raise UserError(
-                            _('''The repetition is based on workdays:
-                             the duration of the leave request
-                             must not exceed 1 day.
-                            '''))
-                    vals = self._get_workday_vals(
-                        vals, employee, working_hours,
-                        from_dt, to_dt, work_hours, diff
-                    )
-                elif vals.get('repeat_every') == 'week':
-                    if holiday_duration and holiday_duration.days > 7:
-                        raise UserError(
-                            _('''The repetition is every week:
-                             the duration of the leave request
-                             must not exceed 1 week.
-                            '''))
-                    vals = self._get_week_vals(
-                        vals, employee, working_hours,
-                        from_dt, to_dt, work_hours, diff
-                    )
-                elif vals.get('repeat_every') == 'biweek':
-                    if holiday_duration and holiday_duration.days > 14:
-                        raise UserError(
-                            _('''The repetition is based on 2 weeks:
-                             the duration of the leave request
-                             must not exceed 2 weeks.
-                            '''))
-                    vals = self._get_biweek_vals(
-                        vals, employee, working_hours,
-                        from_dt, to_dt, work_hours, diff
-                    )
-                elif vals.get('repeat_every') == 'month':
-                    if holiday_duration and holiday_duration.days > 28:
-                        raise UserError(
-                            _('''The repetition is every four weeks:
-                             the duration of the leave request
-                             must not exceed 28 days.
-                            '''))
-                    vals = self._get_month_vals(
-                        vals, employee, working_hours,
-                        from_dt, to_dt, work_hours, diff
-                    )
+                vals = self._update_leave_vals(
+                    vals, holiday_duration, employee,
+                    working_hours, from_dt, to_dt, work_hours, diff)
                 self.with_context({
                     "skip_create_handler": True
                 }).create(vals)

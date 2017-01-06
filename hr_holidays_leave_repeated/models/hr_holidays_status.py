@@ -5,7 +5,7 @@
 from odoo import fields, models
 
 
-class hr_holidays_status(models.Model):
+class HrHolidaysStatus(models.Model):
     _inherit = "hr.holidays.status"
 
     repeat = fields.Boolean(
