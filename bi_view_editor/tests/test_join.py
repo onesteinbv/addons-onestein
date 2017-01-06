@@ -43,52 +43,54 @@ class TestBiViewEditor(common.TransactionCase):
             ('name', '=', self.company_field_name)
         ], limit=1)
 
+        data = [
+            {'model_id': self.partner_model.id,
+             'name': self.partner_field_name,
+             'model_name': self.partner_model.name,
+             'model': self.partner_model_name,
+             'custom': 0,
+             'type': self.partner_field.ttype,
+             'id': self.partner_field.id,
+             'description': self.partner_field.field_description,
+             'table_alias': 't0',
+             'row': 0,
+             'column': 1,
+             'measure': 0
+             },
+            {'model_id': self.partner_model.id,
+             'name': self.partner_company_field_name,
+             'table_alias': 't0',
+             'custom': 0,
+             'relation': self.company_model_name,
+             'model': self.partner_model_name,
+             'model_name': self.partner_model.name,
+             'type': self.partner_company_field.ttype,
+             'id': self.partner_company_field.id,
+             'join_node': 't1',
+             'description': self.partner_company_field.field_description,
+             'row': 0,
+             'column': 0,
+             'measure': 0
+             },
+            {'model_id': self.company_model.id,
+             'name': 'name_1',
+             'model_name': self.company_model.name,
+             'model': self.company_model_name,
+             'custom': 0,
+             'type': self.company_field.ttype,
+             'id': self.company_field.id,
+             'description': self.company_field.field_description,
+             'table_alias': 't1',
+             'row': 1,
+             'column': 0,
+             'measure': 0
+             }
+        ]
+        format_data = self.env['bve.view']._get_format_data(str(data))
+
         self.bi_view1_vals = {
-            'name': 'View Test1',
             'state': 'draft',
-            'data': [
-                {'model_id': self.partner_model.id,
-                 'name': self.partner_field_name,
-                 'model_name': self.partner_model.name,
-                 'model': self.partner_model_name,
-                 'custom': False,
-                 'type': self.partner_field.ttype,
-                 'id': self.partner_field.id,
-                 'description': self.partner_field.field_description,
-                 'table_alias': 't0',
-                 'row': False,
-                 'column': True,
-                 'measure': False
-                 },
-                {'model_id': self.partner_model.id,
-                 'name': self.partner_company_field_name,
-                 'table_alias': 't0',
-                 'custom': False,
-                 'relation': self.company_model_name,
-                 'model': self.partner_model_name,
-                 'model_name': self.partner_model.name,
-                 'type': self.partner_company_field.ttype,
-                 'id': self.partner_company_field.id,
-                 'join_node': 't1',
-                 'description': self.partner_company_field.field_description,
-                 'row': False,
-                 'column': False,
-                 'measure': False
-                 },
-                {'model_id': self.company_model.id,
-                 'name': 'name_1',
-                 'model_name': self.company_model.name,
-                 'model': self.company_model_name,
-                 'custom': False,
-                 'type': self.company_field.ttype,
-                 'id': self.company_field.id,
-                 'description': self.company_field.field_description,
-                 'table_alias': 't1',
-                 'row': True,
-                 'column': False,
-                 'measure': False
-                 }
-            ]
+            'data': format_data
         }
 
     def test_01_setup(self):
@@ -130,15 +132,8 @@ class TestBiViewEditor(common.TransactionCase):
         self.assertGreater(len(related_models), 0)
 
     def test_05_create_view(self):
-        self.bi_view1 = self.env['bve.view'].create(self.bi_view1_vals)
-        self.assertIsNotNone(self.bi_view1)
-
-    def test_06_open_view(self):
-        self.bi_view1 = self.env['bve.view'].create(self.bi_view1_vals)
-        opened_view = self.bi_view1.open_view()
-        self.assertIsNotNone(opened_view)
-
-    def test_07_unlink_view(self):
-        self.bi_view1 = self.env['bve.view'].create(self.bi_view1_vals)
-        res = self.bi_view1.unlink()
-        self.assertTrue(res)
+        vals = self.bi_view1_vals
+        vals.update({'name': 'Test View1'})
+        bi_view1 = self.env['bve.view'].create(vals)
+        self.assertIsNotNone(bi_view1)
+        self.assertEqual(bi_view1.state, 'draft')

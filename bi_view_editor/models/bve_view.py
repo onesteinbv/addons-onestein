@@ -4,7 +4,7 @@
 
 import json
 
-from openerp import SUPERUSER_ID, api, fields, models, tools
+from openerp import api, fields, models, tools
 from openerp.exceptions import Warning as UserError
 from openerp.modules.registry import RegistryManager
 from openerp.tools.translate import _
@@ -32,7 +32,7 @@ class BveView(models.Model):
             else:
                 bve_view.user_ids = self.env['res.users'].sudo().search([])
 
-    name = fields.Char(size=128, string='Name', required=True)
+    name = fields.Char(size=128, string='Name', required=True, copy=False)
     model_name = fields.Char(size=128, string='Model Name')
 
     note = fields.Text(string='Notes')
@@ -41,7 +41,8 @@ class BveView(models.Model):
         [('draft', 'Draft'),
          ('created', 'Created')],
         string='State',
-        default='draft')
+        default='draft',
+        copy=False)
     data = fields.Text(
         string='Data',
         help="Use the special query builder to define the query "
@@ -71,37 +72,27 @@ class BveView(models.Model):
     ]
 
     @api.multi
-    def unlink(self):
+    def action_reset(self):
         for view in self:
-            if view.state == 'created':
-                raise UserError(
-                    _('You cannot delete a created view! '
-                      'Reset the view to draft first.'))
+            if view.action_id:
+                if view.action_id.view_id:
+                    view.action_id.view_id.sudo().unlink()
+                view.action_id.sudo().unlink()
 
-        return super(BveView, self).unlink()
+            models = self.env['ir.model'].sudo().search(
+                [('model', '=', view.model_name)])
+            for model in models:
+                model.sudo().unlink()
+
+            table_name = view.model_name.replace('.', '_')
+            tools.drop_view_if_exists(self.env.cr, table_name)
+
+            self.state = 'draft'
 
     @api.multi
-    def action_reset(self):
-        if self.action_id:
-            if self.action_id.view_id:
-                self.action_id.view_id.sudo().unlink()
-            self.action_id.sudo().unlink()
-
-        models = self.env['ir.model'].sudo().search(
-            [('model', '=', self.model_name)])
-        for model in models:
-            model.sudo().unlink()
-
-        table_name = self.model_name.replace('.', '_')
-        tools.drop_view_if_exists(self.env.cr, table_name)
-
-        self.write({
-            'state': 'draft'
-        })
-        return True
-
-    def _create_graph_view(self):
-        fields_info = json.loads(self.data)
+    def _create_view_arch(self):
+        self.ensure_one()
+        fields_info = json.loads(self._get_format_data(self.data))
         view_fields = ["""<field name="x_{}" type="{}" />""".format(
             field_info['name'],
             (field_info['row'] and 'row') or
@@ -111,19 +102,15 @@ class BveView(models.Model):
             field_info['column'] or field_info['measure']]
         return view_fields
 
-    def _create_tree_view(self):
-        fields_info = json.loads(self.data)
-        view_fields = ["""<field name="x_{}" type="{}" />""".format(
-            field_info['name'],
-            (field_info['row'] and 'row') or
-            (field_info['column'] and 'col') or
-            (field_info['measure'] and 'measure'))
-            for field_info in fields_info if field_info['row'] or
-            field_info['column'] or field_info['measure']]
-        return view_fields
+    @api.model
+    def _get_format_data(self, data):
+        data = data.replace('\'', '"')
+        data = data.replace(': u"', ':"')
+        return data
 
     @api.multi
     def action_create(self):
+        self.ensure_one()
 
         def _get_fields_info(fields_data):
             fields_info = []
@@ -146,7 +133,9 @@ class BveView(models.Model):
             data = self.data
             if not data:
                 raise UserError(_('No data to process.'))
-            info = _get_fields_info(json.loads(data))
+
+            formatted_data = json.loads(self._get_format_data(data))
+            info = _get_fields_info(formatted_data)
             fields = [("{}.{}".format(f['table_alias'],
                        f['select_field']),
                        f['as_field']) for f in info if 'join_node' not in f]
@@ -206,17 +195,20 @@ class BveView(models.Model):
                 return vals
 
         def _prepare_object():
+            data = json.loads(self._get_format_data(self.data))
             return {
                 'name': self.name,
                 'model': self.model_name,
                 'field_id': [
                     (0, 0, _prepare_field(field))
-                    for field in json.loads(self.data)
+                    for field in data
                     if 'join_node' not in field]
             }
 
         def _build_object():
-            res_id = self.env['ir.model'].sudo().create(_prepare_object())
+            vals = _prepare_object()
+            Model = self.env['ir.model']
+            res_id = Model.sudo().with_context(bve=True).create(vals)
             return res_id
 
         # read access
@@ -235,7 +227,7 @@ class BveView(models.Model):
             return [x[0] for x in self.env.cr.fetchall()]
 
         def _build_access_rules(obj):
-            info = json.loads(self.data)
+            info = json.loads(self._get_format_data(self.data))
             models = list(set([f['model'] for f in info]))
             read_groups = set.intersection(*[set(
                 group_ids_with_access(model, 'read')) for model in models])
@@ -251,7 +243,7 @@ class BveView(models.Model):
             # edit access
             for group in self.group_ids:
                 self.env['ir.model.access'].sudo().create({
-                    'name': 'read access to ' + self.model_name,
+                    'name': 'read-write access to ' + self.model_name,
                     'model_id': obj.id,
                     'group_id': group.id,
                     'perm_read': True,
@@ -269,32 +261,27 @@ class BveView(models.Model):
         _build_access_rules(obj)
         self.env.cr.commit()
 
-        self.env.registry = RegistryManager.new(self.env.cr.dbname)
+        # setup models; this automatically adds model in registry
+        self.pool.setup_models(self._cr, partial=(not self.pool.ready))
         RegistryManager.signal_registry_change(self.env.cr.dbname)
-        self.pool = self.env.registry
 
-        ui_view_obj = self.pool.get('ir.ui.view')
-        view_ids = ui_view_obj.search(
-            self.env.cr, SUPERUSER_ID, [('model', '=', self.model_name)],
-            context={})
+        # create views
+        View = self.env['ir.ui.view']
+        old_views = View.sudo().search([('model', '=', self.model_name)])
+        old_views.sudo().unlink()
 
-        [ui_view_obj.unlink(self.env.cr, SUPERUSER_ID, view_id, context={})
-         for view_id in view_ids]
-
-        view_ids = []
-        view_id = self.pool.get('ir.ui.view').create(
-            self.env.cr, SUPERUSER_ID,
+        # create Pivot view
+        View.sudo().create(
             {'name': 'Pivot Analysis',
              'type': 'pivot',
              'model': self.model_name,
              'priority': 16,
              'arch': """<?xml version="1.0"?>
                         <pivot string="Pivot Analysis"> {} </pivot>
-                     """.format("".join(self._create_graph_view()))
-             }, context={})
-        view_ids.append(view_id)
-        view_id = self.pool.get('ir.ui.view').create(
-            self.env.cr, SUPERUSER_ID,
+                     """.format("".join(self._create_view_arch()))
+             })
+        # create Graph view
+        View.sudo().create(
             {'name': 'Graph Analysis',
              'type': 'graph',
              'model': self.model_name,
@@ -303,46 +290,58 @@ class BveView(models.Model):
                         <graph string="Graph Analysis"
                                type="bar"
                                stacked="True"> {} </graph>
-                     """.format("".join(self._create_graph_view()))
-             }, context={})
-        view_ids.append(view_id)
-
-        view_id = self.pool.get('ir.ui.view').create(
-            self.env.cr, SUPERUSER_ID,
+                     """.format("".join(self._create_view_arch()))
+             })
+        # create Tree view
+        tree_view = View.sudo().create(
             {'name': 'Tree Analysis',
              'type': 'tree',
              'model': self.model_name,
              'priority': 16,
              'arch': """<?xml version="1.0"?>
                         <tree string="List Analysis" create="false"> {} </tree>
-                     """.format("".join(self._create_tree_view()))
-             }, context={})
-        view_ids.append(view_id)
+                     """.format("".join(self._create_view_arch()))
+             })
 
+        # set the Tree view as the default one
         action_vals = {'name': self.name,
                        'res_model': self.model_name,
                        'type': 'ir.actions.act_window',
                        'view_type': 'form',
                        'view_mode': 'tree,graph,pivot',
-                       'view_id': view_ids and view_ids[0] or 0,
+                       'view_id': tree_view.id,
                        'context': "{'service_name': '%s'}" % self.name,
                        }
-        act_window = self.env['ir.actions.act_window']
-        action_id = act_window.sudo().create(action_vals)
-
+        ActWindow = self.env['ir.actions.act_window']
+        action_id = ActWindow.sudo().create(action_vals)
         self.write({
             'action_id': action_id.id,
-            'view_id': view_id,
+            'view_id': tree_view.id,
             'state': 'created'
         })
 
-        return True
-
     @api.multi
     def open_view(self):
+        self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
             'res_model': self.model_name,
             'view_type': 'form',
             'view_mode': 'tree,graph,pivot',
         }
+
+    @api.multi
+    def copy(self, default=None):
+        self.ensure_one()
+        default = dict(default or {}, name=_("%s (copy)") % self.name)
+        return super(BveView, self).copy(default=default)
+
+    @api.multi
+    def unlink(self):
+        for view in self:
+            if view.state == 'created':
+                raise UserError(
+                    _('You cannot delete a created view! '
+                      'Reset the view to draft first.'))
+
+        return super(BveView, self).unlink()
