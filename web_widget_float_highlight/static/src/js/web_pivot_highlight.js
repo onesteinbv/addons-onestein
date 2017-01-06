@@ -38,7 +38,7 @@ odoo.define("web.pivot.float.highlight", function (require) {
             this.fields_view.arch.children.forEach(function (field) {
                 switch (field.attrs.type) {
                 case 'measure':
-                    if (field.attrs.highlight && field.attrs.highlight.toLowerCase() == 'true'){
+                    if (field.attrs.highlight && field.attrs.highlight.toLowerCase() === 'true'){
                         self.to_highlight.push(true);
                         self.highlight_lookup[field.attrs.name] = true;
                     } else {
@@ -118,13 +118,13 @@ odoo.define("web.pivot.float.highlight", function (require) {
         toggle_measure: function (field) {
             if (_.contains(this.active_measures, field)) {
                 var idx = _.indexOf(this.active_measures, field);
-                if (idx != -1) this.to_highlight.splice(idx, 1);
+                if (idx !== -1) this.to_highlight.splice(idx, 1);
             } else {
                 if (field in this.highlight_lookup) this.to_highlight.push(true);
                 else this.to_highlight.push(false);
             }
 
             this._super.apply(this, arguments);
-        },
+        }
     });
 });
