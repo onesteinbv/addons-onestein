@@ -22,75 +22,43 @@ class hr_holidays(models.Model):
             holiday.number_of_hours_temp = 0.0
             if holiday.employee_id:
                 employee = holiday.employee_id
-                holiday.number_of_hours_temp = 0.0
-                from_dt = False
-                to_dt = False
-                user = self.env.user
-                working_hours = None
-                if employee.calendar_id:
-                    working_hours = employee.calendar_id
-                elif employee.contract_id:
-                    if employee.contract_id.working_hours:
-                        working_hours = employee.contract_id.working_hours
-                if working_hours:
-                    if holiday.date_from:
-                        from_dt = fields.Datetime.from_string(
-                            holiday.date_from
-                        )
-                        from_dt = fields.Datetime.context_timestamp(
-                            user, from_dt
-                        )
-                        from_dt = from_dt.replace(tzinfo=None)
-                    if holiday.date_to:
-                        to_dt = fields.Datetime.from_string(
-                            holiday.date_to
-                        )
-                        to_dt = fields.Datetime.context_timestamp(
-                            user, to_dt
-                        )
-                        to_dt = to_dt.replace(tzinfo=None)
-                    if from_dt and to_dt:
+                if holiday.date_from and holiday.date_to:
+                    working_hours = None
+                    contract = employee.contract_id
+                    if employee.calendar_id:
+                        working_hours = employee.calendar_id
+                    elif contract and contract.working_hours:
+                        working_hours = contract.working_hours
+                    if working_hours:
                         work_hours = working_hours.get_working_hours(
-                            start_dt=from_dt,
-                            end_dt=to_dt,
+                            fields.Datetime.from_string(holiday.date_from),
+                            fields.Datetime.from_string(holiday.date_to),
                             compute_leaves=True,
-                            resource_id=employee.resource_id.id
-                        )
+                            resource_id=employee.resource_id.id)
                         holiday.number_of_hours_temp = work_hours
-                        holiday.department_id = employee.department_id
+                holiday.department_id = employee.department_id
 
     @api.multi
     @api.onchange('date_from', 'date_to')
     def onchange_date(self):
         for holiday in self:
-            from_dt = False
-            to_dt = False
             work_hours = 0.0
-            user = self.env.user
             employee = holiday.employee_id
             # Check in context what form is open: add or remove
             if self.env.context.get('default_type', '') == 'add':
                 return
 
-            if holiday.date_from:
-                from_dt = fields.Datetime.from_string(holiday.date_from)
-                from_dt = fields.Datetime.context_timestamp(user, from_dt)
-                from_dt = from_dt.replace(tzinfo=None)
-            if holiday.date_to:
-                to_dt = fields.Datetime.from_string(holiday.date_to)
-                to_dt = fields.Datetime.context_timestamp(user, to_dt)
-                to_dt = to_dt.replace(tzinfo=None)
-
             # date_to has to be greater than date_from
-            if holiday.date_from and holiday.date_to and (from_dt > to_dt):
-                raise Warning(_(
-                    'The start date must be anterior to the end date.'
-                ))
+            if holiday.date_from and holiday.date_to:
+                if holiday.date_from > holiday.date_to:
+                    raise Warning(_(
+                        'The start date must be anterior to the end date.'
+                    ))
 
             if not employee and (holiday.date_to or holiday.date_from):
                 raise Warning(_('Set an employee first!'))
 
-            if from_dt and to_dt:
+            if holiday.date_from and holiday.date_to:
                 working_hours = None
                 contract = employee.contract_id
                 if employee.calendar_id:
@@ -99,8 +67,8 @@ class hr_holidays(models.Model):
                     working_hours = contract.working_hours
                 if working_hours:
                     work_hours = working_hours.get_working_hours(
-                        from_dt,
-                        to_dt,
+                        fields.Datetime.from_string(holiday.date_from),
+                        fields.Datetime.from_string(holiday.date_to),
                         compute_leaves=True,
                         resource_id=employee.resource_id.id)
 
@@ -163,10 +131,6 @@ class hr_holidays(models.Model):
                     'The number of remaining hours is not sufficient for '
                     'this leave type.\nPlease check for allocation requests '
                     'awaiting validation.'))
-
-    ####################################################
-    # ORM Overrides methods
-    ####################################################
 
     @api.multi
     def name_get(self):
