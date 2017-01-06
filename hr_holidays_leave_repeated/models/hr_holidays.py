@@ -98,7 +98,7 @@ class HrHolidays(models.Model):
         return vals
 
     @api.model
-    def _update_leave_vals(
+    def _update_leave_vals_workday(
             self, vals, holiday_duration, employee, working_hours,
             from_dt, to_dt, work_hours, diff):
         if vals.get('repeat_every') == 'workday':
@@ -112,7 +112,13 @@ class HrHolidays(models.Model):
                 vals, employee, working_hours,
                 from_dt, to_dt, work_hours, diff
             )
-        elif vals.get('repeat_every') == 'week':
+        return vals
+
+    @api.model
+    def _update_leave_vals_week(
+            self, vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff):
+        if vals.get('repeat_every') == 'week':
             if holiday_duration and holiday_duration.days > 7:
                 raise UserError(
                     _('''The repetition is every week:
@@ -123,7 +129,13 @@ class HrHolidays(models.Model):
                 vals, employee, working_hours,
                 from_dt, to_dt, work_hours, diff
             )
-        elif vals.get('repeat_every') == 'biweek':
+        return vals
+
+    @api.model
+    def _update_leave_vals_biweek(
+            self, vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff):
+        if vals.get('repeat_every') == 'biweek':
             if holiday_duration and holiday_duration.days > 14:
                 raise UserError(
                     _('''The repetition is based on 2 weeks:
@@ -134,18 +146,63 @@ class HrHolidays(models.Model):
                 vals, employee, working_hours,
                 from_dt, to_dt, work_hours, diff
             )
-        elif vals.get('repeat_every') == 'month':
+        return vals
+
+    @api.model
+    def _update_leave_vals_month(
+            self, vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff):
+        if vals.get('repeat_every') == 'month':
             if holiday_duration and holiday_duration.days > 28:
                 raise UserError(
                     _('''The repetition is every four weeks:
-                     the duration of the leave request
-                     must not exceed 28 days.
-                    '''))
+                         the duration of the leave request
+                         must not exceed 28 days.
+                        '''))
             vals = self._get_month_vals(
                 vals, employee, working_hours,
                 from_dt, to_dt, work_hours, diff
             )
         return vals
+
+    @api.model
+    def _update_leave_vals(
+            self, vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff):
+        vals = self._update_leave_vals_workday(
+            vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff)
+        vals = self._update_leave_vals_week(
+            vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff)
+        vals = self._update_leave_vals_biweek(
+            vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff)
+        vals = self._update_leave_vals_month(
+            vals, holiday_duration, employee, working_hours,
+            from_dt, to_dt, work_hours, diff)
+        return vals
+
+    @api.model
+    def _get_leave_duration(self, from_dt, to_dt):
+        user = self.env.user
+        from_dt_orig = from_dt.replace(tzinfo=None)
+        from_dt_user = fields.Datetime.context_timestamp(user, from_dt)
+        from_dt_user = from_dt_user.replace(tzinfo=None)
+        diff = from_dt_user - from_dt_orig
+        to_dt = None
+        holiday_duration = None
+        if from_dt and to_dt:
+            holiday_duration = to_dt - from_dt
+        return holiday_duration, from_dt, to_dt, diff
+
+    @api.model
+    def _get_working_hours(self, employee):
+        working_hours = \
+            employee.calendar_id or \
+            employee.contract_id and \
+            employee.contract_id.working_hours or None
+        return working_hours
 
     @api.model
     def create_handler(self, vals):
@@ -154,33 +211,19 @@ class HrHolidays(models.Model):
             date_from = vals.get('date_from')
             date_to = vals.get('date_to')
             employee = self.env['hr.employee'].browse(vals.get('employee_id'))
-            working_hours = employee.calendar_id
-            working_hours = \
-                working_hours or \
-                employee.contract_id and \
-                employee.contract_id.working_hours or None
+            working_hours = self._get_working_hours(employee)
             if working_hours:
-                user = self.env.user
                 from_dt = fields.Datetime.from_string(date_from)
-                from_dt_orig = from_dt.replace(tzinfo=None)
-                from_dt = fields.Datetime.context_timestamp(user, from_dt)
-                from_dt = from_dt.replace(tzinfo=None)
-                diff = from_dt - from_dt_orig
-                to_dt = None
-                holiday_duration = None
-                if date_to and date_from:
-                    to_dt = fields.Datetime.from_string(date_to)
-                    to_dt = fields.Datetime.context_timestamp(user, to_dt)
-                    to_dt = to_dt.replace(tzinfo=None)
-                    holiday_duration = to_dt - from_dt
-                work_hours = working_hours. \
-                    get_working_hours(from_dt,
-                                      to_dt,
-                                      compute_leaves=True,
-                                      resource_id=employee.resource_id.id,
-                                      )
+                to_dt = fields.Datetime.from_string(date_to)
+                duration, diff = self._get_leave_duration(from_dt, to_dt)
+                work_hours = working_hours.get_working_hours(
+                    from_dt,
+                    to_dt,
+                    compute_leaves=True,
+                    resource_id=employee.resource_id.id,
+                )
                 vals = self._update_leave_vals(
-                    vals, holiday_duration, employee,
+                    vals, duration, employee,
                     working_hours, from_dt, to_dt, work_hours, diff)
                 self.with_context({
                     "skip_create_handler": True
