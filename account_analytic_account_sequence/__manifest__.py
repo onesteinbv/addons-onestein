@@ -4,7 +4,7 @@
 
 {
     'name': 'Account Analytic Account Sequence',
-    'summary': '''Account Analytic Account Sequence''',
+    'summary': 'Account Analytic Account Sequence',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',
@@ -15,6 +15,5 @@
     ],
     'data': [
         'data/analytic_account_sequence.xml',
-        'views/account_analytic_account.xml',
     ],
 }
