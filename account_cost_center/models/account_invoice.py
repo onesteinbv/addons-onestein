@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2015 Onestein (<http://www.onestein.eu>)
+# Copyright 2015-2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from lxml import etree
@@ -11,8 +11,10 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     cost_center_id = fields.Many2one(
-        'account.cost.center', string='Cost Center',
-        help="Default Cost Center")
+        'account.cost.center',
+        string='Cost Center',
+        help='Default Cost Center'
+    )
 
     @api.model
     def line_get_convert(self, line, part):
@@ -21,6 +23,7 @@ class AccountInvoice(models.Model):
             res['cost_center_id'] = line['cost_center_id']
         return res
 
+    @api.model
     def fields_view_get(self, view_id=None, view_type='form',
                         toolbar=False, submenu=False):
         res = super(AccountInvoice, self).fields_view_get(
