@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-# Copyright 2016 Onestein (<http://www.onestein.eu>)
+# Copyright 2015-2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
     'name': 'Costcenter',
-    'images': ['static/description/main_screenshot.png'],
-    'summary': '''Costcenter information for invoice lines''',
-    'author': 'ONESTEiN BV',
+    'summary': 'Cost center information for invoice lines',
+    'author': 'ONESTEiN BV,Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',
     'version': '9.0.1.0.0',
     'depends': [
         'account',
+        'base_view_inheritance_extension'
     ],
     'data': [
         'security/ir.model.access.csv',
