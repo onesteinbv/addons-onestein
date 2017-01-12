@@ -16,5 +16,6 @@ class AccountInvoiceLine(models.Model):
     cost_center_id = fields.Many2one(
         'account.cost.center',
         string='Cost Center',
+        index=True,
         default=_default_cost_center
     )

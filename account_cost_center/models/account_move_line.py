@@ -10,5 +10,6 @@ class AccountMoveLine(models.Model):
 
     cost_center_id = fields.Many2one(
         'account.cost.center',
+        index=True,
         string='Cost Center'
     )
