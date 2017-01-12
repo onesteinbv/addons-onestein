@@ -10,6 +10,7 @@ class TestAccountCostCenter(common.TransactionCase):
     def test_invoice_costcenter(self):
         Account = self.env['account.account']
         CostCenter = self.env['account.cost.center']
+        InvLine = self.env['account.invoice.line']
 
         acc_rec = self.env.ref('account.data_account_type_receivable')
         acc_exp = self.env.ref('account.data_account_type_expenses')
@@ -26,7 +27,7 @@ class TestAccountCostCenter(common.TransactionCase):
             'type': 'in_invoice',
         })
 
-        line1 = self.env['account.invoice.line'].create({
+        line1 = InvLine.create({
             'product_id': self.env.ref('product.product_product_2').id,
             'quantity': 1.0,
             'price_unit': 100.0,
@@ -46,7 +47,7 @@ class TestAccountCostCenter(common.TransactionCase):
         })
         invoice.cost_center_id = costcenter
 
-        line2 = self.env['account.invoice.line'].create({
+        line2 = InvLine.with_context(cost_center_id=costcenter.id).create({
             'product_id': self.env.ref('product.product_product_4').id,
             'quantity': 1.0,
             'price_unit': 130.0,
