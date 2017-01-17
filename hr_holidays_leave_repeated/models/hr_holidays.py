@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from dateutil.relativedelta import relativedelta
+from datetime import datetime
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -30,6 +31,9 @@ class HrHolidays(models.Model):
 
     @api.model
     def _update_workday_from_to(self, employee, from_dt, to_dt, days):
+        user = self.env.user
+        orig_from_dt = fields.Datetime.context_timestamp(user, from_dt)
+        orig_to_dt = fields.Datetime.context_timestamp(user, to_dt)
         working_hours = self._get_employee_working_hours(employee)
         work_hours = working_hours.get_working_hours(
             from_dt,
@@ -48,6 +52,14 @@ class HrHolidays(models.Model):
             )
             if new_work_hours and work_hours <= new_work_hours:
                 break
+
+        user_from_dt = fields.Datetime.context_timestamp(user, from_dt)
+        user_to_dt = fields.Datetime.context_timestamp(user, to_dt)
+        from_dt = from_dt - user_from_dt.tzinfo._utcoffset
+        from_dt = from_dt + orig_from_dt.tzinfo._utcoffset
+        to_dt = to_dt - user_to_dt.tzinfo._utcoffset
+        to_dt = to_dt + orig_to_dt.tzinfo._utcoffset
+
         return from_dt, to_dt
 
     @api.model
@@ -65,9 +77,8 @@ class HrHolidays(models.Model):
             raise UserError(error_msg)
         from_dt, to_dt = self._update_workday_from_to(
             employee, from_dt, to_dt, days)
-        diff = self._get_time_diff(from_dt)
-        vals['date_from'] = fields.Datetime.to_string(from_dt - diff)
-        vals['date_to'] = fields.Datetime.to_string(to_dt - diff)
+        vals['date_from'] = fields.Datetime.to_string(from_dt)
+        vals['date_to'] = fields.Datetime.to_string(to_dt)
         return vals
 
     @api.model
@@ -114,15 +125,6 @@ class HrHolidays(models.Model):
         if from_dt and to_dt:
             holiday_duration = to_dt - from_dt
         return holiday_duration
-
-    @api.model
-    def _get_time_diff(self, from_dt):
-        user = self.env.user
-        from_dt_orig = from_dt.replace(tzinfo=None)
-        from_dt_user = fields.Datetime.context_timestamp(user, from_dt)
-        from_dt_user = from_dt_user.replace(tzinfo=None)
-        diff = from_dt_user - from_dt_orig
-        return diff
 
     @api.model
     def _get_employee_working_hours(self, employee):

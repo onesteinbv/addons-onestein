@@ -4,7 +4,7 @@
 
 {
     'name': 'HR Holidays leave repeated',
-    'summary': '''Adds a flag for defining periodical leaves''',
+    'summary': 'Adds a flag for defining periodical leaves',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
