@@ -19,8 +19,8 @@ class AccountFiscalPosition(models.Model):
     @api.multi
     def name_get(self):
         res = super(AccountFiscalPosition, self).name_get()
-        new_list = []
+        fp_list = []
         for item in res:
             fullname = self._fullname_get(item)
-            new_list.append((item[0], fullname))
-        return new_list
+            fp_list.append((item[0], fullname))
+        return fp_list
