@@ -140,8 +140,9 @@ class HrHolidays(models.Model):
 
     @api.model
     def _check_leave_hours(self, leave_hours):
-        if (leave_hours['remaining_hours'] < 0 or
-                    leave_hours['virtual_remaining_hours'] < 0):
+        remaining = leave_hours['remaining_hours']
+        virt_remaining = leave_hours['virtual_remaining_hours']
+        if remaining < 0 or virt_remaining < 0:
             # Raising a warning gives a more user-friendly
             # feedback than the default constraint error
             raise ValidationError(_(
