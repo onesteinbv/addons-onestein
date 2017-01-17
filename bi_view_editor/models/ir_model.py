@@ -35,7 +35,6 @@ def dict_for_field(field):
         'type': field.ttype,
         'relation': field.relation,
         'custom': False,
-
         'model_id': field.model_id.id,
         'model': field.model_id.model,
         'model_name': field.model_id.name
@@ -84,18 +83,20 @@ class IrModel(models.Model):
         """ Return list of field dicts for all fields that can be
             joined with models in model_ids
         """
-        model_names = dict([(model.id, model.model)
-                            for model in self.env['ir.model'].sudo().search(
-            [('id', 'in', model_ids.values())])])
-        filter_bi_fields = self._filter_bi_fields
-        if filter_bi_fields:
+        Model = self.env['ir.model']
+        Fields = self.env['ir.model.fields']
+        domain = [('id', 'in', model_ids.values())]
+        models = Model.sudo().search(domain)
+        model_names = dict([(model.id, model.model) for model in models])
+
+        if self._filter_bi_fields:
             rfields = [
                 dict(dict_for_field(field),
                      join_node=-1,
                      table_alias=model[0])
                 for field in filter(
-                    filter_bi_fields,
-                    self.env['ir.model.fields'].sudo().search(
+                    self._filter_bi_fields,
+                    Fields.sudo().search(
                         [('model_id', 'in', model_ids.values()),
                          ('ttype', 'in', ['many2one'])]))
                 for model in model_ids.items()
@@ -107,8 +108,8 @@ class IrModel(models.Model):
                      join_node=model[0],
                      table_alias=-1)
                 for field in filter(
-                    filter_bi_fields,
-                    self.env['ir.model.fields'].sudo().search(
+                    self._filter_bi_fields,
+                    Fields.sudo().search(
                         [('relation', 'in', model_names.values()),
                          ('ttype', 'in', ['many2one'])]))
                 for model in model_ids.items()
@@ -182,23 +183,30 @@ class IrModel(models.Model):
             ('name', 'not in', NO_BI_FIELDS),
             ('ttype', 'not in', NO_BI_TTYPES)
         ]
-        filter_bi_fields = self._filter_bi_fields
-        fields_obj = self.env['ir.model.fields']
-        fields = filter(filter_bi_fields,
-                        fields_obj.sudo().search(bi_field_domain))
-        return sorted(
-            [{'id': field.id,
-              'model_id': model_id,
-              'name': field.name,
-              'description': field.field_description,
-              'type': field.ttype,
-              'custom': False,
-              'model': field.model_id.model,
-              'model_name': field.model_id.name
-              } for field in fields],
+        Fields = self.env['ir.model.fields']
+        fields = filter(
+            self._filter_bi_fields,
+            Fields.sudo().search(bi_field_domain)
+        )
+        fields_dict = []
+        for field in fields:
+            fields_dict.append(
+                {'id': field.id,
+                 'model_id': model_id,
+                 'name': field.name,
+                 'description': field.field_description,
+                 'type': field.ttype,
+                 'custom': False,
+                 'model': field.model_id.model,
+                 'model_name': field.model_id.name
+                 }
+            )
+        sorted_fields = sorted(
+            fields_dict,
             key=lambda x: x['description'],
             reverse=True
         )
+        return sorted_fields
 
     @api.model
     @api.returns('self', lambda value: value.id)
