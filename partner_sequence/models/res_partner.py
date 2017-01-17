@@ -48,9 +48,8 @@ class ResPartner(models.Model):
                     if sequence:
                         while True:
                             vals['ref'] = sequence.next_by_id()
-                            if self.with_context(active_test=False).search([
-                                ('ref', '=', vals['ref'])
-                            ]):
+                            partners = self._get_partners_with_ref(vals['ref'])
+                            if partners:
                                 _logger.debug(
                                     "partner get next by id "
                                     "res.partner code already exists "
@@ -63,9 +62,8 @@ class ResPartner(models.Model):
             while True:
                 Sequence = self.env['ir.sequence']
                 vals['ref'] = Sequence.next_by_code('res.partner')
-                if self.with_context(active_test=False).search([
-                    ('ref', '=', vals['ref'])
-                ]):
+                partners = self._get_partners_with_ref(vals['ref'])
+                if partners:
                     _logger.debug(
                         "partner get next by code res.partner "
                         "code already exists in database")
@@ -77,3 +75,10 @@ class ResPartner(models.Model):
             raise UserError(_('No partner sequence is defined'))
 
         return super(ResPartner, self).create(vals)
+
+    @api.model
+    def _get_partners_with_ref(self, ref):
+        partners = self.with_context(active_test=False).search([
+            ('ref', '=', ref)
+        ], limit=1)
+        return partners

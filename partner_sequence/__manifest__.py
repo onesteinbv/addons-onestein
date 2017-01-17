@@ -9,7 +9,7 @@
     'license': 'AGPL-3',
     'images': ['static/description/main_screenshot.png'],
     'version': '10.0.1.0.0',
-    'summary': '''Generates unique identifiers for partners''',
+    'summary': 'Generates unique identifiers for partners',
     'category': 'Extra Tools',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
