@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
+from datetime import datetime
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError, Warning
@@ -11,68 +12,80 @@ from odoo.tools.translate import _
 _logger = logging.getLogger(__name__)
 
 
-class hr_holidays(models.Model):
+class HrHolidays(models.Model):
     _inherit = "hr.holidays"
 
-    @api.multi
     @api.onchange('employee_id')
     def onchange_holiday_employee(self):
-        for holiday in self:
-            holiday.department_id = None
-            holiday.number_of_hours_temp = 0.0
-            if holiday.employee_id:
-                employee = holiday.employee_id
-                if holiday.date_from and holiday.date_to:
-                    working_hours = None
-                    contract = employee.contract_id
-                    if employee.calendar_id:
-                        working_hours = employee.calendar_id
-                    elif contract and contract.working_hours:
-                        working_hours = contract.working_hours
-                    if working_hours:
-                        work_hours = working_hours.get_working_hours(
-                            fields.Datetime.from_string(holiday.date_from),
-                            fields.Datetime.from_string(holiday.date_to),
-                            compute_leaves=True,
-                            resource_id=employee.resource_id.id)
-                        holiday.number_of_hours_temp = work_hours
-                holiday.department_id = employee.department_id
+        self.department_id = None
+        self.number_of_hours_temp = 0.0
+        if self.employee_id:
+            self._set_number_of_hours_temp()
+            self.department_id = self.employee_id.department_id
 
-    @api.multi
     @api.onchange('date_from', 'date_to')
     def onchange_date(self):
-        for holiday in self:
-            work_hours = 0.0
-            employee = holiday.employee_id
-            # Check in context what form is open: add or remove
-            if self.env.context.get('default_type', '') == 'add':
-                return
+        # Check in context what form is open: add or remove
+        if self.env.context.get('default_type', '') == 'add':
+            return
 
-            # date_to has to be greater than date_from
-            if holiday.date_from and holiday.date_to:
-                if holiday.date_from > holiday.date_to:
-                    raise Warning(_(
-                        'The start date must be anterior to the end date.'
-                    ))
+        self._check_dates()
+        self._set_number_of_hours_temp()
 
-            if not employee and (holiday.date_to or holiday.date_from):
-                raise Warning(_('Set an employee first!'))
+    @api.multi
+    def _set_number_of_hours_temp(self):
+        self.ensure_one()
+        from_dt = self._compute_datetime(self.date_from)
+        to_dt = self._compute_datetime(self.date_to)
+        work_hours = self._compute_work_hours(from_dt, to_dt)
+        self.number_of_hours_temp = work_hours
 
-            if holiday.date_from and holiday.date_to:
-                working_hours = None
-                contract = employee.contract_id
-                if employee.calendar_id:
-                    working_hours = employee.calendar_id
-                elif contract and contract.working_hours:
-                    working_hours = contract.working_hours
-                if working_hours:
-                    work_hours = working_hours.get_working_hours(
-                        fields.Datetime.from_string(holiday.date_from),
-                        fields.Datetime.from_string(holiday.date_to),
-                        compute_leaves=True,
-                        resource_id=employee.resource_id.id)
+    @api.model
+    def _compute_datetime(self, date):
+        dt = False
+        if date:
+            reference_date = fields.Datetime.context_timestamp(
+                self.env.user,
+                datetime(1990, 2, 8, 12)
+            )
+            dt = fields.Datetime.from_string(date)
+            tz_dt = fields.Datetime.context_timestamp(self.env.user, dt)
+            dt = dt + tz_dt.tzinfo._utcoffset
+            dt = dt - reference_date.tzinfo._utcoffset
+        return dt
 
-            holiday.number_of_hours_temp = work_hours
+    @api.multi
+    def _check_dates(self):
+        self.ensure_one()
+        employee = self.employee_id
+        # date_to has to be greater than date_from
+        if self.date_from and self.date_to:
+            if self.date_from > self.date_to:
+                raise Warning(_(
+                    'The start date must be anterior to the end date.'
+                ))
+        if not employee and (self.date_to or self.date_from):
+            raise Warning(_('Set an employee first!'))
+
+    @api.multi
+    def _compute_work_hours(self, from_dt, to_dt):
+        self.ensure_one()
+        employee = self.employee_id
+        work_hours = 0.0
+        if self.date_from and self.date_to:
+            working_hours = None
+            contract = employee.contract_id
+            if employee.calendar_id:
+                working_hours = employee.calendar_id
+            elif contract and contract.working_hours:
+                working_hours = contract.working_hours
+            if working_hours:
+                work_hours = working_hours.get_working_hours(
+                    from_dt,
+                    to_dt,
+                    compute_leaves=True,
+                    resource_id=employee.resource_id.id)
+        return work_hours
 
     @api.depends('number_of_hours_temp', 'state')
     def _compute_number_of_hours(self):
@@ -123,14 +136,18 @@ class hr_holidays(models.Model):
             )
             _logger.debug('Leave Hours: %s', (leave_hours))
 
-            if (leave_hours['remaining_hours'] < 0 or
+            self._check_leave_hours(leave_hours)
+
+    @api.model
+    def _check_leave_hours(self, leave_hours):
+        if (leave_hours['remaining_hours'] < 0 or
                     leave_hours['virtual_remaining_hours'] < 0):
-                # Raising a warning gives a more user-friendly
-                # feedback than the default constraint error
-                raise ValidationError(_(
-                    'The number of remaining hours is not sufficient for '
-                    'this leave type.\nPlease check for allocation requests '
-                    'awaiting validation.'))
+            # Raising a warning gives a more user-friendly
+            # feedback than the default constraint error
+            raise ValidationError(_(
+                'The number of remaining hours is not sufficient for '
+                'this leave type.\nPlease check for allocation requests '
+                'awaiting validation.'))
 
     @api.multi
     def name_get(self):
