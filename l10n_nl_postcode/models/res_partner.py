@@ -18,26 +18,39 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     @api.multi
+    def _get_warning(self):
+        self.ensure_one()
+        msg = _('The Postcode you entered (%s) is not valid.')
+        warning = {
+            'title': _('Warning!'),
+            'message': msg % self.zip,
+        }
+        return warning
+
+    @api.multi
+    def _do_format(self):
+        self.ensure_one()
+        # properly format the entered postcode
+        self.zip = postcode.compact(self.zip)
+
+    @api.multi
+    def _check_country(self):
+        self.ensure_one()
+        country = self.country_id
+        if not country or country != self.env.ref('base.nl'):
+            return False
+        return True
+
+    @api.multi
     @api.onchange('zip')
     def onchange_zip_l10n_nl_postcode(self):
-        warning = {}
         if self.env.context.get('skip_postcode_check'):
-            return {}
-        for partner in self:
-            if partner.zip:
-                country = partner.country_id
-                if not country or country != self.env.ref('base.nl'):
-                    continue
+            return
 
-                # check is valid, otherwise display a warning
-                if not postcode.is_valid(partner.zip):
-                    msg = _('The Postcode you entered (%s) is not valid.')
-                    warning = {
-                        'title': _('Warning!'),
-                        'message': msg % partner.zip,
-                    }
-                else:
-                    # properly format the entered postcode
-                    partner.zip = postcode.compact(partner.zip)
-
-        return {'warning': warning, }
+        if self.zip and self._check_country():
+            # check is valid, otherwise display a warning
+            if postcode.is_valid(self.zip):
+                self._do_format()
+            else:
+                warning = self._get_warning()
+                return {'warning': warning, }
