@@ -11,8 +11,7 @@ class AccountFiscalPosition(models.Model):
     @api.model
     def _fullname_get(self, item):
         name = item[1] or ''
-        FiscalPosition = self.env['account.fiscal.position']
-        company = FiscalPosition.browse(item[0]).company_id
+        company = self.browse(item[0]).company_id
         company_name = company and company.name or ''
         return name + ' - ' + company_name
 

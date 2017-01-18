@@ -11,8 +11,7 @@ class AccountJournal(models.Model):
     @api.model
     def _fullname_get(self, item):
         name = item[1] or ''
-        Journal = self.env['account.journal']
-        company = Journal.browse(item[0]).company_id
+        company = self.browse(item[0]).company_id
         company_name = company and company.name or ''
         return name + ' - ' + company_name
 

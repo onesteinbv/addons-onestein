@@ -11,8 +11,7 @@ class AccountTax(models.Model):
     @api.model
     def _fullname_get(self, item):
         name = item[1] or ''
-        Tax = self.env['account.tax']
-        company = Tax.browse(item[0]).company_id
+        company = self.browse(item[0]).company_id
         company_name = company and company.name or ''
         return name + ' - ' + company_name
 
