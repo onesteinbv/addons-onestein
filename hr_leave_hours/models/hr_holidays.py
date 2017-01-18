@@ -30,6 +30,7 @@ class HrHolidays(models.Model):
             return
 
         self._check_dates()
+        self._check_employee()
         self._set_number_of_hours_temp()
 
     @api.multi
@@ -57,13 +58,17 @@ class HrHolidays(models.Model):
     @api.multi
     def _check_dates(self):
         self.ensure_one()
-        employee = self.employee_id
         # date_to has to be greater than date_from
         if self.date_from and self.date_to:
             if self.date_from > self.date_to:
                 raise Warning(_(
                     'The start date must be anterior to the end date.'
                 ))
+
+    @api.multi
+    def _check_employee(self):
+        self.ensure_one()
+        employee = self.employee_id
         if not employee and (self.date_to or self.date_from):
             raise Warning(_('Set an employee first!'))
 
@@ -73,12 +78,7 @@ class HrHolidays(models.Model):
         employee = self.employee_id
         work_hours = 0.0
         if self.date_from and self.date_to:
-            working_hours = None
-            contract = employee.contract_id
-            if employee.calendar_id:
-                working_hours = employee.calendar_id
-            elif contract and contract.working_hours:
-                working_hours = contract.working_hours
+            working_hours = self._get_working_hours(employee)
             if working_hours:
                 work_hours = working_hours.get_working_hours(
                     from_dt,
@@ -86,6 +86,16 @@ class HrHolidays(models.Model):
                     compute_leaves=True,
                     resource_id=employee.resource_id.id)
         return work_hours
+
+    @api.model
+    def _get_working_hours(self, employee):
+        working_hours = None
+        contract = employee.contract_id
+        if employee.calendar_id:
+            working_hours = employee.calendar_id
+        elif contract and contract.working_hours:
+            working_hours = contract.working_hours
+        return working_hours
 
     @api.depends('number_of_hours_temp', 'state')
     def _compute_number_of_hours(self):
