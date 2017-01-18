@@ -5,7 +5,7 @@
 from datetime import datetime, timedelta
 
 from odoo import api, fields, models
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as SDT
 
 
 class HRContract(models.Model):
@@ -48,23 +48,24 @@ class HRContract(models.Model):
         return True
 
     @api.model
+    def _ckeck_date(self, contract, delta):
+        if contract.date_end:
+            date = datetime.strptime(contract.date_end[:10], SDT)
+            return date <= datetime.today() + timedelta(delta)
+        return None
+
+    @api.model
     def check_expiring(self):
-        contract_list = self.search([('state', 'in', ['open', 'pending'])])
-        for contract in contract_list:
+        contracts = self.search([('state', 'in', ['open', 'pending'])])
+        for contract in contracts:
             # notification
-            if contract.date_end and datetime.strptime(
-                contract.date_end[:10],
-                DEFAULT_SERVER_DATE_FORMAT
-            ) <= datetime.today() + timedelta(1):
+            if self._ckeck_date(contract, delta=1):
                 contract.state = 'close'
 
     @api.model
     def check_to_renew(self):
-        contract_list = self.search([('state', 'in', ['open'])])
-        for contract in contract_list:
+        contracts = self.search([('state', 'in', ['open'])])
+        for contract in contracts:
             # notification
-            if contract.date_end and datetime.strptime(
-                    contract.date_end[:10],
-                    DEFAULT_SERVER_DATE_FORMAT
-            ) <= datetime.today() + timedelta(7):
+            if self._ckeck_date(contract, delta=7):
                 contract.state = 'pending'

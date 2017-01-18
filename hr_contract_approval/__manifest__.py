@@ -4,7 +4,7 @@
 
 {
     'name': 'Human Resource Contract Approval',
-    'summary': '''Human Resource Contract Approval''',
+    'summary': 'Human Resource Contract Approval',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
