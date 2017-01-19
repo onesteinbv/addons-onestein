@@ -8,15 +8,9 @@ from functools import reduce
 
 from dateutil.relativedelta import relativedelta
 
-import odoo.addons.decimal_precision as dp
 from odoo import _, api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-
-
-class DummyFy(object):
-    def __init__(self, *args, **argv):
-        for key, arg in argv.items():
-            setattr(self, key, arg)
+import odoo.addons.decimal_precision as dp
 
 
 class AccountInvoiceLine(models.Model):
@@ -52,9 +46,9 @@ class AccountInvoiceLine(models.Model):
 
     @api.multi
     def spread_details(self):
-        self.ensure_one()
         """Button on the invoice lines tree view on the invoice
         form to show the spread form view."""
+        self.ensure_one()
         spread_view = self.env['ir.ui.view'].search(
             [('name', '=', 'account.invoice.line.spread')], limit=1)
         view_id = spread_view and spread_view.id or None
@@ -394,160 +388,238 @@ class AccountInvoiceLine(models.Model):
         self.ensure_one()
         return (self.name or str(self.id)) + '/' + str(seq)
 
+    @api.multi
     def compute_spread_board(self):
-        SpreadLine = self.env['account.invoice.spread.line']
-        digits = self.env['decimal.precision'].precision_get('Account')
-
         for invline in self:
             if invline.price_subtotal == 0.0:
                 continue
-            domain = [
-                ('invoice_line_id', '=', invline.id),
-                ('type', '=', 'spread'),
-                ('move_id', '!=', False)
-            ]
-            posted_spreads = SpreadLine.search(
-                domain,
-                order='line_date desc'
-            )
-            last_spread_line = False
-            if posted_spreads > 0:
-                last_spread_line = posted_spreads[0]
-
-            domain = [
-                ('invoice_line_id', '=', invline.id),
-                ('type', '=', 'depreciate'),
-                ('move_id', '=', False)]
-
-            old_spreads = SpreadLine.search(domain)
-            if old_spreads:
-                for spread in old_spreads:
-                    spread.unlink()
-
+            invline._unlink_old_spreads()
             table = invline._compute_spread_table()
             if not table:
                 continue
+            invline._compute_spread_board(table)
 
-            # group lines prior to spread start period
-            spread_start = invline.spread_date or \
-                invline.invoice_id.date_invoice
-            spread_start_date = datetime.strptime(
-                spread_start, '%Y-%m-%d')
-            lines = table[0]['lines']
-            lines1 = []
-            lines2 = []
-            flag = lines[0]['date'] < spread_start_date
-            for line in lines:
-                if flag:
-                    lines1.append(line)
-                    if line['date'] >= spread_start_date:
-                        flag = False
-                else:
-                    lines2.append(line)
-            if lines1:
-                def group_lines(x, y):
-                    y.update({'amount': x['amount'] + y['amount']})
-                    return y
-                lines1 = [reduce(group_lines, lines1)]
-                lines1[0]['spreaded_value'] = 0.0
-            table[0]['lines'] = lines1 + lines2
+    @api.multi
+    def _compute_spread_board(self, table):
+        self.ensure_one()
 
-            # check table with posted entries and
-            # recompute in case of deviation
-            if len(posted_spreads) > 0:
-                last_spread_date = datetime.strptime(
-                    last_spread_line.line_date, '%Y-%m-%d')
-                last_date_in_table = table[-1]['lines'][-1]['date']
-                if last_date_in_table <= last_spread_date:
-                    raise Warning(
-                        _('Error!'),
-                        _("The duration of the spread conflicts with the "
-                          "posted spread table entry dates."))
+        self._group_table_lines(table)
+        line_i_start, table_i_start = self._check_recompute_table(table)
 
-                for table_i, entry in enumerate(table):
-                    residual_amount_table = \
-                        entry['lines'][-1]['remaining_value']
-                    if entry['date_start'] <= last_spread_date \
-                            <= entry['date_stop']:
-                        break
-                if entry['date_stop'] == last_spread_date:
-                    table_i += 1
-                    line_i = 0
-                else:
-                    entry = table[table_i]
-                    date_min = entry['date_start']
-                    for line_i, line in enumerate(entry['lines']):
-                        residual_amount_table = line['remaining_value']
-                        if date_min <= last_spread_date <= line['date']:
-                            break
-                        date_min = line['date']
-                    if line['date'] == last_spread_date:
-                        line_i += 1
-                table_i_start = table_i
-                line_i_start = line_i
+        posted_spreads = self._get_posted_spreads()
+        last_spread_line = False
+        if posted_spreads:
+            last_spread_line = posted_spreads[0]
 
-                # check if residual value corresponds with table
-                # and adjust table when needed
-                spreaded_value = 0.0
-                for posted_spread in posted_spreads:
-                    spreaded_value += posted_spread.amount
+        seq = len(posted_spreads)
+        last_date = table[-1]['lines'][-1]['date']
+        for entry in table[table_i_start:]:
+            for line in entry['lines'][line_i_start:]:
+                seq += 1
+                name = self._get_spread_entry_name(seq)
+                amount = self._get_amount(last_date, line)
+                self._create_spread_line(amount, line, name, last_spread_line)
+            line_i_start = 0
 
-                residual_amount = invline.price_subtotal - spreaded_value
-                amount_diff = round(
-                    residual_amount_table - residual_amount, digits)
-                if amount_diff:
-                    entry = table[table_i_start]
-                    fy_amount_check = 0.0
-                    if entry['fy_id']:
-                        fy_amount_check = 0.0
-                        for posted_spread in posted_spreads:
-                            line_date = posted_spread.line_date
-                            if line_date >= entry['date_start']:
-                                if line_date <= entry['date_stop']:
-                                    fy_amount_check += posted_spread.amount
-
-                    lines = entry['lines']
-                    for line in lines[line_i_start:-1]:
-                        line['spreaded_value'] = spreaded_value
-                        spreaded_value += line['amount']
-                        fy_amount_check += line['amount']
-                        residual_amount -= line['amount']
-                        line['remaining_value'] = residual_amount
-                    lines[-1]['spreaded_value'] = spreaded_value
-                    lines[-1]['amount'] = entry['fy_amount'] - fy_amount_check
-
+    @api.multi
+    def _group_table_lines(self, table):
+        # group lines prior to spread start period
+        self.ensure_one()
+        spread_start = self.spread_date or self.invoice_id.date_invoice
+        spread_start_date = datetime.strptime(spread_start, '%Y-%m-%d')
+        lines = table[0]['lines']
+        lines1 = []
+        lines2 = []
+        flag = lines[0]['date'] < spread_start_date
+        for line in lines:
+            if flag:
+                lines1.append(line)
+                if line['date'] >= spread_start_date:
+                    flag = False
             else:
-                table_i_start = 0
-                line_i_start = 0
+                lines2.append(line)
+        if lines1:
+            def group_lines(x, y):
+                y.update({'amount': x['amount'] + y['amount']})
+                return y
 
-            seq = len(posted_spreads)
-            spread_line_id = last_spread_line and last_spread_line.id
-            last_date = table[-1]['lines'][-1]['date']
-            for entry in table[table_i_start:]:
-                for line in entry['lines'][line_i_start:]:
-                    seq += 1
-                    name = self._get_spread_entry_name(seq)
-                    if line['date'] == last_date:
-                        # ensure that the last entry of the table always
-                        # depreciates the remaining value
-                        existing_amount = 0.0
-                        for existspread in SpreadLine.search(
-                            [('line_date', '<', last_date),
-                             ('invoice_line_id', '=', invline.id)]):
-                            existing_amount += existspread.amount
+            lines1 = [reduce(group_lines, lines1)]
+            lines1[0]['spreaded_value'] = 0.0
+        table[0]['lines'] = lines1 + lines2
 
-                        amount = invline.price_subtotal - existing_amount
-                    else:
-                        amount = line['amount']
-                    previous_id = spread_line_id and spread_line_id.id or False
-                    vals = {
-                        'previous_id': previous_id,
-                        'amount': amount,
-                        'invoice_line_id': invline.id,
-                        'name': name,
-                        'line_date': line['date'].strftime('%Y-%m-%d'),
-                        }
-                    spread_line_id = SpreadLine.create(vals)
-                line_i_start = 0
+    @api.multi
+    def _check_recompute_table(self, table):
+        # check table with posted entries and
+        # recompute in case of deviation
+        self.ensure_one()
+        digits = self.env['decimal.precision'].precision_get('Account')
+        posted_spreads = self._get_posted_spreads()
+        last_spread_line = False
+        if posted_spreads > 0:
+            last_spread_line = posted_spreads[0]
 
-        return True
+        if posted_spreads > 0:
+            last_spread_date = self._get_last_spread_date(
+                last_spread_line,
+                table
+            )
+
+            entry, residual_amount_table, table_i = self._get_table_entry(
+                last_spread_date,
+                table
+            )
+            if entry['date_stop'] == last_spread_date:
+                table_i += 1
+                line_i = 0
+            else:
+                entry = table[table_i]
+                line, line_i, residual_amount_table = self._get_table_line(
+                    entry,
+                    last_spread_date,
+                    residual_amount_table
+                )
+                if line['date'] == last_spread_date:
+                    line_i += 1
+            table_i_start = table_i
+            line_i_start = line_i
+
+            # check if residual value corresponds with table
+            # and adjust table when needed
+            spreaded_value = self._get_spreaded_amount(posted_spreads)
+            residual_amount = self.price_subtotal - spreaded_value
+            residual_amount_diff = residual_amount_table - residual_amount
+            amount_diff = round(residual_amount_diff, digits)
+            if amount_diff:
+                entry = table[table_i_start]
+                fy_amount = self._get_fy_amount_check(entry, posted_spreads)
+                lines = entry['lines']
+                for line in lines[line_i_start:-1]:
+                    line['spreaded_value'] = spreaded_value
+                    spreaded_value += line['amount']
+                    fy_amount += line['amount']
+                    residual_amount -= line['amount']
+                    line['remaining_value'] = residual_amount
+                lines[-1]['spreaded_value'] = spreaded_value
+                lines[-1]['amount'] = entry['fy_amount'] - fy_amount
+
+        else:
+            table_i_start = 0
+            line_i_start = 0
+        return line_i_start, table_i_start
+
+    @api.model
+    def _get_table_line(self, entry, last_spread_date, residual_amount_table):
+        date_min = entry['date_start']
+        line_i = None
+        line = None
+        for line_i, line in enumerate(entry['lines']):
+            residual_amount_table = line['remaining_value']
+            if date_min <= last_spread_date and last_spread_date <= line['date']:
+                break
+            date_min = line['date']
+        return line, line_i, residual_amount_table
+
+    @api.model
+    def _get_fy_amount_check(self, entry, posted_spreads):
+        fy_amount_check = 0.0
+        if entry['fy_id']:
+            for posted_spread in posted_spreads:
+                line_date = posted_spread.line_date
+                if line_date >= entry['date_start']:
+                    if line_date <= entry['date_stop']:
+                        fy_amount_check += posted_spread.amount
+        return fy_amount_check
+
+    @api.model
+    def _get_table_entry(self, last_spread_date, table):
+        entry = None
+        residual_amount_table = None
+        table_i = None
+        for table_i, entry in enumerate(table):
+            residual_amount_table = \
+                entry['lines'][-1]['remaining_value']
+            if entry['date_start'] <= last_spread_date <= entry['date_stop']:
+                break
+        return entry, residual_amount_table, table_i
+
+    @api.model
+    def _get_spreaded_amount(self, posted_spreads):
+        spreaded_value = 0.0
+        for posted_spread in posted_spreads:
+            spreaded_value += posted_spread.amount
+        return spreaded_value
+
+    @api.multi
+    def _get_amount(self, last_date, line):
+        self.ensure_one()
+        if line['date'] == last_date:
+            existing_amount = self._get_last_amount(last_date)
+            amount = self.price_subtotal - existing_amount
+        else:
+            amount = line['amount']
+        return amount
+
+    @api.multi
+    def _get_last_amount(self, last_date):
+        self.ensure_one()
+        SpreadLine = self.env['account.invoice.spread.line']
+        # ensure that the last entry of the table always
+        # depreciates the remaining value
+        existing_amount = 0.0
+        for existspread in SpreadLine.search(
+                [('line_date', '<', last_date),
+                 ('invoice_line_id', '=', self.id)]):
+            existing_amount += existspread.amount
+        return existing_amount
+
+    @api.multi
+    def _create_spread_line(self, amount, line, name, spread_line):
+        self.ensure_one()
+        SpreadLine = self.env['account.invoice.spread.line']
+        previous_id = spread_line and spread_line.id or False
+        vals = {
+            'previous_id': previous_id,
+            'amount': amount,
+            'invoice_line_id': self.id,
+            'name': name,
+            'line_date': line['date'].strftime('%Y-%m-%d'),
+        }
+        SpreadLine.create(vals)
+
+    @api.model
+    def _get_last_spread_date(self, last_spread_line, table):
+        last_spread_date = datetime.strptime(
+            last_spread_line.line_date, '%Y-%m-%d')
+        last_date_in_table = table[-1]['lines'][-1]['date']
+        if last_date_in_table <= last_spread_date:
+            raise Warning(
+                _('Error!'),
+                _("The duration of the spread conflicts with the "
+                  "posted spread table entry dates."))
+        return last_spread_date
+
+    @api.multi
+    def _get_posted_spreads(self):
+        self.ensure_one()
+        SpreadLine = self.env['account.invoice.spread.line']
+        domain = [
+            ('invoice_line_id', '=', self.id),
+            ('type', '=', 'spread'),
+            ('move_id', '!=', False)
+        ]
+        posted_spreads = SpreadLine.search(
+            domain,
+            order='line_date desc'
+        )
+        return posted_spreads
+
+    @api.multi
+    def _unlink_old_spreads(self):
+        self.ensure_one()
+        SpreadLine = self.env['account.invoice.spread.line']
+        domain = [
+            ('invoice_line_id', '=', self.id),
+            ('type', '=', 'depreciate'),
+            ('move_id', '=', False)]
+        old_spreads = SpreadLine.search(domain)
+        old_spreads.unlink()
