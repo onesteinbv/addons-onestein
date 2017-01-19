@@ -2,7 +2,6 @@
 <odoo>
 
     <record id="view_account_config_settings" model="ir.ui.view">
-        <field name="name">account.config.settings.inherit</field>
         <field name="inherit_id" ref="account.view_account_config_settings"/>
         <field name="model">account.config.settings</field>
         <field name="arch" type="xml">

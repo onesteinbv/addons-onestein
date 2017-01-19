@@ -4,6 +4,7 @@
 
 import calendar
 from datetime import datetime
+from functools import reduce
 
 from dateutil.relativedelta import relativedelta
 
@@ -31,7 +32,7 @@ class AccountInvoiceLine(models.Model):
         ('month', 'Month'),
         ('quarter', 'Quarter'),
         ('year', 'Year'),
-        ], string='Period Type',
+        ],
         default='month',
         help="Period length for the entries",
         required=True)
@@ -51,13 +52,12 @@ class AccountInvoiceLine(models.Model):
 
     @api.multi
     def spread_details(self):
+        self.ensure_one()
         """Button on the invoice lines tree view on the invoice
         form to show the spread form view."""
-        view_obj = self.env['ir.ui.view'].search(
-            [('name', '=', 'account.invoice.line.spread')])
-        view_id = False
-        if view_obj:
-            view_id = view_obj.id
+        spread_view = self.env['ir.ui.view'].search(
+            [('name', '=', 'account.invoice.line.spread')], limit=1)
+        view_id = spread_view and spread_view.id or None
 
         view = {
             'name': _('Spread Details'),
@@ -72,6 +72,7 @@ class AccountInvoiceLine(models.Model):
             }
         return view
 
+    @api.multi
     def _get_fy_duration(self, invoice_date, option='days'):
         """
         Returns fiscal year duration.
@@ -81,58 +82,85 @@ class AccountInvoiceLine(models.Model):
                   a started month is counted as a full month
         - years: duration in calendar years, considering also leap years
         """
-        date_invoice_formatted = datetime.strptime(invoice_date, DF).date()
-        fy_dates = self.company_id.compute_fiscalyear_dates(
-            date_invoice_formatted
-        )
-        days = (fy_dates['date_to'] - date_invoice_formatted).days + 1
+        self.ensure_one()
+        fy_dates = self._get_fy_dates(invoice_date)
+        if option == 'days':
+            days = self._get_fy_duration_days(invoice_date, fy_dates)
+            return days
+        if option == 'months':
+            months = self._get_fy_duration_months(invoice_date, fy_dates)
+            return months
+        if option == 'years':
+            months = self._get_fy_duration_years(invoice_date, fy_dates)
+            return months
 
+    @api.model
+    def _get_fy_duration_years(self, invoice_date, fy_dates):
+        fy_date_start = datetime.strptime(
+            fy_dates['date_from'].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        fy_year_start = int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
+        fy_date_stop = datetime.strptime(
+            fy_dates['date_to'].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        fy_year_stop = int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4])
+        year = fy_year_start
+        cnt = fy_year_stop - fy_year_start + 1
+        factor = 0
+        for i in range(cnt):
+            cy_days = calendar.isleap(year) and 366 or 365
+            if i == 0:  # first year
+                if fy_date_stop.year == year:
+                    duration = (fy_date_stop - fy_date_start).days + 1
+                else:
+                    duration = (datetime(year, 12, 31) -
+                                fy_date_start).days + 1
+                factor = float(duration) / cy_days
+            elif i == cnt - 1:  # last year
+                duration = fy_date_stop - datetime(year, 1, 1)
+                duration_days = duration.days + 1
+                factor += float(duration_days) / cy_days
+            else:
+                factor += 1.0
+            year += 1
+        return factor
+
+    @api.model
+    def _get_fy_duration_months(self, invoice_date, fy_dates):
         months = (int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4]) -
                   int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
                   ) * 12 + \
                  (int(fy_dates['date_to'].strftime('%Y-%m-%d')[5:7]) -
                   int(fy_dates['date_from'].strftime('%Y-%m-%d')[5:7])
                   ) + 1
-        if option == 'days':
-            return days
-        elif option == 'months':
-            return months
-        elif option == 'years':
-            fy_date_start = datetime.strptime(
-                fy_dates['date_from'].strftime('%Y-%m-%d'), '%Y-%m-%d')
-            fy_year_start = int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
-            fy_date_stop = datetime.strptime(
-                fy_dates['date_to'].strftime('%Y-%m-%d'), '%Y-%m-%d')
-            fy_year_stop = int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4])
-            year = fy_year_start
-            cnt = fy_year_stop - fy_year_start + 1
-            factor = 0
-            for i in range(cnt):
-                cy_days = calendar.isleap(year) and 366 or 365
-                if i == 0:  # first year
-                    if fy_date_stop.year == year:
-                        duration = (fy_date_stop - fy_date_start).days + 1
-                    else:
-                        duration = (datetime(year, 12, 31) -
-                                    fy_date_start).days + 1
-                    factor = float(duration) / cy_days
-                elif i == cnt - 1:  # last year
-                    duration = fy_date_stop - datetime(year, 1, 1)
-                    duration_days = duration.days + 1
-                    factor += float(duration_days) / cy_days
-                else:
-                    factor += 1.0
-                year += 1
-            return factor
+        return months
 
-    def _get_fy_duration_factor(self, entry, line, firstyear):
-        date_invoice = line.invoice_id.date_invoice or fields.Date.today()
+    @api.model
+    def _get_fy_duration_days(self, invoice_date, fy_dates):
+        date_invoice_formatted = datetime.strptime(invoice_date, DF).date()
+        days = (fy_dates['date_to'] - date_invoice_formatted).days + 1
+        return days
+
+    @api.multi
+    def _get_fy_dates(self):
+        self.ensure_one()
+        date_invoice_formatted = datetime.strptime(
+            self.invoice_id.date_invoice,
+            DF
+        ).date()
+        fy_dates = self.company_id.compute_fiscalyear_dates(
+            date_invoice_formatted
+        )
+        return fy_dates
+
+    @api.multi
+    def _get_fy_duration_factor(self, entry, firstyear):
+        self.ensure_one()
+        date_invoice = self.invoice_id.date_invoice or fields.Date.today()
         if firstyear:
             spread_date_start = datetime.strptime(
                 date_invoice, '%Y-%m-%d')
-            if line.spread_date:
+            if self.spread_date:
                 spread_date_start = datetime.strptime(
-                    line.spread_date, '%Y-%m-%d')
+                    self.spread_date, '%Y-%m-%d')
             fy_date_stop = entry['date_stop']
             first_fy_spread_days = \
                 (fy_date_stop - spread_date_start.date()).days + 1
@@ -142,22 +170,24 @@ class AccountInvoiceLine(models.Model):
                 and 366 or 365
             duration_factor = \
                 float(first_fy_spread_days) / first_fy_duration
-
         else:
             duration_factor = self._get_fy_duration(
                 date_invoice, option='years')
 
         return duration_factor
 
-    @api.model
-    def _get_spread_start_date(self, line, date_start):
+    @api.multi
+    def _get_spread_start_date(self):
+        self.ensure_one()
+        fy_dates = self._get_fy_dates()
 
-        if line.spread_date:
+        date_start = fy_dates['date_from']
+        if self.spread_date:
             spread_start_date = datetime.strptime(
-                line.spread_date, '%Y-%m-%d')
-        elif line.invoice_id.date_invoice:
+                self.spread_date, '%Y-%m-%d')
+        elif self.invoice_id.date_invoice:
             spread_start_date = datetime.strptime(
-                line.invoice_id.date_invoice, '%Y-%m-%d')
+                self.invoice_id.date_invoice, '%Y-%m-%d')
         else:
             fy_date_start = datetime.strptime(date_start, '%Y-%m-%d')
             spread_start_date = datetime(
@@ -165,143 +195,87 @@ class AccountInvoiceLine(models.Model):
             )
         return spread_start_date
 
-    @api.model
-    def _get_spread_stop_date(self, line, spread_start_date):
+    @api.multi
+    def _get_spread_stop_date(self):
+        self.ensure_one()
+        spread_start_date = self._get_spread_start_date()
         spread_stop_date = None
-        if line.period_type == 'month':
+        if self.period_type == 'month':
             spread_stop_date = spread_start_date + relativedelta(
-                months=line.period_number, days=-1)
-        elif line.period_type == 'quarter':
+                months=self.period_number, days=-1)
+        elif self.period_type == 'quarter':
             spread_stop_date = spread_start_date + relativedelta(
-                months=line.period_number * 3, days=-1)
-        elif line.period_type == 'year':
+                months=self.period_number * 3, days=-1)
+        elif self.period_type == 'year':
             spread_stop_date = spread_start_date + relativedelta(
-                years=line.period_number, days=-1)
+                years=self.period_number, days=-1)
         return spread_stop_date
 
-    @api.model
-    def _compute_year_amount(self, line):
+    @api.multi
+    def _compute_year_amount(self):
+        self.ensure_one()
         factor = 1
-        if line.period_type == 'month':
-            factor = line.period_number / 12.0
-        elif line.period_type == 'quarter':
-            factor = line.period_number * 3 / 12.0
-        elif line.period_type == 'year':
-            factor = line.period_number
+        if self.period_type == 'month':
+            factor = self.period_number / 12.0
+        elif self.period_type == 'quarter':
+            factor = self.period_number * 3 / 12.0
+        elif self.period_type == 'year':
+            factor = self.period_number
 
-        period_amount = line.price_subtotal / factor
-
+        period_amount = self.price_subtotal / factor
         return period_amount
 
-    def _compute_spread_table(self, invline):
-
+    @api.multi
+    def _compute_spread_table(self):
+        self.ensure_one()
         table = []
-        if not invline.period_number or \
-                not invline.spread_account_id or \
-                not invline.period_type:
+        if not self.period_number or \
+                not self.spread_account_id or \
+                not self.period_type:
             return table
 
-        date_invoice = invline.invoice_id.date_invoice
-        date_invoice_formatted = datetime.strptime(date_invoice, DF).date()
-        fy_dates = self.company_id.compute_fiscalyear_dates(
-            date_invoice_formatted)
+        self._init_spread_table(table)
+        i_max, table = self._compute_spread_table_step1(table)
+        self._compute_spread_table_step2(i_max, table)
 
-        init_flag = True
-        fy_date_start = fy_dates['date_from']
-        fy_date_stop = fy_dates['date_to']
+        return table
 
-        spread_start_date = self._get_spread_start_date(
-            invline, fy_date_start)
-        spread_stop_date = self._get_spread_stop_date(
-            invline, spread_start_date)
-
-        while fy_date_start <= spread_stop_date.date():
-            table.append({
-                'date_start': fy_date_start,
-                'date_stop': fy_date_stop,
-                'init': init_flag})
-            fy_date_start = fy_date_stop + relativedelta(days=1)
-            fy_date_stop = fy_date_stop + relativedelta(years=1)
-
-        digits = self.env['decimal.precision'].precision_get('Account')
-        amount_to_spread = residual_amount = invline.price_subtotal
-
-        # step 1:
-        # calculate spread amount per fiscal year
-        fy_residual_amount = residual_amount
-        i_max = len(table) - 1
-        invoice_sign = invline.price_subtotal >= 0 and 1 or -1
-        for i, entry in enumerate(table):
-            year_amount = self._compute_year_amount(invline)
-            period_amount = year_amount
-            if invline.period_type == 'year':
-                period_amount = year_amount
-            elif invline.period_type == 'quarter':
-                period_amount = year_amount/4
-            elif invline.period_type == 'month':
-                period_amount = year_amount/12
-            if i == i_max:
-                fy_amount = fy_residual_amount
-            else:
-                firstyear = i == 0 and True or False
-                fy_factor = self._get_fy_duration_factor(
-                    entry, invline, firstyear)
-                fy_amount = year_amount * fy_factor
-            if invoice_sign * (fy_amount - fy_residual_amount) > 0:
-                fy_amount = fy_residual_amount
-            period_amount = round(period_amount, digits)
-            fy_amount = round(fy_amount, digits)
-            entry.update({
-                'period_amount': period_amount,
-                'fy_amount': fy_amount,
-                })
-            fy_residual_amount -= fy_amount
-            if round(fy_residual_amount, digits) == 0:
-                break
-        i_max = i
-        table = table[:i_max + 1]
-
+    @api.multi
+    def _compute_spread_table_step2(self, i_max, table):
         # step 2: spread amount per fiscal year
         # over the periods
+        self.ensure_one()
+        digits = self.env['decimal.precision'].precision_get('Account')
+        amount_to_spread = self.price_subtotal
+        residual_amount = self.price_subtotal
+        invoice_sign = self.price_subtotal >= 0 and 1 or -1
+        spread_stop_date = self._get_spread_stop_date()
         fy_residual_amount = residual_amount
         line_date = False
         for i, entry in enumerate(table):
             period_amount = entry['period_amount']
             fy_amount = entry['fy_amount']
-            period_duration = (
-                invline.period_type == 'year' and 12) \
-                or (invline.period_type == 'quarter' and 3) or 1
+            period_duration = self._get_period_duration()
             if period_duration == 12:
                 if invoice_sign * (fy_amount - fy_residual_amount) > 0:
                     fy_amount = fy_residual_amount
                 lines = [{'date': entry['date_stop'], 'amount': fy_amount}]
                 fy_residual_amount -= fy_amount
-            elif period_duration in [1, 3]:
+            if period_duration in [1, 3]:
                 lines = []
                 fy_amount_check = 0.0
-                if not line_date:
-                    if period_duration == 3:
-                        m = [x for x in [3, 6, 9, 12]
-                             if x >= spread_start_date.month][0]
-                        line_date = spread_start_date + \
-                            relativedelta(month=m, day=31)
-                    else:
-                        line_date = spread_start_date + \
-                            relativedelta(months=0, day=31)
-                date_spread_stop_date = spread_stop_date.date()
+                line_date = self._update_line_date(line_date)
                 entry_date_stop = entry['date_stop']
-                while line_date.date() <= \
-                        min(entry_date_stop, date_spread_stop_date) and \
-                        invoice_sign * (
-                            fy_residual_amount - period_amount) > 0:
+                min_stop = min(entry_date_stop, spread_stop_date.date())
+                left = invoice_sign * (fy_residual_amount - period_amount) > 0
+                while line_date.date() <= min_stop and left:
                     lines.append({'date': line_date, 'amount': period_amount})
                     fy_residual_amount -= period_amount
                     fy_amount_check += period_amount
-                    line_date = line_date + \
-                        relativedelta(months=period_duration, day=31)
-                if i == i_max and \
-                    (not lines or
-                     spread_stop_date > lines[-1]['date']):
+                    delta = relativedelta(months=period_duration, day=31)
+                    line_date = line_date + delta
+                is_end = spread_stop_date > lines[-1]['date']
+                if i == i_max and (not lines or is_end):
                     # last year, last entry
                     period_amount = fy_residual_amount
                     lines.append({'date': line_date, 'amount': period_amount})
@@ -313,28 +287,115 @@ class AccountInvoiceLine(models.Model):
                     fy_residual_amount += diff
                     if i == 0:  # first year: deviation in first period
                         lines[0]['amount'] = period_amount - diff
-                    else:       # other years: deviation in last period
+                    else:  # other years: deviation in last period
                         lines[-1]['amount'] = period_amount - diff
-            else:
-                raise Warning(
-                    _('Programming Error!'),
-                    _("Illegal value %s in invline.period_type.")
-                    % invline.period_type)
+
             for line in lines:
                 line['spreaded_value'] = amount_to_spread - residual_amount
                 residual_amount -= line['amount']
                 line['remaining_value'] = residual_amount
             entry['lines'] = lines
 
-        return table
+    @api.multi
+    def _update_line_date(self, line_date):
+        period_duration = self._get_period_duration()
+        spread_start_date = self._get_spread_start_date()
+        if not line_date:
+            delta = relativedelta(months=0, day=31)
+            line_date = spread_start_date + delta
+            if period_duration == 3:
+                first_month = None
+                for x in [3, 6, 9, 12]:
+                    if x >= spread_start_date.month:
+                        first_month = x
+                        break
+                delta = relativedelta(month=first_month, day=31)
+                line_date = spread_start_date + delta
+        return line_date
 
-    @api.model
-    def _get_spread_entry_name(self, line, seq):
+    @api.multi
+    def _get_period_duration(self):
+        period_duration = (self.period_type == 'year' and 12) or \
+                          (self.period_type == 'quarter' and 3) or 1
+        if period_duration not in [1, 3, 12]:
+            raise Warning(
+                _('Programming Error!'),
+                _("Illegal value %s in invline.period_type.")
+                % self.period_type)
+        return period_duration
+
+    @api.multi
+    def _compute_spread_table_step1(self, table):
+        # step 1:
+        # calculate spread amount per fiscal year
+        self.ensure_one()
+        digits = self.env['decimal.precision'].precision_get('Account')
+        fy_residual_amount = self.price_subtotal
+        i_max = len(table) - 1
+        invoice_sign = self.price_subtotal >= 0 and 1 or -1
+        for i, entry in enumerate(table):
+            if i == i_max:
+                fy_amount = fy_residual_amount
+            else:
+                firstyear = i == 0 and True or False
+                fy_factor = self._get_fy_duration_factor(entry, firstyear)
+                year_amount = self._compute_year_amount()
+                fy_amount = year_amount * fy_factor
+            if invoice_sign * (fy_amount - fy_residual_amount) > 0:
+                fy_amount = fy_residual_amount
+            fy_amount = round(fy_amount, digits)
+            entry.update({
+                'period_amount': self._compute_period_amount(),
+                'fy_amount': fy_amount,
+            })
+            fy_residual_amount -= fy_amount
+            if round(fy_residual_amount, digits) == 0:
+                break
+        i_max = i
+        table = table[:i_max + 1]
+        return i_max, table
+
+    @api.multi
+    def _init_spread_table(self, table):
+        self.ensure_one()
+
+        fy_dates = self._get_fy_dates()
+
+        init_flag = True
+        fy_date_start = fy_dates['date_from']
+        fy_date_stop = fy_dates['date_to']
+        spread_stop_date = self._get_spread_stop_date()
+        while fy_date_start <= spread_stop_date.date():
+            table.append({
+                'date_start': fy_date_start,
+                'date_stop': fy_date_stop,
+                'init': init_flag})
+            fy_date_start = fy_date_stop + relativedelta(days=1)
+            fy_date_stop = fy_date_stop + relativedelta(years=1)
+
+    @api.multi
+    def _compute_period_amount(self):
+        self.ensure_one()
+        digits = self.env['decimal.precision'].precision_get('Account')
+        year_amount = self._compute_year_amount()
+        period_amount = year_amount
+        if self.period_type == 'year':
+            period_amount = year_amount
+        elif self.period_type == 'quarter':
+            period_amount = year_amount / 4
+        elif self.period_type == 'month':
+            period_amount = year_amount / 12
+        period_amount = round(period_amount, digits)
+        return period_amount
+
+    @api.multi
+    def _get_spread_entry_name(self, seq):
         """ use this method to customise the name of the accounting entry """
-        return (line.name or str(line.id)) + '/' + str(seq)
+        self.ensure_one()
+        return (self.name or str(self.id)) + '/' + str(seq)
 
     def compute_spread_board(self):
-        spread_obj = self.env['account.invoice.spread.line']
+        SpreadLine = self.env['account.invoice.spread.line']
         digits = self.env['decimal.precision'].precision_get('Account')
 
         for invline in self:
@@ -343,12 +404,14 @@ class AccountInvoiceLine(models.Model):
             domain = [
                 ('invoice_line_id', '=', invline.id),
                 ('type', '=', 'spread'),
-                ('move_id', '!=', False)]
-
-            posted_spreads = spread_obj.search(
-                domain, order='line_date desc')
+                ('move_id', '!=', False)
+            ]
+            posted_spreads = SpreadLine.search(
+                domain,
+                order='line_date desc'
+            )
             last_spread_line = False
-            if len(posted_spreads) > 0:
+            if posted_spreads > 0:
                 last_spread_line = posted_spreads[0]
 
             domain = [
@@ -356,12 +419,12 @@ class AccountInvoiceLine(models.Model):
                 ('type', '=', 'depreciate'),
                 ('move_id', '=', False)]
 
-            old_spreads = spread_obj.search(domain)
+            old_spreads = SpreadLine.search(domain)
             if old_spreads:
                 for spread in old_spreads:
                     spread.unlink()
 
-            table = self._compute_spread_table(invline)
+            table = invline._compute_spread_table()
             if not table:
                 continue
 
@@ -463,12 +526,12 @@ class AccountInvoiceLine(models.Model):
             for entry in table[table_i_start:]:
                 for line in entry['lines'][line_i_start:]:
                     seq += 1
-                    name = self._get_spread_entry_name(invline, seq)
+                    name = self._get_spread_entry_name(seq)
                     if line['date'] == last_date:
                         # ensure that the last entry of the table always
                         # depreciates the remaining value
                         existing_amount = 0.0
-                        for existspread in spread_obj.search(
+                        for existspread in SpreadLine.search(
                             [('line_date', '<', last_date),
                              ('invoice_line_id', '=', invline.id)]):
                             existing_amount += existspread.amount
@@ -484,7 +547,7 @@ class AccountInvoiceLine(models.Model):
                         'name': name,
                         'line_date': line['date'].strftime('%Y-%m-%d'),
                         }
-                    spread_line_id = spread_obj.create(vals)
+                    spread_line_id = SpreadLine.create(vals)
                 line_i_start = 0
 
         return True

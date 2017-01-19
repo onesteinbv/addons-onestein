@@ -4,7 +4,7 @@
 
 {
     'name': 'Cost / Income Spread',
-    'summary': '''Cost and Income spreading''',
+    'summary': 'Cost and Income spreading',
     'version': '10.0.1.0.0',
     'depends': [
         'account',

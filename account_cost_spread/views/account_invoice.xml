@@ -2,7 +2,6 @@
 <odoo>
 
     <record id="view_supplier_invoice_spread" model="ir.ui.view">
-        <field name="name">account.invoice.supplier.form</field>
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_supplier_form"/>
         <field name="arch" type="xml">
@@ -13,7 +12,6 @@
     </record>
 
     <record id="view_customer_invoice_spread" model="ir.ui.view">
-        <field name="name">account.invoice.customer.form</field>
         <field name="model">account.invoice</field>
         <field name="inherit_id" ref="account.invoice_form"/>
         <field name="arch" type="xml">

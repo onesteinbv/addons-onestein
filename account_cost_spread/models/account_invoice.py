@@ -13,8 +13,7 @@ class AccountInvoice(models.Model):
         """Override, button Validate on invoices."""
         res = super(AccountInvoice, self).action_move_create()
         for rec in self:
-            for line in rec.invoice_line_ids:
-                line.compute_spread_board()
+            rec.invoice_line_ids.compute_spread_board()
         return res
 
     @api.multi
