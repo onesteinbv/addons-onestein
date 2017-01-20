@@ -455,10 +455,10 @@ class AccountInvoiceLine(models.Model):
         digits = self.env['decimal.precision'].precision_get('Account')
         posted_spreads = self._get_posted_spreads()
         last_spread_line = False
-        if posted_spreads > 0:
+        if posted_spreads:
             last_spread_line = posted_spreads[0]
 
-        if posted_spreads > 0:
+        if posted_spreads:
             last_spread_date = self._get_last_spread_date(
                 last_spread_line,
                 table
@@ -514,8 +514,9 @@ class AccountInvoiceLine(models.Model):
         line = None
         for line_i, line in enumerate(entry['lines']):
             residual_amount_table = line['remaining_value']
-            if date_min <= last_spread_date and last_spread_date <= line['date']:
-                break
+            if date_min <= last_spread_date:
+                if last_spread_date <= line['date']:
+                    break
             date_min = line['date']
         return line, line_i, residual_amount_table
 
