@@ -53,43 +53,45 @@ class AccountInvoiceSpreadLine(models.Model):
         defaults='depreciate')
 
     @api.model
-    def create(self, values):
+    def create(self, vals):
         context = self.env.context.copy()
         if context.get('default_type', '') == 'in_invoice':
             context.pop('default_type')
-        return super(
+        res = super(
             AccountInvoiceSpreadLine,
             self.with_context(context)
-        ).create(values)
+        ).create(vals)
+        return res
 
-    @api.model
-    def _setup_move_data(self, spread_line, spread_date):
-
-        invoice = spread_line.invoice_line_id.invoice_id
+    @api.multi
+    def _setup_move_data(self, spread_date):
+        self.ensure_one()
+        invoice = self.invoice_line_id.invoice_id
 
         move_data = {
             'name': invoice.number,
             'date': spread_date,
-            'ref': spread_line.name,
+            'ref': self.name,
             'journal_id': invoice.journal_id.id,
             }
         return move_data
 
-    @api.model
-    def _setup_move_line_data(self, spread_line, spread_date,
+    @api.multi
+    def _setup_move_line_data(self, spread_date,
                               account_id, type, move_id):
-        invoice_line = spread_line.invoice_line_id
+        self.ensure_one()
+        invoice_line = self.invoice_line_id
 
         if type == 'debit':
-            debit = spread_line.amount
+            debit = self.amount
             credit = 0.0
         elif type == 'credit':
             debit = 0.0
-            credit = spread_line.amount
+            credit = self.amount
 
         move_line_data = {
             'name': invoice_line.name,
-            'ref': spread_line.name,
+            'ref': self.name,
             'move_id': move_id,
             'account_id': account_id,
             'credit': credit,
@@ -101,52 +103,47 @@ class AccountInvoiceSpreadLine(models.Model):
         return move_line_data
 
     @api.multi
+    def create_moves(self):
+        for line in self:
+            line.create_move()
+
+    @api.multi
     def create_move(self):
         """
         Used by a button to manually create a move from a spread line entry.
         Also called by a cron job.
         """
+        self.ensure_one()
+        Move = self.env['account.move']
 
-        move_obj = self.env['account.move']
-#         currency_obj = self.env['res.currency']
-        created_move_ids = []
+        invoice_line = self.invoice_line_id
+        spread_date = self.line_date
+        move_vals = self._setup_move_data(spread_date)
+        move = Move.create(move_vals)
+        _logger.debug('MoveID: %s', (move.id))
 
-        for line in self:
+        if invoice_line.invoice_id.type in ('in_invoice', 'out_refund'):
+            debit_acc_id = invoice_line.account_id.id
+            credit_acc_id = invoice_line.spread_account_id.id
+        else:
+            debit_acc_id = invoice_line.spread_account_id.id
+            credit_acc_id = invoice_line.account_id.id
 
-            invoice_line = line.invoice_line_id
-            spread_date = line.line_date
+        line_list = []
+        line_list += [(0, 0, self._setup_move_line_data(
+            spread_date, debit_acc_id,
+            'debit', move.id
+        ))]
 
-            move_id = move_obj.create(
-                self._setup_move_data(line, spread_date)
-            )
-            _logger.debug('MoveID: %s', (move_id.id))
+        line_list += [(0, 0, self._setup_move_line_data(
+            spread_date, credit_acc_id,
+            'credit', move.id
+        ))]
 
-            if invoice_line.invoice_id.type in ('in_invoice', 'out_refund'):
-                debit_acc_id = invoice_line.account_id.id
-                credit_acc_id = invoice_line.spread_account_id.id
-            else:
-                debit_acc_id = invoice_line.spread_account_id.id
-                credit_acc_id = invoice_line.account_id.id
+        move.write({'line_ids': line_list, })
 
-            line_list = []
-            line_list += [(0, 0, self._setup_move_line_data(
-                line, spread_date, debit_acc_id,
-                'debit', move_id.id
-            ))]
-
-            line_list += [(0, 0, self._setup_move_line_data(
-                line, spread_date, credit_acc_id,
-                'credit', move_id.id
-            ))]
-
-            move_id.write({'line_ids': line_list, })
-
-            # Add move_id to spread line
-            line.write({'move_id': move_id.id})
-
-            created_move_ids.append(move_id.id)
-
-        return created_move_ids
+        # Add move_id to spread line
+        self.write({'move_id': move.id})
 
     @api.multi
     def open_move(self):
@@ -174,7 +171,6 @@ class AccountInvoiceSpreadLine(models.Model):
                 move.button_cancel()
             move.unlink()
             line.move_id = False
-        return True
 
     @api.model
     def _create_entries(self, automatic=False):
@@ -186,11 +182,16 @@ class AccountInvoiceSpreadLine(models.Model):
         month_range = calendar.monthrange(int(year), int(month.lstrip('0')))
         end_date = today.replace(day=month_range[1])
 
-        lines = self.search([('line_date', '<=', end_date),
-                             ('move_id', '=', False)])
+        lines = self.search([
+            ('line_date', '<=', end_date),
+            ('move_id', '=', False)]
+        )
 
-        result = []
-        for line in lines:
-            result += line.create_move()
+        lines.create_moves()
 
-        return result
+    @api.multi
+    def get_spreaded_amount(self):
+        spreaded_value = 0.0
+        for posted_spread in self:
+            spreaded_value += posted_spread.amount
+        return spreaded_value

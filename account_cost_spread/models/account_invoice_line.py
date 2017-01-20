@@ -67,29 +67,9 @@ class AccountInvoiceLine(models.Model):
         return view
 
     @api.multi
-    def _get_fy_duration(self, invoice_date, option='days'):
-        """
-        Returns fiscal year duration.
-        @param option:
-        - days: duration in days
-        - months: duration in months,
-                  a started month is counted as a full month
-        - years: duration in calendar years, considering also leap years
-        """
+    def _get_fy_duration(self):
         self.ensure_one()
-        fy_dates = self._get_fy_dates(invoice_date)
-        if option == 'days':
-            days = self._get_fy_duration_days(invoice_date, fy_dates)
-            return days
-        if option == 'months':
-            months = self._get_fy_duration_months(invoice_date, fy_dates)
-            return months
-        if option == 'years':
-            months = self._get_fy_duration_years(invoice_date, fy_dates)
-            return months
-
-    @api.model
-    def _get_fy_duration_years(self, invoice_date, fy_dates):
+        fy_dates = self._get_fy_dates()
         fy_date_start = datetime.strptime(
             fy_dates['date_from'].strftime('%Y-%m-%d'), '%Y-%m-%d')
         fy_year_start = int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
@@ -117,31 +97,13 @@ class AccountInvoiceLine(models.Model):
             year += 1
         return factor
 
-    @api.model
-    def _get_fy_duration_months(self, invoice_date, fy_dates):
-        months = (int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4]) -
-                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
-                  ) * 12 + \
-                 (int(fy_dates['date_to'].strftime('%Y-%m-%d')[5:7]) -
-                  int(fy_dates['date_from'].strftime('%Y-%m-%d')[5:7])
-                  ) + 1
-        return months
-
-    @api.model
-    def _get_fy_duration_days(self, invoice_date, fy_dates):
-        date_invoice_formatted = datetime.strptime(invoice_date, DF).date()
-        days = (fy_dates['date_to'] - date_invoice_formatted).days + 1
-        return days
-
     @api.multi
     def _get_fy_dates(self):
         self.ensure_one()
-        date_invoice_formatted = datetime.strptime(
-            self.invoice_id.date_invoice,
-            DF
-        ).date()
+        date_invoice = self.invoice_id.date_invoice
+        date_invoice_formatted = datetime.strptime(date_invoice, DF)
         fy_dates = self.company_id.compute_fiscalyear_dates(
-            date_invoice_formatted
+            date_invoice_formatted.date()
         )
         return fy_dates
 
@@ -165,8 +127,7 @@ class AccountInvoiceLine(models.Model):
             duration_factor = \
                 float(first_fy_spread_days) / first_fy_duration
         else:
-            duration_factor = self._get_fy_duration(
-                date_invoice, option='years')
+            duration_factor = self._get_fy_duration()
 
         return duration_factor
 
@@ -262,13 +223,15 @@ class AccountInvoiceLine(models.Model):
                 entry_date_stop = entry['date_stop']
                 min_stop = min(entry_date_stop, spread_stop_date.date())
                 left = invoice_sign * (fy_residual_amount - period_amount) > 0
-                while line_date.date() <= min_stop and left:
+                while line_date <= min_stop and left:
                     lines.append({'date': line_date, 'amount': period_amount})
                     fy_residual_amount -= period_amount
                     fy_amount_check += period_amount
                     delta = relativedelta(months=period_duration, day=31)
                     line_date = line_date + delta
-                is_end = spread_stop_date > lines[-1]['date']
+                    left = invoice_sign * (fy_residual_amount - period_amount) > 0
+                last_date = lines and lines[-1]['date'] or last_date
+                is_end = spread_stop_date.date() > last_date
                 if i == i_max and (not lines or is_end):
                     # last year, last entry
                     period_amount = fy_residual_amount
@@ -296,7 +259,7 @@ class AccountInvoiceLine(models.Model):
         spread_start_date = self._get_spread_start_date()
         if not line_date:
             delta = relativedelta(months=0, day=31)
-            line_date = spread_start_date + delta
+            line_date = spread_start_date.date() + delta
             if period_duration == 3:
                 first_month = None
                 for x in [3, 6, 9, 12]:
@@ -304,7 +267,7 @@ class AccountInvoiceLine(models.Model):
                         first_month = x
                         break
                 delta = relativedelta(month=first_month, day=31)
-                line_date = spread_start_date + delta
+                line_date = spread_start_date.date() + delta
         return line_date
 
     @api.multi
@@ -404,21 +367,16 @@ class AccountInvoiceLine(models.Model):
         self.ensure_one()
 
         self._group_table_lines(table)
-        line_i_start, table_i_start = self._check_recompute_table(table)
+        line_i_start = table_i_start = 0
 
-        posted_spreads = self._get_posted_spreads()
-        last_spread_line = False
-        if posted_spreads:
-            last_spread_line = posted_spreads[0]
-
-        seq = len(posted_spreads)
+        seq = 0
         last_date = table[-1]['lines'][-1]['date']
         for entry in table[table_i_start:]:
             for line in entry['lines'][line_i_start:]:
                 seq += 1
                 name = self._get_spread_entry_name(seq)
                 amount = self._get_amount(last_date, line)
-                self._create_spread_line(amount, line, name, last_spread_line)
+                self._create_spread_line(amount, line, name)
             line_i_start = 0
 
     @api.multi
@@ -430,7 +388,8 @@ class AccountInvoiceLine(models.Model):
         lines = table[0]['lines']
         lines1 = []
         lines2 = []
-        flag = lines[0]['date'] < spread_start_date
+        line_date = lines[0]['date']
+        flag = line_date < spread_start_date.date()
         for line in lines:
             if flag:
                 lines1.append(line)
@@ -447,66 +406,6 @@ class AccountInvoiceLine(models.Model):
             lines1[0]['spreaded_value'] = 0.0
         table[0]['lines'] = lines1 + lines2
 
-    @api.multi
-    def _check_recompute_table(self, table):
-        # check table with posted entries and
-        # recompute in case of deviation
-        self.ensure_one()
-        digits = self.env['decimal.precision'].precision_get('Account')
-        posted_spreads = self._get_posted_spreads()
-        last_spread_line = False
-        if posted_spreads:
-            last_spread_line = posted_spreads[0]
-
-        if posted_spreads:
-            last_spread_date = self._get_last_spread_date(
-                last_spread_line,
-                table
-            )
-
-            entry, residual_amount_table, table_i = self._get_table_entry(
-                last_spread_date,
-                table
-            )
-            if entry['date_stop'] == last_spread_date:
-                table_i += 1
-                line_i = 0
-            else:
-                entry = table[table_i]
-                line, line_i, residual_amount_table = self._get_table_line(
-                    entry,
-                    last_spread_date,
-                    residual_amount_table
-                )
-                if line['date'] == last_spread_date:
-                    line_i += 1
-            table_i_start = table_i
-            line_i_start = line_i
-
-            # check if residual value corresponds with table
-            # and adjust table when needed
-            spreaded_value = self._get_spreaded_amount(posted_spreads)
-            residual_amount = self.price_subtotal - spreaded_value
-            residual_amount_diff = residual_amount_table - residual_amount
-            amount_diff = round(residual_amount_diff, digits)
-            if amount_diff:
-                entry = table[table_i_start]
-                fy_amount = self._get_fy_amount_check(entry, posted_spreads)
-                lines = entry['lines']
-                for line in lines[line_i_start:-1]:
-                    line['spreaded_value'] = spreaded_value
-                    spreaded_value += line['amount']
-                    fy_amount += line['amount']
-                    residual_amount -= line['amount']
-                    line['remaining_value'] = residual_amount
-                lines[-1]['spreaded_value'] = spreaded_value
-                lines[-1]['amount'] = entry['fy_amount'] - fy_amount
-
-        else:
-            table_i_start = 0
-            line_i_start = 0
-        return line_i_start, table_i_start
-
     @api.model
     def _get_table_line(self, entry, last_spread_date, residual_amount_table):
         date_min = entry['date_start']
@@ -521,17 +420,6 @@ class AccountInvoiceLine(models.Model):
         return line, line_i, residual_amount_table
 
     @api.model
-    def _get_fy_amount_check(self, entry, posted_spreads):
-        fy_amount_check = 0.0
-        if entry['fy_id']:
-            for posted_spread in posted_spreads:
-                line_date = posted_spread.line_date
-                if line_date >= entry['date_start']:
-                    if line_date <= entry['date_stop']:
-                        fy_amount_check += posted_spread.amount
-        return fy_amount_check
-
-    @api.model
     def _get_table_entry(self, last_spread_date, table):
         entry = None
         residual_amount_table = None
@@ -542,13 +430,6 @@ class AccountInvoiceLine(models.Model):
             if entry['date_start'] <= last_spread_date <= entry['date_stop']:
                 break
         return entry, residual_amount_table, table_i
-
-    @api.model
-    def _get_spreaded_amount(self, posted_spreads):
-        spreaded_value = 0.0
-        for posted_spread in posted_spreads:
-            spreaded_value += posted_spread.amount
-        return spreaded_value
 
     @api.multi
     def _get_amount(self, last_date, line):
@@ -563,23 +444,24 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def _get_last_amount(self, last_date):
         self.ensure_one()
-        SpreadLine = self.env['account.invoice.spread.line']
+
         # ensure that the last entry of the table always
         # depreciates the remaining value
+        spreads = self.spread_line_ids
+        filtered_spreads = spreads.filtered(
+            lambda l: l.line_date < last_date
+        )
+
         existing_amount = 0.0
-        for existspread in SpreadLine.search(
-                [('line_date', '<', last_date),
-                 ('invoice_line_id', '=', self.id)]):
+        for existspread in filtered_spreads:
             existing_amount += existspread.amount
         return existing_amount
 
     @api.multi
-    def _create_spread_line(self, amount, line, name, spread_line):
+    def _create_spread_line(self, amount, line, name):
         self.ensure_one()
         SpreadLine = self.env['account.invoice.spread.line']
-        previous_id = spread_line and spread_line.id or False
         vals = {
-            'previous_id': previous_id,
             'amount': amount,
             'invoice_line_id': self.id,
             'name': name,
@@ -588,9 +470,8 @@ class AccountInvoiceLine(models.Model):
         SpreadLine.create(vals)
 
     @api.model
-    def _get_last_spread_date(self, last_spread_line, table):
-        last_spread_date = datetime.strptime(
-            last_spread_line.line_date, '%Y-%m-%d')
+    def _get_last_spread_date(self, date, table):
+        last_spread_date = datetime.strptime(date.line_date, '%Y-%m-%d')
         last_date_in_table = table[-1]['lines'][-1]['date']
         if last_date_in_table <= last_spread_date:
             raise Warning(
@@ -600,27 +481,9 @@ class AccountInvoiceLine(models.Model):
         return last_spread_date
 
     @api.multi
-    def _get_posted_spreads(self):
-        self.ensure_one()
-        SpreadLine = self.env['account.invoice.spread.line']
-        domain = [
-            ('invoice_line_id', '=', self.id),
-            ('type', '=', 'spread'),
-            ('move_id', '!=', False)
-        ]
-        posted_spreads = SpreadLine.search(
-            domain,
-            order='line_date desc'
-        )
-        return posted_spreads
-
-    @api.multi
     def _unlink_old_spreads(self):
-        self.ensure_one()
-        SpreadLine = self.env['account.invoice.spread.line']
-        domain = [
-            ('invoice_line_id', '=', self.id),
-            ('type', '=', 'depreciate'),
-            ('move_id', '=', False)]
-        old_spreads = SpreadLine.search(domain)
-        old_spreads.unlink()
+        for line in self:
+            to_remove = line.spread_line_ids.filtered(
+                lambda l: l.type == 'depreciate' and not l.move_id
+            )
+            to_remove.unlink()
