@@ -190,68 +190,104 @@ class AccountInvoiceLine(models.Model):
             return table
 
         self._init_spread_table(table)
-        i_max, table = self._compute_spread_table_step1(table)
-        self._compute_spread_table_step2(i_max, table)
+        i_max, table = self._compute_spread_table_entries(table)
+        self._compute_spread_table_lines(i_max, table)
 
         return table
 
     @api.multi
-    def _compute_spread_table_step2(self, i_max, table):
+    def _compute_spread_table_entries(self, table):
+        # step 1:
+        # teble headers
+        # calculate spread amount per fiscal year
+        self.ensure_one()
+        digits = self.env['decimal.precision'].precision_get('Account')
+        fy_residual_amount = self.price_subtotal
+        i_max = len(table) - 1
+        invoice_sign = self.price_subtotal >= 0 and 1 or -1
+        for i, entry in enumerate(table):
+            if i == i_max:
+                fy_amount = fy_residual_amount
+            else:
+                firstyear = i == 0 and True or False
+                fy_factor = self._get_fy_duration_factor(entry, firstyear)
+                year_amount = self._compute_year_amount()
+                fy_amount = year_amount * fy_factor
+            if invoice_sign * (fy_amount - fy_residual_amount) > 0:
+                fy_amount = fy_residual_amount
+            fy_amount = round(fy_amount, digits)
+            entry.update({
+                'period_amount': self._compute_period_amount(),
+                'fy_amount': fy_amount,
+            })
+            fy_residual_amount -= fy_amount
+            if round(fy_residual_amount, digits) == 0:
+                break
+        i_max = i
+        table = table[:i_max + 1]
+        return i_max, table
+
+    @api.multi
+    def _compute_spread_table_lines(self, i_max, table):
         # step 2: spread amount per fiscal year
         # over the periods
         self.ensure_one()
-        digits = self.env['decimal.precision'].precision_get('Account')
         amount_to_spread = self.price_subtotal
         residual_amount = self.price_subtotal
-        invoice_sign = self.price_subtotal >= 0 and 1 or -1
-        spread_stop_date = self._get_spread_stop_date()
-        fy_residual_amount = residual_amount
-        line_date = False
         for i, entry in enumerate(table):
-            period_amount = entry['period_amount']
-            fy_amount = entry['fy_amount']
-            period_duration = self._get_period_duration()
-            if period_duration == 12:
-                if invoice_sign * (fy_amount - fy_residual_amount) > 0:
-                    fy_amount = fy_residual_amount
-                lines = [{'date': entry['date_stop'], 'amount': fy_amount}]
-                fy_residual_amount -= fy_amount
-            if period_duration in [1, 3]:
-                lines = []
-                fy_amount_check = 0.0
-                line_date = self._update_line_date(line_date)
-                entry_date_stop = entry['date_stop']
-                min_stop = min(entry_date_stop, spread_stop_date.date())
-                left = invoice_sign * (fy_residual_amount - period_amount) > 0
-                while line_date <= min_stop and left:
-                    lines.append({'date': line_date, 'amount': period_amount})
-                    fy_residual_amount -= period_amount
-                    fy_amount_check += period_amount
-                    delta = relativedelta(months=period_duration, day=31)
-                    line_date = line_date + delta
-                    left = invoice_sign * (fy_residual_amount - period_amount) > 0
-                last_date = lines and lines[-1]['date'] or last_date
-                is_end = spread_stop_date.date() > last_date
-                if i == i_max and (not lines or is_end):
-                    # last year, last entry
-                    period_amount = fy_residual_amount
-                    lines.append({'date': line_date, 'amount': period_amount})
-                    fy_amount_check += period_amount
-                if round(fy_amount_check - fy_amount, digits) != 0:
-                    # handle rounding and extended/shortened
-                    # fiscal year deviations
-                    diff = fy_amount_check - fy_amount
-                    fy_residual_amount += diff
-                    if i == 0:  # first year: deviation in first period
-                        lines[0]['amount'] = period_amount - diff
-                    else:  # other years: deviation in last period
-                        lines[-1]['amount'] = period_amount - diff
-
+            lines = self._compute_lines(entry, i, i_max, residual_amount)
             for line in lines:
                 line['spreaded_value'] = amount_to_spread - residual_amount
                 residual_amount -= line['amount']
                 line['remaining_value'] = residual_amount
             entry['lines'] = lines
+
+    @api.multi
+    def _compute_lines(self, entry, i, i_max, residual_amount):
+        self.ensure_one()
+        digits = self.env['decimal.precision'].precision_get('Account')
+        spread_stop_date = self._get_spread_stop_date()
+        invoice_sign = self.price_subtotal >= 0 and 1 or -1
+        line_date = False
+        period_amount = entry['period_amount']
+        fy_amount = entry['fy_amount']
+        period_duration = self._get_period_duration()
+        if period_duration == 12:
+            if invoice_sign * (fy_amount - residual_amount) > 0:
+                fy_amount = residual_amount
+            lines = [{'date': entry['date_stop'], 'amount': fy_amount}]
+            residual_amount -= fy_amount
+        if period_duration in [1, 3]:
+            lines = []
+            fy_amount_check = 0.0
+            line_date = self._update_line_date(line_date)
+            entry_date_stop = entry['date_stop']
+            min_stop = min(entry_date_stop, spread_stop_date.date())
+            left = invoice_sign * (residual_amount - period_amount) > 0
+            while line_date <= min_stop and left:
+                lines.append({'date': line_date, 'amount': period_amount})
+                residual_amount -= period_amount
+                fy_amount_check += period_amount
+                delta = relativedelta(months=period_duration, day=31)
+                line_date = line_date + delta
+                left = invoice_sign * (residual_amount - period_amount) > 0
+            last_date = lines and lines[-1]['date'] or line_date
+            is_end = spread_stop_date.date() > last_date
+            if i == i_max and (not lines or is_end):
+                # last year, last entry
+                period_amount = residual_amount
+                lines.append({'date': line_date, 'amount': period_amount})
+                fy_amount_check += period_amount
+            if round(fy_amount_check - fy_amount, digits) != 0:
+                # handle rounding and extended/shortened
+                # fiscal year deviations
+                diff = fy_amount_check - fy_amount
+                residual_amount += diff
+                if i == 0:  # first year: deviation in first period
+                    lines[0]['amount'] = period_amount - diff
+                else:  # other years: deviation in last period
+                    lines[-1]['amount'] = period_amount - diff
+        return lines
 
     @api.multi
     def _update_line_date(self, line_date):
@@ -280,37 +316,6 @@ class AccountInvoiceLine(models.Model):
                 _("Illegal value %s in invline.period_type.")
                 % self.period_type)
         return period_duration
-
-    @api.multi
-    def _compute_spread_table_step1(self, table):
-        # step 1:
-        # calculate spread amount per fiscal year
-        self.ensure_one()
-        digits = self.env['decimal.precision'].precision_get('Account')
-        fy_residual_amount = self.price_subtotal
-        i_max = len(table) - 1
-        invoice_sign = self.price_subtotal >= 0 and 1 or -1
-        for i, entry in enumerate(table):
-            if i == i_max:
-                fy_amount = fy_residual_amount
-            else:
-                firstyear = i == 0 and True or False
-                fy_factor = self._get_fy_duration_factor(entry, firstyear)
-                year_amount = self._compute_year_amount()
-                fy_amount = year_amount * fy_factor
-            if invoice_sign * (fy_amount - fy_residual_amount) > 0:
-                fy_amount = fy_residual_amount
-            fy_amount = round(fy_amount, digits)
-            entry.update({
-                'period_amount': self._compute_period_amount(),
-                'fy_amount': fy_amount,
-            })
-            fy_residual_amount -= fy_amount
-            if round(fy_residual_amount, digits) == 0:
-                break
-        i_max = i
-        table = table[:i_max + 1]
-        return i_max, table
 
     @api.multi
     def _init_spread_table(self, table):
@@ -406,31 +411,6 @@ class AccountInvoiceLine(models.Model):
             lines1[0]['spreaded_value'] = 0.0
         table[0]['lines'] = lines1 + lines2
 
-    @api.model
-    def _get_table_line(self, entry, last_spread_date, residual_amount_table):
-        date_min = entry['date_start']
-        line_i = None
-        line = None
-        for line_i, line in enumerate(entry['lines']):
-            residual_amount_table = line['remaining_value']
-            if date_min <= last_spread_date:
-                if last_spread_date <= line['date']:
-                    break
-            date_min = line['date']
-        return line, line_i, residual_amount_table
-
-    @api.model
-    def _get_table_entry(self, last_spread_date, table):
-        entry = None
-        residual_amount_table = None
-        table_i = None
-        for table_i, entry in enumerate(table):
-            residual_amount_table = \
-                entry['lines'][-1]['remaining_value']
-            if entry['date_start'] <= last_spread_date <= entry['date_stop']:
-                break
-        return entry, residual_amount_table, table_i
-
     @api.multi
     def _get_amount(self, last_date, line):
         self.ensure_one()
@@ -448,9 +428,11 @@ class AccountInvoiceLine(models.Model):
         # ensure that the last entry of the table always
         # depreciates the remaining value
         spreads = self.spread_line_ids
-        filtered_spreads = spreads.filtered(
-            lambda l: l.line_date < last_date
-        )
+        filtered_spreads = []
+        for spread in spreads:
+            line_date = datetime.strptime(spread.line_date, DF).date()
+            if line_date < last_date:
+                filtered_spreads.append(spread)
 
         existing_amount = 0.0
         for existspread in filtered_spreads:
@@ -468,17 +450,6 @@ class AccountInvoiceLine(models.Model):
             'line_date': line['date'].strftime('%Y-%m-%d'),
         }
         SpreadLine.create(vals)
-
-    @api.model
-    def _get_last_spread_date(self, date, table):
-        last_spread_date = datetime.strptime(date.line_date, '%Y-%m-%d')
-        last_date_in_table = table[-1]['lines'][-1]['date']
-        if last_date_in_table <= last_spread_date:
-            raise Warning(
-                _('Error!'),
-                _("The duration of the spread conflicts with the "
-                  "posted spread table entry dates."))
-        return last_spread_date
 
     @api.multi
     def _unlink_old_spreads(self):
