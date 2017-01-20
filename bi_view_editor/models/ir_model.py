@@ -52,6 +52,7 @@ def dict_for_model(model):
 class IrModel(models.Model):
     _inherit = 'ir.model'
 
+    @api.model
     def _filter_bi_fields(self, ir_model_field_obj):
         name = ir_model_field_obj.name
         model = ir_model_field_obj.model_id
@@ -87,41 +88,63 @@ class IrModel(models.Model):
         Fields = self.env['ir.model.fields']
         domain = [('id', 'in', model_ids.values())]
         models = Model.sudo().search(domain)
-        model_names = dict([(model.id, model.model) for model in models])
+        model_names = {}
+        for model in models:
+            model_names.update({model.id: model.model})
 
+        lfields = rfields = []
         if self._filter_bi_fields:
-            rfields = [
-                dict(dict_for_field(field),
-                     join_node=-1,
-                     table_alias=model[0])
-                for field in filter(
-                    self._filter_bi_fields,
-                    Fields.sudo().search(
-                        [('model_id', 'in', model_ids.values()),
-                         ('ttype', 'in', ['many2one'])]))
-                for model in model_ids.items()
-                if model[1] == field.model_id.id
-            ]
+            lfields = self._get_left_fields(Fields, model_ids, model_names)
+            rfields = self._get_right_fields(Fields, model_ids, model_names)
 
-            lfields = [
-                dict(dict_for_field(field),
-                     join_node=model[0],
-                     table_alias=-1)
-                for field in filter(
-                    self._filter_bi_fields,
-                    Fields.sudo().search(
-                        [('relation', 'in', model_names.values()),
-                         ('ttype', 'in', ['many2one'])]))
-                for model in model_ids.items()
-                if model_names[model[1]] == field['relation']
-            ]
+        relation_list = []
+        model_list = []
+        for model in model_ids.items():
+            for field in lfields:
+                if model_names[model[1]] == field['relation']:
+                    relation_list.append(
+                        dict(field, join_node=model[0])
+                    )
+            for field in rfields:
+                if model[1] == field['model_id']:
+                    model_list.append(
+                        dict(field, table_alias=model[0])
+                    )
+        return relation_list + model_list
 
-        return [dict(field, join_node=model[0])
-                for field in lfields
-                if model_names[model[1]] == field['relation']] + [
-            dict(field, table_alias=model[0])
-            for model in model_ids.items()
-            for field in rfields if model[1] == field['model_id']]
+    @api.model
+    def _get_right_fields(self, Fields, model_ids, model_names):
+        rfields = []
+        domain = [('model_id', 'in', model_ids.values()),
+                  ('ttype', 'in', ['many2one'])]
+        for field in filter(
+                self._filter_bi_fields,
+                Fields.sudo().search(domain)):
+            for model in model_ids.items():
+                if model[1] == field.model_id.id:
+                    rfields.append(
+                        dict(dict_for_field(field),
+                             join_node=-1,
+                             table_alias=model[0])
+                    )
+        return rfields
+
+    @api.model
+    def _get_left_fields(self, Fields, model_ids, model_names):
+        lfields = []
+        domain = [('relation', 'in', model_names.values()),
+                  ('ttype', 'in', ['many2one'])]
+        for field in filter(
+                self._filter_bi_fields,
+                Fields.sudo().search(domain)):
+            for model in model_ids.items():
+                if model_names[model[1]] == field['relation']:
+                    lfields.append(
+                        dict(dict_for_field(field),
+                             join_node=model[0],
+                             table_alias=-1)
+                    )
+        return lfields
 
     @api.model
     def get_related_models(self, model_ids):
