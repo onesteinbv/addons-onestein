@@ -1,13 +1,13 @@
 odoo.define('bi_view_editor', function (require) {
 "use strict";
 
-    var core = require("web.core");
-    var form_common = require('web.form_common');
+    var Core = require("web.core");
+    var FormCommon = require('web.form_common');
     var Model = require('web.Model');
     var Data = require('web.data');
     var Widget = require('web.Widget');
     var Dialog = require("web.Dialog");
-    var _t = core._t;
+    var _t = Core._t;
 
     var JoinNodePopup = Widget.extend({
         template: "JoinNodePopup",
@@ -22,10 +22,10 @@ odoo.define('bi_view_editor', function (require) {
             joinnodes.empty();
             for (var i=0; i<choices.length; i++) {
                 var description = "";
-                if (choices[i].join_node != -1 && choices[i].table_alias != -1) {
+                if (choices[i].join_node !== -1 && choices[i].table_alias !== -1) {
                     description = "Use the field on table " + model_data[choices[i].table_alias].model_name;
                 } else {
-                    if (choices[i].join_node == -1) {
+                    if (choices[i].join_node === -1) {
                         description = "Join using the field '" + choices[i].description + "' from model '" + choices[i].model_name + "'";
                     } else {
                         description = "Join using the field '" + choices[i].description + "' from new model '" + choices[i].model_name + "'";
@@ -52,7 +52,7 @@ odoo.define('bi_view_editor', function (require) {
         }
     });
 
-    var BiViewEditor = form_common.AbstractField.extend({
+    var BiViewEditor = FormCommon.AbstractField.extend({
         template: "BVEEditor",
         activeModelMenus: [],
         currentFilter: "",
@@ -100,13 +100,13 @@ odoo.define('bi_view_editor', function (require) {
             }
         },
         filter: function(val) {
-            val = (typeof val != 'undefined') ? val.toLowerCase() : this.currentFilter;
+            val = (typeof val !== 'undefined') ? val.toLowerCase() : this.currentFilter;
             this.currentFilter = val;
             this.$el.find(".class-list .class-container").each(function() {
                 var modelData = $(this).find(".class").data('model-data');
                 //TODO: filter on all model fields (name, technical name, etc)
 
-                if(typeof modelData == 'undefined' || (modelData.name.toLowerCase().indexOf(val) == -1 && modelData.model.toLowerCase().indexOf(val) == -1))
+                if(typeof modelData === 'undefined' || (modelData.name.toLowerCase().indexOf(val) === -1 && modelData.model.toLowerCase().indexOf(val) === -1))
                     $(this).hide();
                 else
                     $(this).show();
@@ -130,7 +130,7 @@ odoo.define('bi_view_editor', function (require) {
             this.set_fields(JSON.parse(this.get('value')));
         },
         load_classes: function(scrollTo) {
-            scrollTo = (typeof scrollTo == 'undefined') ? false : scrollTo;
+            scrollTo = (typeof scrollTo === 'undefined') ? false : scrollTo;
             var self = this;
             var model = new Model("ir.model");
             if (this.$el.find(".field-list tbody tr").length > 0) {
@@ -161,7 +161,7 @@ odoo.define('bi_view_editor', function (require) {
                                     classel.parent().find('.field').remove();
                                     classel.data('bve-processed', false);
                                     var index = self.activeModelMenus.indexOf(classel.data('model-data').id);
-                                    if(index != -1) self.activeModelMenus.splice(index, 1);
+                                    if(index !== -1) self.activeModelMenus.splice(index, 1);
                                 } else {
                                     self.activeModelMenus.push(classel.data('model-data').id);
                                     model.call("get_fields", [classel.data('model-data').id], { context: new Data.CompoundContext() }).then(function(result) {
@@ -193,7 +193,7 @@ odoo.define('bi_view_editor', function (require) {
                 self.$el.find(".class-list").append(item);
 
                 var index = self.activeModelMenus.indexOf(item.find(".class").data('model-data').id);
-                if(index != -1 && !self.get("effective_readonly")) {
+                if(index !== -1 && !self.get("effective_readonly")) {
                     model.call("get_fields", [self.activeModelMenus[index]], { context: new Data.CompoundContext() }).then(function(result) {
                         console.log(result);
                         var item = self.$el.find(".class-list #bve-class-" + result[0].model_id);
@@ -223,24 +223,24 @@ odoo.define('bi_view_editor', function (require) {
         },
         add_field_to_table: function(data, options) {
             var self = this;
-            if (typeof data.row == 'undefined') {
+            if (typeof data.row === 'undefined') {
                 data.row = false;
             }
-            if (typeof data.column == 'undefined') {
+            if (typeof data.column === 'undefined') {
                 data.column = false;
             }
-            if (typeof data.measure == 'undefined') {
+            if (typeof data.measure === 'undefined') {
                 data.measure = false;
             }
 
             var n = 1;
             var name = data.name;
-            while ($.grep(self.get_fields(), function (el) { return el.name == data.name;}).length > 0) {
+            while ($.grep(self.get_fields(), function (el) { return el.name === data.name;}).length > 0) {
                 data.name = name + '_' + n;
                 n += 1;
             }
             var classes = "";
-            if (typeof data.join_node != 'undefined') {
+            if (typeof data.join_node !== 'undefined') {
                 classes = "join-node displaynone";
             }
             var delete_button = "";
@@ -288,7 +288,7 @@ odoo.define('bi_view_editor', function (require) {
                     else
                         contextMenu.find('#measure-checkbox').attr('checked', false);
 
-                    if(currentFieldData.type == "float" || currentFieldData.type == "integer" || currentFieldData.type == "monetary") {
+                    if(currentFieldData.type === "float" || currentFieldData.type === "integer" || currentFieldData.type === "monetary") {
                         contextMenu.find('#column-checkbox').attr('disabled', true);
                         contextMenu.find('#row-checkbox').attr('disabled', true);
                         contextMenu.find('#measure-checkbox').attr('disabled', false);
@@ -353,7 +353,7 @@ odoo.define('bi_view_editor', function (require) {
 
             this.$el.find(".field-list tbody tr").each(function (idx, el) {
                 var d = $(this).data('field-data');
-                if (typeof d.join_node != 'undefined' && aliases.indexOf(d.join_node) === -1) {
+                if (typeof d.join_node !== 'undefined' && aliases.indexOf(d.join_node) === -1) {
                     $(this).remove();
                 }
             });
@@ -375,22 +375,22 @@ odoo.define('bi_view_editor', function (require) {
             return model_data;
         },
         get_table_alias: function(field) {
-            if (typeof field.table_alias != 'undefined') {
+            if (typeof field.table_alias !== 'undefined') {
                 return field.table_alias;
             } else {
                 var model_ids = this.get_model_ids();
                 var n = 0;
-                while (typeof model_ids["t" + n] != 'undefined') n++;
+                while (typeof model_ids["t" + n] !== 'undefined') n++;
                 return "t" + n;
             }
         },
         add_field_and_join_node: function(field, join_node) {
             var self = this;
-            if (join_node.join_node == -1) {
+            if (join_node.join_node === -1) {
                 field.table_alias = self.get_table_alias(field);
                 join_node.join_node = field.table_alias;
                 self.add_field_to_table(join_node);
-            } else if (join_node.table_alias == -1) {
+            } else if (join_node.table_alias === -1) {
                 field.table_alias = self.get_table_alias(field);
                 join_node.table_alias = field.table_alias;
                 self.add_field_to_table(join_node);
@@ -409,7 +409,7 @@ odoo.define('bi_view_editor', function (require) {
             var self = this;
             model.call('get_join_nodes', [field_data, data], {context: new Data.CompoundContext()}).then(function(result) {
 
-                if (result.length == 1) {
+                if (result.length === 1) {
                     self.add_field_and_join_node(data, result[0]);
                     self.internal_set_value(JSON.stringify(self.get_fields()));
                     //self.load_classes(data);
@@ -445,6 +445,6 @@ odoo.define('bi_view_editor', function (require) {
             this.load_classes();
         }
     });
-    core.form_widget_registry.add('BVEEditor', BiViewEditor);
+    Core.form_widget_registry.add('BVEEditor', BiViewEditor);
 
 });

@@ -83,14 +83,26 @@ class BveView(models.Model):
     def _create_view_arch(self):
         self.ensure_one()
         fields_info = json.loads(self._get_format_data(self.data))
-        view_fields = ["""<field name="x_{}" type="{}" />""".format(
-            field_info['name'],
-            (field_info['row'] and 'row') or
-            (field_info['column'] and 'col') or
-            (field_info['measure'] and 'measure'))
-            for field_info in fields_info if field_info['row'] or
-            field_info['column'] or field_info['measure']]
+        view_fields = []
+        for field_info in fields_info:
+            is_row = field_info['row']
+            is_column = field_info['column']
+            is_measure = field_info['measure']
+            if is_row or is_column or is_measure:
+                field_def = self._get_field_def(field_info)
+                view_fields.append(field_def)
         return view_fields
+
+    @api.model
+    def _get_field_def(self, field_info):
+        name = field_info['name']
+        row = field_info['row'] and 'row'
+        column = field_info['column'] and 'col'
+        measure = field_info['measure'] and 'measure'
+        field_def = """<field name="x_{}" type="{}" />""".format(
+            name, row or column or measure
+        )
+        return field_def
 
     @api.model
     def _get_format_data(self, data):
