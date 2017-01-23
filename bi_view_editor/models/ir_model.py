@@ -95,21 +95,22 @@ class IrModel(models.Model):
             joined with models in model_ids
         """
         Model = self.env['ir.model']
-        Fields = self.env['ir.model.fields']
         domain = [('id', 'in', model_ids.values())]
         models = Model.sudo().search(domain)
         model_names = {}
         for model in models:
             model_names.update({model.id: model.model})
 
-        lfields = self._get_left_fields(Fields, model_ids, model_names)
-        rfields = self._get_right_fields(Fields, model_ids, model_names)
-
-        related_fields = self._get_related_fields_list(model_ids, model_names, rfields, lfields)
+        related_fields = self._get_related_fields_list(model_ids, model_names)
         return related_fields
 
     @api.model
-    def _get_related_fields_list(self, model_ids, model_names, rfields, lfields):
+    def _get_related_fields_list(self, model_ids, model_names):
+
+        Fields = self.env['ir.model.fields']
+        lfields = self._get_left_fields(Fields, model_ids, model_names)
+        rfields = self._get_right_fields(Fields, model_ids, model_names)
+
         relation_list = []
         model_list = []
         for model in model_ids.items():
@@ -207,14 +208,16 @@ class IrModel(models.Model):
 
     @api.model
     def _get_join_nodes_dict(self, model_ids, new_field):
-        join_nodes = ([{'table_alias': alias}
-                       for alias, model_id in model_ids.items()
-                       if model_id == new_field['model_id']] + [
-                          d for d in self.get_related_fields(model_ids)
-                          if (d['relation'] == new_field['model'] and
-                              d['join_node'] == -1) or
-                          (d['model_id'] == new_field['model_id'] and
-                           d['table_alias'] == -1)])
+        join_nodes = []
+        for alias, model_id in model_ids.items():
+            if model_id == new_field['model_id']:
+                join_nodes.append({'table_alias': alias})
+        for d in self.get_related_fields(model_ids):
+            if d['relation'] == new_field['model'] and \
+                    d['join_node'] == -1 or \
+                    d['model_id'] == new_field['model_id'] and \
+                    d['table_alias'] == -1:
+                join_nodes.append(d)
         return join_nodes
 
     @api.model
