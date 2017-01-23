@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+
+        <record id="crossovered_budget_period_form" model="ir.ui.view">
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='crossovered_budget_line']//form//field[@name='date_from']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='crossovered_budget_line']//form//field[@name='date_to']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='crossovered_budget_line']//form//field[@name='date_from']" position="before">
+                    <field name="period_start" class="oe_inline" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='crossovered_budget_line']//form//field[@name='date_to']" position="after">
+                    <field name="period_stop" class="oe_inline" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='crossovered_budget_line']//tree//field[@name='date_from']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='crossovered_budget_line']//tree//field[@name='date_to']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='crossovered_budget_line']//tree//field[@name='date_from']" position="before">
+                    <field name="period_start" required="1"/>
+                </xpath>
+                <xpath expr="//field[@name='crossovered_budget_line']//tree//field[@name='date_to']" position="after">
+                    <field name="period_stop" required="1"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
