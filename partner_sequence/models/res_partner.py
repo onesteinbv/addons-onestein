@@ -30,7 +30,7 @@ class ResPartner(models.Model):
 
     @api.multi
     def _check_ref_raise_error(self):
-        self.ensure_one
+        self.ensure_one()
         partners = self.with_context(active_test=False).search([
             ('ref', '=', self.ref)
         ])
