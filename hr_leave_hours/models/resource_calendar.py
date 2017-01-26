@@ -14,49 +14,57 @@ class ResourceCalendar(models.Model):
     def _get_work_limits(self, end_dt, start_dt):
         # Computes start_dt, end_dt (with default values if not set)
         # + off-interval work limits
-        work_limits = []
-        if start_dt is None and end_dt is not None:
-            start_dt = end_dt.replace(
-                hour=0, minute=0, second=0)
-        elif start_dt is None:
-            start_dt = datetime.datetime.now().replace(
-                hour=0, minute=0, second=0)
-        else:
-            work_limits.append((start_dt.replace(
-                hour=0, minute=0, second=0), start_dt))
-        if end_dt is None:
-            end_dt = start_dt.replace(
-                hour=23, minute=59, second=59)
-        else:
-            work_limits.append((end_dt, end_dt.replace(
-                hour=23, minute=59, second=59)))
+
+        def set_work_limits_start(end_dt, start_dt):
+            work_limits = []
+            if start_dt is None and end_dt is not None:
+                start_dt = end_dt.replace(
+                    hour=0, minute=0, second=0)
+            elif start_dt is None:
+                start_dt = datetime.datetime.now().replace(
+                    hour=0, minute=0, second=0)
+            else:
+                work_limits.append((start_dt.replace(
+                    hour=0, minute=0, second=0), start_dt))
+            return start_dt, work_limits
+
+        def set_work_limits_end(end_dt, start_dt, work_limits):
+            if end_dt is None:
+                end_dt = start_dt.replace(
+                    hour=23, minute=59, second=59)
+            else:
+                work_limits.append((end_dt, end_dt.replace(
+                    hour=23, minute=59, second=59)))
+            return end_dt
+
+        start_dt, work_limits = set_work_limits_start(end_dt, start_dt)
+        end_dt = self.set_work_limits_end(end_dt, start_dt, work_limits)
         assert start_dt.date() == end_dt.date(), \
             'get_working_intervals_of_day is restricted to one day'
         return start_dt, work_limits
 
     @api.multi
     def _get_intervals(self, start_dt, work_dt, work_limits):
-        work_intervals = []
-        for calendar_work_day in self.get_attendances_for_weekday(start_dt):
-            work_day_hour_from = calendar_work_day.hour_from
-            work_day_hour_to = calendar_work_day.hour_to
-            working_interval = (
-                work_dt.replace(
-                    hour=int(work_day_hour_from),
-                    minute=int(
-                        (work_day_hour_from - int(work_day_hour_from)) * 60
-                    )),
-                work_dt.replace(
-                    hour=int(work_day_hour_to),
-                    minute=int(
-                        (work_day_hour_to - int(work_day_hour_to)) * 60
-                    ))
+
+        def get_interval(work_day_hour, work_dt):
+            interval = work_dt.replace(
+                hour=int(work_day_hour),
+                minute=int(
+                    (work_day_hour - int(work_day_hour)) * 60
+                )
             )
+            return interval
+
+        work_intervals = []
+        for work_day in self.get_attendances_for_weekday(start_dt):
+            interval_start = get_interval(work_day.hour_from, work_dt)
+            interval_stop = get_interval(work_day.hour_to, work_dt)
+
+            working_interval = (interval_start, interval_stop)
             work_intervals += self.interval_remove_leaves(
                 working_interval,
                 work_limits
             )
-
         return work_intervals
 
     @api.multi
@@ -67,13 +75,7 @@ class ResourceCalendar(models.Model):
         """ Override method because of the working intervals not
         calculating the minutes only the hours"""
 
-        start_dt, work_limits = self._get_work_limits(end_dt, start_dt)
-
-        intervals = []
-        work_dt = start_dt.replace(hour=0, minute=0, second=0)
-
-        # no calendar: try to use the default_interval, then return directly
-        if not self:
+        def working_interval(default_interval, start_dt):
             working_interval = []
             if default_interval:
                 working_interval = (
@@ -81,6 +83,15 @@ class ResourceCalendar(models.Model):
                         hour=default_interval[0], minute=0, second=0),
                     start_dt.replace(
                         hour=default_interval[1], minute=0, second=0))
+            return working_interval
+
+        start_dt, work_limits = self._get_work_limits(end_dt, start_dt)
+
+        work_dt = start_dt.replace(hour=0, minute=0, second=0)
+
+        # no calendar: try to use the default_interval, then return directly
+        if not self:
+            working_interval = working_interval(default_interval, start_dt)
             intervals = self.interval_remove_leaves(
                 working_interval,
                 work_limits
@@ -90,12 +101,13 @@ class ResourceCalendar(models.Model):
         # find leave intervals
         work_intervals = self._get_intervals(start_dt, work_dt, work_limits)
 
-        if leaves is None and compute_leaves:
+        if not leaves and compute_leaves:
             leaves = self.get_leave_intervals(resource_id=resource_id)
 
         # filter according to leaves
+        intervals = []
         for interval in work_intervals:
-            work_intervals = self.interval_remove_leaves(interval, leaves)
-            intervals += work_intervals
+            work_interval = self.interval_remove_leaves(interval, leaves)
+            intervals += work_interval
 
         return intervals
