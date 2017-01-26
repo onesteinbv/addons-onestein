@@ -58,27 +58,27 @@ class IrModel(models.Model):
     @api.model
     def _filter_bi_models(self, model):
 
-        def _check_name(self, model_name):
+        def _check_name(model_name):
             if model_name in NO_BI_MODELS:
                 return 1
             return 0
 
-        def _check_startswith(self, model_name):
+        def _check_startswith(model_name):
             if model_name.startswith('workflow') or \
                     model_name.startswith('ir.') or \
                     model_name.startswith('base_'):
                 return 1
             return 0
 
-        def _check_contains(self, model_name):
+        def _check_contains(model_name):
             if 'mail' in model_name or \
-                            '_' in model_name or \
-                            'report' in model_name or \
-                            'edi.' in model_name:
+                    '_' in model_name or \
+                    'report' in model_name or \
+                    'edi.' in model_name:
                 return 1
             return 0
 
-        def _check_unknow(self, model_name):
+        def _check_unknow(model_name):
             if model_name == 'Unknow' or '.' in model_name:
                 return 1
             return 0
@@ -112,7 +112,7 @@ class IrModel(models.Model):
     @api.model
     def _get_related_fields_list(self, model_ids, model_names):
 
-        def _get_right_fields(self, model_ids, model_names):
+        def _get_right_fields(model_ids, model_names):
             Fields = self.env['ir.model.fields']
             rfields = []
             domain = [('model_id', 'in', model_ids.values()),
@@ -129,7 +129,7 @@ class IrModel(models.Model):
                         )
             return rfields
 
-        def _get_left_fields(self, model_ids, model_names):
+        def _get_left_fields(model_ids, model_names):
             Fields = self.env['ir.model.fields']
             lfields = []
             domain = [('relation', 'in', model_names.values()),
@@ -171,7 +171,7 @@ class IrModel(models.Model):
             joined with models in model_ids
         """
 
-        def _get_list_id(self, model_ids):
+        def _get_list_id(model_ids):
             related_fields = self.get_related_fields(model_ids)
             list_model = model_ids.values()
             for f in related_fields:
@@ -179,7 +179,7 @@ class IrModel(models.Model):
                     list_model.append(f['model_id'])
             return list_model
 
-        def _get_list_relation(self, model_ids):
+        def _get_list_relation(model_ids):
             related_fields = self.get_related_fields(model_ids)
             list_model = []
             for f in related_fields:
@@ -230,21 +230,21 @@ class IrModel(models.Model):
             Return all possible join nodes to add new_field to the query
             containing model_ids.
         """
-        def _get_model_ids(self, field_data):
+        def _get_model_ids(field_data):
             model_ids = dict([(field['table_alias'],
                                field['model_id']) for field in field_data])
             return model_ids
 
-        def _get_join_nodes_dict(self, model_ids, new_field):
+        def _get_join_nodes_dict(model_ids, new_field):
             join_nodes = []
             for alias, model_id in model_ids.items():
                 if model_id == new_field['model_id']:
                     join_nodes.append({'table_alias': alias})
             for d in self.get_related_fields(model_ids):
                 if d['relation'] == new_field['model'] and \
-                                d['join_node'] == -1 or \
-                                        d['model_id'] == new_field['model_id'] and \
-                                        d['table_alias'] == -1:
+                        d['join_node'] == -1 or \
+                        d['model_id'] == new_field['model_id'] and \
+                        d['table_alias'] == -1:
                     join_nodes.append(d)
             return join_nodes
 

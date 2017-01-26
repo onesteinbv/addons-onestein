@@ -83,12 +83,12 @@ class BveView(models.Model):
     def _create_view_arch(self):
         self.ensure_one()
 
-        def _get_field_def(self, field_name, def_type):
+        def _get_field_def(field_name, def_type):
             return """<field name="x_{}" type="{}" />""".format(
                 field_name, def_type
             )
 
-        def _get_field_type(self, field_info):
+        def _get_field_type(field_info):
             row = field_info['row'] and 'row'
             column = field_info['column'] and 'col'
             measure = field_info['measure'] and 'measure'
