@@ -28,17 +28,27 @@ class hr_holidays(models.Model):
             ('approval_date', '!=', False),
             ('expired', '=', False),
             ('type', '!=', 'remove')])
-        for holiday in allocation_req_list:
-            # notification
+
+        # notification
+        allocation_req_list._set_notification()
+        # expiring
+        allocation_req_list._set_expiration()
+
+    @api.multi
+    def _set_notification(self):
+        for holiday in self:
             if holiday.email_notify and not holiday.notification_sent:
                 if datetime.strptime(
-                    holiday.expiration_date,
-                    DEFAULT_SERVER_DATE_FORMAT
+                        holiday.expiration_date,
+                        DEFAULT_SERVER_DATE_FORMAT
                 ) <= datetime.today() + timedelta(holiday.notify_period):
                     if holiday.notify_template_id:
                         holiday.notify_template_id.send_mail(holiday.id)
                         holiday.notification_sent = True
-            # expiring
+
+    @api.multi
+    def _set_expiration(self):
+        for holiday in self:
             if datetime.strptime(
                     holiday.expiration_date,
                     DEFAULT_SERVER_DATE_FORMAT) <= datetime.today():
