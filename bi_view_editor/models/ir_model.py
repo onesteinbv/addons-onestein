@@ -58,23 +58,23 @@ class IrModel(models.Model):
     @api.model
     def _filter_bi_models(self, model):
 
-        def _check_name(model_name):
-            if model_name in NO_BI_MODELS:
+        def _check_name(model_model):
+            if model_model in NO_BI_MODELS:
                 return 1
             return 0
 
-        def _check_startswith(model_name):
-            if model_name.startswith('workflow') or \
-                    model_name.startswith('ir.') or \
-                    model_name.startswith('base_'):
+        def _check_startswith(model_model):
+            if model_model.startswith('workflow') or \
+                    model_model.startswith('ir.') or \
+                    model_model.startswith('base_'):
                 return 1
             return 0
 
-        def _check_contains(model_name):
-            if 'mail' in model_name or \
-                    '_' in model_name or \
-                    'report' in model_name or \
-                    'edi.' in model_name:
+        def _check_contains(model_model):
+            if 'mail' in model_model or \
+                    '_' in model_model or \
+                    'report' in model_model or \
+                    'edi.' in model_model:
                 return 1
             return 0
 
@@ -83,11 +83,12 @@ class IrModel(models.Model):
                 return 1
             return 0
 
-        model_name = model['model']
+        model_model = model['model']
+        model_name = model['name']
         count_check = 0
-        count_check += _check_name(model_name)
-        count_check += _check_startswith(model_name)
-        count_check += _check_contains(model_name)
+        count_check += _check_name(model_model)
+        count_check += _check_startswith(model_model)
+        count_check += _check_contains(model_model)
         count_check += _check_unknow(model_name)
         if not count_check:
             return self.env['ir.model.access'].check(
