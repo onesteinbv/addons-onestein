@@ -82,27 +82,27 @@ class BveView(models.Model):
     @api.multi
     def _create_view_arch(self):
         self.ensure_one()
+
+        def _get_field_def(self, field_name, def_type):
+            return """<field name="x_{}" type="{}" />""".format(
+                field_name, def_type
+            )
+
+        def _get_field_type(self, field_info):
+            row = field_info['row'] and 'row'
+            column = field_info['column'] and 'col'
+            measure = field_info['measure'] and 'measure'
+            return row or column or measure
+
         fields_info = json.loads(self._get_format_data(self.data))
         view_fields = []
         for field_info in fields_info:
-            is_row = field_info['row']
-            is_column = field_info['column']
-            is_measure = field_info['measure']
-            if is_row or is_column or is_measure:
-                field_def = self._get_field_def(field_info)
+            field_name = field_info['name']
+            def_type = _get_field_type(field_info)
+            if def_type:
+                field_def = _get_field_def(field_name, def_type)
                 view_fields.append(field_def)
         return view_fields
-
-    @api.model
-    def _get_field_def(self, field_info):
-        name = field_info['name']
-        row = field_info['row'] and 'row'
-        column = field_info['column'] and 'col'
-        measure = field_info['measure'] and 'measure'
-        field_def = """<field name="x_{}" type="{}" />""".format(
-            name, row or column or measure
-        )
-        return field_def
 
     @api.model
     def _get_format_data(self, data):
@@ -118,12 +118,15 @@ class BveView(models.Model):
         self._force_registry_reload()
         self._create_bve_view()
 
+    @api.model
     def _force_registry_reload(self):
         # setup models: this automatically adds model in registry
         self.pool.setup_models(self._cr, partial=(not self.pool.ready))
         RegistryManager.signal_registry_change(self.env.cr.dbname)
 
+    @api.multi
     def _create_bve_view(self):
+        self.ensure_one()
 
         # create views
         View = self.env['ir.ui.view']
@@ -182,7 +185,9 @@ class BveView(models.Model):
             'state': 'created'
         })
 
+    @api.multi
     def _create_bve_object(self):
+        self.ensure_one()
 
         def _get_fields_info(fields_data):
             fields_info = []

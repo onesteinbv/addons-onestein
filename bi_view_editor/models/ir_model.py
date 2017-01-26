@@ -41,14 +41,6 @@ def dict_for_field(field):
     }
 
 
-def dict_for_model(model):
-    return {
-        'id': model.id,
-        'name': model.name,
-        'model': model.model
-    }
-
-
 class IrModel(models.Model):
     _inherit = 'ir.model'
 
@@ -65,29 +57,42 @@ class IrModel(models.Model):
 
     @api.model
     def _filter_bi_models(self, model):
-        check_model_name = self._filter_bi_models_check_model_name(model)
-        if not check_model_name:
-            return False
-        if model['name'] == 'Unknow' or '.' in model['name']:
-            return False
-        return self.env['ir.model.access'].check(
-            model['model'], 'read', False)
 
-    @api.model
-    def _filter_bi_models_check_model_name(self, model):
+        def _check_name(self, model_name):
+            if model_name in NO_BI_MODELS:
+                return 1
+            return 0
+
+        def _check_startswith(self, model_name):
+            if model_name.startswith('workflow') or \
+                    model_name.startswith('ir.') or \
+                    model_name.startswith('base_'):
+                return 1
+            return 0
+
+        def _check_contains(self, model_name):
+            if 'mail' in model_name or \
+                            '_' in model_name or \
+                            'report' in model_name or \
+                            'edi.' in model_name:
+                return 1
+            return 0
+
+        def _check_unknow(self, model_name):
+            if model_name == 'Unknow' or '.' in model_name:
+                return 1
+            return 0
+
         model_name = model['model']
-        if model_name in NO_BI_MODELS:
-            return False
-        if model_name.startswith('workflow') or \
-                model_name.startswith('ir.') or \
-                model_name.startswith('base_'):
-            return False
-        if 'mail' in model_name or \
-                '_' in model_name or \
-                'report' in model_name or \
-                'edi.' in model_name:
-            return False
-        return True
+        count_check = 0
+        count_check += _check_name(model_name)
+        count_check += _check_startswith(model_name)
+        count_check += _check_contains(model_name)
+        count_check += _check_unknow(model_name)
+        if not count_check:
+            return self.env['ir.model.access'].check(
+                model['model'], 'read', False)
+        return False
 
     @api.model
     def get_related_fields(self, model_ids):
@@ -107,9 +112,42 @@ class IrModel(models.Model):
     @api.model
     def _get_related_fields_list(self, model_ids, model_names):
 
-        Fields = self.env['ir.model.fields']
-        lfields = self._get_left_fields(Fields, model_ids, model_names)
-        rfields = self._get_right_fields(Fields, model_ids, model_names)
+        def _get_right_fields(self, model_ids, model_names):
+            Fields = self.env['ir.model.fields']
+            rfields = []
+            domain = [('model_id', 'in', model_ids.values()),
+                      ('ttype', 'in', ['many2one'])]
+            for field in filter(
+                    self._filter_bi_fields,
+                    Fields.sudo().search(domain)):
+                for model in model_ids.items():
+                    if model[1] == field.model_id.id:
+                        rfields.append(
+                            dict(dict_for_field(field),
+                                 join_node=-1,
+                                 table_alias=model[0])
+                        )
+            return rfields
+
+        def _get_left_fields(self, model_ids, model_names):
+            Fields = self.env['ir.model.fields']
+            lfields = []
+            domain = [('relation', 'in', model_names.values()),
+                      ('ttype', 'in', ['many2one'])]
+            for field in filter(
+                    self._filter_bi_fields,
+                    Fields.sudo().search(domain)):
+                for model in model_ids.items():
+                    if model_names[model[1]] == field['relation']:
+                        lfields.append(
+                            dict(dict_for_field(field),
+                                 join_node=model[0],
+                                 table_alias=-1)
+                        )
+            return lfields
+
+        lfields = _get_left_fields(model_ids, model_names)
+        rfields = _get_right_fields(model_ids, model_names)
 
         relation_list = []
         model_list = []
@@ -128,62 +166,56 @@ class IrModel(models.Model):
         return related_fields
 
     @api.model
-    def _get_right_fields(self, Fields, model_ids, model_names):
-        rfields = []
-        domain = [('model_id', 'in', model_ids.values()),
-                  ('ttype', 'in', ['many2one'])]
-        for field in filter(
-                self._filter_bi_fields,
-                Fields.sudo().search(domain)):
-            for model in model_ids.items():
-                if model[1] == field.model_id.id:
-                    rfields.append(
-                        dict(dict_for_field(field),
-                             join_node=-1,
-                             table_alias=model[0])
-                    )
-        return rfields
-
-    @api.model
-    def _get_left_fields(self, Fields, model_ids, model_names):
-        lfields = []
-        domain = [('relation', 'in', model_names.values()),
-                  ('ttype', 'in', ['many2one'])]
-        for field in filter(
-                self._filter_bi_fields,
-                Fields.sudo().search(domain)):
-            for model in model_ids.items():
-                if model_names[model[1]] == field['relation']:
-                    lfields.append(
-                        dict(dict_for_field(field),
-                             join_node=model[0],
-                             table_alias=-1)
-                    )
-        return lfields
-
-    @api.model
     def get_related_models(self, model_ids):
         """ Return list of model dicts for all models that can be
             joined with models in model_ids
         """
-        related_fields = self.get_related_fields(model_ids)
-        return sorted(filter(
-            self._filter_bi_models,
-            [{'id': model.id, 'name': model.name, 'model': model.model}
-             for model in self.env['ir.model'].sudo().search(
-                ['|',
-                 ('id', 'in', model_ids.values() + [
-                     f['model_id']
-                     for f in related_fields if f['table_alias'] == -1]),
-                 ('model', 'in', [
-                     f['relation']
-                     for f in related_fields if f['join_node'] == -1])])]),
-            key=lambda x: x['name'])
+
+        def _get_list_id(self, model_ids):
+            related_fields = self.get_related_fields(model_ids)
+            list_model = model_ids.values()
+            for f in related_fields:
+                if f['table_alias'] == -1:
+                    list_model.append(f['model_id'])
+            return list_model
+
+        def _get_list_relation(self, model_ids):
+            related_fields = self.get_related_fields(model_ids)
+            list_model = []
+            for f in related_fields:
+                if f['join_node'] == -1:
+                    list_model.append(f['relation'])
+            return list_model
+
+        models_list = []
+        list_id = _get_list_id(model_ids)
+        list_model = _get_list_relation(model_ids)
+        domain = ['|',
+                  ('id', 'in', list_id),
+                  ('model', 'in', list_model)]
+        models = self.env['ir.model'].sudo().search(domain)
+        for model in models:
+            models_list.append({
+                'id': model.id,
+                'name': model.name,
+                'model': model.model
+            })
+        return sorted(
+            filter(self._filter_bi_models, models_list),
+            key=lambda x: x['name']
+        )
 
     @api.model
     def get_models(self):
         """ Return list of model dicts for all available models.
         """
+        def dict_for_model(model):
+            return {
+                'id': model.id,
+                'name': model.name,
+                'model': model.model
+            }
+
         models_domain = [('transient', '=', False)]
         return sorted(filter(
             self._filter_bi_models,
@@ -198,33 +230,31 @@ class IrModel(models.Model):
             Return all possible join nodes to add new_field to the query
             containing model_ids.
         """
-        model_ids = self._get_model_ids(field_data)
+        def _get_model_ids(self, field_data):
+            model_ids = dict([(field['table_alias'],
+                               field['model_id']) for field in field_data])
+            return model_ids
+
+        def _get_join_nodes_dict(self, model_ids, new_field):
+            join_nodes = []
+            for alias, model_id in model_ids.items():
+                if model_id == new_field['model_id']:
+                    join_nodes.append({'table_alias': alias})
+            for d in self.get_related_fields(model_ids):
+                if d['relation'] == new_field['model'] and \
+                                d['join_node'] == -1 or \
+                                        d['model_id'] == new_field['model_id'] and \
+                                        d['table_alias'] == -1:
+                    join_nodes.append(d)
+            return join_nodes
+
+        model_ids = _get_model_ids(field_data)
         keys = [(field['table_alias'], field['id'])
                 for field in field_data if field.get('join_node', -1) != -1]
-        join_nodes = self._get_join_nodes_dict(model_ids, new_field)
+        join_nodes = _get_join_nodes_dict(model_ids, new_field)
         return filter(
             lambda x: 'id' not in x or
                       (x['table_alias'], x['id']) not in keys, join_nodes)
-
-    @api.model
-    def _get_join_nodes_dict(self, model_ids, new_field):
-        join_nodes = []
-        for alias, model_id in model_ids.items():
-            if model_id == new_field['model_id']:
-                join_nodes.append({'table_alias': alias})
-        for d in self.get_related_fields(model_ids):
-            if d['relation'] == new_field['model'] and \
-                    d['join_node'] == -1 or \
-                    d['model_id'] == new_field['model_id'] and \
-                    d['table_alias'] == -1:
-                join_nodes.append(d)
-        return join_nodes
-
-    @api.model
-    def _get_model_ids(self, field_data):
-        model_ids = dict([(field['table_alias'],
-                           field['model_id']) for field in field_data])
-        return model_ids
 
     @api.model
     def get_fields(self, model_id):
@@ -259,7 +289,6 @@ class IrModel(models.Model):
         return sorted_fields
 
     @api.model
-    @api.returns('self', lambda value: value.id)
     def create(self, vals):
         if self._context and self._context.get('bve'):
             vals['state'] = 'base'
