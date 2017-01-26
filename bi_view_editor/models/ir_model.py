@@ -146,22 +146,32 @@ class IrModel(models.Model):
                         )
             return lfields
 
+        def _get_relation_list(model_ids, model_names, lfields):
+            relation_list = []
+            for model in model_ids.items():
+                for field in lfields:
+                    if model_names[model[1]] == field['relation']:
+                        relation_list.append(
+                            dict(field, join_node=model[0])
+                        )
+            return relation_list
+
+        def _get_model_list(model_ids, rfields):
+            model_list = []
+            for model in model_ids.items():
+                for field in rfields:
+                    if model[1] == field['model_id']:
+                        model_list.append(
+                            dict(field, table_alias=model[0])
+                        )
+            return model_list
+
         lfields = _get_left_fields(model_ids, model_names)
         rfields = _get_right_fields(model_ids, model_names)
 
-        relation_list = []
-        model_list = []
-        for model in model_ids.items():
-            for field in lfields:
-                if model_names[model[1]] == field['relation']:
-                    relation_list.append(
-                        dict(field, join_node=model[0])
-                    )
-            for field in rfields:
-                if model[1] == field['model_id']:
-                    model_list.append(
-                        dict(field, table_alias=model[0])
-                    )
+        relation_list = _get_relation_list(model_ids, model_names, lfields)
+        model_list = _get_model_list(model_ids, rfields)
+
         related_fields = relation_list + model_list
         return related_fields
 
@@ -171,16 +181,14 @@ class IrModel(models.Model):
             joined with models in model_ids
         """
 
-        def _get_list_id(model_ids):
-            related_fields = self.get_related_fields(model_ids)
+        def _get_list_id(model_ids, related_fields):
             list_model = model_ids.values()
             for f in related_fields:
                 if f['table_alias'] == -1:
                     list_model.append(f['model_id'])
             return list_model
 
-        def _get_list_relation(model_ids):
-            related_fields = self.get_related_fields(model_ids)
+        def _get_list_relation(related_fields):
             list_model = []
             for f in related_fields:
                 if f['join_node'] == -1:
@@ -188,8 +196,9 @@ class IrModel(models.Model):
             return list_model
 
         models_list = []
-        list_id = _get_list_id(model_ids)
-        list_model = _get_list_relation(model_ids)
+        related_fields = self.get_related_fields(model_ids)
+        list_id = _get_list_id(model_ids, related_fields)
+        list_model = _get_list_relation(related_fields)
         domain = ['|',
                   ('id', 'in', list_id),
                   ('model', 'in', list_model)]
