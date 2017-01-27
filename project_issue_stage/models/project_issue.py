@@ -8,18 +8,18 @@ from openerp import models, fields, api
 class ProjectIssue(models.Model):
     _inherit = "project.issue"
 
+    issue_created = fields.Boolean(default=True)
+
     _track = {
         'issue_stage_id': {
             # this is only an heuristics; depending on your particular stage configuration it may not match all 'new' stages
             'project_issue.mt_issue_new': lambda self, cr, uid, obj,
-                                                 ctx=None: obj.issue_stage_id and obj.issue_stage_id.sequence <= 1,
+                                                 ctx=None: obj.issue_stage_id and obj.issue_created,
             'project_issue_stage.mt_issue_stage': lambda self, cr, uid, obj,
-                                                   ctx=None: obj.stage_id and obj.stage_id.sequence > 1,
+                                                   ctx=None: obj.issue_stage_id and not obj.issue_created,
         },
         'stage_id': {
-            # this is only an heuristics; depending on your particular stage configuration it may not match all 'new' stages
-            'project_issue.mt_issue_new': lambda self, cr, uid, obj, ctx=None: obj.stage_id and obj.stage_id.sequence <= 1,
-            'project_issue.mt_issue_stage': lambda self, cr, uid, obj, ctx=None: obj.stage_id and obj.stage_id.sequence > 1,
+
         },
         'user_id': {
             'project_issue.mt_issue_assigned': lambda self, cr, uid, obj, ctx=None: obj.user_id and obj.user_id.id,
@@ -103,6 +103,7 @@ class ProjectIssue(models.Model):
             vals['date_last_stage_update'] = fields.Datetime.now()
             if 'kanban_state' not in vals:
                 vals['kanban_state'] = 'normal'
+            vals['issue_created'] = False
         return super(ProjectIssue, self).write(vals)
 
     def update_date_closed_issue(self, issue_stage_id):

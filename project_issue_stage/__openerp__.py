@@ -3,10 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': "Project Issue Stage",
-    'summary': """Project Issue Stage""",
-    'author': "ONESTEiN BV",
-    'website': "http://www.onestein.eu",
+    'name': 'Project Issue Stage',
+    'summary': 'Project Issue Stage',
+    'author': 'ONESTEiN BV',
+    'website': 'http://www.onestein.eu',
     'category': 'Project Management',
     'version': '8.0.1.0.0',
     'depends': [
