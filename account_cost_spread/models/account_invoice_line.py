@@ -227,8 +227,8 @@ class AccountInvoiceLine(models.Model):
 
         def check_all_set(self):
             all_set = self.period_number and \
-                    self.spread_account_id and \
-                    self.period_type
+                self.spread_account_id and \
+                self.period_type
             return all_set
 
         def get_format_date(date):
