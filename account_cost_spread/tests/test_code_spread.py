@@ -5,6 +5,7 @@
 from odoo.addons.account.tests.account_test_classes import AccountingTestCase
 from odoo.exceptions import Warning
 
+
 class TestAccountCostSpread(AccountingTestCase):
 
     def test_01_supplier_invoice(self):
@@ -23,10 +24,9 @@ class TestAccountCostSpread(AccountingTestCase):
             ('id', '!=', invoice_line_account)
         ], limit=1).id
 
-
         vendor = self.env['res.partner'].create({
             'name': 'Vendor1',
-            'is_supplier': True,
+            'supplier': True,
         })
         invoice = self.env['account.invoice'].create({
             'partner_id': vendor.id,

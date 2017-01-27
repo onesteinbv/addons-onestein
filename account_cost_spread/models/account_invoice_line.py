@@ -227,8 +227,8 @@ class AccountInvoiceLine(models.Model):
 
         def check_all_set(self):
             all_set = self.period_number and \
-                      self.spread_account_id and \
-                      self.period_type
+                    self.spread_account_id and \
+                    self.period_type
             return all_set
 
         def get_format_date(date):
@@ -260,7 +260,6 @@ class AccountInvoiceLine(models.Model):
 
         init_table(fy_dates, spread_stop_date, table)
 
-        digits = self.env['decimal.precision'].precision_get('Account')
         amount_to_spread = residual_amount = self.price_subtotal
 
         # step 1:
@@ -318,7 +317,7 @@ class AccountInvoiceLine(models.Model):
             period_amount = entry['period_amount']
             fy_amount = entry['fy_amount']
             period_duration = (period_type == 'year' and 12) \
-                              or (period_type == 'quarter' and 3) or 1
+                or (period_type == 'quarter' and 3) or 1
             if period_duration == 12:
                 if invoice_sign * (fy_amount - fy_residual_amount) > 0:
                     fy_amount = fy_residual_amount
@@ -332,24 +331,23 @@ class AccountInvoiceLine(models.Model):
                         m = [x for x in [3, 6, 9, 12]
                              if x >= spread_start_date.month][0]
                         line_date = spread_start_date + \
-                                    relativedelta(month=m, day=31)
+                            relativedelta(month=m, day=31)
                     else:
                         line_date = spread_start_date + \
-                                    relativedelta(months=0, day=31)
+                            relativedelta(months=0, day=31)
                 date_spread_stop_date = spread_stop_date.date()
                 entry_date_stop = entry['date_stop']
                 while line_date.date() <= \
                         min(entry_date_stop, date_spread_stop_date) and \
-                                        invoice_sign * (
-                                            fy_residual_amount - period_amount) > 0:
+                        invoice_sign * \
+                        (fy_residual_amount - period_amount) > 0:
                     lines.append({'date': line_date, 'amount': period_amount})
                     fy_residual_amount -= period_amount
                     fy_amount_check += period_amount
                     line_date = line_date + \
-                                relativedelta(months=period_duration, day=31)
+                        relativedelta(months=period_duration, day=31)
                 if i == i_max and \
-                        (not lines or
-                                 spread_stop_date > lines[-1]['date']):
+                        (not lines or spread_stop_date > lines[-1]['date']):
                     # last year, last entry
                     period_amount = fy_residual_amount
                     lines.append({'date': line_date, 'amount': period_amount})
