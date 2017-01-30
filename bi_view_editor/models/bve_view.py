@@ -341,6 +341,7 @@ class BveView(models.Model):
     def open_view(self):
         self.ensure_one()
         return {
+            'name': _('BI View'),
             'type': 'ir.actions.act_window',
             'res_model': self.model_name,
             'view_type': 'form',

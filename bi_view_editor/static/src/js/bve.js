@@ -25,11 +25,11 @@ odoo.define('bi_view_editor', function (require) {
                 if (choices[i].join_node !== -1 && choices[i].table_alias !== -1) {
                     description = "Use the field on table " + model_data[choices[i].table_alias].model_name;
                 } else {
-                    if (choices[i].join_node === -1) {
-                        description = "Join using the field '" + choices[i].description + "' from model '" + choices[i].model_name + "'";
-                    } else {
-                        description = "Join using the field '" + choices[i].description + "' from new model '" + choices[i].model_name + "'";
+                    var new_str = "";
+                    if (choices[i].join_node !== -1) {
+                        new_str = "new ";
                     }
+                    description = "Join using the field '" + choices[i].description + "' from " + new_str + "model '" + choices[i].model_name + "'";
                 }
                 joinnodes.append($("<a>" + description+ "</a>")
                                  .data('idx', i)
@@ -149,73 +149,69 @@ odoo.define('bi_view_editor', function (require) {
             self.$el.find(".class-list .class").remove();
             self.$el.find(".class-list .field").remove();
             var css = this.get('effective_readonly') ? 'cursor: default' : 'cursor: pointer';
-
+            function addField() {
+                if (!self.get("effective_readonly")) {
+                    self.add_field($(this));
+                }
+            }
+            function clickHandler(evt) {
+                if(self.get("effective_readonly")) return;
+                var classel = $(this);
+                if (classel.data('bve-processed')) {
+                    classel.parent().find('.field').remove();
+                    classel.data('bve-processed', false);
+                    var index = self.activeModelMenus.indexOf(classel.data('model-data').id);
+                    if(index !== -1) self.activeModelMenus.splice(index, 1);
+                } else {
+                    self.activeModelMenus.push(classel.data('model-data').id);
+                    model.call("get_fields", [classel.data('model-data').id], { context: new Data.CompoundContext() }).then(function(result) {
+                        for (var i = 0; i < result.length; i++) {
+                            classel.find("#bve-field-" + result[i].name).remove();
+                            if(self.$el.find(".field-list tbody [name=label-" + result[i].id + "]").length > 0) continue;
+                            classel.after($("<div class=\"field\" title=\"" + result[i].name + "\" id=\"bve-field-" + result[i].name + "\">" + result[i].description + "</div>")
+                                          .data('field-data', result[i])
+                                          .click(addField)
+                                          .draggable({
+                                              'revert': 'invalid',
+                                              'scroll': false,
+                                              'helper': 'clone',
+                                              'appendTo': 'body',
+                                              'containment': 'window'
+                                          })
+                                          );
+                        }
+                    });
+                    $(this).data('bve-processed', true);
+                }
+            }
+            function renderFields(result) {
+                console.log(result);
+                var item = self.$el.find(".class-list #bve-class-" + result[0].model_id);
+                for (var o = 0; o < result.length; o++) {
+                    if(self.$el.find(".field-list tbody [name=label-" + result[o].id + "]").length > 0) continue;
+                    item.after($("<div class=\"field\" title=\"" + result[o].name + "\" id=\"bve-field-" + result[o].name + "\">" + result[o].description + "</div>")
+                               .data('field-data', result[o])
+                               .click(addField)
+                               .draggable({
+                                   'revert': 'invalid',
+                                   'scroll': false,
+                                   'helper': 'clone',
+                                   'appendTo': 'body',
+                                   'containment': 'window'
+                               }));
+                }
+                item.data('bve-processed', true);
+            }
             for (var i = 0; i < result.length; i++) {
                 var item = $("<div style=\"" + css + "\" class=\"class\" title=\"" + result[i].model  + "\" id=\"bve-class-" + result[i].id + "\">" + result[i].name + "</div>")
                             .data('model-data', result[i])
-                            .click(function (evt) {
-                                if(self.get("effective_readonly")) return;
-                                var classel = $(this);
-
-                                if (classel.data('bve-processed')) {
-                                    classel.parent().find('.field').remove();
-                                    classel.data('bve-processed', false);
-                                    var index = self.activeModelMenus.indexOf(classel.data('model-data').id);
-                                    if(index !== -1) self.activeModelMenus.splice(index, 1);
-                                } else {
-                                    self.activeModelMenus.push(classel.data('model-data').id);
-                                    model.call("get_fields", [classel.data('model-data').id], { context: new Data.CompoundContext() }).then(function(result) {
-                                        for (var i = 0; i < result.length; i++) {
-                                            classel.find("#bve-field-" + result[i].name).remove();
-                                            if(self.$el.find(".field-list tbody [name=label-" + result[i].id + "]").length > 0) continue;
-                                            classel.after($("<div class=\"field\" title=\"" + result[i].name + "\" id=\"bve-field-" + result[i].name + "\">" + result[i].description + "</div>")
-                                                          .data('field-data', result[i])
-                                                          .click(function () {
-                                                              if (!self.get("effective_readonly")) {
-                                                                  self.add_field($(this));
-                                                              }
-                                                          })
-                                                          .draggable({
-                                                              'revert': 'invalid',
-                                                              'scroll': false,
-                                                              'helper': 'clone',
-                                                              'appendTo': 'body',
-                                                              'containment': 'window'
-                                                          })
-                                                          );
-                                        }
-                                    });
-
-                                    $(this).data('bve-processed', true);
-                                }
-                            })
+                            .click(clickHandler)
                             .wrap("<div class=\"class-container\"></div>").parent();
                 self.$el.find(".class-list").append(item);
 
                 var index = self.activeModelMenus.indexOf(item.find(".class").data('model-data').id);
                 if(index !== -1 && !self.get("effective_readonly")) {
-                    model.call("get_fields", [self.activeModelMenus[index]], { context: new Data.CompoundContext() }).then(function(result) {
-                        console.log(result);
-                        var item = self.$el.find(".class-list #bve-class-" + result[0].model_id);
-                        for (var o = 0; o < result.length; o++) {
-                            if(self.$el.find(".field-list tbody [name=label-" + result[o].id + "]").length > 0) continue;
-                            item.after($("<div class=\"field\" title=\"" + result[o].name + "\" id=\"bve-field-" + result[o].name + "\">" + result[o].description + "</div>")
-                                       .data('field-data', result[o])
-                                       .click(function () {
-                                           if (!self.get("effective_readonly")) {
-                                               self.add_field($(this));
-                                           }
-                                       })
-                                       .draggable({
-                                           'revert': 'invalid',
-                                           'scroll': false,
-                                           'helper': 'clone',
-                                           'appendTo': 'body',
-                                           'containment': 'window'
-                                       }));
-                        }
-                        item.data('bve-processed', true);
-                    });
+                    model.call("get_fields", [self.activeModelMenus[index]], { context: new Data.CompoundContext() }).then(renderFields);
                 }
                 self.filter();
             }
@@ -235,7 +231,8 @@ odoo.define('bi_view_editor', function (require) {
 
             var n = 1;
             var name = data.name;
-            while ($.grep(self.get_fields(), function (el) { return el.name === data.name;}).length > 0) {
+            function checkNameMatches(el) { return el.name === data.name;}
+            while ($.grep(self.get_fields(), checkNameMatches).length > 0) {
                 data.name = name + '_' + n;
                 n += 1;
             }
@@ -251,7 +248,7 @@ odoo.define('bi_view_editor', function (require) {
             }
 
             self.$el.find(".field-list tbody")
-                .append($("<tr class=\"" + classes + "\"><td><input " + disabled + "title=\"" + data.name + " (" + data.model + ") "+ "\" type=\"text\" name=\"label-" + data.id + "\" value=\"" + data.description + "\"/></td><td>" + data.model_name + "</td><td>" + self.get_field_icons(data) + "</td><td>" + delete_button + "</td></tr>")
+                .append($("<tr class=\"" + classes + "\"><td><input " + disabled + "title=\"" + data.name + " (" + data.model + ")\" type=\"text\" name=\"label-" + data.id + "\" value=\"" + data.description + "\"/></td><td>" + data.model_name + "</td><td>" + self.get_field_icons(data) + "</td><td>" + delete_button + "</td></tr>")
                 .data('field-data', data)
                 .contextmenu(function(e) {
                     e.preventDefault();
