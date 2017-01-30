@@ -5,7 +5,7 @@
 {
     'name': 'Costcenter',
     'summary': 'Cost center information for invoice lines',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',

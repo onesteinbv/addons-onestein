@@ -6,7 +6,7 @@
     'name': 'OAuth2 Disable Login with Odoo.com',
     'version': '10.0.1.0.0',
     'category': 'Tools',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'depends': ['auth_oauth'],
     'data': [

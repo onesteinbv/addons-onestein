@@ -9,16 +9,22 @@ class HrEmployee(models.Model):
 
     _inherit = 'hr.employee'
 
-    employee_number = fields.Char('Employee Number', copy=False)
+    employee_number = fields.Char(copy=False)
 
     @api.model
     def create(self, vals):
-        if 'employee_number' not in vals or not vals['employee_number']:
+
+        def get_employee_sequence(Sequence):
+            number = Sequence.next_by_code('hr.employee') or '/'
+            return number
+
+        if vals.get('employee_number'):
             searching = True
             while searching:
-                Sequence = self.env['ir.sequence']
-                number = Sequence.next_by_code('hr.employee') or '/'
-                if not self.search([('employee_number', '=', number)]):
+                number = get_employee_sequence(self.env['ir.sequence'])
+                if not self.search([
+                    ('employee_number', '=', number)
+                ], limit=1):
                     vals['employee_number'] = number
                     searching = False
         return super(HrEmployee, self).create(vals)

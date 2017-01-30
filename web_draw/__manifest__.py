@@ -7,7 +7,7 @@
     'images': [],
     'category': 'Extra Tools',
     'version': '10.0.1.0.0',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'depends': ['base', 'web'],

@@ -31,3 +31,12 @@ Usage
 To use this module, you need to:
 
 #. Nothing to do.
+
+
+Credits
+=======
+
+Contributors
+------------
+
+* Andrea Stirpe <a.stirpe@onestein.nl>

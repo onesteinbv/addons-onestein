@@ -5,8 +5,8 @@
 {
     'name': 'Employee Relatives',
     'images': ['static/description/main_screenshot.png'],
-    'summary': '''Store employee relatives for communication.''',
-    'author': 'ONESTEiN BV',
+    'summary': 'Store employee relatives for communication.',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
     'version': '10.0.1.0.0',

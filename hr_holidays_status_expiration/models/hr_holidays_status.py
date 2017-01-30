@@ -22,31 +22,37 @@ class HrHolidaysStatus(models.Model):
 
         res = []
         for record in self:
-            name = record.name
-            if not record.limit:
-                name = name + (
-                    '  (%.1f Left / %.1f Virtually Left' % (
-                        record.remaining_hours,
-                        record.virtual_remaining_hours
-                    )
-                )
-                if record.expiration_date:
-                    try:
-                        name = name + (
-                            ' - Exp. Date %s)' % (
-                                datetime.strptime(
-                                    record.expiration_date,
-                                    '%Y-%m-%d'
-                                ).strftime('%m/%d/%Y')
-                            )
-                        )
-                    except:
-                        name = name + (
-                            ' - Exp. Date %s)' % (
-                                record.expiration_date
-                            )
-                        )
-                else:
-                    name = name + ')'
-            res.append((record.id, name))
+            record._set_name(res)
         return res
+
+    @api.multi
+    def _set_name(self, res):
+        self.ensure_one()
+
+        name = self.name
+        if not self.limit:
+            name = name + (
+                '  (%.1f Left / %.1f Virtually Left' % (
+                    self.remaining_hours,
+                    self.virtual_remaining_hours
+                )
+            )
+            if self.expiration_date:
+                try:
+                    name = name + (
+                        ' - Exp. Date %s)' % (
+                            datetime.strptime(
+                                self.expiration_date,
+                                '%Y-%m-%d'
+                            ).strftime('%m/%d/%Y')
+                        )
+                    )
+                except:
+                    name = name + (
+                        ' - Exp. Date %s)' % (
+                            self.expiration_date
+                        )
+                    )
+            else:
+                name = name + ')'
+        res.append((self.id, name))

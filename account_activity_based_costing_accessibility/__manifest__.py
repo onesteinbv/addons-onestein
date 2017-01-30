@@ -5,7 +5,7 @@
 {
     'name': "Activity Based Costing Accessibility",
     'summary': """Activity Based Costing Accessibility""",
-    'author': "ONESTEiN BV",
+    'author': "Onestein",
     'website': "http://www.onestein.eu",
     'category': 'Accounting & Finance',
     'version': '10.0.1.0.0',

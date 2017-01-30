@@ -7,7 +7,7 @@
     'images': [],
     'summary': 'Configure the default value of Opt-Out for new partners',
     'license': 'AGPL-3',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Marketing',
     'version': '10.0.1.1.0',

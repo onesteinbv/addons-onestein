@@ -7,3 +7,13 @@ Leave Hours
 ===========
 
 Request Leaves in Hours and recalculate them to Days. Hide the days in Leave Request.
+
+
+Credits
+=======
+
+Contributors
+------------
+
+* Antonio Esposito <a.esposito@onestein.nl>
+* Andrea Stirpe <a.stirpe@onestein.nl>

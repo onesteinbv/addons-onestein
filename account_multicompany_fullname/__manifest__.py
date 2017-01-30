@@ -5,7 +5,7 @@
 {
     'name': 'Account Multicompany Fullname',
     'summary': 'Display full name in a multicompany accounting environment',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',
     'license': 'AGPL-3',
