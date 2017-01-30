@@ -8,18 +8,21 @@ odoo.define("web.float.highlight", function (require) {
             this._super.apply(this, arguments);
 
             var internal_apply = false
-            if (this.options)
-            {
-                if (this.options.lower_threshold) internal_apply = true;
-                if (this.options.upper_threshold) internal_apply = true;
-                if (this.options.lower_bg_color) internal_apply = true;
-                if (this.options.middle_bg_color) internal_apply = true;
-                if (this.options.upper_bg_color) internal_apply = true;
-                if (this.options.lower_font_color) internal_apply = true;
-                if (this.options.middle_font_color) internal_apply = true;
-                if (this.options.upper_font_color) internal_apply = true;
-                if (this.options.load_defaults) internal_apply = true;
-            }
+
+            if (
+                this.options && (
+                    this.options.lower_threshold ||
+                    this.options.upper_threshold ||
+                    this.options.lower_bg_color ||
+                    this.options.middle_bg_color ||
+                    this.options.upper_bg_color ||
+                    this.options.lower_font_color ||
+                    this.options.middle_font_color ||
+                    this.options.upper_font_color ||
+                    this.options.load_defaults
+                )
+            )
+                internal_apply = true;
 
             var load_defaults = (this.options && this.options.load_defaults) || false;
 
