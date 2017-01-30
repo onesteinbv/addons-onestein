@@ -11,13 +11,26 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 _logger = logging.getLogger(__name__)
 
 
-class hr_holidays(models.Model):
+class HRHolidays(models.Model):
     _inherit = "hr.holidays"
+
+    @api.model
+    def default_get(self, fields):
+        res = super(HRHolidays, self).default_get(fields)
+        company = self.env.user.company_id
+        res['expire_template_id'] = (company.expire_template_id and
+                                     company.expire_template_id.id or
+                                     None)
+        res['notify_template_id'] = (company.notify_template_id and
+                                     company.notify_template_id.id or
+                                     None)
+
+        return res
 
     @api.multi
     def holidays_validate(self):
         self.approval_date = datetime.today()
-        res = super(hr_holidays, self).holidays_validate()
+        res = super(HRHolidays, self).holidays_validate()
         return res
 
     @api.model
@@ -70,8 +83,7 @@ class hr_holidays(models.Model):
          out the notification email.")
     notify_template_id = fields.Many2one(
         'mail.template',
-        string="Notify Email Template",
-        default=lambda self: self.env.user.company_id.notify_template_id)
+        string="Notify Email Template")
     notification_sent = fields.Boolean(
         string="Expiration Notification Sent")
     notify_to = fields.Many2one(
@@ -81,18 +93,17 @@ class hr_holidays(models.Model):
     expiration_date = fields.Date(string='Expiration Date')
     expired = fields.Boolean(string="Expired", default=False)
     expire_template_id = fields.Many2one(
-        'mail.template', string="Expired Email Template",
-        default=lambda self: self.env.user.company_id.expire_template_id)
+        'mail.template', string="Expired Email Template")
     approval_date = fields.Date(string="Date Approved")
 
     @api.multi
     def action_approve(self):
-        res = super(hr_holidays, self).action_approve()
+        res = super(HRHolidays, self).action_approve()
         self.write({'approval_date': fields.Datetime.now()})
         return res
 
     @api.multi
     def action_draft(self):
-        res = super(hr_holidays, self).action_draft()
+        res = super(HRHolidays, self).action_draft()
         self.write({'approval_date': None})
         return res
