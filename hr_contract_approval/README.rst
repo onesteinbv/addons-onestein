@@ -6,4 +6,17 @@
 Human Resource Contract Approval
 ================================
 
-Human Resource Contract Approval
+This module adds a workflow for the HR contracts,
+allowing to manage the approval process.
+
+
+
+
+Credits
+=======
+
+Contributors
+------------
+
+* Antonio Esposito <a.esposito@onestein.nl>
+* Andrea Stirpe <a.stirpe@onestein.nl>

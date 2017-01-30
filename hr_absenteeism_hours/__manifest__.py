@@ -4,8 +4,8 @@
 
 {
     'name': 'Absence Management in hours',
-    'summary': '''Hours based absence notifications''',
-    'author': 'ONESTEiN BV',
+    'summary': 'Hours based absence notifications',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'images': ['static/description/main_screenshot.png'],
     'category': 'Human Resources',

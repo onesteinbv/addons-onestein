@@ -6,7 +6,7 @@
     'name': "Public Holidays Leaves",
     'images': [],
     'summary': """Leaves management for public holidays""",
-    'author': "ONESTEiN BV",
+    'author': "Onestein",
     'license': 'AGPL-3',
     'website': "http://www.onestein.eu",
     'category': 'Human Resources',

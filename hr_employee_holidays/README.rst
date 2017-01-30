@@ -6,4 +6,24 @@
 HR Employee Holidays
 ====================
 
-Adds field holiday_ids to Employee
+This module just adds field holiday_ids to Employee.
+That field is missing in Odoo standard but is very
+helpful when developing multiple features that require
+the same field.
+
+By installing this module only, not any functionality will be added to your system.
+This module is meant to be a base module to be extended by modules that need
+the field holiday_ids of Employee.
+This way, we avoid that multiple modules create the same field, avoiding
+conflicts causing confusion.
+
+
+Credits
+=======
+
+Contributors
+------------
+
+* Andrea Stirpe <a.stirpe@onestein.nl>
+
+
