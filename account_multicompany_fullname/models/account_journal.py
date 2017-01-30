@@ -14,12 +14,3 @@ class AccountJournal(models.Model):
         company = self.browse(item[0]).company_id
         company_name = company and company.name or ''
         return name + ' - ' + company_name
-
-    @api.multi
-    def name_get(self):
-        res = super(AccountJournal, self).name_get()
-        journals = []
-        for item in res:
-            fullname = self._fullname_get(item)
-            journals.append((item[0], fullname))
-        return journals

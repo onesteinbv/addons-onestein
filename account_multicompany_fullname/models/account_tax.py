@@ -14,12 +14,3 @@ class AccountTax(models.Model):
         company = self.browse(item[0]).company_id
         company_name = company and company.name or ''
         return name + ' - ' + company_name
-
-    @api.multi
-    def name_get(self):
-        res = super(AccountTax, self).name_get()
-        taxes = []
-        for item in res:
-            fullname = self._fullname_get(item)
-            taxes.append((item[0], fullname))
-        return taxes
