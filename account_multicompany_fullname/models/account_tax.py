@@ -18,8 +18,8 @@ class AccountTax(models.Model):
     @api.multi
     def name_get(self):
         res = super(AccountTax, self).name_get()
-        tax_list = []
+        taxes = []
         for item in res:
             fullname = self._fullname_get(item)
-            tax_list.append((item[0], fullname))
-        return tax_list
+            taxes.append((item[0], fullname))
+        return taxes

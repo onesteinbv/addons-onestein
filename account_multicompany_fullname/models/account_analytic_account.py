@@ -18,8 +18,8 @@ class AccountAnalyticAccount(models.Model):
     @api.multi
     def name_get(self):
         res = super(AccountAnalyticAccount, self).name_get()
-        analytic_account_list = []
+        analytics = []
         for item in res:
             fullname = self._fullname_get(item)
-            analytic_account_list.append((item[0], fullname))
-        return analytic_account_list
+            analytics.append((item[0], fullname))
+        return analytics
