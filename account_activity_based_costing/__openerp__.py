@@ -4,8 +4,8 @@
 
 {
     'name': 'Activity Based Costing',
-    'summary': '''Activity Based Costing''',
-    'author': 'ONESTEiN BV',
+    'summary': 'Activity Based Costing',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',
     'version': '9.0.1.0.0',

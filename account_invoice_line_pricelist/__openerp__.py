@@ -8,7 +8,7 @@
     'summary': """Prices on invoice products based on partner pricelists""",
     'version': '9.0.1.0.0',
     'category': 'Accounting & Finance',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'license': 'AGPL-3',
     'depends': [

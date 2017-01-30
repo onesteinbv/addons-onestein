@@ -5,8 +5,8 @@
 {
     'name': 'Budgetary Position One Account',
     'images': [],
-    'summary': '''Select only one Account in Budgetary Positions''',
-    'author': 'ONESTEiN BV',
+    'summary': 'Select only one Account in Budgetary Positions',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',

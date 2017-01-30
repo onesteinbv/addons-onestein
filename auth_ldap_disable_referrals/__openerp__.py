@@ -7,7 +7,7 @@
     'images': [],
     'version': '9.0.1.0.0',
     'license': 'AGPL-3',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Authentication',
     'depends': ['auth_ldap'],
