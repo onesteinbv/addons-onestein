@@ -10,7 +10,7 @@ class MailThread(models.AbstractModel):
 
     @api.multi
     def unlink(self):
-        if self.model in ['project.project', 'account.analytic.account']:
+        if self._name in ['project.project', 'account.analytic.account']:
             self.env['mail.followers'].sudo().search(
                 [('res_model', '=', self._name), ('res_id', 'in', self.ids)]
             ).unlink()
