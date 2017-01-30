@@ -5,7 +5,7 @@
 {
     'name': "Account Analytic Account Accessibility",
     'summary': """Improves the Accessibility for the Analytic Account""",
-    'author': "ONESTEiN BV",
+    'author': "Onestein",
     'website': "http://www.onestein.eu",
     'category': 'Accounting & Finance',
     'version': '10.0.1.0.0',

@@ -10,7 +10,7 @@
         'account',
         'account_accountant'
     ],
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'images': ['static/description/main_screenshot.png'],

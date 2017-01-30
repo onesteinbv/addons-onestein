@@ -5,7 +5,7 @@
 {
     'name': 'Account Analytic Account Sequence',
     'summary': 'Account Analytic Account Sequence',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',
     'version': '10.0.1.0.0',
