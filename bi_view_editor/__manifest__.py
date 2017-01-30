@@ -6,7 +6,7 @@
     'name': 'BI View Editor',
     'summary': '''Graphical BI views builder for Odoo''',
     'images': ['static/description/main_screenshot.png'],
-    'author': 'ONESTEiN BV,Odoo Community Association (OCA)',
+    'author': 'Onestein,Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Reporting',

@@ -181,19 +181,20 @@ class IrModel(models.Model):
         """ Return list of model dicts for all models that can be
             joined with models in model_ids
         """
+        def _get_field(fields, orig, target):
+            field_list = []
+            for f in fields:
+                if f[orig] == -1:
+                    field_list.append(f[target])
+            return field_list
 
-        def _get_list_id(model_ids, related_fields):
+        def _get_list_id(model_ids, fields):
             list_model = model_ids.values()
-            for f in related_fields:
-                if f['table_alias'] == -1:
-                    list_model.append(f['model_id'])
+            list_model += _get_field(fields, 'table_alias', 'model_id')
             return list_model
 
-        def _get_list_relation(related_fields):
-            list_model = []
-            for f in related_fields:
-                if f['join_node'] == -1:
-                    list_model.append(f['relation'])
+        def _get_list_relation(fields):
+            list_model = _get_field(fields, 'join_node', 'relation')
             return list_model
 
         models_list = []
