@@ -6,7 +6,7 @@
     'name': 'Web Disable Export Group',
     'version': '10.0.1.0.0',
     'license': 'AGPL-3',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Web',
     'depends': ['web'],
