@@ -188,10 +188,3 @@ class AccountInvoiceSpreadLine(models.Model):
         )
 
         lines.create_moves()
-
-    @api.multi
-    def get_spreaded_amount(self):
-        spreaded_value = 0.0
-        for posted_spread in self:
-            spreaded_value += posted_spread.amount
-        return spreaded_value
