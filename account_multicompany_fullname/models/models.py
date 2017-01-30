@@ -11,6 +11,12 @@ class Base(models.AbstractModel):
 
     @api.multi
     def name_get(self):
+
+        def _fullname_get(item, company):
+            name = item[1] or ''
+            company_name = company and company.name or ''
+            return name + ' - ' + company_name
+
         res = super(Base, self).name_get()
         if self._name in ['account.account',
                           'account.analytic.account',
@@ -19,10 +25,8 @@ class Base(models.AbstractModel):
                           'account.tax']:
             list = []
             for item in res:
-                name = item[1] or ''
                 company = self.browse(item[0]).company_id
-                company_name = company and company.name or ''
-                fullname = name + ' - ' + company_name
+                fullname = _fullname_get(item, company)
 
                 list.append((item[0], fullname))
             return list
