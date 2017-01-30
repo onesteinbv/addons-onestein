@@ -18,8 +18,8 @@ class AccountJournal(models.Model):
     @api.multi
     def name_get(self):
         res = super(AccountJournal, self).name_get()
-        journal_list = []
+        journals = []
         for item in res:
             fullname = self._fullname_get(item)
-            journal_list.append((item[0], fullname))
-        return journal_list
+            journals.append((item[0], fullname))
+        return journals
