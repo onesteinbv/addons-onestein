@@ -4,7 +4,7 @@
 
 {
     'name': 'Project Analytic Align Follower',
-    'summary': '''Sync Followers of Analytic Account and Project''',
+    'summary': 'Sync Followers of Analytic Account and Project',
     'author': 'ONESTEiN BV',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',
