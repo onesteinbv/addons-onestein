@@ -12,7 +12,6 @@ class TestAccountCostSpread(AccountingTestCase):
         receivable = self.env.ref('account.data_account_type_receivable')
         expenses = self.env.ref('account.data_account_type_expenses')
 
-        # Should be changed by automatic on_change later
         invoice_account = self.env['account.account'].search([
             ('user_type_id', '=', receivable.id)
         ], limit=1).id
@@ -65,3 +64,51 @@ class TestAccountCostSpread(AccountingTestCase):
         # and verifies that it gives warning message
         with self.assertRaises(Warning):
             invoice.move_id.button_cancel()
+
+    def test_02_supplier_invoice(self):
+        receivable = self.env.ref('account.data_account_type_receivable')
+        expenses = self.env.ref('account.data_account_type_expenses')
+
+        invoice_account = self.env['account.account'].search([
+            ('user_type_id', '=', receivable.id)
+        ], limit=1).id
+        invoice_line_account = self.env['account.account'].search([
+            ('user_type_id', '=', expenses.id)
+        ], limit=1).id
+        spread_account = self.env['account.account'].search([
+            ('user_type_id', '=', expenses.id),
+            ('id', '!=', invoice_line_account)
+        ], limit=1).id
+
+        vendor = self.env['res.partner'].create({
+            'name': 'Vendor1',
+            'supplier': True,
+        })
+        invoice = self.env['account.invoice'].create({
+            'partner_id': vendor.id,
+            'account_id': invoice_account,
+            'type': 'in_invoice',
+        })
+        invoice_line = self.env['account.invoice.line'].create({
+            'quantity': 1.0,
+            'price_unit': 2000.0,
+            'invoice_id': invoice.id,
+            'name': 'product that cost 2000',
+            'account_id': invoice_line_account,
+            'spread_account_id': spread_account,
+            'period_number': 7,
+            'period_type': 'quarter',
+            'spread_date': '2017-03-01'
+        })
+
+        # change the state of invoice to open by clicking Validate button
+        invoice.action_invoice_open()
+        self.assertEqual(len(invoice_line.spread_line_ids), 8)
+        self.assertEqual(100.96, invoice_line.spread_line_ids[0].amount)
+        self.assertEqual(285.72, invoice_line.spread_line_ids[1].amount)
+        self.assertEqual(285.72, invoice_line.spread_line_ids[2].amount)
+        self.assertEqual(285.72, invoice_line.spread_line_ids[3].amount)
+        self.assertEqual(285.72, invoice_line.spread_line_ids[4].amount)
+        self.assertEqual(285.72, invoice_line.spread_line_ids[5].amount)
+        self.assertEqual(285.72, invoice_line.spread_line_ids[6].amount)
+        self.assertEqual(184.72, invoice_line.spread_line_ids[7].amount)
