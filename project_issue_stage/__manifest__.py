@@ -4,8 +4,8 @@
 
 {
     'name': 'Project Issue Stage',
-    'summary': '''Configure the stages of the issues''',
-    'author': 'ONESTEiN BV',
+    'summary': 'Configure the stages of the issues',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Project Management',
     'license': 'AGPL-3',
