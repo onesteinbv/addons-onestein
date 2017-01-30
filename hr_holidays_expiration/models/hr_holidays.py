@@ -36,15 +36,20 @@ class hr_holidays(models.Model):
 
     @api.multi
     def _set_notification(self):
+
+        def notification_not_sent(holiday):
+            return holiday.email_notify and not holiday.notification_sent
+
         for holiday in self:
-            if holiday.email_notify and not holiday.notification_sent:
-                if datetime.strptime(
-                        holiday.expiration_date,
-                        DEFAULT_SERVER_DATE_FORMAT
-                ) <= datetime.today() + timedelta(holiday.notify_period):
-                    if holiday.notify_template_id:
-                        holiday.notify_template_id.send_mail(holiday.id)
-                        holiday.notification_sent = True
+            if notification_not_sent(holiday):
+                exp_date = datetime.strptime(
+                    holiday.expiration_date,
+                    DEFAULT_SERVER_DATE_FORMAT)
+                note_date = datetime.today() + timedelta(holiday.notify_period)
+
+                if exp_date <= note_date and holiday.notify_template_id:
+                    holiday.notify_template_id.send_mail(holiday.id)
+                    holiday.notification_sent = True
 
     @api.multi
     def _set_expiration(self):
