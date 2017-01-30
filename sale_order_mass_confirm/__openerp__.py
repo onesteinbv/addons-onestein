@@ -4,8 +4,8 @@
 
 {
     'name': 'Sale Order Mass Confirm',
-    'summary': '''Allows confirmation of multiple sale orders in one click''',
-    'author': 'ONESTEiN BV',
+    'summary': 'Allows confirmation of multiple sale orders in one click',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'images': [],
