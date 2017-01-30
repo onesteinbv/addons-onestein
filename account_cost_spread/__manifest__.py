@@ -8,7 +8,6 @@
     'version': '10.0.1.0.0',
     'depends': [
         'account',
-        'account_accountant'
     ],
     'author': 'Onestein',
     'license': 'AGPL-3',

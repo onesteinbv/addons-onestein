@@ -232,13 +232,13 @@ class AccountInvoiceLine(models.Model):
             return all_set
 
         def get_format_date(date):
-            return datetime.strptime(date, '%Y-%m-%d')
+            return datetime.strptime(date, '%Y-%m-%d').date()
 
         def init_table(fy_dates, spread_stop_date, table):
             init_flag = True
             fy_date_start = fy_dates['date_from']
             fy_date_stop = fy_dates['date_to']
-            while fy_date_start <= spread_stop_date.date():
+            while fy_date_start <= spread_stop_date:
                 table.append({
                     'date_start': fy_date_start,
                     'date_stop': fy_date_stop,
@@ -335,9 +335,9 @@ class AccountInvoiceLine(models.Model):
                     else:
                         line_date = spread_start_date + \
                             relativedelta(months=0, day=31)
-                date_spread_stop_date = spread_stop_date.date()
+                date_spread_stop_date = spread_stop_date
                 entry_date_stop = entry['date_stop']
-                while line_date.date() <= \
+                while line_date <= \
                         min(entry_date_stop, date_spread_stop_date) and \
                         invoice_sign * \
                         (fy_residual_amount - period_amount) > 0:
@@ -383,13 +383,7 @@ class AccountInvoiceLine(models.Model):
         self.ensure_one()
 
         def get_format_date(date):
-            return datetime.strptime(date, '%Y-%m-%d')
-
-        def get_last_spread_line(posted_spreads):
-            last_spread_line = False
-            if posted_spreads:
-                last_spread_line = posted_spreads[0]
-            return last_spread_line
+            return datetime.strptime(date, '%Y-%m-%d').date()
 
         def compute_lines(spread_start_date, table):
             lines = table[0]['lines']
@@ -417,7 +411,6 @@ class AccountInvoiceLine(models.Model):
             return spread_line_id
 
         SpreadLine = self.env['account.invoice.spread.line']
-        digits = self.env['decimal.precision'].precision_get('Account')
 
         if self.price_subtotal == 0.0:
             return
@@ -427,7 +420,6 @@ class AccountInvoiceLine(models.Model):
             ('move_id', '!=', False)]
 
         posted_spreads = SpreadLine.search(domain, order='line_date desc')
-        last_spread_line = get_last_spread_line(posted_spreads)
 
         domain = [
             ('invoice_line_id', '=', self.id),
@@ -450,73 +442,9 @@ class AccountInvoiceLine(models.Model):
         # recompute in case of deviation
         table_i_start = 0
         line_i_start = 0
-        if posted_spreads:
-            residual_amount_table = 0.0
-            last_spread_date = datetime.strptime(
-                last_spread_line.line_date, '%Y-%m-%d')
-            last_date_in_table = table[-1]['lines'][-1]['date']
-            if last_date_in_table <= last_spread_date:
-                raise Warning(
-                    _('Error!'),
-                    _("The duration of the spread conflicts with the "
-                      "posted spread table entry dates."))
-
-            for table_i, entry in enumerate(table):
-                residual_amount_table = \
-                    entry['lines'][-1]['remaining_value']
-                if entry['date_start'] <= last_spread_date \
-                        <= entry['date_stop']:
-                    break
-            if entry['date_stop'] == last_spread_date:
-                table_i += 1
-                line_i = 0
-            else:
-                entry = table[table_i]
-                date_min = entry['date_start']
-                for line_i, line in enumerate(entry['lines']):
-                    residual_amount_table = line['remaining_value']
-                    if date_min <= last_spread_date <= line['date']:
-                        break
-                    date_min = line['date']
-                if line['date'] == last_spread_date:
-                    line_i += 1
-            table_i_start = table_i
-            line_i_start = line_i
-
-            # check if residual value corresponds with table
-            # and adjust table when needed
-            spreaded_value = 0.0
-            for posted_spread in posted_spreads:
-                spreaded_value += posted_spread.amount
-
-            residual_amount = self.price_subtotal - spreaded_value
-            amount_diff = round(
-                residual_amount_table - residual_amount, digits)
-            if amount_diff:
-                entry = table[table_i_start]
-                fy_amount_check = 0.0
-
-                # TODO remove code here
-                if entry['fy_id']:
-                    fy_amount_check = 0.0
-                    for posted_spread in posted_spreads:
-                        line_date = posted_spread.line_date
-                        if line_date >= entry['date_start']:
-                            if line_date <= entry['date_stop']:
-                                fy_amount_check += posted_spread.amount
-
-                lines = entry['lines']
-                for line in lines[line_i_start:-1]:
-                    line['spreaded_value'] = spreaded_value
-                    spreaded_value += line['amount']
-                    fy_amount_check += line['amount']
-                    residual_amount -= line['amount']
-                    line['remaining_value'] = residual_amount
-                lines[-1]['spreaded_value'] = spreaded_value
-                lines[-1]['amount'] = entry['fy_amount'] - fy_amount_check
 
         seq = len(posted_spreads)
-        spread_line_id = get_spread_line_id(last_spread_line)
+        spread_line_id = None
         last_date = table[-1]['lines'][-1]['date']
         for entry in table[table_i_start:]:
             for line in entry['lines'][line_i_start:]:
