@@ -37,3 +37,12 @@ To use this module, you need to:
 
 #. Create a Partner
 #. check the Opt-out field in the Partner form
+
+
+Credits
+=======
+
+Contributors
+------------
+
+* Andrea Stirpe <a.stirpe@onestein.nl>
