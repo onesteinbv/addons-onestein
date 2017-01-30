@@ -19,7 +19,11 @@ class Base(models.AbstractModel):
                           'account.tax']:
             list = []
             for item in res:
-                fullname = self._fullname_get(item)
+                name = item[1] or ''
+                company = self.browse(item[0]).company_id
+                company_name = company and company.name or ''
+                fullname = name + ' - ' + company_name
+
                 list.append((item[0], fullname))
             return list
         return res
