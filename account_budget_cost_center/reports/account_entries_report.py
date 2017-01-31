@@ -4,6 +4,7 @@
 
 from openerp import tools
 from openerp import fields, models
+import openerp.addons.decimal_precision as dp
 
 
 class AccountEntriesReport(models.Model):
@@ -20,6 +21,15 @@ class AccountEntriesReport(models.Model):
         domain=[
             ('cost_center_id','!=',False)
         ],
+        readonly=True
+    )
+    forecast = fields.Float(
+        digits=dp.get_precision('Account'),
+        readonly=True
+    )
+    amount_planned = fields.Float(
+        string='Planned amount',
+        digits=dp.get_precision('Account'),
         readonly=True
     )
 
@@ -55,12 +65,15 @@ class AccountEntriesReport(models.Model):
                 l.credit as credit,
                 l.cost_center_id as cost_center_id,
                 l.cost_center_budget_id as cost_center_budget_id,
+                cb.forecast as forecast,
+                cb.amount_planned as amount_planned,
                 coalesce(l.debit, 0.0) - coalesce(l.credit, 0.0) as balance
             from
                 account_move_line l
                 left join account_account a on (l.account_id = a.id)
                 left join account_move am on (am.id=l.move_id)
                 left join account_period p on (am.period_id=p.id)
+                left join crossovered_budget cb on (l.cost_center_budget_id=cb.id)
                 where l.state != 'draft'
             )
         """)

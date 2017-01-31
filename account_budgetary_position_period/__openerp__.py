@@ -6,7 +6,7 @@
     'name': 'Budgetary Position Periods',
     'images': [],
     'summary': 'Periods for Budgetary Positions',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',

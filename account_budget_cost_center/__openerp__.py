@@ -6,7 +6,7 @@
     'name': 'Budget Cost Center',
     'images': [],
     'summary': """Costcenter information for budgets""",
-    'author': "ONESTEiN BV",
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',

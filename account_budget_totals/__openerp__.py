@@ -6,7 +6,7 @@
     'name': 'Budget Totals',
     'images': [],
     'summary': """Adds Total fields on Budget form""",
-    'author': "ONESTEiN BV",
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',

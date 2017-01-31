@@ -48,7 +48,13 @@ class CrossoveredBudget(models.Model):
         if context.get('enable_cost_center'):
             args += [('cost_center_id','!=',False)]
         date = context.get('filter_invoice_date')
-        if date:
+        period_id = context.get('filter_invoice_period')
+        if period_id:
+            period_obj = self.pool.get('account.period')
+            period = period_obj.browse(cr, uid, period_id)
+            args += [('date_from','<=',period.date_stop)]
+            args += [('date_to','>=',period.date_start)]
+        elif date:
             args += [('date_from','<=',date)]
             args += [('date_to','>=',date)]
 

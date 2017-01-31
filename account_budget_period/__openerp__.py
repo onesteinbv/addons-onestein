@@ -6,7 +6,7 @@
     'name': 'Budget Period',
     'images': [],
     'summary': '''Period for budgets''',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',

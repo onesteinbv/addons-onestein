@@ -86,6 +86,8 @@
                     <filter string="Journal" name="group_journal" context="{'group_by':'journal_id'}"/>
                     <filter string="Cost Center" context="{'group_by':'cost_center_id'}" />
                     <filter string="Cost Center Budget" context="{'group_by':'cost_center_budget_id'}" />
+                    <filter string="Forecast" context="{'group_by':'forecast'}" />
+                    <filter string="Budget Amount" context="{'group_by':'amount_planned'}" />
                     <filter string="Acc.Type" context="{'group_by':'user_type'}" name="usertype"/>
                     <filter string="Int.Type" context="{'group_by':'type'}"/>
                     <filter string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>

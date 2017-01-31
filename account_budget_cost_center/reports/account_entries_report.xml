@@ -10,6 +10,8 @@
                 <filter name="group_journal" position="after">
                     <filter string="Cost Center" context="{'group_by':'cost_center_id'}" />
                     <filter string="Cost Center Budget" context="{'group_by':'cost_center_budget_id'}" />
+                    <filter string="Forecast" context="{'group_by':'forecast'}" />
+                    <filter string="Budget Amount" context="{'group_by':'amount_planned'}" />
 				</filter>
             </field>
         </record>

@@ -8,10 +8,10 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <field name="origin" position="after">
-                    <field name="cost_center_budget_id"/>
+                    <field name="cost_center_budget_id" context="{'filter_invoice_date': date_invoice, 'filter_invoice_period': period_id}"/>
                 </field>
                 <xpath expr="//page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='account_id']" position="after">
-                    <field name="cost_center_budget_id" context="{'filter_invoice_date': parent.date_invoice}"/>
+                    <field name="cost_center_budget_id" context="{'filter_invoice_date': parent.date_invoice, 'filter_invoice_period': parent.period_id}"/>
                 </xpath>
             </field>
         </record>
@@ -22,10 +22,10 @@
             <field name="inherit_id" ref="account.invoice_supplier_form"/>
             <field name="arch" type="xml">
                 <field name="origin" position="after">
-                    <field name="cost_center_budget_id"/>
+                    <field name="cost_center_budget_id" context="{'filter_invoice_date': date_invoice, 'filter_invoice_period': period_id}"/>
                 </field>
                 <xpath expr="//tree[@string='Invoice lines']/field[@name='account_id']" position="after">
-                    <field name="cost_center_budget_id" context="{'filter_invoice_date': parent.date_invoice}"/>
+                    <field name="cost_center_budget_id" context="{'filter_invoice_date': parent.date_invoice, 'filter_invoice_period': parent.period_id}"/>
                 </xpath>
             </field>
         </record>

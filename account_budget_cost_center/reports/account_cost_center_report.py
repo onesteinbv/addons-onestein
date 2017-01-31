@@ -67,6 +67,13 @@ class AccountCostCenterReport(models.Model):
         ],
         readonly=True
     )
+    forecast = fields.Float(
+        digits=dp.get_precision('Account')
+    )
+    amount_planned = fields.Float(
+        string='Planned amount',
+        digits=dp.get_precision('Account')
+    )
 
     def search(self, cr, uid, args, offset=0, limit=None, order=None,
             context=None, count=False):
@@ -135,12 +142,15 @@ class AccountCostCenterReport(models.Model):
                 l.credit as credit,
                 l.cost_center_id as cost_center_id,
                 l.cost_center_budget_id as cost_center_budget_id,
+                cb.forecast as forecast,
+                cb.amount_planned as amount_planned,
                 coalesce(l.debit, 0.0) - coalesce(l.credit, 0.0) as balance
             from
                 account_move_line l
                 left join account_account a on (l.account_id = a.id)
                 left join account_move am on (am.id=l.move_id)
                 left join account_period p on (am.period_id=p.id)
+                left join crossovered_budget cb on (l.cost_center_budget_id=cb.id)
                 where l.state != 'draft'
                 and l.cost_center_budget_id is not null
             )
