@@ -24,7 +24,7 @@ odoo.define("web.pivot.float.highlight", function (require) {
                 font_color = opt_arg.middle_font_color;
             }
             return [bg_color, font_color];
-        }
+        },
 
         init: function () {
             this._super.apply(this, arguments);
