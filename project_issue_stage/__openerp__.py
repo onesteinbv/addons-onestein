@@ -5,7 +5,7 @@
 {
     'name': 'Project Issue Stage',
     'summary': 'Project Issue Stage',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Project Management',
     'version': '8.0.1.0.0',

@@ -6,10 +6,10 @@
     'name': "Project Task Add Very High",
     'summary': "Adds an extra option 'Very High' on tasks",
     'version': "8.0.1.0.0",
-    'author': "ONESTEiN BV",
+    'author': 'Onestein',
     'license': "AGPL-3",
     'category': "Project Management",
-    'website': "http://www.onestein.eu",
+    'website': 'http://www.onestein.eu',
     'depends': ['project'],
     'installable': True,
 }

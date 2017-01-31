@@ -5,7 +5,7 @@
 {
     'name': 'Task Reminder Planner',
     'summary': 'Plan task reminders for any date field',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'images': ['static/description/main_screenshot.png'],

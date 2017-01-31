@@ -5,7 +5,7 @@
 {
     'name': 'Project CRM Phone Calls',
     'summary': '''Easily convert a call to an Opportunity or an Issue''',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Project Management',
     'version': '8.0.1.0.0',
