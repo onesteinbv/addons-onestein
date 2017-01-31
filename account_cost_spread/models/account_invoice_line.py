@@ -353,7 +353,7 @@ class AccountInvoiceLine(models.Model):
             entry['lines'] = lines
 
     @api.model
-    def set_line_month(
+    def _compute_spread_table_lines_month(
             self, entry, fy_residual_amount, i, i_max, invoice_sign, line_date,
             lines, period_duration, spread_start_date, spread_stop_date):
 
@@ -435,7 +435,7 @@ class AccountInvoiceLine(models.Model):
         return line_date
 
     @api.model
-    def set_line_year(
+    def _compute_spread_table_lines_year(
             self, entry, fy_residual_amount, invoice_sign, period_duration):
         lines = []
         if period_duration == 12:
