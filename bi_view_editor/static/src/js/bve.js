@@ -285,26 +285,16 @@ odoo.define('bi_view_editor', function (require) {
                     }
 
                     //Add change events
-                    contextMenu.find('#column-checkbox').unbind("change");
-                    contextMenu.find('#column-checkbox').change(function() {
-                        currentFieldData.column = $(this).is(":checked");
-                        target.data('field-data', currentFieldData);
-                        self.update_field_view(target);
-                        self.internal_set_value(JSON.stringify(self.get_fields()));
-                    });
-                    contextMenu.find('#row-checkbox').unbind("change");
-                    contextMenu.find('#row-checkbox').change(function() {
-                        currentFieldData.row = $(this).is(":checked");
-                        target.data('field-data', currentFieldData);
-                        self.update_field_view(target);
-                        self.internal_set_value(JSON.stringify(self.get_fields()));
-                    });
-                    contextMenu.find('#measure-checkbox').unbind("change");
-                    contextMenu.find('#measure-checkbox').change(function() {
-                        currentFieldData.measure = $(this).is(":checked");
-                        target.data('field-data', currentFieldData);
-                        self.update_field_view(target);
-                        self.internal_set_value(JSON.stringify(self.get_fields()));
+                    var identifiers = [['#column-checkbox','column'],['#row-checkbox','row'],['#measure-checkbox','measure']];
+                    identifiers.forEach(function (element) {
+                        contextMenu.find(element[0]).unbind("change");
+                        contextMenu.find(element[0]).change(function() {
+                            currentFieldData[element[1]] = $(this).is(":checked");
+                            target.data('field-data', currentFieldData);
+                            self.update_field_view(target);
+                            self.internal_set_value(JSON.stringify(self.get_fields()));
+                        });
+
                     });
                     contextMenu.show();
 
