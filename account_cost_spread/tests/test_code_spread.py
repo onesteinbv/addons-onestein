@@ -88,7 +88,7 @@ class TestAccountCostSpread(AccountingTestCase):
         # unlink moves
         self.invoice_line.spread_line_ids.unlink_move()
         for spread_line in self.invoice_line.spread_line_ids:
-            self.assertIsNone(spread_line.move_id)
+            self.assertEqual(len(spread_line.move_id), 0)
 
         for spread_line in self.invoice_line.spread_line_ids:
             for move_line in spread_line.move_id.line_ids:
