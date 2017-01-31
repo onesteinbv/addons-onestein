@@ -16,7 +16,7 @@ class TestAccountCostSpread(AccountingTestCase):
         def get_account(obj):
             res = self.env['account.account'].search([
                 ('user_type_id', '=', obj.id)
-            ], limit=1).id
+            ], limit=1)
             return res
 
         self.invoice_account = get_account(receivable)
