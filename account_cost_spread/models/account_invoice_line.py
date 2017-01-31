@@ -372,14 +372,12 @@ class AccountInvoiceLine(models.Model):
                 (fy_residual_amount - period_amount) > 0
             return to_make_line
 
-        def set_line_date(line_date, period_duration, spread_start_date):
+        def set_line_date(line_date, duration, start_date):
             if not line_date:
-                line_date = self.update_line_date(spread_start_date, 0)
-                if period_duration == 3:
-                    m = [x for x in [3, 6, 9, 12]
-                         if x >= spread_start_date.month][0]
-                    line_date = spread_start_date + \
-                                relativedelta(month=m, day=31)
+                line_date = self.update_line_date(start_date, 0)
+                if duration == 3:
+                    m = [x for x in [3, 6, 9, 12] if x >= start_date.month][0]
+                    line_date = start_date + relativedelta(month=m, day=31)
             return line_date
 
         def compute_lines(
@@ -404,12 +402,12 @@ class AccountInvoiceLine(models.Model):
                 line['remaining_value'] = residual_amount
             entry['lines'] = lines
 
-        fy_residual_amount = residual_amount
+        fy_residual = residual_amount
         line_date = False
         for i, entry in enumerate(table):
             period_duration = get_period_duration(period_type)
-            fy_residual_amount, lines = self._compute_spread_table_lines_year(
-                entry, fy_residual_amount, invoice_sign, period_duration)
+            fy_residual, lines = self._compute_spread_table_lines_year(
+                entry, fy_residual, invoice_sign, period_duration)
             if period_duration in [1, 3]:
                 period_amount = entry['period_amount']
                 period_duration = get_period_duration(period_type)
@@ -417,15 +415,15 @@ class AccountInvoiceLine(models.Model):
                 fy_amount_check = 0.0
                 line_date = set_line_date(
                     line_date, period_duration, spread_start_date)
-                fy_amount_check, fy_residual_amount, line_date = compute_lines(
-                    entry, fy_amount_check, fy_residual_amount, invoice_sign,
+                fy_amount_check, fy_residual, line_date = compute_lines(
+                    entry, fy_amount_check, fy_residual, invoice_sign,
                     is_line_to_make, line_date, lines, period_amount,
                     period_duration,spread_stop_date)
                 fy_amount_check, period_amount = check_last_entry(
-                    fy_amount_check, fy_residual_amount, i, i_max,
+                    fy_amount_check, fy_residual, i, i_max,
                     line_date, lines, period_amount, spread_stop_date)
-                fy_residual_amount = check_fy_deviations(
-                    entry, fy_amount_check, fy_residual_amount, i,
+                fy_residual = check_fy_deviations(
+                    entry, fy_amount_check, fy_residual, i,
                     lines, period_amount)
 
             update_entry(amount_to_spread, entry, lines, residual_amount)
