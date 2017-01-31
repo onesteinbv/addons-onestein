@@ -79,23 +79,6 @@ class TestAccountCostSpread(AccountingTestCase):
         with self.assertRaises(Warning):
             self.invoice.move_id.button_cancel()
 
-        # create moves for all the spread lines and open them
-        self.invoice_line.spread_line_ids.create_moves()
-        for spread_line in self.invoice_line.spread_line_ids:
-            attrs = spread_line.open_move()
-            self.assertEqual(isinstance(attrs, dict), True)
-
-        # unlink moves
-        self.invoice_line.spread_line_ids.unlink_move()
-        for spread_line in self.invoice_line.spread_line_ids:
-            self.assertEqual(len(spread_line.move_id), 0)
-
-        for spread_line in self.invoice_line.spread_line_ids:
-            for move_line in spread_line.move_id.line_ids:
-                spread_account = self.invoice_line.spread_account_id
-                if move_line.account_id == spread_account:
-                    self.assertEqual(move_line.credit, spread_line.amount)
-
     def test_02_supplier_invoice(self):
         # date invoice set
         self.invoice.date_invoice = '2017-03-01'
@@ -156,3 +139,45 @@ class TestAccountCostSpread(AccountingTestCase):
         for line in self.invoice_line.spread_line_ids:
             total_line_amount += line.amount
         self.assertLessEqual(abs(total_line_amount - 1000.0), 0.0001)
+
+    def test_04_supplier_invoice(self):
+        # spread date set
+        self.invoice_line.write({
+            'period_number': 12,
+            'period_type': 'month',
+            'spread_date': '2017-02-01'
+        })
+
+        # change the state of invoice to open by clicking Validate button
+        self.invoice.action_invoice_open()
+
+        # create moves for all the spread lines and open them
+        self.invoice_line.spread_line_ids.create_moves()
+        for spread_line in self.invoice_line.spread_line_ids:
+            attrs = spread_line.open_move()
+            self.assertEqual(isinstance(attrs, dict), True)
+
+        # unlink all created moves
+        self.invoice_line.spread_line_ids.unlink_move()
+        for spread_line in self.invoice_line.spread_line_ids:
+            self.assertEqual(len(spread_line.move_id), 0)
+
+    def test_05_supplier_invoice(self):
+        # spread date set
+        self.invoice_line.write({
+            'period_number': 8,
+            'period_type': 'month'
+        })
+
+        # change the state of invoice to open by clicking Validate button
+        self.invoice.action_invoice_open()
+
+        # create moves for all the spread lines and open them
+        self.invoice_line.spread_line_ids.create_moves()
+
+        # check move lines
+        for spread_line in self.invoice_line.spread_line_ids:
+            for move_line in spread_line.move_id.line_ids:
+                spread_account = self.invoice_line.spread_account_id
+                if move_line.account_id == spread_account:
+                    self.assertEqual(move_line.credit, spread_line.amount)
