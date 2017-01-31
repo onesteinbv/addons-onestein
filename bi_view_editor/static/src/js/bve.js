@@ -167,7 +167,7 @@ odoo.define('bi_view_editor', function (require) {
                     model.call("get_fields", [classel.data('model-data').id], { context: new Data.CompoundContext() }).then(function(result) {
                         for (var i = 0; i < result.length; i++) {
                             classel.find("#bve-field-" + result[i].name).remove();
-                            self._render_field(self, i, result, classel)
+                            self._render_field(self, i, result, classel, addField)
                         }
                     });
                     $(this).data('bve-processed', true);
@@ -177,7 +177,7 @@ odoo.define('bi_view_editor', function (require) {
                 console.log(result);
                 var item = self.$el.find(".class-list #bve-class-" + result[0].model_id);
                 for (var o = 0; o < result.length; o++) {
-                    self._render_field(self, o, result, item)
+                    self._render_field(self, o, result, item, addField)
                 }
                 item.data('bve-processed', true);
             }
@@ -196,11 +196,11 @@ odoo.define('bi_view_editor', function (require) {
             }
 
         },
-        _render_field(_self, _index, _result, _item) {
+        _render_field(_self, _index, _result, _item, _addField) {
             if(_self.$el.find(".field-list tbody [name=label-" + _result[_index].id + "]").length > 0) return;
-            _item.after($("<div class=\"field\" title=\"" + _result[_index].name + "\" id=\"bve-field-" + _result[index].name + "\">" + _result[_index].description + "</div>")
+            _item.after($("<div class=\"field\" title=\"" + _result[_index].name + "\" id=\"bve-field-" + _result[_index].name + "\">" + _result[_index].description + "</div>")
                           .data('field-data', _result[_index])
-                          .click(addField)
+                          .click(_addField)
                           .draggable({
                               'revert': 'invalid',
                               'scroll': false,
@@ -210,11 +210,11 @@ odoo.define('bi_view_editor', function (require) {
                           })
                       );
         },
-        set_checkbox: function(check, identifier) {
+        set_checkbox: function(check, identifier, _contextMenu) {
             if(check)
-                contextMenu.find(identifier).attr('checked', true);
+                _contextMenu.find(identifier).attr('checked', true);
             else
-                contextMenu.find(identifier).attr('checked', false);
+                _contextMenu.find(identifier).attr('checked', false);
         },
         _false_if_undefined: function(to_check) {
             if (typeof check === 'undefined') return false;
@@ -223,9 +223,9 @@ odoo.define('bi_view_editor', function (require) {
         add_field_to_table: function(data, options) {
             var self = this;
 
-            data.row = this._false_if_undefined(data.row);
-            data.column = this._false_if_undefined(data.column);
-            data.measure = this._false_if_undefined(data.measure);
+            data.row = self._false_if_undefined(data.row);
+            data.column = self._false_if_undefined(data.column);
+            data.measure = self._false_if_undefined(data.measure);
 
             var n = 1;
             var name = data.name;
@@ -269,9 +269,9 @@ odoo.define('bi_view_editor', function (require) {
 
 
                     //Set checkboxes
-                    this.set_checkbox(currentFieldData.column, '#column-checkbox');
-                    this.set_checkbox(currentFieldData.row, '#row-checkbox');
-                    this.set_checkbox(currentFieldData.measure, '#measure-checkbox');
+                    self.set_checkbox(currentFieldData.column, '#column-checkbox', contextMenu);
+                    self.set_checkbox(currentFieldData.row, '#row-checkbox', contextMenu);
+                    self.set_checkbox(currentFieldData.measure, '#measure-checkbox', contextMenu);
 
                     if(currentFieldData.type === "float" || currentFieldData.type === "integer" || currentFieldData.type === "monetary") {
                         contextMenu.find('#column-checkbox').attr('disabled', true);
