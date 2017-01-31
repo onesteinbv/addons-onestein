@@ -13,24 +13,29 @@ class TestAccountCostSpread(AccountingTestCase):
         receivable = self.env.ref('account.data_account_type_receivable')
         expenses = self.env.ref('account.data_account_type_expenses')
 
-        self.invoice_account = self.env['account.account'].search([
-            ('user_type_id', '=', receivable.id)
-        ], limit=1).id
-        self.invoice_line_account = self.env['account.account'].search([
-            ('user_type_id', '=', expenses.id)
-        ], limit=1).id
+        def get_account(obj):
+            res = self.env['account.account'].search([
+                ('user_type_id', '=', obj.id)
+            ], limit=1)
+            return res
+
+        self.invoice_account = get_account(receivable)
+        self.invoice_line_account = get_account(expenses)
+
         self.spread_account = self.env['account.account'].search([
             ('user_type_id', '=', expenses.id),
-            ('id', '!=', self.invoice_line_account)
+            ('id', '!=', self.invoice_line_account.id)
         ], limit=1).id
 
-        self.vendor = self.env['res.partner'].create({
-            'name': 'Vendor1',
+        self.partner = self.env['res.partner'].create({
+            'name': 'Partner Name',
             'supplier': True,
         })
-        self.invoice = self.env['account.invoice'].create({
-            'partner_id': self.vendor.id,
-            'account_id': self.invoice_account,
+        self.invoice = self.env['account.invoice'].with_context(
+            default_type='in_invoice'
+        ).create({
+            'partner_id': self.partner.id,
+            'account_id': self.invoice_account.id,
             'type': 'in_invoice',
         })
         self.invoice_line = self.env['account.invoice.line'].create({
@@ -38,7 +43,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'price_unit': 1000.0,
             'invoice_id': self.invoice.id,
             'name': 'product that cost 1000',
-            'account_id': self.invoice_line_account,
+            'account_id': self.invoice_line_account.id,
             'spread_account_id': self.spread_account,
             'period_number': 12,
             'period_type': 'month',
@@ -75,7 +80,15 @@ class TestAccountCostSpread(AccountingTestCase):
             self.invoice.move_id.button_cancel()
 
         # create moves for all the spread lines and open them
-            self.invoice_line.spread_line_ids.create_moves()
+        self.invoice_line.spread_line_ids.create_moves()
+        for spread_line in self.invoice_line.spread_line_ids:
+            attrs = spread_line.open_move()
+            self.assertEqual(isinstance(attrs, dict), True)
+
+        # unlink moves
+        self.invoice_line.spread_line_ids.unlink_move()
+        for spread_line in self.invoice_line.spread_line_ids:
+            self.assertEqual(len(spread_line.move_id), 0)
 
         for spread_line in self.invoice_line.spread_line_ids:
             for move_line in spread_line.move_id.line_ids:
@@ -109,7 +122,7 @@ class TestAccountCostSpread(AccountingTestCase):
         total_line_amount = 0.0
         for line in self.invoice_line.spread_line_ids:
             total_line_amount += line.amount
-        self.assertEqual(total_line_amount, 2000.0)
+        self.assertLessEqual(abs(total_line_amount - 2000.0), 0.0001)
 
         # simulate the click on the arrow that displays the spead details
         details = self.invoice_line.spread_details()
@@ -122,7 +135,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'price_unit': 1000.0,
             'invoice_id': self.invoice.id,
             'name': 'product that cost 1000',
-            'account_id': self.invoice_line_account,
+            'account_id': self.invoice_line_account.id,
             'spread_account_id': self.spread_account,
             'period_number': 3,
             'period_type': 'year',
@@ -137,8 +150,9 @@ class TestAccountCostSpread(AccountingTestCase):
         self.assertEqual(333.33, self.invoice_line.spread_line_ids[2].amount)
         first_amount = self.invoice_line.spread_line_ids[0].amount
         last_amount = self.invoice_line.spread_line_ids[3].amount
-        self.assertEqual(333.34, first_amount + last_amount)
+        remaining_amount = first_amount + last_amount
+        self.assertLessEqual(abs(remaining_amount - 333.34), 0.0001)
         total_line_amount = 0.0
         for line in self.invoice_line.spread_line_ids:
             total_line_amount += line.amount
-        self.assertEqual(total_line_amount, 1000.0)
+        self.assertLessEqual(abs(total_line_amount - 1000.0), 0.0001)
