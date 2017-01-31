@@ -273,38 +273,22 @@ odoo.define('bi_view_editor', function (require) {
                     self.set_checkbox(currentFieldData.row, '#row-checkbox', contextMenu);
                     self.set_checkbox(currentFieldData.measure, '#measure-checkbox', contextMenu);
 
-                    if(currentFieldData.type === "float" || currentFieldData.type === "integer" || currentFieldData.type === "monetary") {
-                        contextMenu.find('#column-checkbox').attr('disabled', true);
-                        contextMenu.find('#row-checkbox').attr('disabled', true);
-                        contextMenu.find('#measure-checkbox').attr('disabled', false);
-                    }
-                    else {
-                        contextMenu.find('#column-checkbox').attr('disabled', false);
-                        contextMenu.find('#row-checkbox').attr('disabled', false);
-                        contextMenu.find('#measure-checkbox').attr('disabled', true);
-                    }
+                    var to_disable = false;
+
+                    if(currentFieldData.type === "float" || currentFieldData.type === "integer" || currentFieldData.type === "monetary") to_disable = true;
+                    contextMenu.find('#column-checkbox', '#row-checkbox', '#measure-checkbox').attr('disabled', to_disable);
 
                     //Add change events
-                    contextMenu.find('#column-checkbox').unbind("change");
-                    contextMenu.find('#column-checkbox').change(function() {
-                        currentFieldData.column = $(this).is(":checked");
-                        target.data('field-data', currentFieldData);
-                        self.update_field_view(target);
-                        self.internal_set_value(JSON.stringify(self.get_fields()));
-                    });
-                    contextMenu.find('#row-checkbox').unbind("change");
-                    contextMenu.find('#row-checkbox').change(function() {
-                        currentFieldData.row = $(this).is(":checked");
-                        target.data('field-data', currentFieldData);
-                        self.update_field_view(target);
-                        self.internal_set_value(JSON.stringify(self.get_fields()));
-                    });
-                    contextMenu.find('#measure-checkbox').unbind("change");
-                    contextMenu.find('#measure-checkbox').change(function() {
-                        currentFieldData.measure = $(this).is(":checked");
-                        target.data('field-data', currentFieldData);
-                        self.update_field_view(target);
-                        self.internal_set_value(JSON.stringify(self.get_fields()));
+                    var identifiers = [['#column-checkbox','column'],['#row-checkbox','row'],['#measure-checkbox','measure']];
+                    identifiers.forEach(function (element) {
+                        contextMenu.find(element[0]).unbind("change");
+                        contextMenu.find(element[0]).change(function() {
+                            currentFieldData[element[1]] = $(this).is(":checked");
+                            target.data('field-data', currentFieldData);
+                            self.update_field_view(target);
+                            self.internal_set_value(JSON.stringify(self.get_fields()));
+                        });
+
                     });
                     contextMenu.show();
 
