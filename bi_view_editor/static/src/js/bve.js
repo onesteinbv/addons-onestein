@@ -197,7 +197,7 @@ odoo.define('bi_view_editor', function (require) {
 
         },
         _render_field(_self, _index, _result, _item) {
-            if(_self.$el.find(".field-list tbody [name=label-" + _result[_index].id + "]").length > 0) continue;
+            if(_self.$el.find(".field-list tbody [name=label-" + _result[_index].id + "]").length > 0) return;
             _item.after($("<div class=\"field\" title=\"" + _result[_index].name + "\" id=\"bve-field-" + _result[index].name + "\">" + _result[_index].description + "</div>")
                           .data('field-data', _result[_index])
                           .click(addField)
