@@ -27,12 +27,14 @@ class TestAccountCostSpread(AccountingTestCase):
             ('id', '!=', self.invoice_line_account.id)
         ], limit=1).id
 
-        self.vendor = self.env['res.partner'].create({
-            'name': 'Vendor1',
+        self.partner = self.env['res.partner'].create({
+            'name': 'Partner Name',
             'supplier': True,
         })
-        self.invoice = self.env['account.invoice'].create({
-            'partner_id': self.vendor.id,
+        self.invoice = self.env['account.invoice'].with_context(
+            default_type='in_invoice'
+        ).create({
+            'partner_id': self.partner.id,
             'account_id': self.invoice_account.id,
             'type': 'in_invoice',
         })
@@ -78,7 +80,15 @@ class TestAccountCostSpread(AccountingTestCase):
             self.invoice.move_id.button_cancel()
 
         # create moves for all the spread lines and open them
-            self.invoice_line.spread_line_ids.create_moves()
+        self.invoice_line.spread_line_ids.create_moves()
+        for spread_line in self.invoice_line.spread_line_ids:
+            attrs = spread_line.open_move()
+            self.assertEqual(isinstance(attrs, dict), True)
+
+        # unlink moves
+        self.invoice_line.spread_line_ids.unlink_move()
+        for spread_line in self.invoice_line.spread_line_ids:
+            self.assertIsNone(spread_line.move_id)
 
         for spread_line in self.invoice_line.spread_line_ids:
             for move_line in spread_line.move_id.line_ids:

@@ -327,14 +327,8 @@ class AccountInvoiceLine(models.Model):
             residual_amount, spread_start_date, spread_stop_date, table):
 
         def get_period_duration(period_type):
-            period_duration = (period_type == 'year' and 12) or \
-                              (period_type == 'quarter' and 3) or 1
-            if period_duration not in [1, 3, 12]:
-                raise Warning(
-                    _('Programming Error!'),
-                    _("Illegal value %s in invline.period_type.")
-                    % period_type)
-            return period_duration
+            return (period_type == 'year' and 12) or \
+                   (period_type == 'quarter' and 3) or 1
 
         def check_last_entry(
                 fy_amount_check, fy_residual_amount, i, i_max, line_date,
