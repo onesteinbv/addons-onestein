@@ -217,17 +217,22 @@ odoo.define('bi_view_editor', function (require) {
             }
 
         },
+        set_checkbox: function(check, identifier) {
+            if(check)
+                contextMenu.find(identifier).attr('checked', true);
+            else
+                contextMenu.find(identifier).attr('checked', false);
+        },
+        _false_if_undefined: function(to_check) {
+            if (typeof check === 'undefined') return false;
+            return check;
+        },
         add_field_to_table: function(data, options) {
             var self = this;
-            if (typeof data.row === 'undefined') {
-                data.row = false;
-            }
-            if (typeof data.column === 'undefined') {
-                data.column = false;
-            }
-            if (typeof data.measure === 'undefined') {
-                data.measure = false;
-            }
+
+            data.row = this._false_if_undefined(data.row);
+            data.column = this._false_if_undefined(data.column);
+            data.measure = this._false_if_undefined(data.measure);
 
             var n = 1;
             var name = data.name;
@@ -269,21 +274,11 @@ odoo.define('bi_view_editor', function (require) {
                         $(this).find("ul").hide();
                     });
 
+
                     //Set checkboxes
-                    if(currentFieldData.column)
-                        contextMenu.find('#column-checkbox').attr('checked', true);
-                    else
-                        contextMenu.find('#column-checkbox').attr('checked', false);
-
-                    if(currentFieldData.row)
-                        contextMenu.find('#row-checkbox').attr('checked', true);
-                    else
-                        contextMenu.find('#row-checkbox').attr('checked', false);
-
-                    if(currentFieldData.measure)
-                        contextMenu.find('#measure-checkbox').attr('checked', true);
-                    else
-                        contextMenu.find('#measure-checkbox').attr('checked', false);
+                    this.set_checkbox(currentFieldData.column, '#column-checkbox');
+                    this.set_checkbox(currentFieldData.row, '#row-checkbox');
+                    this.set_checkbox(currentFieldData.measure, '#measure-checkbox');
 
                     if(currentFieldData.type === "float" || currentFieldData.type === "integer" || currentFieldData.type === "monetary") {
                         contextMenu.find('#column-checkbox').attr('disabled', true);
