@@ -5,6 +5,10 @@ odoo.define("web.pivot.float.highlight", function (require) {
 
     pivot_view.include({
 
+        _load_my_default: function (option, parameter, load_defaults, load_value, def_value) {
+            return (option && parameter) || load_defaults && load_value || def_value;
+        },
+
         init: function () {
             this._super.apply(this, arguments);
             try{
@@ -13,17 +17,18 @@ odoo.define("web.pivot.float.highlight", function (require) {
             catch(err){
                 var my_options = false;
             }
-            var load_defaults = (my_options && my_options.load_defaults) || false;
+
+            var load_defaults = this._load_my_default(my_options, my_options.load_defaults, false, false, false);
 
             var options = {
-                lower_threshold: (my_options && my_options.lower_threshold) || 0,
-                upper_threshold: (my_options && my_options.upper_threshold) || 0,
-                lower_bg_color: (my_options && my_options.lower_bg_color) || load_defaults && "red" || "white",
-                middle_bg_color: (my_options && my_options.middle_bg_color) || "white",
-                upper_bg_color: (my_options && my_options.upper_bg_color) || load_defaults && "green" || "white",
-                lower_font_color: (my_options && my_options.lower_font_color) || load_defaults && "white" || "#666666",
-                middle_font_color: (my_options && my_options.middle_font_color) || "#666666",
-                upper_font_color: (my_options && my_options.upper_font_color) || load_defaults && "white" || "#666666",
+                lower_threshold: this._load_my_default(my_options, my_options.lower_threshold, false, false, 0),
+                upper_threshold: this._load_my_default(my_options, my_options.upper_threshold, false, false, 0),
+                lower_bg_color: this._load_my_default(my_options, my_options.lower_bg_color, load_defaults, "red", "white"),
+                middle_bg_color: this._load_my_default(my_options, my_options.middle_bg_color, false, false, "white"),
+                upper_bg_color: this._load_my_default(my_options, my_options.upper_bg_color, load_defaults, "green", "white"),
+                lower_font_color: this._load_my_default(my_options, my_options.lower_font_color, load_defaults, "white", "#666666"),
+                middle_font_color: this._load_my_default(my_options, my_options.middle_font_color, false, false, "#666666"),
+                upper_font_color: this._load_my_default(my_options, my_options.upper_font_color, load_defaults, "white", "#666666"),
                 load_defaults: load_defaults
             };
 
@@ -31,6 +36,7 @@ odoo.define("web.pivot.float.highlight", function (require) {
             this.to_highlight = [];
             this.highlight_lookup = {};
         },
+
         willStart: function () {
             var res = this._super.apply(this, arguments);
             var self = this;
@@ -51,6 +57,7 @@ odoo.define("web.pivot.float.highlight", function (require) {
             });
             return res;
         },
+
         draw_rows: function ($tbody, rows) {
             var self = this,
                 i, j, value, $row, $cell, $header,
@@ -115,6 +122,7 @@ odoo.define("web.pivot.float.highlight", function (require) {
                 $tbody.append($row);
             }
         },
+
         toggle_measure: function (field) {
             if (_.contains(this.active_measures, field)) {
                 var idx = _.indexOf(this.active_measures, field);
