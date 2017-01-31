@@ -38,7 +38,7 @@ class ResourceCalendar(models.Model):
             return end_dt
 
         start_dt, work_limits = set_work_limits_start(end_dt, start_dt)
-        end_dt = self.set_work_limits_end(end_dt, start_dt, work_limits)
+        end_dt = set_work_limits_end(end_dt, start_dt, work_limits)
         assert start_dt.date() == end_dt.date(), \
             'get_working_intervals_of_day is restricted to one day'
         return start_dt, work_limits
