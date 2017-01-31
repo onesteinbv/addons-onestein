@@ -9,13 +9,31 @@ odoo.define("web.pivot.float.highlight", function (require) {
             return (option && parameter) || load_defaults && load_value || def_value;
         },
 
+        _retrieve_colors: function (opt_arg, val_arg) {
+            var bg_color = null;
+            var font_color = null;
+
+            if (val_arg < opt_arg.lower_threshold) {
+                bg_color = opt_arg.lower_bg_color;
+                font_color = opt_arg.lower_font_color;
+            } else if (opt_arg.upper_threshold < val_arg) {
+                bg_color = opt_arg.upper_bg_color;
+                font_color = opt_arg.upper_font_color;
+            } else {
+                bg_color = opt_arg.middle_bg_color;
+                font_color = opt_arg.middle_font_color;
+            }
+            return [bg_color, font_color];
+        }
+
         init: function () {
             this._super.apply(this, arguments);
+            var my_options = false;
             try{
-                var my_options = JSON.parse(this.fields_view.arch.attrs.options.split("'").join('"')) || false;
+                my_options = JSON.parse(this.fields_view.arch.attrs.options.split("'").join('"')) || false;
             }
             catch(err){
-                var my_options = false;
+                my_options = false;
             }
 
             var load_defaults = this._load_my_default(my_options, my_options.load_defaults, false, false, false);
@@ -96,25 +114,14 @@ odoo.define("web.pivot.float.highlight", function (require) {
                         $cell.css('font-weight', 'bold');
                     }
                     var val = parseFloat(value);
-                    if (my_options && val && self.to_highlight[j % nbr_measures]) {
-                        var bg_color = null;
-                        var font_color = null;
-                        if (my_options.lower_threshold <= my_options.upper_threshold) {
-                            if (val < my_options.lower_threshold) {
-                                bg_color = my_options.lower_bg_color;
-                                font_color = my_options.lower_font_color;
-                            } else if (my_options.upper_threshold < val) {
-                                bg_color = my_options.upper_bg_color;
-                                font_color = my_options.upper_font_color;
-                            } else {
-                                bg_color = my_options.middle_bg_color;
-                                font_color = my_options.middle_font_color;
-                            }
-                            $cell.css({
-                                "background-color": bg_color,
-                                "color": font_color
-                            });
-                        }
+                    if (my_options && val && self.to_highlight[j % nbr_measures] && my_options.lower_threshold <= my_options.upper_threshold) {
+
+                        var my_colors = this._retrieve_colors(my_options, val);
+                        $cell.css({
+                            "background-color": my_colors[0],
+                            "color": my_colors[1]
+                        });
+
                     }
                     $row.append($cell);
                     $cell.toggleClass('hidden-xs', j < length - this.active_measures.length);
