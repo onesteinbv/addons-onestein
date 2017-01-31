@@ -140,7 +140,8 @@ class TestAccountCostSpread(AccountingTestCase):
         self.assertEqual(333.33, self.invoice_line.spread_line_ids[2].amount)
         first_amount = self.invoice_line.spread_line_ids[0].amount
         last_amount = self.invoice_line.spread_line_ids[3].amount
-        self.assertEqual(333.34, first_amount + last_amount)
+        remaining_amount = first_amount + last_amount
+        self.assertLessEqual(abs(remaining_amount - 333.34), 0.0001)
         total_line_amount = 0.0
         for line in self.invoice_line.spread_line_ids:
             total_line_amount += line.amount
