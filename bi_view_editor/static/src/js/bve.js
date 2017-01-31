@@ -167,18 +167,7 @@ odoo.define('bi_view_editor', function (require) {
                     model.call("get_fields", [classel.data('model-data').id], { context: new Data.CompoundContext() }).then(function(result) {
                         for (var i = 0; i < result.length; i++) {
                             classel.find("#bve-field-" + result[i].name).remove();
-                            if(self.$el.find(".field-list tbody [name=label-" + result[i].id + "]").length > 0) continue;
-                            classel.after($("<div class=\"field\" title=\"" + result[i].name + "\" id=\"bve-field-" + result[i].name + "\">" + result[i].description + "</div>")
-                                          .data('field-data', result[i])
-                                          .click(addField)
-                                          .draggable({
-                                              'revert': 'invalid',
-                                              'scroll': false,
-                                              'helper': 'clone',
-                                              'appendTo': 'body',
-                                              'containment': 'window'
-                                          })
-                                          );
+                            self._render_field(self, i, result, classel)
                         }
                     });
                     $(this).data('bve-processed', true);
@@ -188,17 +177,7 @@ odoo.define('bi_view_editor', function (require) {
                 console.log(result);
                 var item = self.$el.find(".class-list #bve-class-" + result[0].model_id);
                 for (var o = 0; o < result.length; o++) {
-                    if(self.$el.find(".field-list tbody [name=label-" + result[o].id + "]").length > 0) continue;
-                    item.after($("<div class=\"field\" title=\"" + result[o].name + "\" id=\"bve-field-" + result[o].name + "\">" + result[o].description + "</div>")
-                               .data('field-data', result[o])
-                               .click(addField)
-                               .draggable({
-                                   'revert': 'invalid',
-                                   'scroll': false,
-                                   'helper': 'clone',
-                                   'appendTo': 'body',
-                                   'containment': 'window'
-                               }));
+                    self._render_field(self, o, result, item)
                 }
                 item.data('bve-processed', true);
             }
@@ -216,6 +195,20 @@ odoo.define('bi_view_editor', function (require) {
                 self.filter();
             }
 
+        },
+        _render_field(_self, _index, _result, _item) {
+            if(_self.$el.find(".field-list tbody [name=label-" + _result[_index].id + "]").length > 0) continue;
+            _item.after($("<div class=\"field\" title=\"" + _result[_index].name + "\" id=\"bve-field-" + _result[index].name + "\">" + _result[_index].description + "</div>")
+                          .data('field-data', _result[_index])
+                          .click(addField)
+                          .draggable({
+                              'revert': 'invalid',
+                              'scroll': false,
+                              'helper': 'clone',
+                              'appendTo': 'body',
+                              'containment': 'window'
+                          })
+                      );
         },
         set_checkbox: function(check, identifier) {
             if(check)
