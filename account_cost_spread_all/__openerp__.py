@@ -6,7 +6,7 @@
     'name': 'Cost / Income Spread - All moves in one click',
     'summary': """Create all the moves for Cost and Income spreading in just one click""",
     'version': '1.0',
-    'author': "ONESTEiN BV",
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',
     'depends': [
