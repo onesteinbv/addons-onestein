@@ -133,28 +133,30 @@ class BveView(models.Model):
         old_views = View.sudo().search([('model', '=', self.model_name)])
         old_views.sudo().unlink()
 
-        # create Pivot view
-        View.sudo().create(
-            {'name': 'Pivot Analysis',
-             'type': 'pivot',
-             'model': self.model_name,
-             'priority': 16,
-             'arch': """<?xml version="1.0"?>
+        view_vals = []
+        view_vals.append({
+            'name': 'Pivot Analysis',
+            'type': 'pivot',
+            'model': self.model_name,
+            'priority': 16,
+            'arch': """<?xml version="1.0"?>
                         <pivot string="Pivot Analysis"> {} </pivot>
-                     """.format("".join(self._create_view_arch()))
+                        """.format("".join(self._create_view_arch()))
              })
-        # create Graph view
-        View.sudo().create(
-            {'name': 'Graph Analysis',
-             'type': 'graph',
-             'model': self.model_name,
-             'priority': 16,
-             'arch': """<?xml version="1.0"?>
+        view_vals.append({
+            'name': 'Graph Analysis',
+            'type': 'graph',
+            'model': self.model_name,
+            'priority': 16,
+            'arch': """<?xml version="1.0"?>
                         <graph string="Graph Analysis"
-                               type="bar"
-                               stacked="True"> {} </graph>
+                           type="bar"
+                           stacked="True"> {} </graph>
                      """.format("".join(self._create_view_arch()))
              })
+        for vals in view_vals:
+            View.sudo().create(vals)
+
         # create Tree view
         tree_view = View.sudo().create(
             {'name': 'Tree Analysis',
