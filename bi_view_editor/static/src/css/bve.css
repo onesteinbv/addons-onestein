@@ -70,7 +70,7 @@
 }
 
 .oe_form_field_bi_editor .body .left .class-list {
-    height: 400px; /* FIXME */
+    height: 400px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
@@ -100,7 +100,7 @@
     width: 70%;
     float: left;
     box-sizing: border-box;
-    height: 423px; /* FIXME */
+    height: 423px;
     overflow-y: scroll;
     overflow-x: hidden;
 }
