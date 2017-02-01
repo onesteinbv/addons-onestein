@@ -164,7 +164,7 @@ class TestBiViewEditor(common.TransactionCase):
         self.assertEqual(len(bi_view3), 1)
 
         # create bve object
-        bi_view3.with_context(skip_update_registry=True)._create_bve_object()
+        bi_view3.with_context(skip_update_registry=True).action_create()
         model = self.env['ir.model'].search([
             ('model', '=', 'x_bve.testview3'),
             ('name', '=', 'Test View3')
@@ -174,6 +174,11 @@ class TestBiViewEditor(common.TransactionCase):
         # open view
         open_action = bi_view3.open_view()
         self.assertEqual(isinstance(open_action, dict), True)
+
+        # unlink
+        bi_view3.action_reset()
+        bi_view3.unlink()
+        self.assertEqual(len(bi_view3), 0)
 
     def test_99_clean_dirty_data(self):
         # destroy views
