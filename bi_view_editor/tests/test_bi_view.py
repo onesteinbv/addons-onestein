@@ -174,7 +174,12 @@ class TestBiViewEditor(common.TransactionCase):
         open_action = bi_view3.open_view()
         self.assertEqual(isinstance(open_action, dict), True)
 
-        # destroy view
-        self.cr.execute("delete from ir_model where model like 'x_bve.'")
-        self.cr.execute("delete from bve_view where model_name like 'x_bve.'")
+    def test_99_clean_dirty_data(self):
+        # destroy views
+        self.cr.execute("""
+            delete from ir_model where model like 'x_bve.%'
+        """)
+        self.cr.execute("""
+            delete from bve_view where model_name like 'x_bve.%'
+            """)
         self.env.cr.commit()

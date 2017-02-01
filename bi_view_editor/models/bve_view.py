@@ -320,8 +320,6 @@ class BveView(models.Model):
                     'perm_write': True,
                 })
 
-            return
-
         self.model_name = 'x_bve.' + ''.join(
             [x for x in self.name.lower()
              if x.isalnum()]).replace('_', '.').replace(' ', '.')
