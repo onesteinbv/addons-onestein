@@ -189,5 +189,3 @@ class TestBiViewEditor(common.TransactionCase):
             delete from bve_view where model_name like 'x_bve.%'
             """)
         self.env.cr.commit()
-
-        RegistryManager.signal_registry_change(self.env.cr.dbname)
