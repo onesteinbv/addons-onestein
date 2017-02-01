@@ -252,10 +252,9 @@ class IrModel(models.Model):
                 if model_id == new_field['model_id']:
                     join_nodes.append({'table_alias': alias})
             for d in self.get_related_fields(model_ids):
-                if d['relation'] == new_field['model'] and \
-                        d['join_node'] == -1 or \
-                        d['model_id'] == new_field['model_id'] and \
-                        d['table_alias'] == -1:
+                a = (new_field['model'] == d['relation'] and d['join_node'] == -1)
+                b = (new_field['model_id'] == d['model_id'] and d['table_alias'] == -1)
+                if a or b:
                     join_nodes.append(d)
             return join_nodes
 

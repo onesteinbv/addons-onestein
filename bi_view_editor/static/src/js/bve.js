@@ -274,12 +274,13 @@ odoo.define('bi_view_editor', function (require) {
                     self.set_checkbox(currentFieldData.measure, '#measure-checkbox', contextMenu);
 
                     var to_disable = false;
-
                     if(currentFieldData.type === "float" || currentFieldData.type === "integer" || currentFieldData.type === "monetary") to_disable = true;
-                    contextMenu.find('#column-checkbox', '#row-checkbox', '#measure-checkbox').attr('disabled', to_disable);
+                    var identifiers = [['#column-checkbox', 'column', to_disable], ['#row-checkbox', 'row', to_disable], ['#measure-checkbox', 'measure', !to_disable]];
+                    identifiers.forEach(function (element) {
+                        contextMenu.find(element[0]).attr('disabled', element[2]);
+                    });
 
                     //Add change events
-                    var identifiers = [['#column-checkbox','column'],['#row-checkbox','row'],['#measure-checkbox','measure']];
                     identifiers.forEach(function (element) {
                         contextMenu.find(element[0]).unbind("change");
                         contextMenu.find(element[0]).change(function() {
