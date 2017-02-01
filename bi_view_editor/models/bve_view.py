@@ -133,7 +133,7 @@ class BveView(models.Model):
             'arch': """<?xml version="1.0"?>
                             <pivot string="Pivot Analysis"> {} </pivot>
                             """.format("".join(self._create_view_arch()))
-        },{
+        }, {
             'name': 'Graph Analysis',
             'type': 'graph',
             'model': self.model_name,
