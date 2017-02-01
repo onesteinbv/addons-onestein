@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests import common
+from odoo.modules.registry import RegistryManager
 
 
 class TestBiViewEditor(common.TransactionCase):
@@ -183,3 +184,5 @@ class TestBiViewEditor(common.TransactionCase):
             delete from bve_view where model_name like 'x_bve.%'
             """)
         self.env.cr.commit()
+
+        RegistryManager.signal_registry_change(self.env.cr.dbname)
