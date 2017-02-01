@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests import common
-from odoo.modules.registry import RegistryManager
 
 
 class TestBiViewEditor(common.TransactionCase):
@@ -145,47 +144,3 @@ class TestBiViewEditor(common.TransactionCase):
         # copy
         bi_view2 = bi_view1.copy()
         self.assertEqual(bi_view2.name, 'Test View1 (copy)')
-
-    def test_06_create_group_bve_object(self):
-        vals = self.bi_view1_vals
-        employees_group = self.env.ref('base.group_user')
-        vals.update({
-            'name': 'Test View2',
-            'group_ids': [(6, 0, [employees_group.id])],
-        })
-
-        bi_view2 = self.env['bve.view'].create(vals)
-        self.assertEqual(len(bi_view2.user_ids), len(employees_group.users))
-
-    def test_07_create_open_bve_object(self):
-        vals = self.bi_view1_vals
-        vals.update({'name': 'Test View3'})
-        bi_view3 = self.env['bve.view'].create(vals)
-        self.assertEqual(len(bi_view3), 1)
-
-        # create bve object
-        bi_view3.with_context(skip_update_registry=True).action_create()
-        model = self.env['ir.model'].search([
-            ('model', '=', 'x_bve.testview3'),
-            ('name', '=', 'Test View3')
-        ])
-        self.assertEqual(len(model), 1)
-
-        # open view
-        open_action = bi_view3.open_view()
-        self.assertEqual(isinstance(open_action, dict), True)
-
-        # unlink
-        bi_view3.action_reset()
-        bi_view3.unlink()
-        self.assertEqual(len(bi_view3), 0)
-
-    def test_99_clean_dirty_data(self):
-        # destroy views
-        self.cr.execute("""
-            delete from ir_model where model like 'x_bve.%'
-        """)
-        self.cr.execute("""
-            delete from bve_view where model_name like 'x_bve.%'
-            """)
-        self.env.cr.commit()
