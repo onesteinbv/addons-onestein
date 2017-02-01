@@ -216,7 +216,6 @@ class BveView(models.Model):
                  f['select_field']) for f in info if f['join'] is not False]
 
             table_name = self.model_name.replace('.', '_')
-            tools.drop_view_if_exists(self.env.cr, table_name)
 
             basic_fields = [
                 ("t0.id", "id"),

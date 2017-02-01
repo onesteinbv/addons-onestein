@@ -164,7 +164,7 @@ class TestBiViewEditor(common.TransactionCase):
         self.assertEqual(len(bi_view3), 1)
 
         # create bve object
-        bi_view3.action_create()
+        bi_view3.with_context(skip_update_registry=True)._create_bve_object()
         model = self.env['ir.model'].search([
             ('model', '=', 'x_bve.testview3'),
             ('name', '=', 'Test View3')

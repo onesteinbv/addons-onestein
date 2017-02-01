@@ -312,6 +312,9 @@ class IrModel(models.Model):
                WHERE id = """ + str(res.id))
         self.env.cr.execute(q)
 
+        if self._context and self._context.get('skip_update_registry'):
+            return res
+
         # update registry
         if self._context and self._context.get('bve'):
             # setup models; this reloads custom models in registry
