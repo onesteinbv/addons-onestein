@@ -4,7 +4,7 @@
 
 {
     'name': 'BI View Editor',
-    'summary': '''Graphical BI views builder for Odoo''',
+    'summary': 'Graphical BI views builder for Odoo',
     'images': ['static/description/main_screenshot.png'],
     'author': 'Onestein,Odoo Community Association (OCA)',
     'license': 'AGPL-3',
@@ -27,5 +27,6 @@
     'js': [
         'static/src/js/bve.js'
     ],
-    'installable': True
+    'installable': True,
+    'uninstall_hook': 'uninstall_hook'
 }

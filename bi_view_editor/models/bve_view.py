@@ -258,7 +258,7 @@ class BveView(models.Model):
                     vals.update({'ttype': 'float'})
                 if field.ttype == 'selection' and not field.selection:
                     model_obj = self.env[field.model_id.model]
-                    selection = model_obj._columns[field.name].selection
+                    selection = model_obj._fields[field.name].selection
                     selection_domain = str(selection)
                     vals.update({'selection': selection_domain})
                 return vals
@@ -325,7 +325,7 @@ class BveView(models.Model):
         _build_query()
         obj = _build_object()
         _build_access_rules(obj)
-        self.env.cr.commit()
+        # self.env.cr.commit()
 
     @api.multi
     def open_view(self):

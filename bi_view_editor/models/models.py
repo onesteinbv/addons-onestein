@@ -3,6 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, models
+from odoo.exceptions import Warning as UserError
+from odoo.tools.translate import _
 
 
 class Base(models.AbstractModel):
@@ -19,3 +21,14 @@ class Base(models.AbstractModel):
         name = self._name[0:6]
         if name != 'x_bve.':
             super(Base, self)._setup_complete()
+
+    @api.model
+    def _read_group_process_groupby(self, gb, query):
+        name = self._name[0:6]
+        if name != 'x_bve.':
+            super(Base, self)._read_group_process_groupby()
+        split = gb.split(':')
+        if split[0] not in self._fields:
+            raise UserError(
+                _('No data to be displayed.'))
+        return super(Base, self)._read_group_process_groupby(gb, query)
