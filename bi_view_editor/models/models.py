@@ -8,20 +8,8 @@ from odoo import api, models
 class Base(models.AbstractModel):
     _inherit = 'base'
 
-    def _register_hook(self):
-        res = super(Base, self)._register_hook()
-        name = self._name[0:6]
-        if name == 'x_bve.':
-            return self.sudo()._patch_methods()
-
-        return res
-
-    @api.multi
-    def _patch_methods(self):
-        updated = False
-        model_model = self.env[self._name]
-        if model_model._log_access:
-            model_model._log_access = False
-            updated = True
-
-        return updated
+    @api.model
+    def _auto_end(self):
+        name = self._table[0:6]
+        if name != 'x_bve.':
+            super(Base, self)._auto_end()
