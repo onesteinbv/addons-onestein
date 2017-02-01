@@ -310,7 +310,13 @@ class IrModel(models.Model):
         # of the state field while updating ir.model)
         q = ("""UPDATE ir_model SET state = 'manual'
                WHERE id = """ + str(res.id))
-
         self.env.cr.execute(q)
+
+        # update registry
+        if self._context and self._context.get('bve'):
+            # setup models; this reloads custom models in registry
+            self.pool.setup_models(self._cr, partial=(not self.pool.ready))
+            # signal that registry has changed
+            self.pool.signal_registry_change()
 
         return res

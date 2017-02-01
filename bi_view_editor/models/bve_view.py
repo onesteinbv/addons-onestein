@@ -6,7 +6,6 @@ import json
 
 from odoo import api, fields, models, tools
 from odoo.exceptions import Warning as UserError
-from odoo.modules.registry import RegistryManager
 from odoo.tools.translate import _
 
 
@@ -115,14 +114,7 @@ class BveView(models.Model):
         self.ensure_one()
 
         self._create_bve_object()
-        self._force_registry_reload()
         self._create_bve_view()
-
-    @api.model
-    def _force_registry_reload(self):
-        # setup models: this automatically adds model in registry
-        self.pool.setup_models(self._cr, partial=(not self.pool.ready))
-        RegistryManager.signal_registry_change(self.env.cr.dbname)
 
     @api.multi
     def _create_bve_view(self):
@@ -133,28 +125,25 @@ class BveView(models.Model):
         old_views = View.sudo().search([('model', '=', self.model_name)])
         old_views.sudo().unlink()
 
-        view_vals = [
-            {
-                'name': 'Pivot Analysis',
-                'type': 'pivot',
-                'model': self.model_name,
-                'priority': 16,
-                'arch': """<?xml version="1.0"?>
-                                <pivot string="Pivot Analysis"> {} </pivot>
-                                """.format("".join(self._create_view_arch()))
-            },
-            {
-                'name': 'Graph Analysis',
-                'type': 'graph',
-                'model': self.model_name,
-                'priority': 16,
-                'arch': """<?xml version="1.0"?>
-                                <graph string="Graph Analysis"
-                                   type="bar"
-                                   stacked="True"> {} </graph>
-                             """.format("".join(self._create_view_arch()))
-            }
-        ]
+        view_vals = [{
+            'name': 'Pivot Analysis',
+            'type': 'pivot',
+            'model': self.model_name,
+            'priority': 16,
+            'arch': """<?xml version="1.0"?>
+                            <pivot string="Pivot Analysis"> {} </pivot>
+                            """.format("".join(self._create_view_arch()))
+        },{
+            'name': 'Graph Analysis',
+            'type': 'graph',
+            'model': self.model_name,
+            'priority': 16,
+            'arch': """<?xml version="1.0"?>
+                            <graph string="Graph Analysis"
+                               type="bar"
+                               stacked="True"> {} </graph>
+                         """.format("".join(self._create_view_arch()))
+        }]
 
         for vals in view_vals:
             View.sudo().create(vals)

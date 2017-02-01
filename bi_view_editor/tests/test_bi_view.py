@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests import common
-from odoo.exceptions import UserError
 
 
 class TestBiViewEditor(common.TransactionCase):
@@ -164,7 +163,7 @@ class TestBiViewEditor(common.TransactionCase):
         self.assertEqual(len(bi_view3), 1)
 
         # create bve object
-        bi_view3._create_bve_object()
+        bi_view3.action_create()
         model = self.env['ir.model'].search([
             ('model', '=', 'x_bve.testview3'),
             ('name', '=', 'Test View3')
