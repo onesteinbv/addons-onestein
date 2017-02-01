@@ -10,7 +10,7 @@
     'version': '10.0.1.0.0',
     'summary': 'Generates unique identifiers for partners',
     'category': 'Extra Tools',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'depends': [
         'base',
