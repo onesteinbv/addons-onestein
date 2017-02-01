@@ -355,17 +355,17 @@ odoo.define('bi_view_editor', function (require) {
         },
         add_field_and_join_node: function(field, join_node) {
             var self = this;
-            if (join_node.join_node === -1) {
+
+            var go_to_else = true;
+            if (join_node.join_node === -1 || join_node.table_alias === -1){
+                go_to_else = false;
                 field.table_alias = self.get_table_alias(field);
-                join_node.join_node = field.table_alias;
+                if (join_node.join_node === -1) join_node.join_node = field.table_alias;
+                else join_node.table_alias = field.table_alias;
                 self.add_field_to_table(join_node);
-            } else if (join_node.table_alias === -1) {
-                field.table_alias = self.get_table_alias(field);
-                join_node.table_alias = field.table_alias;
-                self.add_field_to_table(join_node);
-            } else {
-                field.table_alias = join_node.table_alias;
             }
+            else field.table_alias = join_node.table_alias;
+
             self.add_field_to_table(field);
             self.internal_set_value(JSON.stringify(self.get_fields()));
             self.load_classes(field);

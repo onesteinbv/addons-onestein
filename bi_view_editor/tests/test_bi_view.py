@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests import common
+from odoo.exceptions import UserError
 
 
 class TestBiViewEditor(common.TransactionCase):
@@ -131,9 +132,45 @@ class TestBiViewEditor(common.TransactionCase):
         self.assertIsInstance(related_models, list)
         self.assertGreater(len(related_models), 0)
 
-    def test_05_create_view(self):
+    def test_05_create_copy_view(self):
         vals = self.bi_view1_vals
         vals.update({'name': 'Test View1'})
+
+        # create
         bi_view1 = self.env['bve.view'].create(vals)
         self.assertIsNotNone(bi_view1)
+        self.assertEqual(len(bi_view1), 1)
         self.assertEqual(bi_view1.state, 'draft')
+
+        # copy
+        bi_view2 = bi_view1.copy()
+        self.assertEqual(bi_view2.name, 'Test View1 (copy)')
+
+    def test_06_create_group_bve_object(self):
+        vals = self.bi_view1_vals
+        employees_group = self.env.ref('base.group_user')
+        vals.update({
+            'name': 'Test View2',
+            'group_ids': [(6, 0, [employees_group.id])],
+        })
+
+        bi_view2 = self.env['bve.view'].create(vals)
+        self.assertEqual(len(bi_view2.user_ids), len(employees_group.users))
+
+    def test_07_create_open_bve_object(self):
+        vals = self.bi_view1_vals
+        vals.update({'name': 'Test View3'})
+        bi_view3 = self.env['bve.view'].create(vals)
+        self.assertEqual(len(bi_view3), 1)
+
+        # create bve object
+        bi_view3._create_bve_object()
+        model = self.env['ir.model'].search([
+            ('model', '=', 'x_bve.testview3'),
+            ('name', '=', 'Test View3')
+        ])
+        self.assertEqual(len(model), 1)
+
+        # open view
+        open_action = bi_view3.open_view()
+        self.assertEqual(isinstance(open_action, dict), True)
