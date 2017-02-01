@@ -10,6 +10,6 @@ class Base(models.AbstractModel):
 
     @api.model
     def _auto_end(self):
-        name = self._table[0:6]
-        if name != 'x_bve.':
+        table = self._table[0:6]
+        if table != 'x_bve_':
             super(Base, self)._auto_end()
