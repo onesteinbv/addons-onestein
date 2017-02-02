@@ -22,7 +22,7 @@ class account_asset(models.Model):
         if context.get('default_type', False) == 'in_invoice':
             context.pop('default_type')
         res = super(account_asset, self.with_context(context)).create(values)
-        if self._check_internal_call(res.equipment_id) :
+        if self._check_internal_call(res.equipment_id):
             ctx = dict(context, internal_call=True)
             res.equipment_id.with_context(ctx).write({'asset_id': res.id})
         return res
@@ -35,5 +35,6 @@ class account_asset(models.Model):
                 asset.equipment_id.with_context(ctx).write({'asset_id': None})
             super(account_asset, asset).write(values)
             if self._check_internal_call(asset.equipment_id):
-                asset.equipment_id.with_context(ctx).write({'asset_id': asset.id})
+                asset.equipment_id.with_context(ctx).write(
+                    {'asset_id': asset.id})
         return True
