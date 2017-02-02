@@ -9,11 +9,6 @@
     'version': '1.1',
     'summary': 'Generates unique identifier for product reference',
     'category': 'Accounting',
-    'description': """
-Product sequence
-================
-Adding Product Sequence to the default_code field.
-""",
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'depends': [
