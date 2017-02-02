@@ -1,0 +1,28 @@
+<odoo>
+
+    <record model="ir.ui.view" id="view_account_analytic_account_form_type">
+        <field name="name">account.analytic.account.form.type</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position='after'>
+                <field name="parent_id"/>
+            </xpath>
+            <xpath expr="//field[@name='code']" position='before'>
+                <field name="analytic_type_id" required="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_account_analytic_account_type_search">
+        <field name="name">account.analytic.account.search.type</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group" position='inside'>
+                <filter name="group_type" string="Type" domain="[]" context="{'group_by':'analytic_type_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
