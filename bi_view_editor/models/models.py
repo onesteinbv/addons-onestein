@@ -12,21 +12,19 @@ class Base(models.AbstractModel):
 
     @api.model
     def _auto_end(self):
-        table = self._table[0:6]
-        if table != 'x_bve_':
+        if self._table[0:6] != 'x_bve_':
             super(Base, self)._auto_end()
 
     @api.model
     def _setup_complete(self):
-        name = self._name[0:6]
-        if name != 'x_bve.':
+        if self._name[0:6] != 'x_bve.':
             super(Base, self)._setup_complete()
 
     @api.model
     def _read_group_process_groupby(self, gb, query):
-        name = self._name[0:6]
-        if name != 'x_bve.':
-            super(Base, self)._read_group_process_groupby()
+        if self._name[0:6] != 'x_bve.':
+            return super(Base, self)._read_group_process_groupby()
+
         split = gb.split(':')
         if split[0] not in self._fields:
             raise UserError(

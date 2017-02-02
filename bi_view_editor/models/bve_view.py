@@ -325,7 +325,6 @@ class BveView(models.Model):
         _build_query()
         obj = _build_object()
         _build_access_rules(obj)
-        # self.env.cr.commit()
 
     @api.multi
     def open_view(self):

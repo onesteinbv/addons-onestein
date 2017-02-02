@@ -316,7 +316,7 @@ class IrModel(models.Model):
             return res
 
         # update registry
-        if self._context and self._context.get('bve'):
+        if self._context.get('bve'):
             # setup models; this reloads custom models in registry
             self.pool.setup_models(self._cr, partial=(not self.pool.ready))
 
