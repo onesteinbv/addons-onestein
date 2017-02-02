@@ -15,10 +15,19 @@ class TestProjectTaskCreateAlerts(TransactionCase):
         # Prepare some data for current test case
 
         def create_partner(Partner, name, delta):
-            self.partner2 = Partner.create({
+            return Partner.create({
                 'name': name,
                 'date': str(date.today() + relativedelta(days=delta)),
             })
+
+        def create_task_alerts(parameter_list):
+            Alert = self.env['project.task.alert']
+            defaults = {
+                'project_id': self.project.id,
+                'date_field_id': date_field.id,
+            }
+            return (Alert.create(
+                defaults.copy().update(params)) for params in parameter_list)
 
         super(TestProjectTaskCreateAlerts, self).setUp()
 
@@ -32,20 +41,18 @@ class TestProjectTaskCreateAlerts(TransactionCase):
 
         date_field = self.env.ref('base.field_res_partner_date')
 
-        self.task_alert1 = self.env['project.task.alert'].create({
-            'name': 'Task Alert Test1',
-            'project_id': self.project.id,
-            'days_delta': 3,
-            'task_description': 'Description of Task Alert1',
-            'date_field_id': date_field.id,
-        })
-        self.task_alert2 = self.env['project.task.alert'].create({
-            'name': 'Task Alert Test2',
-            'project_id': self.project.id,
-            'days_delta': 8,
-            'task_description': 'Description of Task Alert2',
-            'date_field_id': date_field.id,
-        })
+        self.task_alert1, self.task_alert2 = create_task_alerts([
+            {
+                'name': 'Task Alert Test1',
+                'days_delta': 3,
+                'task_description': 'Description of Task Alert1',
+            },
+            {
+                'name': 'Task Alert Test2',
+                'days_delta': 8,
+                'task_description': 'Description of Task Alert2',
+            }
+        ])
 
     def test_create_alerts(self):
         self.task_alert1.create_task_alerts()
