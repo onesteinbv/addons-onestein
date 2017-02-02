@@ -23,7 +23,7 @@ class Base(models.AbstractModel):
     @api.model
     def _read_group_process_groupby(self, gb, query):
         if self._name[0:6] != 'x_bve.':
-            return super(Base, self)._read_group_process_groupby()
+            return super(Base, self)._read_group_process_groupby(gb, query)
 
         split = gb.split(':')
         if split[0] not in self._fields:
