@@ -11,18 +11,24 @@ class Base(models.AbstractModel):
     _inherit = 'base'
 
     @api.model
+    def _is_x_bve(self):
+        if self._name[0:6] != 'x_bve.':
+            return True
+        return False
+
+    @api.model
     def _auto_end(self):
-        if self._table[0:6] != 'x_bve_':
+        if self._is_x_bve():
             super(Base, self)._auto_end()
 
     @api.model
     def _setup_complete(self):
-        if self._name[0:6] != 'x_bve.':
+        if self._is_x_bve():
             super(Base, self)._setup_complete()
 
     @api.model
     def _read_group_process_groupby(self, gb, query):
-        if self._name[0:6] != 'x_bve.':
+        if self._is_x_bve:
             return super(Base, self)._read_group_process_groupby(gb, query)
 
         split = gb.split(':')
