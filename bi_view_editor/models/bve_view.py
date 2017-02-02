@@ -6,7 +6,6 @@ import json
 
 from openerp import api, fields, models, tools
 from openerp.exceptions import Warning as UserError
-from openerp.modules.registry import RegistryManager
 from openerp.tools.translate import _
 
 
@@ -82,14 +81,26 @@ class BveView(models.Model):
     @api.multi
     def _create_view_arch(self):
         self.ensure_one()
+
+        def _get_field_def(field_name, def_type):
+            return """<field name="x_{}" type="{}" />""".format(
+                field_name, def_type
+            )
+
+        def _get_field_type(field_info):
+            row = field_info['row'] and 'row'
+            column = field_info['column'] and 'col'
+            measure = field_info['measure'] and 'measure'
+            return row or column or measure
+
         fields_info = json.loads(self._get_format_data(self.data))
-        view_fields = ["""<field name="x_{}" type="{}" />""".format(
-            field_info['name'],
-            (field_info['row'] and 'row') or
-            (field_info['column'] and 'col') or
-            (field_info['measure'] and 'measure'))
-            for field_info in fields_info if field_info['row'] or
-            field_info['column'] or field_info['measure']]
+        view_fields = []
+        for field_info in fields_info:
+            field_name = field_info['name']
+            def_type = _get_field_type(field_info)
+            if def_type:
+                field_def = _get_field_def(field_name, def_type)
+                view_fields.append(field_def)
         return view_fields
 
     @api.model
@@ -103,43 +114,40 @@ class BveView(models.Model):
         self.ensure_one()
 
         self._create_bve_object()
-        self._force_registry_reload()
         self._create_bve_view()
 
-    def _force_registry_reload(self):
-        # setup models: this automatically adds model in registry
-        self.pool.setup_models(self._cr, partial=(not self.pool.ready))
-        RegistryManager.signal_registry_change(self.env.cr.dbname)
-
+    @api.multi
     def _create_bve_view(self):
+        self.ensure_one()
 
         # create views
         View = self.env['ir.ui.view']
         old_views = View.sudo().search([('model', '=', self.model_name)])
         old_views.sudo().unlink()
 
-        # create Pivot view
-        View.sudo().create(
-            {'name': 'Pivot Analysis',
-             'type': 'pivot',
-             'model': self.model_name,
-             'priority': 16,
-             'arch': """<?xml version="1.0"?>
-                        <pivot string="Pivot Analysis"> {} </pivot>
-                     """.format("".join(self._create_view_arch()))
-             })
-        # create Graph view
-        View.sudo().create(
-            {'name': 'Graph Analysis',
-             'type': 'graph',
-             'model': self.model_name,
-             'priority': 16,
-             'arch': """<?xml version="1.0"?>
-                        <graph string="Graph Analysis"
+        view_vals = [{
+            'name': 'Pivot Analysis',
+            'type': 'pivot',
+            'model': self.model_name,
+            'priority': 16,
+            'arch': """<?xml version="1.0"?>
+                            <pivot string="Pivot Analysis"> {} </pivot>
+                            """.format("".join(self._create_view_arch()))
+        }, {
+            'name': 'Graph Analysis',
+            'type': 'graph',
+            'model': self.model_name,
+            'priority': 16,
+            'arch': """<?xml version="1.0"?>
+                            <graph string="Graph Analysis"
                                type="bar"
                                stacked="True"> {} </graph>
-                     """.format("".join(self._create_view_arch()))
-             })
+                         """.format("".join(self._create_view_arch()))
+        }]
+
+        for vals in view_vals:
+            View.sudo().create(vals)
+
         # create Tree view
         tree_view = View.sudo().create(
             {'name': 'Tree Analysis',
@@ -170,7 +178,9 @@ class BveView(models.Model):
             'state': 'created'
         })
 
+    @api.multi
     def _create_bve_object(self):
+        self.ensure_one()
 
         def _get_fields_info(fields_data):
             fields_info = []
@@ -310,20 +320,18 @@ class BveView(models.Model):
                     'perm_write': True,
                 })
 
-            return
-
         self.model_name = 'x_bve.' + ''.join(
             [x for x in self.name.lower()
              if x.isalnum()]).replace('_', '.').replace(' ', '.')
         _build_query()
         obj = _build_object()
         _build_access_rules(obj)
-        self.env.cr.commit()
 
     @api.multi
     def open_view(self):
         self.ensure_one()
         return {
+            'name': _('BI View'),
             'type': 'ir.actions.act_window',
             'res_model': self.model_name,
             'view_type': 'form',
