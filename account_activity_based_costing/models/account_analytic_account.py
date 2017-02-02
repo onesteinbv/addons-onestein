@@ -59,11 +59,10 @@ class AccountAnalyticAccount(models.Model):
             analytic_account.realized_turnover = credit
             analytic_account.realized_costs = - debit
             analytic_account.contribution = credit + debit
+            analytic_account.contribution_perc = 0.0
             if credit != 0:
                 contribution_perc = 100 * (credit + debit) / credit
                 analytic_account.contribution_perc = contribution_perc
-            else:
-                analytic_account.contribution_perc = 0.0
 
     @api.depends(
         'expected_turnover',
