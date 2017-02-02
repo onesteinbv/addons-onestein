@@ -214,6 +214,10 @@ class BveView(models.Model):
                 (f['table_alias'],
                  f['join'],
                  f['select_field']) for f in info if f['join'] is not False]
+            if not join_nodes:
+                raise UserError(
+                    _('Please select also a field from another model.')
+                )
 
             table_name = self.model_name.replace('.', '_')
             tools.drop_view_if_exists(self.env.cr, table_name)
