@@ -11,7 +11,15 @@ class TestBiViewEditor(common.TransactionCase):
 
         def _get_models(model_name_list):
             Model = self.env['ir.model']
-            return (Model.search([('model', '=', name)]) for name in model_name_list)
+            return (Model.search(
+                [('model', '=', name)]) for name in model_name_list)
+
+        def _get_fields(model_list, field_list):
+            ModelFields = self.env['ir.model.fields']
+            return (ModelFields.search(
+                [('model', '=', model),
+                 ('name', '=', field)],
+                limit=1) for (model, field) in (model_list, field_list))
 
         super(TestBiViewEditor, self).setUp()
         self.partner_model_name = 'res.partner'
@@ -22,35 +30,18 @@ class TestBiViewEditor(common.TransactionCase):
 
         self.bi_view1 = None
 
-        Model = self.env['ir.model']
-        ModelFields = self.env['ir.model.fields']
-
         self.partner_model, self.company_model = _get_models(
             [self.partner_model_name, self.company_model_name])
 
-        '''
-        self.partner_model = Model.search([
-            ('model', '=', self.partner_model_name)
-        ], limit=1)
-
-        self.company_model = Model.search([
-            ('model', '=', self.company_model_name)
-        ], limit=1)
-        '''
-        self.partner_field = ModelFields.search([
-            ('model', '=', self.partner_model_name),
-            ('name', '=', self.partner_field_name)
-        ], limit=1)
-
-        self.partner_company_field = ModelFields.search([
-            ('model', '=', self.partner_model_name),
-            ('name', '=', self.partner_company_field_name)
-        ], limit=1)
-
-        self.company_field = ModelFields.search([
-            ('model', '=', self.company_model_name),
-            ('name', '=', self.company_field_name)
-        ], limit=1)
+        (self.partner_field,
+         self.partner_company_field,
+         self.company_field) = _get_fields(
+            [self.partner_model_name,
+             self.partner_model_name,
+             self.company_model_name],
+            [self.partner_field_name,
+             self.partner_company_field_name,
+             self.company_field_name])
 
         data = [
             {'model_id': self.partner_model.id,
