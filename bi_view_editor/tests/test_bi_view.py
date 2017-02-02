@@ -36,9 +36,9 @@ class TestBiViewEditor(common.TransactionCase):
         (self.partner_field,
          self.partner_company_field,
          self.company_field) = _get_fields([
-            (self.partner_model_name, self.partner_field_name),
-            (self.partner_model_name, self.partner_company_field_name),
-            (self.company_model_name, self.company_field_name)])
+             (self.partner_model_name, self.partner_field_name),
+             (self.partner_model_name, self.partner_company_field_name),
+             (self.company_model_name, self.company_field_name)])
 
         data = [
             {'model_id': self.partner_model.id,
