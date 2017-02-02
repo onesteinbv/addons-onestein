@@ -53,6 +53,11 @@ class ProjectTaskAlert(models.Model):
 
     @api.multi
     def _create_task_alerts(self):
+
+        def get_user_id(user):
+            user_id = user and user.id or None
+            return user_id
+
         self.ensure_one()
 
         days_delta = timedelta(days=self.days_delta)
@@ -76,7 +81,7 @@ class ProjectTaskAlert(models.Model):
             if self.task_description:
                 description = self._merge_placeholders(
                     self.task_description, resource)
-            user_id = self.user_id and self.user_id.id or None
+            user_id = get_user_id(self.user_id)
             task_data = {
                 'name': name,
                 'project_id': self.project_id.id,
