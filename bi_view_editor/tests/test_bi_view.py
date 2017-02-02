@@ -8,6 +8,11 @@ from odoo.tests import common
 class TestBiViewEditor(common.TransactionCase):
 
     def setUp(self):
+
+        def _get_models(model_name_list):
+            Model = self.env['ir.model']
+            return (Model.search([('model', '=', name)]) for name in model_name_list)
+
         super(TestBiViewEditor, self).setUp()
         self.partner_model_name = 'res.partner'
         self.partner_field_name = 'name'
@@ -20,6 +25,10 @@ class TestBiViewEditor(common.TransactionCase):
         Model = self.env['ir.model']
         ModelFields = self.env['ir.model.fields']
 
+        self.partner_model, self.company_model = _get_models(
+            [self.partner_model_name, self.company_model_name])
+
+        '''
         self.partner_model = Model.search([
             ('model', '=', self.partner_model_name)
         ], limit=1)
@@ -27,7 +36,7 @@ class TestBiViewEditor(common.TransactionCase):
         self.company_model = Model.search([
             ('model', '=', self.company_model_name)
         ], limit=1)
-
+        '''
         self.partner_field = ModelFields.search([
             ('model', '=', self.partner_model_name),
             ('name', '=', self.partner_field_name)
