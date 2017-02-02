@@ -7,7 +7,7 @@
     'images': [],
     'version': '10.0.0.1.0',
     'category': 'Localization',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'license': 'AGPL-3',
     'depends': [
