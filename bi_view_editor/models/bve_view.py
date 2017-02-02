@@ -205,6 +205,7 @@ class BveView(models.Model):
                 raise UserError(_('No data to process.'))
 
             formatted_data = json.loads(self._get_format_data(data))
+
             info = _get_fields_info(formatted_data)
             fields = [("{}.{}".format(f['table_alias'],
                                       f['select_field']),
@@ -214,8 +215,13 @@ class BveView(models.Model):
                 (f['table_alias'],
                  f['join'],
                  f['select_field']) for f in info if f['join'] is not False]
+            if not join_nodes:
+                raise UserError(
+                    _('Please select also a field from another model.')
+                )
 
             table_name = self.model_name.replace('.', '_')
+            tools.drop_view_if_exists(self.env.cr, table_name)
 
             basic_fields = [
                 ("t0.id", "id"),
