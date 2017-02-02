@@ -11,34 +11,40 @@ from odoo.tests.common import TransactionCase
 
 class TestProjectTaskCreateAlerts(TransactionCase):
 
-    # Use case : Prepare some data for current test case
     def setUp(self):
+        # Prepare some data for current test case
+
+        def create_partner(Partner, name, delta):
+            self.partner2 = Partner.create({
+                'name': name,
+                'date': str(date.today() + relativedelta(days=delta)),
+            })
+
         super(TestProjectTaskCreateAlerts, self).setUp()
+
         self.project = self.env['project.project'].create({
             'name': 'Project Test'
         })
-        self.partner1 = self.env['res.partner'].create({
-            'name': 'Partner Test1',
-            'date': str(date.today() + relativedelta(days=1)),
-        })
-        self.partner2 = self.env['res.partner'].create({
-            'name': 'Partner Test1',
-            'date': str(date.today() + relativedelta(days=8)),
-        })
-        self.date_field_id = self.env.ref('base.field_res_partner_date').id
+
+        Partner = self.env['res.partner']
+        self.partner1 = create_partner(Partner, 'Partner 1', delta=1)
+        self.partner2 = create_partner(Partner, 'Partner 2', delta=8)
+
+        date_field = self.env.ref('base.field_res_partner_date')
+
         self.task_alert1 = self.env['project.task.alert'].create({
             'name': 'Task Alert Test1',
             'project_id': self.project.id,
             'days_delta': 3,
             'task_description': 'Description of Task Alert1',
-            'date_field_id': self.date_field_id,
+            'date_field_id': date_field.id,
         })
         self.task_alert2 = self.env['project.task.alert'].create({
             'name': 'Task Alert Test2',
             'project_id': self.project.id,
             'days_delta': 8,
             'task_description': 'Description of Task Alert2',
-            'date_field_id': self.date_field_id,
+            'date_field_id': date_field.id,
         })
 
     def test_create_alerts(self):
