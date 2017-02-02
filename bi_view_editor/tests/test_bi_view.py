@@ -14,12 +14,12 @@ class TestBiViewEditor(common.TransactionCase):
             return (Model.search(
                 [('model', '=', name)]) for name in model_name_list)
 
-        def _get_fields(model_list, field_list):
+        def _get_fields(model_field_list):
             ModelFields = self.env['ir.model.fields']
             return (ModelFields.search(
-                [('model', '=', model),
-                 ('name', '=', field)],
-                limit=1) for (model, field) in (model_list, field_list))
+                [('model', '=', model_field[0]),
+                 ('name', '=', model_field[1])],
+                limit=1) for model_field in model_field_list)
 
         super(TestBiViewEditor, self).setUp()
         self.partner_model_name = 'res.partner'
@@ -35,13 +35,10 @@ class TestBiViewEditor(common.TransactionCase):
 
         (self.partner_field,
          self.partner_company_field,
-         self.company_field) = _get_fields(
-            [self.partner_model_name,
-             self.partner_model_name,
-             self.company_model_name],
-            [self.partner_field_name,
-             self.partner_company_field_name,
-             self.company_field_name])
+         self.company_field) = _get_fields([
+            (self.partner_model_name, self.partner_field_name),
+            (self.partner_model_name, self.partner_company_field_name),
+            (self.company_model_name, self.company_field_name)])
 
         data = [
             {'model_id': self.partner_model.id,
