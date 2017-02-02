@@ -21,13 +21,14 @@ class TestProjectTaskCreateAlerts(TransactionCase):
             })
 
         def create_task_alerts(parameter_list):
+            date_field = self.env.ref('base.field_res_partner_date')
             Alert = self.env['project.task.alert']
             defaults = {
                 'project_id': self.project.id,
                 'date_field_id': date_field.id,
             }
             return (Alert.create(
-                defaults.copy().update(params)) for params in parameter_list)
+                (defaults.copy()).update(args)) for args in parameter_list)
 
         super(TestProjectTaskCreateAlerts, self).setUp()
 
@@ -38,8 +39,6 @@ class TestProjectTaskCreateAlerts(TransactionCase):
         Partner = self.env['res.partner']
         self.partner1 = create_partner(Partner, 'Partner 1', delta=1)
         self.partner2 = create_partner(Partner, 'Partner 2', delta=8)
-
-        date_field = self.env.ref('base.field_res_partner_date')
 
         self.task_alert1, self.task_alert2 = create_task_alerts([
             {
