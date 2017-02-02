@@ -1,0 +1,45 @@
+<odoo>
+
+    <record id="account_analytic_type_tree_view" model="ir.ui.view">
+        <field name="name">account.analytic.type.tree</field>
+        <field name="model">account.analytic.type</field>
+        <field name="arch" type="xml">
+            <tree string="Analytic Account Types">
+                <field name="name"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="account_analytic_type_form_view" model="ir.ui.view">
+        <field name="name">account.analytic.type.form</field>
+        <field name="model">account.analytic.type</field>
+        <field name="arch" type="xml">
+            <form string="Analytic Account Type">
+                <group>
+                    <group name="main_grp">
+                        <field name="name"/>
+                        <field name="code"/>
+                        <newline/>
+                        <separator string="Analytic Account Type View"/>
+                        <newline/>
+                        <field name="is_view"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_analytic_type_action" model="ir.actions.act_window">
+        <field name="name">Analytic Account Types</field>
+        <field name="res_model">account.analytic.type</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to add a new type.
+          </p>
+        </field>
+    </record>
+
+</odoo>

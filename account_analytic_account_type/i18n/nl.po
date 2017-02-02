@@ -1,0 +1,114 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_analytic_account_type
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0alpha1e-20160728\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-01 08:50+0000\n"
+"PO-Revision-Date: 2016-08-01 10:50+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: nl\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#. module: account_analytic_account_type
+#: model:ir.model,name:account_analytic_account_type.model_account_analytic_account
+msgid "Analytic Account"
+msgstr "Kostenplaats"
+
+#. module: account_analytic_account_type
+#: model:ir.ui.menu,name:account_analytic_account_type.account_analytic_type_menu
+msgid "Analytic Accounts Type"
+msgstr "Kostenplaatstype"
+
+#. module: account_analytic_account_type
+#: model:ir.actions.act_window,help:account_analytic_account_type.account_analytic_type_action
+msgid "Click to add a new type."
+msgstr "Voeg nieuwe type toe."
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_code
+msgid "Code"
+msgstr "Code"
+
+#. module: account_analytic_account_type
+#: model:ir.ui.view,arch_db:account_analytic_account_type.account_analytic_type_form_view
+msgid "Cost Center Type"
+msgstr "Kostenplaatstype"
+
+#. module: account_analytic_account_type
+#: model:ir.actions.act_window,name:account_analytic_account_type.account_analytic_type_action
+#: model:ir.ui.view,arch_db:account_analytic_account_type.account_analytic_type_tree_view
+msgid "Cost Center Types"
+msgstr "Kostenplaatstype"
+
+#. module: account_analytic_account_type
+#: model:ir.ui.view,arch_db:account_analytic_account_type.account_analytic_type_form_view
+msgid "Cost Center View"
+msgstr "Kostenplaatsweergave"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_create_uid
+msgid "Created by"
+msgstr "Aangemaakt door"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_create_date
+msgid "Created on"
+msgstr "Aangemaakt op"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_display_name
+msgid "Display Name"
+msgstr "Schermnaam"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_id
+msgid "ID"
+msgstr "ID"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_is_view
+msgid "Is View"
+msgstr "Is weergave"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type___last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_write_uid
+msgid "Last Updated by"
+msgstr "Laatst bijgewerkt door"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_write_date
+msgid "Last Updated on"
+msgstr "Laatst bijgewerkt op"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_type_name
+msgid "Name"
+msgstr "Naam"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_account_parent_id
+msgid "Parent"
+msgstr "Bovenliggende"
+
+#. module: account_analytic_account_type
+#: model:ir.model.fields,field_description:account_analytic_account_type.field_account_analytic_account_analytic_type_id
+msgid "Type"
+msgstr "Type"
+
+#. module: account_analytic_account_type
+#: model:ir.model,name:account_analytic_account_type.model_account_analytic_type
+msgid "account.analytic.type"
+msgstr "account.analytic.type"

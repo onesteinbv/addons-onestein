@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="analytic.analytic_comp_rule" model="ir.rule">
+            <field name="name">Analytic multi company rule</field>
+            <field name="model_id" ref="analytic.model_account_analytic_account"/>
+            <field eval="True" name="global"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+    </data>
+    <data noupdate="0">
+        <record id="analytic_account_manager_rule" model="ir.rule">
+            <field name="name">Analytic account manager</field>
+            <field name="model_id" ref="analytic.model_account_analytic_account"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="groups" eval="[(4,ref('account_analytic_account_accessibility.group_analytic_account_manager'))]"/>
+        </record>
+
+        <record id="analytic_account_no_edit_rule" model="ir.rule">
+            <field name="name">Analytic account no-edit</field>
+            <field name="model_id" ref="analytic.model_account_analytic_account"/>
+            <field name="domain_force">[('analytic_state','not in',['draft','expired']),('message_partner_ids', 'child_of', [user.partner_id.id])]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="groups" eval="[(4,ref('analytic.group_analytic_accounting'))]"/>
+        </record>
+
+        <record id="analytic_account_edit_rule" model="ir.rule">
+            <field name="name">Analytic account edit</field>
+            <field name="model_id" ref="analytic.model_account_analytic_account"/>
+            <field name="domain_force">[('analytic_state','in',['draft','expired','wait_bid']),('message_partner_ids', 'child_of', [user.partner_id.id])]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="groups" eval="[(4,ref('analytic.group_analytic_accounting'))]"/>
+        </record>
+
+    </data>
+</odoo>

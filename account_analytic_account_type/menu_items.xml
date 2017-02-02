@@ -1,0 +1,10 @@
+<odoo>
+
+    <menuitem
+        id="account_analytic_type_menu"
+        name="Analytic Accounts Type"
+        parent="account.menu_analytic_accounting"
+        action="account_analytic_type_action"
+        groups="base.group_no_one"/>
+
+</odoo>
