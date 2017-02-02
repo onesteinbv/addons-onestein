@@ -540,5 +540,5 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def compute_spread_board(self):
         for line in self:
-            if self.price_subtotal:
+            if line.price_subtotal:
                 line._compute_spread_board()
