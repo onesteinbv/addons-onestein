@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_analytic_state_form" model="ir.ui.view">
+        <field name="name">view.account.analytic.state.form</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position='before'>
+                <header>
+                    <button name="action_submit" string="Submit" type="object" attrs="{'invisible':[('analytic_state','!=','draft')]}" groups="analytic.group_analytic_accounting"/>
+                    <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible':[('analytic_state','!=','draft')]}" groups="analytic.group_analytic_accounting"/>
+                    <button name="action_expire" string="Set to Expired" type="object" attrs="{'invisible':[('analytic_state','in',['expired','cancel','declined'])]}" groups="account_analytic_account_accessibility.group_analytic_account_manager"/>
+                    <button name="action_approve" string="Approve" type="object" attrs="{'invisible':[('analytic_state','!=','waiting')]}" groups="account_analytic_account_accessibility.group_analytic_account_manager"/>
+                    <button name="action_decline" string="Decline" type="object" attrs="{'invisible':[('analytic_state','!=','waiting')]}" groups="account_analytic_account_accessibility.group_analytic_account_manager"/>
+                    <button name="action_resubmit" string="Resubmit" type="object" attrs="{'invisible':[('analytic_state','!=','expired')]}" groups="analytic.group_analytic_accounting"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" attrs="{'invisible':[('analytic_state','!=','cancel'),('analytic_state','!=','declined'),('analytic_state','!=','approved')]}" groups="analytic.group_analytic_accounting"/>
+                    <field name="analytic_state" widget="statusbar" statusbar_visible="draft,waiting,approved"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_analytic_state_list" model="ir.ui.view">
+        <field name="name">account.analytic.state.list</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_list"/>
+        <field eval="8" name="priority"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='balance']" position='after'>
+                <field name="analytic_state" groups="account_analytic_account_accessibility.group_analytic_account_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_analytic_state_search" model="ir.ui.view">
+        <field name="name">account.analytic.state.search</field>
+        <field name="model">account.analytic.account</field>
+        <field name="inherit_id" ref="analytic.view_account_analytic_account_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='inactive']" position='before'>
+                <filter string="Waiting for Approval" domain="[('analytic_state', '=', 'waiting')]" name="waiting" groups="account_analytic_account_accessibility.group_analytic_account_manager"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,158 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_analytic_account_states
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0alpha1e-20160728\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-01 08:47+0000\n"
+"PO-Revision-Date: 2016-08-01 10:49+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: nl\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#. module: account_analytic_account_states
+#: model:ir.model,name:account_analytic_account_states.model_account_analytic_account
+msgid "Analytic Account"
+msgstr "Kostenplaats"
+
+#. module: account_analytic_account_states
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_account_analytic_state_form
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_approve_analytic_account
+msgid "Approve"
+msgstr "Goedkeuren"
+
+#. module: account_analytic_account_states
+#: model:ir.actions.act_window,name:account_analytic_account_states.action_approve_analytic_account
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_approve_analytic_account
+msgid "Approve Analytic Accounts"
+msgstr "Kostenplaatsen Goedkeuren"
+
+#. module: account_analytic_account_states
+#: selection:account.analytic.account,analytic_state:0
+msgid "Approved"
+msgstr "Goedgekeurd"
+
+#. module: account_analytic_account_states
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_account_analytic_state_form
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_approve_analytic_account
+msgid "Cancel"
+msgstr "Annuleren"
+
+#. module: account_analytic_account_states
+#: selection:account.analytic.account,analytic_state:0
+msgid "Cancelled"
+msgstr "Geannuleerd"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_approve_create_uid
+msgid "Created by"
+msgstr "Aangemaakt door"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_approve_create_date
+msgid "Created on"
+msgstr "Aangemaakt op"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_date_declined
+msgid "Date Declined"
+msgstr "Datum Geweigerd"
+
+#. module: account_analytic_account_states
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_account_analytic_state_form
+msgid "Decline"
+msgstr "Weigeren"
+
+#. module: account_analytic_account_states
+#: selection:account.analytic.account,analytic_state:0
+msgid "Declined"
+msgstr "Geweigerd"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_approve_display_name
+msgid "Display Name"
+msgstr "Schermnaam"
+
+#. module: account_analytic_account_states
+#: selection:account.analytic.account,analytic_state:0
+msgid "Draft"
+msgstr "Concept"
+
+#. module: account_analytic_account_states
+#: selection:account.analytic.account,analytic_state:0
+msgid "Expired"
+msgstr "Vervallen"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_approve_id
+msgid "ID"
+msgstr "ID"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_approve___last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_approve_write_uid
+msgid "Last Updated by"
+msgstr "Laatst bijgewerkt door"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_approve_write_date
+msgid "Last Updated on"
+msgstr "Laatst bijgewerkt op"
+
+#. module: account_analytic_account_states
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_account_analytic_state_form
+msgid "Reset to Draft"
+msgstr "Terugzetten naar concept"
+
+#. module: account_analytic_account_states
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_account_analytic_state_form
+msgid "Resubmit"
+msgstr "Opnieuw Aanvragen"
+
+#. module: account_analytic_account_states
+#: model:ir.model.fields,field_description:account_analytic_account_states.field_account_analytic_account_analytic_state
+msgid "Status"
+msgstr "Status"
+
+#. module: account_analytic_account_states
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_account_analytic_state_form
+msgid "Submit"
+msgstr "Verstuur"
+
+#. module: account_analytic_account_states
+#: selection:account.analytic.account,analytic_state:0
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_account_analytic_state_search
+msgid "Waiting for Approval"
+msgstr "Wacht op Goedkeuring"
+
+#. module: account_analytic_account_states
+#: selection:account.analytic.account,analytic_state:0
+msgid "Waiting for Bid Approval"
+msgstr "Wacht op Bid Goedkeuring"
+
+#. module: account_analytic_account_states
+#: model:ir.model,name:account_analytic_account_states.model_account_analytic_account_approve
+msgid "Wizard - Approve analytic accounts"
+msgstr "Wizard - Goedkeuren Kostenplaatsen"
+
+#. module: account_analytic_account_states
+#: code:addons/account_analytic_account_states/models/account_analytic_account.py:36
+#, python-format
+msgid "You can only approve Analytic Accounts in status Waiting for Approval."
+msgstr "Alleen kostenplaatsen in de status Wacht op Goedkeuring kunnen goedgekeurd worden. "
+
+#. module: account_analytic_account_states
+#: model:ir.ui.view,arch_db:account_analytic_account_states.view_approve_analytic_account
+msgid "or"
+msgstr "of"
