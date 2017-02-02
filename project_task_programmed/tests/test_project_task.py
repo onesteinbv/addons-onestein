@@ -20,15 +20,8 @@ class TestProjectTaskCreateAlerts(TransactionCase):
                 'date': str(date.today() + relativedelta(days=delta)),
             })
 
-        def create_task_alerts(parameter_list):
-            date_field = self.env.ref('base.field_res_partner_date')
-            Alert = self.env['project.task.alert']
-            defaults = {
-                'project_id': self.project.id,
-                'date_field_id': date_field.id,
-            }
-            return (Alert.create(
-                (defaults.copy()).update(args)) for args in parameter_list)
+        def create_task_alerts(parameter_list, Alert):
+            return (Alert.create(params) for params in parameter_list)
 
         super(TestProjectTaskCreateAlerts, self).setUp()
 
@@ -37,21 +30,28 @@ class TestProjectTaskCreateAlerts(TransactionCase):
         })
 
         Partner = self.env['res.partner']
+        Alert = self.env['project.task.alert']
         self.partner1 = create_partner(Partner, 'Partner 1', delta=1)
         self.partner2 = create_partner(Partner, 'Partner 2', delta=8)
+
+        date_field = self.env.ref('base.field_res_partner_date')
 
         self.task_alert1, self.task_alert2 = create_task_alerts([
             {
                 'name': 'Task Alert Test1',
                 'days_delta': 3,
                 'task_description': 'Description of Task Alert1',
+                'project_id': self.project.id,
+                'date_field_id': date_field.id,
             },
             {
                 'name': 'Task Alert Test2',
                 'days_delta': 8,
                 'task_description': 'Description of Task Alert2',
+                'project_id': self.project.id,
+                'date_field_id': date_field.id,
             }
-        ])
+        ], Alert)
 
     def test_create_alerts(self):
         self.task_alert1.create_task_alerts()
