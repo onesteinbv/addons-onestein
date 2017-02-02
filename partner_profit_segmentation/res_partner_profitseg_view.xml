@@ -3,7 +3,6 @@
     <data>
 
         <record id="view_partner_form_profitseg" model="ir.ui.view">
-            <field name="name">view.partner.form.profitseg</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
@@ -14,7 +13,6 @@
         </record>
 
         <record id="view_partner_profitseg_segment_tree" model="ir.ui.view">
-            <field name="name">view.partner.profitseg.segment.tree</field>
             <field name="model">res.partner.profitseg.segment</field>
             <field name="arch" type="xml">
                 <tree string="Customer profit segments">
@@ -26,7 +24,6 @@
         </record>
 
         <record id="view_partner_profitseg_segment_form" model="ir.ui.view">
-            <field name="name">view.partner.profitseg.segment.form</field>
             <field name="model">res.partner.profitseg.segment</field>
             <field name="arch" type="xml">
                 <form string="Customer profit segment">
