@@ -170,3 +170,7 @@ class TestBiViewEditor(common.TransactionCase):
         # open view
         open_action = bi_view3.open_view()
         self.assertEqual(isinstance(open_action, dict), True)
+
+        # open view
+        bi_view3.action_reset()
+        bi_view3.unlink()
