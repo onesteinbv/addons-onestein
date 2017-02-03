@@ -153,14 +153,14 @@ class TestBiViewEditor(common.TransactionCase):
         bi_view2 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view2.user_ids), len(employees_group.users))
 
-    def test_07_action_create(self):
+    def test_07_create_open_bve_object(self):
         vals = self.bi_view1_vals
         vals.update({'name': 'Test View3'})
         bi_view3 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view3), 1)
 
-        # create model and view
-        bi_view3.with_context(skip_update_registry=True).action_create()
+        # create bve object
+        bi_view3.with_context(skip_update_registry=True)._create_bve_object()
         model = self.env['ir.model'].search([
             ('model', '=', 'x_bve.testview3'),
             ('name', '=', 'Test View3')
