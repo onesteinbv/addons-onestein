@@ -82,7 +82,11 @@ class BveView(models.Model):
     def _create_view_arch(self):
         self.ensure_one()
 
-        def _get_field_def(field_name, def_type):
+        def _get_field_def(field_name, def_type=False):
+            if not def_type:
+                return """<field name="x_{}" />""".format(
+                    field_name
+                )
             return """<field name="x_{}" type="{}" />""".format(
                 field_name, def_type
             )
@@ -94,14 +98,24 @@ class BveView(models.Model):
             return row or column or measure
 
         fields_info = json.loads(self._get_format_data(self.data))
+        is_tree_view = self._context.get('no_empty')
         view_fields = []
+        all_fields = []
         for field_info in fields_info:
             field_name = field_info['name']
             def_type = _get_field_type(field_info)
+            field_def = _get_field_def(field_name, def_type)
             if def_type:
-                field_def = _get_field_def(field_name, def_type)
                 view_fields.append(field_def)
+            all_fields.append(field_def)
+        if not view_fields and is_tree_view:
+            view_fields = all_fields
         return view_fields
+
+    @api.multi
+    def _create_tree_view_arch(self):
+        self.ensure_one()
+        return self.with_context(no_empty=True)._create_view_arch()
 
     @api.model
     def _get_format_data(self, data):
@@ -131,18 +145,31 @@ class BveView(models.Model):
             'model': self.model_name,
             'priority': 16,
             'arch': """<?xml version="1.0"?>
-                            <pivot string="Pivot Analysis"> {} </pivot>
-                            """.format("".join(self._create_view_arch()))
+                       <pivot string="Pivot Analysis">
+                       {}
+                       </pivot>
+                    """.format("".join(self._create_view_arch()))
         }, {
             'name': 'Graph Analysis',
             'type': 'graph',
             'model': self.model_name,
             'priority': 16,
             'arch': """<?xml version="1.0"?>
-                            <graph string="Graph Analysis"
-                               type="bar"
-                               stacked="True"> {} </graph>
-                         """.format("".join(self._create_view_arch()))
+                       <graph string="Graph Analysis"
+                        type="bar" stacked="True">
+                        {}
+                       </graph>
+                    """.format("".join(self._create_view_arch()))
+        }, {
+            'name': 'Search BI View',
+            'type': 'search',
+            'model': self.model_name,
+            'priority': 16,
+            'arch': """<?xml version="1.0"?>
+                       <search string="Search BI View">
+                       {}
+                       </search>
+                    """.format("".join(self._create_view_arch()))
         }]
 
         for vals in view_vals:
@@ -155,8 +182,10 @@ class BveView(models.Model):
              'model': self.model_name,
              'priority': 16,
              'arch': """<?xml version="1.0"?>
-                        <tree string="List Analysis" create="false"> {} </tree>
-                     """.format("".join(self._create_view_arch()))
+                        <tree string="List Analysis" create="false">
+                        {}
+                        </tree>
+                     """.format("".join(self._create_tree_view_arch()))
              })
 
         # set the Tree view as the default one
@@ -215,20 +244,12 @@ class BveView(models.Model):
                 (f['table_alias'],
                  f['join'],
                  f['select_field']) for f in info if f['join'] is not False]
-            if not join_nodes:
-                raise UserError(
-                    _('Please select also a field from another model.')
-                )
 
             table_name = self.model_name.replace('.', '_')
             tools.drop_view_if_exists(self.env.cr, table_name)
 
             basic_fields = [
-                ("t0.id", "id"),
-                ("t0.write_uid", "write_uid"),
-                ("t0.write_date", "write_date"),
-                ("t0.create_uid", "create_uid"),
-                ("t0.create_date", "create_date")
+                ("t0.id", "id")
             ]
 
             q = """CREATE or REPLACE VIEW %s as (
@@ -335,13 +356,9 @@ class BveView(models.Model):
     @api.multi
     def open_view(self):
         self.ensure_one()
-        return {
-            'name': _('BI View'),
-            'type': 'ir.actions.act_window',
-            'res_model': self.model_name,
-            'view_type': 'form',
-            'view_mode': 'tree,graph,pivot',
-        }
+        [action] = self.action_id.read()
+        action['display_name'] = _('BI View')
+        return action
 
     @api.multi
     def copy(self, default=None):

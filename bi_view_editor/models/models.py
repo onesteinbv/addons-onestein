@@ -11,24 +11,24 @@ class Base(models.AbstractModel):
     _inherit = 'base'
 
     @api.model
-    def _not_bi_view(self):
-        if self._name[0:6] != 'x_bve.':
-            return True
-        return False
+    def _bi_view(self):
+        return self._name[0:6] == 'x_bve.'
 
     @api.model
     def _auto_end(self):
-        if self._not_bi_view():
+        if not self._bi_view():
             super(Base, self)._auto_end()
 
     @api.model
     def _setup_complete(self):
-        if self._not_bi_view():
+        if not self._bi_view():
             super(Base, self)._setup_complete()
+        else:
+            self.pool.models[self._name]._log_access = False
 
     @api.model
     def _read_group_process_groupby(self, gb, query):
-        if self._not_bi_view():
+        if not self._bi_view():
             return super(Base, self)._read_group_process_groupby(gb, query)
 
         split = gb.split(':')
@@ -36,3 +36,9 @@ class Base(models.AbstractModel):
             raise UserError(
                 _('No data to be displayed.'))
         return super(Base, self)._read_group_process_groupby(gb, query)
+
+    @api.model
+    def _add_magic_fields(self):
+        if self._bi_view():
+            self._log_access = False
+        return super(Base, self)._add_magic_fields()
