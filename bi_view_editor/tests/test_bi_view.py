@@ -171,6 +171,11 @@ class TestBiViewEditor(common.TransactionCase):
         open_action = bi_view3.open_view()
         self.assertEqual(isinstance(open_action, dict), True)
 
+        models = self.env['ir.model'].sudo().search(
+            [('model', '=', bi_view3.model_name)])
+        for model in models:
+            model.sudo().unlink()
+
         # open view
         # bi_view3.action_reset()
         # bi_view3.unlink()
