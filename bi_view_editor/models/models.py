@@ -42,3 +42,9 @@ class Base(models.AbstractModel):
         if self._bi_view():
             self._log_access = False
         return super(Base, self)._add_magic_fields()
+
+    @api.model_cr
+    def _table_exist(self):
+        if not self._bi_view():
+            return super(Base, self)._table_exist()
+        return 1
