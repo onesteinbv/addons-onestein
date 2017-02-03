@@ -64,9 +64,9 @@ class AccountInvoiceLine(models.Model):
     def _compute_period_amount(self):
         for line in self:
             period_amount = line.year_amount
-            if self.period_type == 'quarter':
+            if line.period_type == 'quarter':
                 period_amount = line.year_amount / 4
-            elif self.period_type == 'month':
+            elif line.period_type == 'month':
                 period_amount = line.year_amount / 12
             line.period_amount = period_amount
 
@@ -540,5 +540,5 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def compute_spread_board(self):
         for line in self:
-            if self.price_subtotal:
+            if line.price_subtotal:
                 line._compute_spread_board()
