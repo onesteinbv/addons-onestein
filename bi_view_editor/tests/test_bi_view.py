@@ -172,5 +172,5 @@ class TestBiViewEditor(common.TransactionCase):
         self.assertEqual(isinstance(open_action, dict), True)
 
         # open view
-        bi_view3.action_reset()
-        bi_view3.unlink()
+        # bi_view3.action_reset()
+        # bi_view3.unlink()
