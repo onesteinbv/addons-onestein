@@ -20,5 +20,4 @@
         'views/project_issue_type.xml',
         'views/menu.xml',
     ],
-    'installable': True,
 }

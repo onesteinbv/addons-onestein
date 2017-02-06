@@ -20,5 +20,4 @@
         'views/account_config_setting_views.xml',
         'wizard/scrap_equipment.xml',
     ],
-    'installable': True,
 }
