@@ -27,19 +27,17 @@ class hr_holidays_status(models.Model):
             ] and x.holiday_status_id == self)
 
         for holiday in holiday_ids:
-
-            sign = (holiday.type == 'add' and 1) or -1
-
-            result['virtual_remaining_hours'] += (
-                holiday.number_of_hours_temp * sign)
-            if holiday.state == 'validate':
-
-                result['remaining_hours'] += (
-                    holiday.number_of_hours_temp * sign)
-                result['hours_taken'] += holiday.number_of_hours_temp
-                if sign > 0:
-                    result['max_hours'] += holiday.number_of_hours_temp
-                    result['hours_taken'] -= holiday.number_of_hours_temp
+            hours = holiday.number_of_hours_temp
+            if holiday.type == 'add':
+                result['virtual_remaining_hours'] += hours
+                if holiday.state == 'validate':
+                    result['max_hours'] += hours
+                    result['remaining_hours'] += hours
+            elif holiday.type == 'remove':  # number of days is negative
+                result['virtual_remaining_hours'] -= hours
+                if holiday.state == 'validate':
+                    result['hours_taken'] += hours
+                    result['remaining_hours'] -= hours
 
         return result
 
