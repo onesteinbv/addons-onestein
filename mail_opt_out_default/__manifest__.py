@@ -12,6 +12,7 @@
     'category': 'Marketing',
     'version': '10.0.1.1.0',
     'depends': [
+        'base',
         'base_setup',
         'mail',
     ],
