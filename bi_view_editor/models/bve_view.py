@@ -97,19 +97,24 @@ class BveView(models.Model):
             measure = field_info['measure'] and 'measure'
             return row or column or measure
 
+        def _get_field_list(fields_info):
+            view_fields = []
+            all_fields = []
+            for field_info in fields_info:
+                field_name = field_info['name']
+                field_type = field_info['type']
+                def_type = _get_field_type(field_info)
+                field_def = _get_field_def(field_name, def_type)
+                if def_type:
+                    view_fields.append(field_def)
+                if field_type not in ['many2one', 'one2many', 'many2many']:
+                    all_fields.append(field_def)
+            return view_fields, all_fields
+
         fields_info = json.loads(self._get_format_data(self.data))
         is_tree_view = self._context.get('no_empty')
-        view_fields = []
-        all_fields = []
-        for field_info in fields_info:
-            field_name = field_info['name']
-            field_type = field_info['type']
-            def_type = _get_field_type(field_info)
-            field_def = _get_field_def(field_name, def_type)
-            if def_type:
-                view_fields.append(field_def)
-            if field_type not in ['many2one', 'one2many', 'many2many']:
-                all_fields.append(field_def)
+
+        view_fields, all_fields = _get_field_list(fields_info)
         if not view_fields and is_tree_view:
             view_fields = all_fields
         return view_fields
