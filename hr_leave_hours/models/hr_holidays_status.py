@@ -30,10 +30,12 @@ class hr_holidays_status(models.Model):
 
             sign = (holiday.type == 'add' and 1) or -1
 
-            result['virtual_remaining_hours'] += (holiday.number_of_hours_temp * sign)
+            result['virtual_remaining_hours'] += (
+                holiday.number_of_hours_temp * sign)
             if holiday.state == 'validate':
 
-                result['remaining_hours'] += (holiday.number_of_hours_temp * sign)
+                result['remaining_hours'] += (
+                    holiday.number_of_hours_temp * sign)
                 result['hours_taken'] += holiday.number_of_hours_temp
                 if sign > 0:
                     result['max_hours'] += holiday.number_of_hours_temp
