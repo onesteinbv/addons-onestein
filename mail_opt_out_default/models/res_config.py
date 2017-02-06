@@ -12,7 +12,7 @@ class BaseConfigSettings(models.TransientModel):
         default=lambda self: self.env.user.company_id.default_opt_out,
         string='Default Opt-out for partners *',
         store=True,
-        groups = 'base.group_system',
+        groups='base.group_system',
         help='''
         Set the Opt-out value to True by default
         for newly created Partners
