@@ -49,8 +49,8 @@ class Base(models.AbstractModel):
             return super(Base, self)._table_exist()
         return 1
 
-    @api.model_cr
-    def _create_table(self):
-        if not self._bi_view():
-            return super(Base, self)._create_table()
-        return 1
+    # @api.model_cr
+    # def _create_table(self):
+    #     if not self._bi_view():
+    #         return super(Base, self)._create_table()
+    #     return 1

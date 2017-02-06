@@ -155,7 +155,11 @@ class TestBiViewEditor(common.TransactionCase):
 
     def test_07_create_open_bve_object(self):
         vals = self.bi_view1_vals
-        vals.update({'name': 'Test View3'})
+        employees_group = self.env.ref('base.group_user')
+        vals.update({
+            'name': 'Test View3',
+            'group_ids': [(6, 0, [employees_group.id])],
+        })
         bi_view3 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view3), 1)
 
@@ -171,11 +175,6 @@ class TestBiViewEditor(common.TransactionCase):
         open_action = bi_view3.open_view()
         self.assertEqual(isinstance(open_action, dict), True)
 
-        models = self.env['ir.model'].sudo().search(
-            [('model', '=', bi_view3.model_name)])
-        for model in models:
-            model.sudo().unlink()
-
         # open view
-        # bi_view3.action_reset()
-        # bi_view3.unlink()
+        bi_view3.action_reset()
+        bi_view3.unlink()

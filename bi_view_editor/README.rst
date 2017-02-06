@@ -34,7 +34,7 @@ To graphically design your analysis data-set:
 - For each selected field, right-click on the Options column and select whether it's a row, column or measure
 - Save and click "Generate BI View"
 - Click "Open BI View" to view the result
-- If module Dashboard is installed, the you can store the selected view in user dashboard by using the standard "Add to My Dashboard" functionality
+- If module Dashboard (board) is installed, the standard "Add to My Dashboard" functionality would be available
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot

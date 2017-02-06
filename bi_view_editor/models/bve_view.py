@@ -82,13 +82,13 @@ class BveView(models.Model):
     def _create_view_arch(self):
         self.ensure_one()
 
-        def _get_field_def(field_name, def_type=False):
-            if not def_type:
+        def _get_field_def(name, type=False):
+            if not type:
                 return """<field name="x_{}" />""".format(
-                    field_name
+                    name
                 )
             return """<field name="x_{}" type="{}" />""".format(
-                field_name, def_type
+                name, type
             )
 
         def _get_field_type(field_info):
@@ -103,11 +103,13 @@ class BveView(models.Model):
         all_fields = []
         for field_info in fields_info:
             field_name = field_info['name']
+            field_type = field_info['type']
             def_type = _get_field_type(field_info)
             field_def = _get_field_def(field_name, def_type)
             if def_type:
                 view_fields.append(field_def)
-            all_fields.append(field_def)
+            if field_type not in ['many2one', 'one2many', 'many2many']:
+                all_fields.append(field_def)
         if not view_fields and is_tree_view:
             view_fields = all_fields
         return view_fields
@@ -248,6 +250,9 @@ class BveView(models.Model):
             table_name = self.model_name.replace('.', '_')
             tools.drop_view_if_exists(self.env.cr, table_name)
 
+            # this line is only for robustness in case something goes wrong
+            self._cr.execute('DROP TABLE IF EXISTS "%s"' % table_name)
+
             basic_fields = [
                 ("t0.id", "id")
             ]
@@ -295,6 +300,7 @@ class BveView(models.Model):
             return {
                 'name': self.name,
                 'model': self.model_name,
+                'state': 'manual',
                 'field_id': [
                     (0, 0, _prepare_field(field))
                     for field in data
@@ -303,8 +309,7 @@ class BveView(models.Model):
 
         def _build_object():
             vals = _prepare_object()
-            Model = self.env['ir.model']
-            res_id = Model.sudo().with_context(bve=True).create(vals)
+            res_id = self.env['ir.model'].sudo().create(vals)
             return res_id
 
         def group_ids_with_access(model_name, access_mode):
