@@ -5,9 +5,14 @@
         <field name="model">base.config.settings</field>
         <field name="inherit_id" ref="base_setup.view_general_configuration"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='email']" position='after'>
+            <xpath expr="//div[@name='email']/.." position='after'>
                 <group>
-                    <field name="default_opt_out"/>
+                    <label for="default_opt_out"/>
+                    <div name="default_opt_out">
+                        <div>
+                            <field name="default_opt_out"/>
+                        </div>
+                    </div>
                 </group>
             </xpath>
         </field>
