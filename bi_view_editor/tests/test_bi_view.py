@@ -91,18 +91,46 @@ class TestBiViewEditor(common.TransactionCase):
             'data': format_data
         }
 
-    def test_01_setup(self):
-        self.assertIsNotNone(self.partner_model)
-        self.assertIsNotNone(self.company_model)
-        self.assertIsNotNone(self.partner_field)
-        self.assertIsNotNone(self.partner_company_field)
-        self.assertIsNotNone(self.company_field)
-
-    def test_02_get_fields(self):
+    def test_01_get_fields(self):
         Model = self.env['ir.model']
         fields = Model.get_fields(self.partner_model.id)
         self.assertIsInstance(fields, list)
         self.assertGreater(len(fields), 0)
+
+    def test_02_get_join_nodes(self):
+        Fields = self.env['ir.model.fields']
+        field_res_users = Fields.search([
+            ('name', '=', 'login'),
+            ('model', '=', 'res.users')
+        ], limit=1)
+        field_data = [{
+            'model_id': field_res_users.model_id.id,
+            'name': 'login',
+            'column': False,
+            'table_alias': 't0',
+            'custom': False,
+            'measure': False,
+            'id': field_res_users.id,
+            'model': 'res.users',
+            'row': False,
+            'type': 'char',
+            'model_name': 'Users',
+            'description': 'Login'
+        }]
+        new_field = {
+            'model_id': self.partner_model.id,
+            'name': self.partner_field_name,
+            'custom': False,
+            'id': self.partner_field.id,
+            'model': self.partner_model_name,
+            'type': self.partner_field.ttype,
+            'model_name': self.partner_model.name,
+            'description': self.partner_field.field_description
+        }
+        Model = self.env['ir.model']
+        nodes = Model.get_join_nodes(field_data, new_field)
+        self.assertIsInstance(nodes, list)
+        self.assertGreater(len(nodes), 0)
 
     def test_03_get_join_nodes(self):
         new_field = {
