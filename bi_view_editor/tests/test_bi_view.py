@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests import common
+from odoo.exceptions import Warning as UserError
 
 
 class TestBiViewEditor(common.TransactionCase):
@@ -169,3 +170,22 @@ class TestBiViewEditor(common.TransactionCase):
         # remove view
         bi_view3.action_reset()
         bi_view3.unlink()
+
+    def test_08_check_empty_data(self):
+        vals = {
+            'name': 'Test View Empty',
+            'state': 'draft',
+            'data': ''
+        }
+        bi_view4 = self.env['bve.view'].create(vals)
+        self.assertEqual(len(bi_view4), 1)
+
+        # create sql view
+        with self.assertRaises(UserError):
+            bi_view4._create_sql_view()
+
+    def test_09_get_models(self):
+        Model = self.env['ir.model']
+        models = Model.get_models()
+        self.assertIsInstance(models, list)
+        self.assertGreater(len(models), 0)
