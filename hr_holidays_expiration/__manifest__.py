@@ -20,5 +20,4 @@
         'views/res_company.xml',
         'data/hr_holidays_cron.xml',
     ],
-    'installable': True,
 }
