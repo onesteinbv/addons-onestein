@@ -213,7 +213,8 @@ class BveView(models.Model):
         info = json.loads(self._get_format_data(self.data))
         models = list(set([f['model'] for f in info]))
         read_groups = set.intersection(*[set(
-            group_ids_with_access(model, 'read')) for model in models])
+            group_ids_with_access(model_name, 'read')
+        ) for model_name in models])
 
         # read access
         for group in read_groups:
