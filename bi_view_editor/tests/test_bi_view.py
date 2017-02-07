@@ -22,6 +22,19 @@ class TestBiViewEditor(common.TransactionCase):
                  ('name', '=', model_field[1])],
                 limit=1) for model_field in model_field_list)
 
+        def get_new_field(self):
+            new_field = {
+                'model_id': self.partner_model.id,
+                'name': self.partner_field_name,
+                'custom': False,
+                'id': self.partner_field.id,
+                'model': self.partner_model_name,
+                'type': self.partner_field.ttype,
+                'model_name': self.partner_model.name,
+                'description': self.partner_field.field_description
+            }
+            return new_field
+
         super(TestBiViewEditor, self).setUp()
         self.partner_model_name = 'res.partner'
         self.partner_field_name = 'name'
@@ -91,6 +104,8 @@ class TestBiViewEditor(common.TransactionCase):
             'data': format_data
         }
 
+        self.new_field = get_new_field(self)
+
     def test_01_get_fields(self):
         Model = self.env['ir.model']
         fields = Model.get_fields(self.partner_model.id)
@@ -117,32 +132,14 @@ class TestBiViewEditor(common.TransactionCase):
             'model_name': 'Users',
             'description': 'Login'
         }]
-        new_field = {
-            'model_id': self.partner_model.id,
-            'name': self.partner_field_name,
-            'custom': False,
-            'id': self.partner_field.id,
-            'model': self.partner_model_name,
-            'type': self.partner_field.ttype,
-            'model_name': self.partner_model.name,
-            'description': self.partner_field.field_description
-        }
+        new_field = self.new_field
         Model = self.env['ir.model']
         nodes = Model.get_join_nodes(field_data, new_field)
         self.assertIsInstance(nodes, list)
         self.assertGreater(len(nodes), 0)
 
     def test_03_get_join_nodes(self):
-        new_field = {
-            'model_id': self.partner_model.id,
-            'name': self.partner_field_name,
-            'custom': False,
-            'id': self.partner_field.id,
-            'model': self.partner_model_name,
-            'type': self.partner_field.ttype,
-            'model_name': self.partner_model.name,
-            'description': self.partner_field.field_description
-        }
+        new_field = self.new_field
         Model = self.env['ir.model']
         nodes = Model.get_join_nodes([], new_field)
         self.assertIsInstance(nodes, list)
