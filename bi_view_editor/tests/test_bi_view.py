@@ -163,18 +163,9 @@ class TestBiViewEditor(common.TransactionCase):
         bi_view3 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view3), 1)
 
-        # create bve object
-        # bi_view3.action_create()
-        # model = self.env['ir.model'].search([
-        #     ('model', '=', 'x_bve.testview3'),
-        #     ('name', '=', 'Test View3')
-        # ])
-        # self.assertEqual(len(model), 1)
-        #
-        # # open view
-        # open_action = bi_view3.open_view()
-        # self.assertEqual(isinstance(open_action, dict), True)
-        #
-        # # open view
-        # bi_view3.action_reset()
-        # bi_view3.unlink()
+        # create sql view
+        bi_view3._create_sql_view()
+
+        # remove view
+        bi_view3.action_reset()
+        bi_view3.unlink()
