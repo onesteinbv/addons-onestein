@@ -238,7 +238,7 @@ class BveView(models.Model):
     @api.model
     def _create_sql_view(self):
 
-        def _get_fields_info(fields_data):
+        def get_fields_info(fields_data):
             fields_info = []
             for field_data in fields_data:
                 field = self.env['ir.model.fields'].browse(field_data['id'])
@@ -255,21 +255,34 @@ class BveView(models.Model):
                 fields_info.append(vals)
             return fields_info
 
-        data = self.data
-        if not data:
-            raise UserError(_('No data to process.'))
+        def get_join_nodes(info):
+            join_nodes = [
+                (f['table_alias'],
+                 f['join'],
+                 f['select_field']) for f in info if f['join'] is not False]
+            return join_nodes
 
-        formatted_data = json.loads(self._get_format_data(data))
+        def get_tables(info):
+            tables = set([(f['table'], f['table_alias']) for f in info])
+            return tables
 
-        info = _get_fields_info(formatted_data)
-        fields = [("{}.{}".format(f['table_alias'],
-                                  f['select_field']),
-                   f['as_field']) for f in info if 'join_node' not in f]
-        tables = set([(f['table'], f['table_alias']) for f in info])
-        join_nodes = [
-            (f['table_alias'],
-             f['join'],
-             f['select_field']) for f in info if f['join'] is not False]
+        def get_fields(info):
+            fields = [("{}.{}".format(f['table_alias'],
+                                      f['select_field']),
+                       f['as_field']) for f in info if 'join_node' not in f]
+            return fields
+
+        def check_empty_data(data):
+            if not data:
+                raise UserError(_('No data to process.'))
+
+        check_empty_data(self.data)
+
+        formatted_data = json.loads(self._get_format_data(self.data))
+        info = get_fields_info(formatted_data)
+        fields = get_fields(info)
+        tables = get_tables(info)
+        join_nodes = get_join_nodes(info)
 
         table_name = self.model_name.replace('.', '_')
         tools.drop_view_if_exists(self.env.cr, table_name)
