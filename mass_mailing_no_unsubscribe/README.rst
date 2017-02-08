@@ -26,4 +26,4 @@ Contributors
 Maintainer
 ----------
 
-This module is maintained by ONESTEIN BV.
+This module is maintained by Onestein.
