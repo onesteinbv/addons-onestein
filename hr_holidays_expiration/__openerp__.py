@@ -6,8 +6,8 @@
     'name': "Holidays expiration",
     'summary': """Automatic management of holidays expiration""",
     'images': [],
-    'author': "Onestein",
-    'website': "http://www.onestein.eu",
+    'author': 'Onestein',
+    'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
     'version': '8.0.1.0.0',
     'depends': [
