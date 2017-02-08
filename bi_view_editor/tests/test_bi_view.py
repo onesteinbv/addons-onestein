@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests import common
+from odoo.exceptions import Warning as UserError
 
 
 class TestBiViewEditor(common.TransactionCase):
@@ -20,6 +21,19 @@ class TestBiViewEditor(common.TransactionCase):
                 [('model', '=', model_field[0]),
                  ('name', '=', model_field[1])],
                 limit=1) for model_field in model_field_list)
+
+        def get_new_field(self):
+            new_field = {
+                'model_id': self.partner_model.id,
+                'name': self.partner_field_name,
+                'custom': False,
+                'id': self.partner_field.id,
+                'model': self.partner_model_name,
+                'type': self.partner_field.ttype,
+                'model_name': self.partner_model.name,
+                'description': self.partner_field.field_description
+            }
+            return new_field
 
         super(TestBiViewEditor, self).setUp()
         self.partner_model_name = 'res.partner'
@@ -90,30 +104,42 @@ class TestBiViewEditor(common.TransactionCase):
             'data': format_data
         }
 
-    def test_01_setup(self):
-        self.assertIsNotNone(self.partner_model)
-        self.assertIsNotNone(self.company_model)
-        self.assertIsNotNone(self.partner_field)
-        self.assertIsNotNone(self.partner_company_field)
-        self.assertIsNotNone(self.company_field)
+        self.new_field = get_new_field(self)
 
-    def test_02_get_fields(self):
+    def test_01_get_fields(self):
         Model = self.env['ir.model']
         fields = Model.get_fields(self.partner_model.id)
         self.assertIsInstance(fields, list)
         self.assertGreater(len(fields), 0)
 
-    def test_03_get_join_nodes(self):
-        new_field = {
-            'model_id': self.partner_model.id,
-            'name': self.partner_field_name,
+    def test_02_get_join_nodes(self):
+        Fields = self.env['ir.model.fields']
+        field_res_users = Fields.search([
+            ('name', '=', 'login'),
+            ('model', '=', 'res.users')
+        ], limit=1)
+        field_data = [{
+            'model_id': field_res_users.model_id.id,
+            'name': 'login',
+            'column': False,
+            'table_alias': 't0',
             'custom': False,
-            'id': self.partner_field.id,
-            'model': self.partner_model_name,
-            'type': self.partner_field.ttype,
-            'model_name': self.partner_model.name,
-            'description': self.partner_field.field_description
-        }
+            'measure': False,
+            'id': field_res_users.id,
+            'model': 'res.users',
+            'row': False,
+            'type': 'char',
+            'model_name': 'Users',
+            'description': 'Login'
+        }]
+        new_field = self.new_field
+        Model = self.env['ir.model']
+        nodes = Model.get_join_nodes(field_data, new_field)
+        self.assertIsInstance(nodes, list)
+        self.assertGreater(len(nodes), 0)
+
+    def test_03_get_join_nodes(self):
+        new_field = self.new_field
         Model = self.env['ir.model']
         nodes = Model.get_join_nodes([], new_field)
         self.assertIsInstance(nodes, list)
@@ -163,18 +189,28 @@ class TestBiViewEditor(common.TransactionCase):
         bi_view3 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view3), 1)
 
-        # create bve object
-        # bi_view3.action_create()
-        # model = self.env['ir.model'].search([
-        #     ('model', '=', 'x_bve.testview3'),
-        #     ('name', '=', 'Test View3')
-        # ])
-        # self.assertEqual(len(model), 1)
-        #
-        # # open view
-        # open_action = bi_view3.open_view()
-        # self.assertEqual(isinstance(open_action, dict), True)
-        #
-        # # open view
-        # bi_view3.action_reset()
-        # bi_view3.unlink()
+        # create sql view
+        bi_view3._create_sql_view()
+
+        # remove view
+        bi_view3.action_reset()
+        bi_view3.unlink()
+
+    def test_08_check_empty_data(self):
+        vals = {
+            'name': 'Test View Empty',
+            'state': 'draft',
+            'data': ''
+        }
+        bi_view4 = self.env['bve.view'].create(vals)
+        self.assertEqual(len(bi_view4), 1)
+
+        # create sql view
+        with self.assertRaises(UserError):
+            bi_view4._create_sql_view()
+
+    def test_09_get_models(self):
+        Model = self.env['ir.model']
+        models = Model.get_models()
+        self.assertIsInstance(models, list)
+        self.assertGreater(len(models), 0)
