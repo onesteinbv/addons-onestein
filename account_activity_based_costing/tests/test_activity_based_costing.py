@@ -2,9 +2,7 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import datetime, date, timedelta
-
-from odoo import fields
+from datetime import date, timedelta
 from odoo.tests import common
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo.exceptions import ValidationError
@@ -65,7 +63,6 @@ class TestActivityBasedCosting(common.TransactionCase):
             'analytic_account_id': self.aa_3.id,
         })
 
-
         self.move_line_1 = move_line_obj.create({
             'name': 'Move Line 1',
             'move_id': self.move_1.id,
@@ -116,8 +113,6 @@ class TestActivityBasedCosting(common.TransactionCase):
             'account_id': self.aa_3.id,
             'project_id': self.proj_3.id,
         })
-
-
 
     def test_01_get_hours_left(self):
         self.assertEqual(self.aa_1.hours_left, 5.0)
