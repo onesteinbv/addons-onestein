@@ -6,7 +6,7 @@
     'name': 'Disable LDAP referrals',
     'images': [],
     'version': '8.0.1.0.0',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Authentication',
     'depends': ['auth_ldap'],
