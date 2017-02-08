@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2015 Onestein (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -26,8 +26,8 @@
 ================================================================
 
     """,
-    'author': "ONESTEiN BV",
-    'website': "http://www.onestein.eu",
+    'author': 'Onestein',
+    'website': 'http://www.onestein.eu',
     'category': 'Warehouse',
     'version': '1.0.2',
     'images': ['static/description/main_screenshot.png'],

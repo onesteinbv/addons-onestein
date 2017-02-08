@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2015 Onestein (<http://www.onestein.nl>).
 #              (C) 2015 1200wd.com
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ Uses the denormalized address from address_consolidation in all
 stock_transsmart communication instead off the standard res_partner_address.
 
     """,
-    'author': "ONESTEiN BV",
-    'website': "http://www.onestein.eu",
+    'author': 'Onestein',
+    'website': 'http://www.onestein.eu',
     'category': 'Warehouse',
     'version': '1.0',
     'images': ['static/description/main_screenshot.png'],
