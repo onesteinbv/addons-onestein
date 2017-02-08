@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2015 Onestein (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ This module creates a table for storing eployee relatives for communication
 in case of need.
 
     """,
-    'author': "ONESTEiN BV",
+    'author': "Onestein",
     'website': "http://www.onestein.eu",
     'category': 'Human Resources',
     'version': '1.0',
