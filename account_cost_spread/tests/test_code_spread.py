@@ -190,7 +190,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'spread_date': '2017-01-01'
         })
         self.invoice.write({
-            'spread_date': '2016-12-31'
+            'date_invoice': '2016-12-31'
         })
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
