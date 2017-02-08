@@ -181,23 +181,3 @@ class TestAccountCostSpread(AccountingTestCase):
                 spread_account = self.invoice_line.spread_account_id
                 if move_line.account_id == spread_account:
                     self.assertEqual(move_line.credit, spread_line.amount)
-
-    def test_06_supplier_invoice(self):
-        # spread date set
-        self.invoice_line.write({
-            'period_number': 3,
-            'period_type': 'month',
-            'spread_date': '2017-01-01'
-        })
-        self.invoice = self.env['account.invoice'].write({
-            'spread_date': '2016-12-31'
-        })
-        # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
-        self.assertEqual(len(self.invoice_line.spread_line_ids), 3)
-        self.assertEqual(115.32, self.invoice_line.spread_line_ids[0].amount)
-        self.assertEqual('2017-01-31', self.invoice_line.spread_line_ids[0].line_date)
-        self.assertEqual(115.32, self.invoice_line.spread_line_ids[1].amount)
-        self.assertEqual('2017-02-28', self.invoice_line.spread_line_ids[1].line_date)
-        self.assertEqual(115.32, self.invoice_line.spread_line_ids[2].amount)
-        self.assertEqual('2017-03-31', self.invoice_line.spread_line_ids[2].line_date)
