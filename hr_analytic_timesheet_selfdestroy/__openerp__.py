@@ -6,7 +6,7 @@
     'name': 'HR Analytic Timesheet Self-Destroy',
     'images': [],
     'summary': '''Automatically remove timesheet lines when amount is null''',
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': "http://www.onestein.eu",
     'category': 'Human Resources',
