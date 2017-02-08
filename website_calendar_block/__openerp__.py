@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2016 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2016 Onestein (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ Calendar Block
 This block is based on Messaging -> Calendar. Use field 'Privacy' to determine publicity.
 Since it's a block it can be placed anywhere on your website.
 """,
-    'author': "ONESTEiN BV",
+    'author': "Onestein",
     'website': "http://www.onestein.eu",
     'depends': ['website', 'calendar', 'web'],
     'data': [
