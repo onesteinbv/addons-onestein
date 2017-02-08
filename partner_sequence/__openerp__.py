@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2014 Onestein (<http://www.onestein.nl>).
 #              (C) 2014 ICTSTUDIO (<http://www.ictstudio.eu>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ Adds extra sequence type: 'Partner' and a sequence with code on res.partner.
 As default this sequence will be used to assign to partners. 
 The partner reference will be added to the partner just like the reference for a product in Odoo.
 """,
-    'author': 'ONESTEiN BV',
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'depends': [
         'base',

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2014 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2014 Onestein (<http://www.onestein.nl>).
 #              (C) 2014 ICTSTUDIO (<http://www.ictstudio.eu>).
 #
 #    This program is free software: you can redistribute it and/or modify
