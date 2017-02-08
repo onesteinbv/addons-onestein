@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2015 Onestein (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@
     'description': """
     Provide to the user methods and structure to easy integrate odoo with several type of web-services
     """,
-    'author': "ONESTEiN BV",
-    'website': "http://www.onestein.eu",
+    'author': 'Onestein',
+    'website': 'http://www.onestein.eu',
     'category': 'Custom',
     'version': '1.0',
     'depends': [
