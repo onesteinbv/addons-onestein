@@ -185,6 +185,7 @@ class TestAccountCostSpread(AccountingTestCase):
     def test_06_supplier_invoice(self):
         # spread date set
         self.invoice_line.write({
+            'price_unit': 345.96,
             'period_number': 3,
             'period_type': 'month',
             'spread_date': '2017-01-01'

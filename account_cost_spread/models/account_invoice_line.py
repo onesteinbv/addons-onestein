@@ -458,14 +458,15 @@ class AccountInvoiceLine(models.Model):
             lines = table[0]['lines']
             lines1 = []
             lines2 = []
-            flag = lines[0]['date'] < spread_start_date
-            for line in lines:
-                if flag:
-                    lines1.append(line)
-                    if line['date'] >= spread_start_date:
-                        flag = False
-                else:
-                    lines2.append(line)
+            if lines:
+                flag = lines[0]['date'] < spread_start_date
+                for line in lines:
+                    if flag:
+                        lines1.append(line)
+                        if line['date'] >= spread_start_date:
+                            flag = False
+                    else:
+                        lines2.append(line)
             if lines1:
                 def group_lines(x, y):
                     y.update({'amount': x['amount'] + y['amount']})
