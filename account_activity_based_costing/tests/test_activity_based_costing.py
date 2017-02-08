@@ -2,7 +2,12 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from datetime import datetime, date, timedelta
+
+from odoo import fields
 from odoo.tests import common
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.exceptions import ValidationError
 
 
 class TestActivityBasedCosting(common.TransactionCase):
@@ -13,6 +18,20 @@ class TestActivityBasedCosting(common.TransactionCase):
         aa_obj = self.env['account.analytic.account']
         aal_obj = self.env['account.analytic.line']
         proj_obj = self.env['project.project']
+        move_obj = self.env['account.move']
+        move_line_obj = self.env['account.move.line']
+        jour_obj = self.env['account.journal']
+
+        self.journal_1 = jour_obj.create({
+            'name': 'Journal 1',
+            'code': 'Jou1',
+            'type': 'sale',
+        })
+
+        self.move_1 = move_obj.create({
+            'name': 'Move 1',
+            'journal_id': self.journal_1.id,
+        })
 
         self.aa_1 = aa_obj.create({
             'name': 'Analytic Account 1',
@@ -46,12 +65,21 @@ class TestActivityBasedCosting(common.TransactionCase):
             'analytic_account_id': self.aa_3.id,
         })
 
+
+        self.move_line_1 = move_line_obj.create({
+            'name': 'Move Line 1',
+            'move_id': self.move_1.id,
+            'account_id': self.env.ref('l10n_generic_coa.1_conf_a_recv').id,
+            'analytic_account_id': self.aa_1.id,
+        })
+
         self.aa_line_1_1 = aal_obj.create({
             'name': 'AA Line 1,1',
             'unit_amount': 4.0,
             'amount': 1000.0,
             'account_id': self.aa_1.id,
             'project_id': self.proj_1.id,
+            'move_id': self.move_line_1.id,
         })
         self.aa_line_1_2 = aal_obj.create({
             'name': 'AA Line 1,2',
@@ -88,6 +116,8 @@ class TestActivityBasedCosting(common.TransactionCase):
             'account_id': self.aa_3.id,
             'project_id': self.proj_3.id,
         })
+
+
 
     def test_01_get_hours_left(self):
         self.assertEqual(self.aa_1.hours_left, 5.0)
@@ -138,7 +168,7 @@ class TestActivityBasedCosting(common.TransactionCase):
 
     def test_05_unlink(self):
 
-        self.aa_line_1_1.unlink()
+        self.move_line_1.unlink()
         self.aa_line_2_1.unlink()
         self.aa_line_3_1.unlink()
 
@@ -156,3 +186,16 @@ class TestActivityBasedCosting(common.TransactionCase):
         self.assertEqual(self.aa_3.budget_result_cost, -1000.0)
         self.assertEqual(self.aa_3.budget_result_contribution, -2000.0)
         self.assertEqual(self.aa_3.budget_result_contribution_perc, 0.0)
+
+    def test_06_check_dates(self):
+
+        with self.assertRaises(ValidationError):
+
+            today = date.today().strftime(DF)
+            tomorrow = (date.today() + timedelta(days=1)).strftime(DF)
+
+            self.env['account.analytic.account'].create({
+                'name': 'Faailing Analytic Account',
+                'start_date': tomorrow,
+                'end_date': today,
+            })
