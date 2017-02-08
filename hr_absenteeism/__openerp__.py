@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 ONESTEiN BV (<http://www.onestein.nl>).
+#    Copyright (C) 2015 Onestein (<http://www.onestein.nl>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ You can set up the intervals in the Human Resources Leave Types Configuration fo
 To have the tasks created, it is required to set up a Task Alert or a Automated Action on the Absent Notification Date
 field.
  """,
-    'author': "ONESTEiN BV",
+    'author': "Onestein",
     'website': "http://www.onestein.eu",
     'images': ['static/description/main_screenshot.png'],
     'category': 'Human Resources',
