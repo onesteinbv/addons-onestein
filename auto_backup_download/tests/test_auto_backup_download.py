@@ -16,17 +16,9 @@ class TestAutoBackupDownload(common.TransactionCase):
         with self.assertRaises(Warning):
             backup_dir.get_dir()
 
-        # test computed field file_ids
-        self.assertEqual(len(backup_dir.file_ids), 0)
-
-        # test count list of directory
-        self.assertEqual(len(backup_dir.file_ids), backup_dir.file_count)
-
         # test reload list of directory
         with self.assertRaises(Warning):
             backup_dir.reload()
-        self.assertEqual(len(backup_dir.file_ids), 0)
-        self.assertEqual(len(backup_dir.file_ids), backup_dir.file_count)
 
     def test_02_create_existing(self):
         backup_dir = self.env.ref(
