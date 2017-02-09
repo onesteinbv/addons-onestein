@@ -30,5 +30,5 @@ ratings:
   - "**.php"
   - "**.py"
   - "**.rb"
-exclude_paths: []
+exclude_paths:
 - "hr_holidays_leave_repeated/tests/test_holidays_leave_repeated.py"
