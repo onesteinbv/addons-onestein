@@ -36,8 +36,8 @@ class TestAutoBackupDownload(common.TransactionCase):
         self.assertGreaterEqual(len(backup_dir.file_ids), 0)
 
         # test count list of directory
-        self.assertEqual(len(full_dir.file_ids), full_dir.file_count)
+        self.assertEqual(len(backup_dir.file_ids), backup_dir.file_count)
 
         # test reload list of directory
-        full_dir.reload()
-        self.assertEqual(len(full_dir.file_ids), full_dir.file_count)
+        backup_dir.reload()
+        self.assertEqual(len(backup_dir.file_ids), backup_dir.file_count)
