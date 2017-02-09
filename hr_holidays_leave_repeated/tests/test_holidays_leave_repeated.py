@@ -56,6 +56,10 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
             'name': 'Employee 4',
             'calendar_id': self.calendar.id,
         })
+        self.employee_5 = self.employee_obj.create({
+            'name': 'Employee 5',
+            'calendar_id': self.calendar.id,
+        })
 
         self.status_1 = self.status_obj.create({
             'name': 'Repeating Status',
@@ -175,8 +179,8 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
                 'holiday_type': 'employee',
                 'type': 'remove',
                 'repeat_every': 'workday',
-                'repeat_limit': -5,
+                'repeat_limit': -1,
                 'date_from': self.today_start.strftime(DF),
                 'date_to': self.today_end.strftime(DF),
-                'employee_id': self.employee_1.id,
+                'employee_id': self.employee_5.id,
             })
