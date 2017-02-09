@@ -183,7 +183,7 @@ class TestActivityBasedCosting(common.TransactionCase):
             tomorrow = (date.today() + timedelta(days=1)).strftime(DF)
 
             self.env['account.analytic.account'].create({
-                'name': 'Faailing Analytic Account',
+                'name': 'Failing Analytic Account',
                 'start_date': tomorrow,
                 'end_date': today,
             })
