@@ -37,16 +37,15 @@ class IrFilesystemDirectory(models.Model):
     def _compute_file_ids(self):
         File = self.env['ir.filesystem.file']
         for dir in self:
-            lines = File.browse()
+            dir.file_ids = None
             if dir.get_dir():
                 for file in dir._get_directory_files():
-                    lines += File.create({
+                    dir.file_ids += File.create({
                         'name': file,
                         'filename': file,
                         'stored_filename': file,
                         'directory_id': dir.id,
                     })
-            dir.file_ids = lines
 
     @api.onchange('directory')
     def onchange_directory(self):
@@ -68,7 +67,7 @@ class IrFilesystemDirectory(models.Model):
 
         self.ensure_one()
         files = []
-        if self.get_dir():
+        if self.get_dir() and exists(self.get_dir()):
             try:
                 get_files(self.get_dir(), files)
             except (IOError, OSError):
@@ -81,8 +80,7 @@ class IrFilesystemDirectory(models.Model):
 
     @api.multi
     def reload(self):
-        # empty write: triggers recompute of file_ids
-        self.write({})
+        self.onchange_directory()
 
     @api.multi
     def copy(self, default=None):
