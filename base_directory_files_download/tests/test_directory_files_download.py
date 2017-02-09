@@ -44,6 +44,9 @@ class TestBaseDirectoryFilesDownload(common.TransactionCase):
         with self.assertRaises(Warning):
             dir.onchange_directory()
         self.assertEqual(len(dir.file_ids), 0)
+        with self.assertRaises(Warning):
+            dir.reload()
+        self.assertEqual(len(dir.file_ids), 0)
 
     def test_02_copy(self):
         dir = self.env['ir.filesystem.directory'].create({

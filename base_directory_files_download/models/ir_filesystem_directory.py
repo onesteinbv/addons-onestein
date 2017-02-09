@@ -37,16 +37,15 @@ class IrFilesystemDirectory(models.Model):
     def _compute_file_ids(self):
         File = self.env['ir.filesystem.file']
         for dir in self:
-            lines = File.browse()
+            dir.file_ids = None
             if dir.get_dir():
                 for file in dir._get_directory_files():
-                    lines += File.create({
+                    dir.file_ids += File.create({
                         'name': file,
                         'filename': file,
                         'stored_filename': file,
                         'directory_id': dir.id,
                     })
-            dir.file_ids = lines
 
     @api.onchange('directory')
     def onchange_directory(self):
