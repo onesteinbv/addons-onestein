@@ -16,10 +16,6 @@ class TestAutoBackupDownload(common.TransactionCase):
         with self.assertRaises(Warning):
             backup_dir.get_dir()
 
-        # test reload list of directory
-        with self.assertRaises(Warning):
-            backup_dir.reload()
-
     def test_02_create_existing(self):
         backup_dir = self.env.ref(
             'auto_backup_download.default_backup_directory')
