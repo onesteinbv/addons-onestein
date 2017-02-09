@@ -4,12 +4,11 @@
 
 from datetime import datetime, timedelta
 from odoo.tests import common
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from odoo.exceptions import ValidationError
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
+from odoo.exceptions import ValidationError, UserError
 
 
 class TestHolidaysLeaveRepeated(common.TransactionCase):
-
     def setUp(self):
         super(TestHolidaysLeaveRepeated, self).setUp()
 
@@ -20,9 +19,9 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
         self.employee_obj = self.env['hr.employee']
 
         self.today_start = datetime.today().replace(
-            hour=0, minute=0, second=0)
+            hour=8, minute=0, second=0)
         self.today_end = datetime.today().replace(
-            hour=23, minute=59, second=59)
+            hour=18, minute=0, second=0)
 
         today_start = self.today_start.strftime(DF)
         today_end = self.today_end.strftime(DF)
@@ -57,7 +56,7 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
             'calendar_id': self.calendar.id,
         })
         self.employee_5 = self.employee_obj.create({
-            'name': 'Employee 5',
+            'name': 'Failing Employee',
             'calendar_id': self.calendar.id,
         })
 
@@ -145,9 +144,9 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
                 [('holiday_status_id', '=', self.status_1.id),
                  ('employee_id', '=', self.employee_2.id),
                  ('date_from', '=', (self.today_start +
-                                     timedelta(days=i*7)).strftime(DF)),
+                                     timedelta(days=i * 7)).strftime(DF)),
                  ('date_to', '=', (self.today_end +
-                                   timedelta(days=i*7)).strftime(DF))]
+                                   timedelta(days=i * 7)).strftime(DF))]
             ).ids), 1)
 
     def test_04_biweeks(self):
@@ -156,9 +155,9 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
                 [('holiday_status_id', '=', self.status_1.id),
                  ('employee_id', '=', self.employee_3.id),
                  ('date_from', '=', (self.today_start +
-                                     timedelta(days=i*14)).strftime(DF)),
+                                     timedelta(days=i * 14)).strftime(DF)),
                  ('date_to', '=', (self.today_end +
-                                   timedelta(days=i*14)).strftime(DF))]
+                                   timedelta(days=i * 14)).strftime(DF))]
             ).ids), 1)
 
     def test_05_months(self):
@@ -167,9 +166,9 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
                 [('holiday_status_id', '=', self.status_1.id),
                  ('employee_id', '=', self.employee_4.id),
                  ('date_from', '=', (self.today_start +
-                                     timedelta(days=i*28)).strftime(DF)),
+                                     timedelta(days=i * 28)).strftime(DF)),
                  ('date_to', '=', (self.today_end +
-                                   timedelta(days=i*28)).strftime(DF))]
+                                   timedelta(days=i * 28)).strftime(DF))]
             ).ids), 1)
 
     def test_06_check_dates(self):
@@ -182,5 +181,18 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
                 'repeat_limit': -1,
                 'date_from': self.today_start.strftime(DF),
                 'date_to': self.today_end.strftime(DF),
+                'employee_id': self.employee_5.id,
+            })
+
+    def test_07_check_dates(self):
+        with self.assertRaises(UserError):
+            self.leave_obj.create({
+                'holiday_status_id': self.status_1.id,
+                'holiday_type': 'employee',
+                'type': 'remove',
+                'repeat_every': 'workday',
+                'repeat_limit': 5,
+                'date_from': self.today_start.strftime(DF),
+                'date_to': (self.today_end + timedelta(days=2)).strftime(DF),
                 'employee_id': self.employee_5.id,
             })
