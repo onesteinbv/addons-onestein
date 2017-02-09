@@ -30,16 +30,17 @@ class TestBaseDirectoryFilesDownload(common.TransactionCase):
         dir.reload()
         self.assertEqual(len(dir.file_ids), dir.file_count)
 
-        # test files contained
+        # test content of files
         for file in dir.file_ids:
             filename = file.stored_filename
             directory = dir.get_dir()
             with open(os.path.join(directory, filename), 'rb') as f:
-                content = f.read()
+                content = f.read().encode('base64')
                 self.assertEqual(file.file_content, content)
 
         # test onchange directory (to not existing)
-        dir.directory = '/tpd'
+        with self.assertRaises(Warning):
+            dir.directory = '/tpd'
         with self.assertRaises(Warning):
             dir.onchange_directory()
         self.assertEqual(len(dir.file_ids), 0)
@@ -50,9 +51,11 @@ class TestBaseDirectoryFilesDownload(common.TransactionCase):
             'directory': '/tmp'
         })
 
-        # copy
+        # test copy
         dir_copy = dir.copy()
         self.assertEqual(dir_copy.name, 'Test Orig (copy)')
+        self.assertEqual(len(dir_copy.file_ids), dir.file_count)
+        self.assertEqual(dir_copy.file_count, dir.file_count)
 
     def test_03_not_existing_directory(self):
         dir = self.env['ir.filesystem.directory'].create({
