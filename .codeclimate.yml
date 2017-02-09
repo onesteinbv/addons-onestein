@@ -5,7 +5,9 @@ engines:
   duplication:
     enabled: true
     exclude_fingerprints:
-    - 59095e20d7328c406d566eaa9cb137b1
+    - 59095e20d7328c406d566eaa9cb137b1    # code duplication on a test file;
+    - 95345fa7d89388e7ccede80bdb51b86c    # code duplication on a copy();
+    - 8da12304144d7139eeaece48550fd7c7    # code duplication on a copy();
     config:
       languages:
       - ruby

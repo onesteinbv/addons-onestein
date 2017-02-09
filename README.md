@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/onesteinbv/addons-onestein.svg?branch=10.0)](https://travis-ci.org/onesteinbv/addons-onestein)
 [![Code Climate](https://codeclimate.com/github/onesteinbv/addons-onestein/badges/gpa.svg)](https://codeclimate.com/github/onesteinbv/addons-onestein)
+[![codecov](https://codecov.io/gh/onesteinbv/addons-onestein/branch/10.0/graph/badge.svg)](https://codecov.io/gh/onesteinbv/addons-onestein)
 
 ======================
 Onestein - Odoo addons
