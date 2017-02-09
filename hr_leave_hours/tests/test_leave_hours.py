@@ -2,10 +2,9 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from odoo.tests import common
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
-from odoo.exceptions import ValidationError, UserError
 
 
 class TestLeaveHours(common.TransactionCase):
@@ -110,6 +109,9 @@ class TestLeaveHours(common.TransactionCase):
         self.leave_1.onchange(values, 'date_to', field_onchange)
 
         field_onchange = self.leave_allocation_1._onchange_spec()
-        self.leave_allocation_1.onchange(values, 'employee_id', field_onchange)
-        self.leave_allocation_1.onchange(values, 'date_from', field_onchange)
-        self.leave_allocation_1.onchange(values, 'date_to', field_onchange)
+        self.leave_allocation_1.with_context(default_type='add').onchange(
+            values, 'employee_id', field_onchange)
+        self.leave_allocation_1.with_context(default_type='add').onchange(
+            values, 'date_from', field_onchange)
+        self.leave_allocation_1.with_context(default_type='add').onchange(
+            values, 'date_to', field_onchange)
