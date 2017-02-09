@@ -39,8 +39,8 @@ class TestBaseDirectoryFilesDownload(common.TransactionCase):
                 self.assertEqual(file.file_content, content)
 
         # test onchange directory (to not existing)
-        with self.assertRaises(Warning):
-            dir.directory = '/tpd'
+        dir.directory = '/tpd'
+        self.assertEqual(len(dir.file_ids), 0)
         with self.assertRaises(Warning):
             dir.onchange_directory()
         self.assertEqual(len(dir.file_ids), 0)

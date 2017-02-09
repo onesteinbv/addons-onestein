@@ -68,7 +68,7 @@ class IrFilesystemDirectory(models.Model):
 
         self.ensure_one()
         files = []
-        if self.get_dir():
+        if self.get_dir() and exists(self.get_dir()):
             try:
                 get_files(self.get_dir(), files)
             except (IOError, OSError):
@@ -81,8 +81,7 @@ class IrFilesystemDirectory(models.Model):
 
     @api.multi
     def reload(self):
-        # empty write: triggers recompute of file_ids
-        self.write({})
+        self.onchange_directory()
 
     @api.multi
     def copy(self, default=None):
