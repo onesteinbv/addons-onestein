@@ -19,22 +19,22 @@ class ResourceCalendar(models.Model):
             work_limits = []
             if start_dt is None and end_dt is not None:
                 start_dt = end_dt.replace(
-                    hour=0, minute=0, second=0, milliseconds=0)
+                    hour=0, minute=0, second=0, microsecond=0)
             elif start_dt is None:
                 start_dt = datetime.datetime.now().replace(
-                    hour=0, minute=0, second=0, milliseconds=0)
+                    hour=0, minute=0, second=0, microsecond=0)
             else:
                 work_limits.append((start_dt.replace(
-                    hour=0, minute=0, second=0, milliseconds=0), start_dt))
+                    hour=0, minute=0, second=0, microsecond=0), start_dt))
             return start_dt, work_limits
 
         def set_work_limits_end(end_dt, start_dt, work_limits):
             if end_dt is None:
                 end_dt = start_dt.replace(
-                    hour=23, minute=59, second=59, milliseconds=999999)
+                    hour=23, minute=59, second=59, microsecond=999999)
             else:
                 work_limits.append((end_dt, end_dt.replace(
-                    hour=23, minute=59, second=59, milliseconds=999999)))
+                    hour=23, minute=59, second=59, microsecond=999999)))
             return end_dt
 
         start_dt, work_limits = set_work_limits_start(end_dt, start_dt)
@@ -80,9 +80,9 @@ class ResourceCalendar(models.Model):
             if default_interval:
                 working_interval = (
                     start_dt.replace(
-                        hour=default_interval[0], minute=0, second=0),
+                        hour=default_interval[0], minute=0, second=0, microsecond=999999),
                     start_dt.replace(
-                        hour=default_interval[1], minute=0, second=0))
+                        hour=default_interval[1], minute=0, second=0, microsecond=999999))
             return working_interval
 
         start_dt, work_limits = self._get_work_limits(end_dt, start_dt)
