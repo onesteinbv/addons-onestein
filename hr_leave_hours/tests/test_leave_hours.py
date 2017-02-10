@@ -50,7 +50,6 @@ class TestLeaveHours(common.TransactionCase):
         })
         self.employee_3 = self.employee_obj.create({
             'name': 'Employee 3',
-            'calendar_id': self.calendar.id,
         })
 
         self.contract_1 = self.contract_obj.create({
