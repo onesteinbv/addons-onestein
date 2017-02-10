@@ -278,7 +278,7 @@ class TestLeaveHours(common.TransactionCase):
         interval = self.calendar_obj.get_working_intervals_of_day(
             self.today_start,
             self.today_end,
-            default_interval = default_interval
+            default_interval=default_interval
         )
 
         self.assertEqual(interval, [(
