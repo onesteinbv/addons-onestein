@@ -20,9 +20,9 @@ class TestLeaveHours(common.TransactionCase):
         self.employee_obj = self.env['hr.employee']
 
         self.today_start = datetime.today().replace(
-            hour=8, minute=0, second=0)
+            hour=8, minute=0, second=0, microsecond=0)
         self.today_end = datetime.today().replace(
-            hour=18, minute=0, second=0)
+            hour=18, minute=0, second=0, microsecond=0)
 
         today_start = self.today_start.strftime(DF)
         today_end = self.today_end.strftime(DF)
@@ -269,3 +269,19 @@ class TestLeaveHours(common.TransactionCase):
         self.assertEqual(start_dt, datetime.today().replace(
             hour=0, minute=0, second=0, microsecond=0))
         self.assertEqual(work_limits, [])
+
+    def test_05_get_working_intervals_of_day(self):
+        default_interval = (
+            self.today_start.hour,
+            self.today_end.hour
+        )
+        interval = self.calendar_obj.get_working_intervals_of_day(
+            self.today_start,
+            self.today_end,
+            default_interval = default_interval
+        )
+
+        self.assertEqual(interval, [(
+            self.today_start,
+            self.today_end
+        )])

@@ -81,10 +81,10 @@ class ResourceCalendar(models.Model):
                 working_interval = (
                     start_dt.replace(
                         hour=default_interval[0], minute=0, second=0,
-                        microsecond=999999),
+                        microsecond=0),
                     start_dt.replace(
                         hour=default_interval[1], minute=0, second=0,
-                        microsecond=999999))
+                        microsecond=0))
             return working_interval
 
         start_dt, work_limits = self._get_work_limits(end_dt, start_dt)
