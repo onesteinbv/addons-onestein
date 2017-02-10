@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
         <template id="swnowflakes_website_layout" inherit_id="website.layout">
@@ -16,4 +16,4 @@
         </template>
 
     </data>
-</openerp>
+</odoo>
