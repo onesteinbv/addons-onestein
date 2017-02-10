@@ -285,3 +285,10 @@ class TestLeaveHours(common.TransactionCase):
             self.today_start,
             self.today_end
         )])
+
+    def test_06_compute_leaves_count(self):
+        employee_list = self.employee_1 + \
+                        self.employee_2 + \
+                        self.employee_3 + \
+                        self.employee_4
+        employee_list._compute_leaves_count()
