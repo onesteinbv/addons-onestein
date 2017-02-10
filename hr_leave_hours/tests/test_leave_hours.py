@@ -231,23 +231,26 @@ class TestLeaveHours(common.TransactionCase):
         self.assertEqual(start_dt, self.today_start)
         self.assertEqual(work_limits, [
             (
-                self.today_start.replace(hour=0, minute=0, second=0),
+                self.today_start.replace(
+                    hour=0, minute=0, second=0, milliseconds=0),
                 self.today_start
             ),
             (
                 self.today_end,
-                self.today_end.replace(hour=23, minute=59, second=59)
+                self.today_end.replace(
+                    hour=23, minute=59, second=59, milliseconds=999999)
             ),
         ])
 
         start_dt, work_limits = self.calendar_obj._get_work_limits(
             self.today_end, None)
         self.assertEqual(start_dt, self.today_end.replace(
-            hour=0, minute=0, second=0))
+            hour=0, minute=0, second=0, milliseconds=0))
         self.assertEqual(work_limits, [
             (
                 self.today_end,
-                self.today_end.replace(hour=23, minute=59, second=59)
+                self.today_end.replace(
+                    hour=23, minute=59, second=59, milliseconds=999999)
             ),
         ])
 
@@ -256,7 +259,8 @@ class TestLeaveHours(common.TransactionCase):
         self.assertEqual(start_dt, self.today_start)
         self.assertEqual(work_limits, [
             (
-                self.today_start.replace(hour=0, minute=0, second=0),
+                self.today_start.replace(
+                    hour=0, minute=0, second=0, milliseconds=0),
                 self.today_start
             ),
         ])
