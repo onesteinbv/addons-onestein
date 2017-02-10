@@ -5,7 +5,7 @@
 {
     'name': 'Costcenter',
     'summary': 'Cost center information for invoice lines',
-    'author': 'ONESTEiN BV,Odoo Community Association (OCA)',
+    'author': 'Onestein,Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',
