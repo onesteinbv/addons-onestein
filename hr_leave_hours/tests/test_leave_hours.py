@@ -5,6 +5,7 @@
 from datetime import datetime
 from odoo.tests import common
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
+from odoo.exceptions import ValidationError, Warning
 
 
 class TestLeaveHours(common.TransactionCase):
@@ -44,6 +45,10 @@ class TestLeaveHours(common.TransactionCase):
         })
         self.employee_2 = self.employee_obj.create({
             'name': 'Employee 2',
+            'calendar_id': self.calendar.id,
+        })
+        self.employee_3 = self.employee_obj.create({
+            'name': 'Failing Employee',
             'calendar_id': self.calendar.id,
         })
 
@@ -93,7 +98,7 @@ class TestLeaveHours(common.TransactionCase):
             'employee_id': self.employee_2.id,
         })
 
-    def test_onchange(self):
+    def test_01_onchange(self):
         field_onchange = self.leave_1._onchange_spec()
         self.assertEqual(field_onchange.get('employee_id'), '1')
         self.assertEqual(field_onchange.get('date_from'), '1')
@@ -115,3 +120,16 @@ class TestLeaveHours(common.TransactionCase):
             values, 'date_from', field_onchange)
         self.leave_allocation_1.with_context(default_type='add').onchange(
             values, 'date_to', field_onchange)
+
+        values.update({
+            'date_from': self.today_end.strftime(DF),
+            'date_to': self.today_start.strftime(DF),
+        })
+
+        with self.assertRaises(Warning):
+            self.leave_allocation_1.with_context(default_type='add').onchange(
+                values, 'date_from', field_onchange)
+
+        with self.assertRaises(Warning):
+            self.leave_allocation_1.with_context(default_type='add').onchange(
+                values, 'date_to', field_onchange)
