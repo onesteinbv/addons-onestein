@@ -223,3 +223,45 @@ class TestLeaveHours(common.TransactionCase):
                 'employee_id': self.employee_4.id,
                 'number_of_hours_temp': 8.0
             })
+
+    def test_04_get_work_limits(self):
+
+        start_dt, work_limits = self.calendar_obj._get_work_limits(
+            self.today_end, self.today_start)
+        self.assertEqual(start_dt, self.today_start)
+        self.assertEqual(work_limits, [
+            (
+                self.today_start.replace(hour=0, minute=0, second=0),
+                self.today_start
+            ),
+            (
+                self.today_end,
+                self.today_end.replace(hour=23, minute=59, second=59)
+            ),
+        ])
+
+        start_dt, work_limits = self.calendar_obj._get_work_limits(
+            self.today_end, None)
+        self.assertEqual(start_dt, self.today_end.replace(
+            hour=0, minute=0, second=0))
+        self.assertEqual(work_limits, [
+            (
+                self.today_end,
+                self.today_end.replace(hour=23, minute=59, second=59)
+            ),
+        ])
+
+        start_dt, work_limits = self.calendar_obj._get_work_limits(
+            None, self.today_start)
+        self.assertEqual(start_dt, self.today_start)
+        self.assertEqual(work_limits, [
+            (
+                self.today_start.replace(hour=0, minute=0, second=0),
+                self.today_start
+            ),
+        ])
+
+        start_dt, work_limits = self.calendar_obj._get_work_limits(None, None)
+        self.assertEqual(start_dt, datetime.today().replace(
+            hour=0, minute=0, second=0))
+        self.assertEqual(work_limits, [])
