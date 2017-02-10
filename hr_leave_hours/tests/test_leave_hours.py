@@ -5,7 +5,7 @@
 from datetime import datetime
 from odoo.tests import common
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
-from odoo.exceptions import ValidationError, Warning
+from odoo.exceptions import Warning
 
 
 class TestLeaveHours(common.TransactionCase):
@@ -121,15 +121,16 @@ class TestLeaveHours(common.TransactionCase):
         self.leave_allocation_1.with_context(default_type='add').onchange(
             values, 'date_to', field_onchange)
 
-        values.update({
+    def test_02_onchange_fail(self):
+
+        field_onchange = self.leave_1._onchange_spec()
+        values = {
             'date_from': self.today_end.strftime(DF),
             'date_to': self.today_start.strftime(DF),
-        })
+        }
 
         with self.assertRaises(Warning):
-            self.leave_allocation_1.with_context(default_type='add').onchange(
-                values, 'date_from', field_onchange)
+            self.leave_1.onchange(values, 'date_from', field_onchange)
 
         with self.assertRaises(Warning):
-            self.leave_allocation_1.with_context(default_type='add').onchange(
-                values, 'date_to', field_onchange)
+            self.leave_1.onchange(values, 'date_to', field_onchange)
