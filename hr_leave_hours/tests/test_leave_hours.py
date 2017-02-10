@@ -1,172 +1,213 @@
 # -*- coding: utf-8 -*-
-# Copyright 2016 Onestein (<http://www.onestein.eu>)
+# Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import logging
 from datetime import datetime
-
-from odoo import api, fields, models
-from odoo.exceptions import ValidationError, Warning
-from odoo.tools.translate import _
-
-_logger = logging.getLogger(__name__)
+from odoo.tests import common
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
+from odoo.exceptions import Warning
 
 
-class HrHolidays(models.Model):
-    _inherit = "hr.holidays"
+class TestLeaveHours(common.TransactionCase):
+    def setUp(self):
+        super(TestLeaveHours, self).setUp()
 
-    @api.onchange('employee_id')
-    def onchange_holiday_employee(self):
-        self.department_id = None
-        self.number_of_hours_temp = 0.0
-        if self.employee_id:
-            self._set_number_of_hours_temp()
-            self.department_id = self.employee_id.department_id
+        self.leave_obj = self.env['hr.holidays']
+        self.status_obj = self.env['hr.holidays.status']
+        self.calendar_obj = self.env['resource.calendar']
+        self.workday_obj = self.env['resource.calendar.attendance']
+        self.contract_obj = self.env['hr.contract']
+        self.employee_obj = self.env['hr.employee']
 
-    @api.onchange('date_from', 'date_to')
-    def onchange_date(self):
-        # Check in context what form is open: add or remove
-        if self.env.context.get('default_type', '') == 'add':
-            return
+        self.today_start = datetime.today().replace(
+            hour=8, minute=0, second=0)
+        self.today_end = datetime.today().replace(
+            hour=18, minute=0, second=0)
 
-        self._check_dates()
-        self._check_employee()
-        self._set_number_of_hours_temp()
+        today_start = self.today_start.strftime(DF)
+        today_end = self.today_end.strftime(DF)
 
-    @api.multi
-    def _set_number_of_hours_temp(self):
-        self.ensure_one()
-        from_dt = self._compute_datetime(self.date_from)
-        to_dt = self._compute_datetime(self.date_to)
-        work_hours = self._compute_work_hours(from_dt, to_dt)
-        self.number_of_hours_temp = work_hours
+        self.calendar = self.calendar_obj.create({
+            'name': 'Calendar 1',
+        })
 
-    @api.model
-    def _compute_datetime(self, date):
-        dt = False
-        if date:
-            reference_date = fields.Datetime.context_timestamp(
-                self.env.user,
-                datetime(1990, 2, 8, 12)
-            )
-            dt = fields.Datetime.from_string(date)
-            tz_dt = fields.Datetime.context_timestamp(self.env.user, dt)
-            dt = dt + tz_dt.tzinfo._utcoffset
-            dt = dt - reference_date.tzinfo._utcoffset
-        return dt
+        for i in range(0, 7):
+            self.workday_obj.create({
+                'name': 'Day ' + str(i),
+                'dayofweek': str(i),
+                'hour_from': 8.0,
+                'hour_to': 16.0,
+                'calendar_id': self.calendar.id,
+            })
 
-    @api.multi
-    def _check_dates(self):
-        self.ensure_one()
-        # date_to has to be greater than date_from
-        if self.date_from and self.date_to:
-            if self.date_from > self.date_to:
-                raise Warning(_(
-                    'The start date must be anterior to the end date.'
-                ))
+        self.employee_1 = self.employee_obj.create({
+            'name': 'Employee 1',
+            'calendar_id': self.calendar.id,
+        })
+        self.employee_2 = self.employee_obj.create({
+            'name': 'Employee 2',
+            'calendar_id': self.calendar.id,
+        })
+        self.employee_3 = self.employee_obj.create({
+            'name': 'Employee 3',
+            'calendar_id': self.calendar.id,
+        })
 
-    @api.multi
-    def _check_employee(self):
-        self.ensure_one()
-        employee = self.employee_id
-        if not employee and (self.date_to or self.date_from):
-            raise Warning(_('Set an employee first!'))
+        self.contract_1 = self.contract_obj.create({
+            'name': 'Contract 1',
+            'employee_id': self.employee_3.id,
+            'wage': 2000.0,
+            'working_hours': self.calendar.id,
+        })
 
-    @api.multi
-    def _compute_work_hours(self, from_dt, to_dt):
-        self.ensure_one()
-        employee = self.employee_id
-        work_hours = 0.0
-        if self.date_from and self.date_to:
-            working_hours = self._get_working_hours(employee)
-            if working_hours:
-                work_hours = working_hours.get_working_hours(
-                    from_dt,
-                    to_dt,
-                    compute_leaves=True,
-                    resource_id=employee.resource_id.id)
-        return work_hours
+        self.status_1 = self.status_obj.create({
+            'name': 'Repeating Status',
+            'limit': True,
+            'repeat': True,
+        })
 
-    @api.model
-    def _get_working_hours(self, employee):
-        working_hours = None
-        contract = employee.contract_id
-        if employee.calendar_id:
-            working_hours = employee.calendar_id
-        elif contract and contract.working_hours:
-            working_hours = contract.working_hours
-        return working_hours
+        self.leave_allocation_1 = self.leave_obj.create({
+            'name': 'Allocation Request 1',
+            'holiday_status_id': self.status_1.id,
+            'holiday_type': 'employee',
+            'employee_id': self.employee_1.id,
+            'number_of_days_temp': 10,
+            'type': 'add',
+        })
 
-    @api.depends('number_of_hours_temp', 'state')
-    def _compute_number_of_hours(self):
-        for rec in self:
-            number_of_hours = rec.number_of_hours_temp
-            if rec.type == 'remove':
-                number_of_hours = -rec.number_of_hours_temp
+        self.leave_1 = self.leave_obj.create({
+            'holiday_status_id': self.status_1.id,
+            'holiday_type': 'employee',
+            'type': 'remove',
+            'repeat_every': 'workday',
+            'repeat_limit': 5,
+            'date_from': today_start,
+            'date_to': today_end,
+            'employee_id': self.employee_1.id,
+        })
 
-            rec.virtual_hours = number_of_hours
-            if rec.state not in ('validate',):
-                number_of_hours = 0.0
-            rec.number_of_hours = number_of_hours
+        self.leave_allocation_2 = self.leave_obj.create({
+            'name': 'Allocation Request 2',
+            'holiday_status_id': self.status_1.id,
+            'holiday_type': 'employee',
+            'employee_id': self.employee_2.id,
+            'number_of_days_temp': 10,
+            'type': 'add',
+        })
 
-    number_of_hours_temp = fields.Float(
-        string='Allocation in Hours',
-        digits=(2, 2),
-        readonly=True,
-        states={'draft': [('readonly', False)],
-                'confirm': [('readonly', False)]}
-    )
-    number_of_hours = fields.Float(
-        string='Number of Hours',
-        compute='_compute_number_of_hours',
-        store=True
-    )
-    virtual_hours = fields.Float(
-        string='Virtual Hours',
-        compute='_compute_number_of_hours',
-        store=True
-    )
-    working_hours = fields.Float(
-        string='Working hours', digits=(2, 2)
-    )
+        self.leave_2 = self.leave_obj.create({
+            'holiday_status_id': self.status_1.id,
+            'holiday_type': 'employee',
+            'type': 'remove',
+            'repeat_every': 'week',
+            'repeat_limit': 4,
+            'date_from': today_start,
+            'date_to': today_end,
+            'employee_id': self.employee_2.id,
+        })
 
-    @api.one
-    @api.constrains(
-        'holiday_type',
-        'type',
-        'employee_id',
-        'holiday_status_id',
-        'holiday_status_id')
-    def _check_holidays(self):
-        if not(self.holiday_type != 'employee' or self.type != 'remove' or
-               not self.employee_id or self.holiday_status_id.limit):
+        self.leave_allocation_3 = self.leave_obj.create({
+            'name': 'Allocation Request 3',
+            'holiday_status_id': self.status_1.id,
+            'holiday_type': 'employee',
+            'employee_id': self.employee_3.id,
+            'number_of_days_temp': 10,
+            'type': 'add',
+        })
 
-            leave_hours = self.holiday_status_id.get_hours(
-                self.employee_id.id
-            )
-            _logger.debug('Leave Hours: %s', (leave_hours))
+        self.leave_3 = self.leave_obj.create({
+            'holiday_status_id': self.status_1.id,
+            'holiday_type': 'employee',
+            'type': 'remove',
+            'repeat_every': 'week',
+            'repeat_limit': 4,
+            'date_from': today_start,
+            'date_to': today_end,
+            'employee_id': self.employee_3.id,
+        })
 
-            self._check_leave_hours(leave_hours)
+    def test_01_onchange(self):
 
-    @api.model
-    def _check_leave_hours(self, leave_hours):
-        remaining = leave_hours['remaining_hours']
-        virt_remaining = leave_hours['virtual_remaining_hours']
-        if remaining < 0 or virt_remaining < 0:
-            # Raising a warning gives a more user-friendly
-            # feedback than the default constraint error
-            raise ValidationError(_(
-                'The number of remaining hours is not sufficient for '
-                'this leave type.\nPlease check for allocation requests '
-                'awaiting validation.'))
+        def test_onchange(leave, employee, allocation):
+            field_onchange = leave._onchange_spec()
+            self.assertEqual(field_onchange.get('employee_id'), '1')
+            self.assertEqual(field_onchange.get('date_from'), '1')
+            self.assertEqual(field_onchange.get('date_to'), '1')
 
-    @api.multi
-    def name_get(self):
-        res = []
-        for leave in self:
-            res.append((leave.id, _("%s on %s : %.2f hour(s)") % (
-                leave.employee_id.name,
-                leave.holiday_status_id.name,
-                leave.number_of_hours_temp
-            )))
-        return res
+            values = {
+                'employee_id': employee.id,
+                'date_from': self.today_start.strftime(DF),
+                'date_to': self.today_end.strftime(DF),
+            }
+            if allocation:
+                leave.with_context(default_type='add').onchange(
+                    values, 'employee_id', field_onchange)
+                leave.with_context(default_type='add').onchange(
+                    values, 'date_from', field_onchange)
+                leave.with_context(default_type='add').onchange(
+                    values, 'date_to', field_onchange)
+            else:
+                leave.onchange(values, 'employee_id', field_onchange)
+                leave.onchange(values, 'date_from', field_onchange)
+                leave.onchange(values, 'date_to', field_onchange)
+
+        test_list = [
+            {
+                'leave': self.leave_1,
+                'employee': self.employee_1,
+                'allocation': False,
+            },
+            {
+                'leave': self.leave_2,
+                'employee': self.employee_2,
+                'allocation': False,
+            },
+            {
+                'leave': self.leave_3,
+                'employee': self.employee_3,
+                'allocation': False,
+            },
+            {
+                'leave': self.leave_allocation_1,
+                'employee': self.employee_1,
+                'allocation': True,
+            },
+            {
+                'leave': self.leave_allocation_2,
+                'employee': self.employee_2,
+                'allocation': True,
+            },
+            {
+                'leave': self.leave_allocation_3,
+                'employee': self.employee_3,
+                'allocation': True,
+            },
+        ]
+
+        for test in test_list:
+            test_onchange(test['leave'], test['employee'], test['allocation'])
+
+    def test_02_onchange_fail(self):
+        field_onchange = self.leave_1._onchange_spec()
+        values = {
+            'date_from': self.today_end.strftime(DF),
+            'date_to': self.today_start.strftime(DF),
+        }
+
+        with self.assertRaises(Warning):
+            self.leave_1.onchange(values, 'date_from', field_onchange)
+        with self.assertRaises(Warning):
+            self.leave_1.onchange(values, 'date_to', field_onchange)
+
+        values.update({
+            'employee_id': None,
+            'date_from': self.today_start.strftime(DF),
+            'date_to': self.today_end.strftime(DF),
+        })
+
+        self.leave_1.onchange(values, 'employee_id', field_onchange)
+
+        with self.assertRaises(Warning):
+            self.leave_1.onchange(values, 'date_from', field_onchange)
+        with self.assertRaises(Warning):
+            self.leave_1.onchange(values, 'date_to', field_onchange)
