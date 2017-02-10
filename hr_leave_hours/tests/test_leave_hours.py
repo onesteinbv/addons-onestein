@@ -5,7 +5,7 @@
 from datetime import datetime
 from odoo.tests import common
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
-from odoo.exceptions import Warning
+from odoo.exceptions import Warning, ValidationError
 
 
 class TestLeaveHours(common.TransactionCase):
@@ -51,6 +51,10 @@ class TestLeaveHours(common.TransactionCase):
         self.employee_3 = self.employee_obj.create({
             'name': 'Employee 3',
         })
+        self.employee_4 = self.employee_obj.create({
+            'name': 'Failing Employee',
+            'calendar_id': self.calendar.id,
+        })
 
         self.contract_1 = self.contract_obj.create({
             'name': 'Contract 1',
@@ -60,9 +64,12 @@ class TestLeaveHours(common.TransactionCase):
         })
 
         self.status_1 = self.status_obj.create({
-            'name': 'Repeating Status',
+            'name': 'Repeating Status 1',
             'limit': True,
-            'repeat': True,
+        })
+        self.status_2 = self.status_obj.create({
+            'name': 'Repeating Status 2',
+            'limit': False,
         })
 
         self.leave_allocation_1 = self.leave_obj.create({
@@ -78,8 +85,6 @@ class TestLeaveHours(common.TransactionCase):
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
             'type': 'remove',
-            'repeat_every': 'workday',
-            'repeat_limit': 5,
             'date_from': today_start,
             'date_to': today_end,
             'employee_id': self.employee_1.id,
@@ -98,8 +103,6 @@ class TestLeaveHours(common.TransactionCase):
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
             'type': 'remove',
-            'repeat_every': 'week',
-            'repeat_limit': 4,
             'date_from': today_start,
             'date_to': today_end,
             'employee_id': self.employee_2.id,
@@ -118,8 +121,6 @@ class TestLeaveHours(common.TransactionCase):
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
             'type': 'remove',
-            'repeat_every': 'week',
-            'repeat_limit': 4,
             'date_from': today_start,
             'date_to': today_end,
             'employee_id': self.employee_3.id,
@@ -210,3 +211,15 @@ class TestLeaveHours(common.TransactionCase):
             self.leave_1.onchange(values, 'date_from', field_onchange)
         with self.assertRaises(Warning):
             self.leave_1.onchange(values, 'date_to', field_onchange)
+
+    def test_03_creation_fail(self):
+        with self.assertRaises(ValidationError):
+            self.leave_obj.create({
+                'holiday_status_id': self.status_2.id,
+                'holiday_type': 'employee',
+                'type': 'remove',
+                'date_from': self.today_start.strftime(DF),
+                'date_to': self.today_end.strftime(DF),
+                'employee_id': self.employee_4.id,
+                'number_of_hours_temp': 8.0
+            })
