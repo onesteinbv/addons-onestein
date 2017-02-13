@@ -9,7 +9,7 @@ class hr_holidays_status(models.Model):
     _inherit = "hr.holidays.status"
 
     @api.model
-    def get_hours(self, employee_id):
+    def get_hours(self, employee):
         result = {
             'max_hours': 0,
             'remaining_hours': 0,
@@ -17,9 +17,7 @@ class hr_holidays_status(models.Model):
             'virtual_remaining_hours': 0,
         }
 
-        holiday_ids = self.env['hr.employee'].browse(
-            employee_id
-        ).holiday_ids.filtered(
+        holiday_ids = employee.holiday_ids.filtered(
             lambda x: x.state in [
                 'confirm',
                 'validate1',
@@ -44,26 +42,27 @@ class hr_holidays_status(models.Model):
     @api.multi
     def _user_left_hours(self):
         employee_id = self._context.get('employee_id', False)
+        employee = None
         if not employee_id:
-            employees = self.env['hr.employee'].search([
-                ('user_id', '=', self._uid)
-            ], limit=1)
+            employees = self.env.user.employee_ids
             if employees:
-                employee_id = employees.id
+                employee = employees[0]
+        else:
+            employee = self.env['hr.employee'].browse(employee_id)
+
         for status in self:
-            if employee_id:
-                res = status.get_hours(employee_id)
+            status.hours_taken = 0
+            status.remaining_hours = 0
+            status.max_hours = 0
+            status.virtual_remaining_hours = 0
+            if employee:
+                res = status.get_hours(employee)
                 status.hours_taken = res['hours_taken']
                 status.remaining_hours = res['remaining_hours']
                 status.max_hours = res['max_hours']
                 status.virtual_remaining_hours = res[
                     'virtual_remaining_hours'
                 ]
-            else:
-                status.hours_taken = 0
-                status.remaining_hours = 0
-                status.max_hours = 0
-                status.virtual_remaining_hours = 0
 
     max_hours = fields.Float(
         compute="_user_left_hours",

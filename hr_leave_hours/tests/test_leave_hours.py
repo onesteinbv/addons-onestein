@@ -64,11 +64,11 @@ class TestLeaveHours(common.TransactionCase):
         })
 
         self.status_1 = self.status_obj.create({
-            'name': 'Repeating Status 1',
+            'name': 'Status 1',
             'limit': True,
         })
         self.status_2 = self.status_obj.create({
-            'name': 'Repeating Status 2',
+            'name': 'Status 2',
             'limit': False,
         })
 
@@ -78,6 +78,7 @@ class TestLeaveHours(common.TransactionCase):
             'holiday_type': 'employee',
             'employee_id': self.employee_1.id,
             'number_of_days_temp': 10,
+            'number_of_hours_temp': 80,
             'type': 'add',
         })
 
@@ -88,6 +89,7 @@ class TestLeaveHours(common.TransactionCase):
             'date_from': today_start,
             'date_to': today_end,
             'employee_id': self.employee_1.id,
+            'number_of_hours_temp': 8,
         })
 
         self.leave_allocation_2 = self.leave_obj.create({
@@ -296,9 +298,29 @@ class TestLeaveHours(common.TransactionCase):
     def test_07_get_hours(self):
         self.leave_allocation_1.action_approve()
         self.leave_1.action_approve()
-        hours = self.status_1.get_hours(self.employee_1.id)
+        hours = self.status_1.get_hours(self.employee_1)
 
         self.assertEqual(hours['virtual_remaining_hours'], 72.0)
         self.assertEqual(hours['remaining_hours'], 72.0)
         self.assertEqual(hours['hours_taken'], 8.0)
         self.assertEqual(hours['max_hours'], 80.0)
+
+        self.assertEqual(self.status_1.with_context(
+            employee_id=self.employee_1.id).virtual_remaining_hours, 72.0)
+        self.assertEqual(self.status_1.with_context(
+            employee_id=self.employee_1.id).remaining_hours, 72.0)
+        self.assertEqual(self.status_1.with_context(
+            employee_id=self.employee_1.id).hours_taken, 8.0)
+        self.assertEqual(self.status_1.with_context(
+            employee_id=self.employee_1.id).max_hours, 80.0)
+
+        self.assertEqual(self.status_1.with_context(
+            employee_id=self.employee_1.id).name_get(),
+                         [(self.status_1.id, 'Status 1')])
+
+        self.assertEqual(self.status_2.with_context(
+            employee_id=self.employee_1.id).name_get(),
+                         [(self.status_2.id, 'Status 2  (0.0 Left)')])
+
+        self.assertEqual(self.status_1.name_get(),
+                         [(self.status_1.id, 'Status 1')])

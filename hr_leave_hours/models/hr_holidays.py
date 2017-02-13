@@ -142,7 +142,7 @@ class HrHolidays(models.Model):
                not self.employee_id or self.holiday_status_id.limit):
 
             leave_hours = self.holiday_status_id.get_hours(
-                self.employee_id.id
+                self.employee_id
             )
             _logger.debug('Leave Hours: %s', (leave_hours))
 
