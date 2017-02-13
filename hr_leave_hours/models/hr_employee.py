@@ -5,7 +5,7 @@
 from odoo import api, fields, models
 
 
-class hr_employee(models.Model):
+class HrEmployee(models.Model):
     _inherit = "hr.employee"
 
     @api.multi

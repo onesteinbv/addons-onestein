@@ -12,12 +12,12 @@ class TestLeaveHours(common.TransactionCase):
     def setUp(self):
         super(TestLeaveHours, self).setUp()
 
-        self.leave_obj = self.env['hr.holidays']
-        self.status_obj = self.env['hr.holidays.status']
-        self.calendar_obj = self.env['resource.calendar']
-        self.workday_obj = self.env['resource.calendar.attendance']
-        self.contract_obj = self.env['hr.contract']
-        self.employee_obj = self.env['hr.employee']
+        self.Leave = self.env['hr.holidays']
+        self.HolidaysStatus = self.env['hr.holidays.status']
+        self.Calendar = self.env['resource.calendar']
+        self.Workday = self.env['resource.calendar.attendance']
+        self.Contract = self.env['hr.contract']
+        self.Employee = self.env['hr.employee']
 
         self.today_start = datetime.today().replace(
             hour=8, minute=0, second=0, microsecond=0)
@@ -27,12 +27,12 @@ class TestLeaveHours(common.TransactionCase):
         today_start = self.today_start.strftime(DF)
         today_end = self.today_end.strftime(DF)
 
-        self.calendar = self.calendar_obj.create({
+        self.calendar = self.Calendar.create({
             'name': 'Calendar 1',
         })
 
         for i in range(0, 7):
-            self.workday_obj.create({
+            self.Workday.create({
                 'name': 'Day ' + str(i),
                 'dayofweek': str(i),
                 'hour_from': 8.0,
@@ -40,39 +40,39 @@ class TestLeaveHours(common.TransactionCase):
                 'calendar_id': self.calendar.id,
             })
 
-        self.employee_1 = self.employee_obj.create({
+        self.employee_1 = self.Employee.create({
             'name': 'Employee 1',
             'calendar_id': self.calendar.id,
         })
-        self.employee_2 = self.employee_obj.create({
+        self.employee_2 = self.Employee.create({
             'name': 'Employee 2',
             'calendar_id': self.calendar.id,
         })
-        self.employee_3 = self.employee_obj.create({
+        self.employee_3 = self.Employee.create({
             'name': 'Employee 3',
         })
-        self.employee_4 = self.employee_obj.create({
+        self.employee_4 = self.Employee.create({
             'name': 'Failing Employee',
             'calendar_id': self.calendar.id,
         })
 
-        self.contract_1 = self.contract_obj.create({
+        self.contract_1 = self.Contract.create({
             'name': 'Contract 1',
             'employee_id': self.employee_3.id,
             'wage': 2000.0,
             'working_hours': self.calendar.id,
         })
 
-        self.status_1 = self.status_obj.create({
+        self.status_1 = self.HolidaysStatus.create({
             'name': 'Status 1',
             'limit': True,
         })
-        self.status_2 = self.status_obj.create({
+        self.status_2 = self.HolidaysStatus.create({
             'name': 'Status 2',
             'limit': False,
         })
 
-        self.leave_allocation_1 = self.leave_obj.create({
+        self.leave_allocation_1 = self.Leave.create({
             'name': 'Allocation Request 1',
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
@@ -82,7 +82,7 @@ class TestLeaveHours(common.TransactionCase):
             'type': 'add',
         })
 
-        self.leave_1 = self.leave_obj.create({
+        self.leave_1 = self.Leave.create({
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
             'type': 'remove',
@@ -92,7 +92,7 @@ class TestLeaveHours(common.TransactionCase):
             'number_of_hours_temp': 8,
         })
 
-        self.leave_allocation_2 = self.leave_obj.create({
+        self.leave_allocation_2 = self.Leave.create({
             'name': 'Allocation Request 2',
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
@@ -101,7 +101,7 @@ class TestLeaveHours(common.TransactionCase):
             'type': 'add',
         })
 
-        self.leave_2 = self.leave_obj.create({
+        self.leave_2 = self.Leave.create({
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
             'type': 'remove',
@@ -110,7 +110,7 @@ class TestLeaveHours(common.TransactionCase):
             'employee_id': self.employee_2.id,
         })
 
-        self.leave_allocation_3 = self.leave_obj.create({
+        self.leave_allocation_3 = self.Leave.create({
             'name': 'Allocation Request 3',
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
@@ -119,7 +119,7 @@ class TestLeaveHours(common.TransactionCase):
             'type': 'add',
         })
 
-        self.leave_3 = self.leave_obj.create({
+        self.leave_3 = self.Leave.create({
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
             'type': 'remove',
@@ -216,7 +216,7 @@ class TestLeaveHours(common.TransactionCase):
 
     def test_03_creation_fail(self):
         with self.assertRaises(ValidationError):
-            self.leave_obj.create({
+            self.Leave.create({
                 'holiday_status_id': self.status_2.id,
                 'holiday_type': 'employee',
                 'type': 'remove',
@@ -228,7 +228,7 @@ class TestLeaveHours(common.TransactionCase):
 
     def test_04_get_work_limits(self):
 
-        start_dt, work_limits = self.calendar_obj._get_work_limits(
+        start_dt, work_limits = self.Calendar._get_work_limits(
             self.today_end, self.today_start)
         self.assertEqual(start_dt, self.today_start)
         self.assertEqual(work_limits, [
@@ -244,7 +244,7 @@ class TestLeaveHours(common.TransactionCase):
             ),
         ])
 
-        start_dt, work_limits = self.calendar_obj._get_work_limits(
+        start_dt, work_limits = self.Calendar._get_work_limits(
             self.today_end, None)
         self.assertEqual(start_dt, self.today_end.replace(
             hour=0, minute=0, second=0, microsecond=0))
@@ -256,7 +256,7 @@ class TestLeaveHours(common.TransactionCase):
             ),
         ])
 
-        start_dt, work_limits = self.calendar_obj._get_work_limits(
+        start_dt, work_limits = self.Calendar._get_work_limits(
             None, self.today_start)
         self.assertEqual(start_dt, self.today_start)
         self.assertEqual(work_limits, [
@@ -267,7 +267,7 @@ class TestLeaveHours(common.TransactionCase):
             ),
         ])
 
-        start_dt, work_limits = self.calendar_obj._get_work_limits(None, None)
+        start_dt, work_limits = self.Calendar._get_work_limits(None, None)
         self.assertEqual(start_dt, datetime.today().replace(
             hour=0, minute=0, second=0, microsecond=0))
         self.assertEqual(work_limits, [])
@@ -277,7 +277,7 @@ class TestLeaveHours(common.TransactionCase):
             self.today_start.hour,
             self.today_end.hour
         )
-        interval = self.calendar_obj.get_working_intervals_of_day(
+        interval = self.Calendar.get_working_intervals_of_day(
             self.today_start,
             self.today_end,
             default_interval=default_interval

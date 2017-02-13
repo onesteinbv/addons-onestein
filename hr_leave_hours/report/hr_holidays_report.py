@@ -5,7 +5,7 @@
 from odoo import fields, models, tools
 
 
-class hr_holidays_remaining_leaves_user(models.Model):
+class HrHolidaysRemainingLeavesUser(models.Model):
     _inherit = "hr.holidays.remaining.leaves.user"
 
     no_of_hours = fields.Float('Approved hours')
