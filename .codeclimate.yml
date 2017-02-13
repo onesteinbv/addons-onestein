@@ -31,4 +31,5 @@ ratings:
   - "**.py"
   - "**.rb"
 exclude_paths:
-- "*/test_*.py"
+- "hr_holidays_leave_repeated/tests/test_holidays_leave_repeated.py"
+- "hr_leave_hours/tests/test_leave_hours.py"
