@@ -314,13 +314,16 @@ class TestLeaveHours(common.TransactionCase):
         self.assertEqual(self.status_1.with_context(
             employee_id=self.employee_1.id).max_hours, 80.0)
 
-        self.assertEqual(self.status_1.with_context(
-            employee_id=self.employee_1.id).name_get(),
-                         [(self.status_1.id, 'Status 1')])
+        self.assertEqual(
+            self.status_1.with_context(
+                employee_id=self.employee_1.id).name_get(),
+            [(self.status_1.id, 'Status 1')])
 
-        self.assertEqual(self.status_2.with_context(
-            employee_id=self.employee_1.id).name_get(),
-                         [(self.status_2.id, 'Status 2  (0.0 Left)')])
+        self.assertEqual(
+            self.status_2.with_context(
+                employee_id=self.employee_1.id).name_get(),
+            [(self.status_2.id, 'Status 2  (0.0 Left)')])
 
-        self.assertEqual(self.status_1.name_get(),
-                         [(self.status_1.id, 'Status 1')])
+        self.assertEqual(
+            self.status_1.name_get(),
+            [(self.status_1.id, 'Status 1')])
