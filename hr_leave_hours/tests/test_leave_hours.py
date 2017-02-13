@@ -292,3 +292,13 @@ class TestLeaveHours(common.TransactionCase):
             self.employee_3 + \
             self.employee_4
         employee_list._compute_leaves_count()
+
+    def test_07_get_hours(self):
+        self.leave_allocation_1.action_approve()
+        self.leave_1.action_approve()
+        hours = self.status_1.get_hours(self.employee_1.id)
+
+        self.assertEqual(hours['virtual_remaining_hours'], 72.0)
+        self.assertEqual(hours['remaining_hours'], 72.0)
+        self.assertEqual(hours['hours_taken'], 8.0)
+        self.assertEqual(hours['max_hours'], 80.0)
