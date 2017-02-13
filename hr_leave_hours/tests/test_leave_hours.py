@@ -314,6 +314,8 @@ class TestLeaveHours(common.TransactionCase):
         self.assertEqual(self.status_1.with_context(
             employee_id=self.employee_1.id).max_hours, 80.0)
 
+        self.assertEqual(self.status_1.max_hours, 0.0)
+
         self.assertEqual(
             self.status_1.with_context(
                 employee_id=self.employee_1.id).name_get(),
