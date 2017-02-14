@@ -5,11 +5,12 @@
 from odoo import api, fields, models
 
 
-class hr_holidays_status(models.Model):
+class HrHolidaysStatus(models.Model):
     _inherit = "hr.holidays.status"
 
-    @api.model
+    @api.multi
     def get_hours(self, employee):
+        self.ensure_one()
         result = {
             'max_hours': 0,
             'remaining_hours': 0,
@@ -73,12 +74,10 @@ class hr_holidays_status(models.Model):
         string='Hours Already Taken'
     )
     remaining_hours = fields.Float(
-        compute="_user_left_hours",
-        string='Remaining Hours'
+        compute="_user_left_hours"
     )
     virtual_remaining_hours = fields.Float(
-        compute="_user_left_hours",
-        string='Virtual Remaining Hours'
+        compute="_user_left_hours"
     )
 
     @api.multi
@@ -86,7 +85,7 @@ class hr_holidays_status(models.Model):
         if not self._context.get('employee_id', False):
             # leave counts is based on employee_id, would be
             # inaccurate if not based on correct employee
-            return super(hr_holidays_status, self).name_get()
+            return super(HrHolidaysStatus, self).name_get()
 
         res = []
         for record in self:

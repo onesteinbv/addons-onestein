@@ -12,6 +12,6 @@ class AccountAnalyticAccountApprove(models.TransientModel):
     @api.multi
     def approve_analytic_accounts(self):
         self.ensure_one()
-        analytic_account_obj = self.env['account.analytic.account']
-        accounts = analytic_account_obj.browse(self._context.get('active_ids'))
+        AnalyticAccount = self.env['account.analytic.account']
+        accounts = AnalyticAccount.browse(self._context.get('active_ids'))
         accounts.action_approve()

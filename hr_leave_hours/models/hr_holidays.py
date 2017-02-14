@@ -117,18 +117,14 @@ class HrHolidays(models.Model):
                 'confirm': [('readonly', False)]}
     )
     number_of_hours = fields.Float(
-        string='Number of Hours',
         compute='_compute_number_of_hours',
         store=True
     )
     virtual_hours = fields.Float(
-        string='Virtual Hours',
         compute='_compute_number_of_hours',
         store=True
     )
-    working_hours = fields.Float(
-        string='Working hours', digits=(2, 2)
-    )
+    working_hours = fields.Float(digits=(2, 2))
 
     @api.one
     @api.constrains(

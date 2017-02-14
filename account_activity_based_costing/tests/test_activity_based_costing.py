@@ -13,57 +13,57 @@ class TestActivityBasedCosting(common.TransactionCase):
     def setUp(self):
         super(TestActivityBasedCosting, self).setUp()
 
-        aa_obj = self.env['account.analytic.account']
-        aal_obj = self.env['account.analytic.line']
-        proj_obj = self.env['project.project']
-        move_obj = self.env['account.move']
-        move_line_obj = self.env['account.move.line']
-        jour_obj = self.env['account.journal']
+        AnalyticAccount = self.env['account.analytic.account']
+        AnalyticLine = self.env['account.analytic.line']
+        Project = self.env['project.project']
+        Move = self.env['account.move']
+        MoveLine = self.env['account.move.line']
+        Journal = self.env['account.journal']
 
-        self.journal_1 = jour_obj.create({
+        self.journal_1 = Journal.create({
             'name': 'Journal 1',
             'code': 'Jou1',
             'type': 'sale',
         })
 
-        self.move_1 = move_obj.create({
+        self.move_1 = Move.create({
             'name': 'Move 1',
             'journal_id': self.journal_1.id,
         })
 
-        self.aa_1 = aa_obj.create({
+        self.aa_1 = AnalyticAccount.create({
             'name': 'Analytic Account 1',
             'expected_hours': 10.0,
             'expected_turnover': 1000.0,
             'expected_costs': 500.0,
         })
-        self.aa_2 = aa_obj.create({
+        self.aa_2 = AnalyticAccount.create({
             'name': 'Analytic Account 2',
             'expected_hours': 5.0,
             'expected_turnover': 0,
             'expected_costs': 500.0,
         })
-        self.aa_3 = aa_obj.create({
+        self.aa_3 = AnalyticAccount.create({
             'name': 'Analytic Account 3',
             'expected_hours': 3.0,
             'expected_turnover': 1000,
             'expected_costs': 1000.0,
         })
 
-        self.proj_1 = proj_obj.create({
+        self.proj_1 = Project.create({
             'name': 'Project 1',
             'analytic_account_id': self.aa_1.id,
         })
-        self.proj_2 = proj_obj.create({
+        self.proj_2 = Project.create({
             'name': 'Project 2',
             'analytic_account_id': self.aa_2.id,
         })
-        self.proj_3 = proj_obj.create({
+        self.proj_3 = Project.create({
             'name': 'Project 3',
             'analytic_account_id': self.aa_3.id,
         })
 
-        self.move_line_1 = move_line_obj.create({
+        self.move_line_1 = MoveLine.create({
             'name': 'Move Line 1',
             'move_id': self.move_1.id,
             'account_id': self.env.ref('l10n_generic_coa.1_conf_a_recv').id,
@@ -117,7 +117,7 @@ class TestActivityBasedCosting(common.TransactionCase):
         ]
 
         for line_vals in aa_line_dict:
-            aal_obj.create(line_vals)
+            AnalyticLine.create(line_vals)
 
     def test_01_get_hours_left(self):
         self.assertEqual(self.aa_1.hours_left, 5.0)

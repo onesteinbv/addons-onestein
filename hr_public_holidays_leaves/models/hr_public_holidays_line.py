@@ -103,7 +103,7 @@ class HrHolidaysPublicLine(models.Model):
                     if matches:
                         existing = get_matches_existing(existing, matches)
                     else:
-                        vals = self.init_vals(emp.id, holiday_line, res_id)
+                        vals = init_vals(emp.id, holiday_line, res_id)
                         vals = self.holiday_vals_hook(vals, emp)
                         new_holiday = self.env['hr.holidays'].with_context(
                             tz=('UTC')).create(vals)
