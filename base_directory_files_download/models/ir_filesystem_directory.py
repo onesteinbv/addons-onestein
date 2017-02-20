@@ -28,23 +28,22 @@ class IrFilesystemDirectory(models.Model):
     @api.multi
     def get_dir(self):
         self.ensure_one()
-        dir = self.directory
-        if dir and dir[-1] != '/':
-            dir += '/'
-        return dir
+        directory = self.directory or ''
+        # adds slash character at the end if missing
+        return join(directory, '')
 
     @api.multi
     def _compute_file_ids(self):
         File = self.env['ir.filesystem.file']
-        for dir in self:
-            dir.file_ids = None
-            if dir.get_dir():
-                for file in dir._get_directory_files():
-                    dir.file_ids += File.create({
-                        'name': file,
-                        'filename': file,
-                        'stored_filename': file,
-                        'directory_id': dir.id,
+        for directory in self:
+            directory.file_ids = None
+            if directory.get_dir():
+                for file_name in directory._get_directory_files():
+                    directory.file_ids += File.create({
+                        'name': file_name,
+                        'filename': file_name,
+                        'stored_filename': file_name,
+                        'directory_id': directory.id,
                     })
 
     @api.onchange('directory')
@@ -61,9 +60,9 @@ class IrFilesystemDirectory(models.Model):
     def _get_directory_files(self):
 
         def get_files(directory, files):
-            for file in listdir(directory):
-                if isfile(join(directory, file)) and file[0] != '.':
-                    files.append(file)
+            for file_name in listdir(directory):
+                if isfile(join(directory, file_name)) and file_name[0] != '.':
+                    files.append(file_name)
 
         self.ensure_one()
         files = []

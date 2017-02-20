@@ -35,9 +35,9 @@ class IrFilesystemDirectoryLine(models.TransientModel):
 
         self.ensure_one()
         r = ''
-        dir = self.directory_id.get_dir() or ''
-        full_path = dir + fname
-        if not (dir and os.path.isfile(full_path)):
+        directory = self.directory_id.get_dir() or ''
+        full_path = directory + fname
+        if not (directory and os.path.isfile(full_path)):
             file_not_found(fname)
         try:
             if bin_size:
