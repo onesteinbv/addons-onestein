@@ -2,7 +2,7 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import api, models
+from odoo import models, api
 
 
 class SaleOrderConfirmWizard(models.TransientModel):
@@ -14,4 +14,6 @@ class SaleOrderConfirmWizard(models.TransientModel):
         self.ensure_one()
         active_ids = self._context.get('active_ids')
         orders = self.env['sale.order'].browse(active_ids)
-        orders.action_confirm()
+        for order in orders:
+            if order.state in ['draft', 'sent']:
+                order.action_confirm()
