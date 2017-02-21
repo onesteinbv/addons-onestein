@@ -2,7 +2,6 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import calendar
 import logging
 
 import odoo.addons.decimal_precision as dp
@@ -55,7 +54,8 @@ class AccountInvoiceSpreadLine(models.Model):
     @api.model
     def create(self, vals):
         context = self.env.context.copy()
-        if context.get('default_type', '') == 'in_invoice':
+        inv_types = ['in_invoice', 'in_refund', 'out_invoice', 'out_refund']
+        if context.get('default_type', '') in inv_types:
             context.pop('default_type')
         res = super(
             AccountInvoiceSpreadLine,
@@ -69,7 +69,7 @@ class AccountInvoiceSpreadLine(models.Model):
         invoice = self.invoice_line_id.invoice_id
 
         move_data = {
-            'name': invoice.number,
+            'name': invoice and invoice.number or "/",
             'date': spread_date,
             'ref': self.name,
             'journal_id': invoice.journal_id.id,
@@ -105,7 +105,10 @@ class AccountInvoiceSpreadLine(models.Model):
     @api.multi
     def create_moves(self):
         for line in self:
-            line.create_move()
+            invoice_line = line.invoice_line_id
+            if invoice_line and invoice_line.invoice_id:
+                if invoice_line.invoice_id.number:
+                    line.create_move()
 
     @api.multi
     def create_move(self):
@@ -176,15 +179,8 @@ class AccountInvoiceSpreadLine(models.Model):
     def _create_entries(self, automatic=False):
         """Find spread line entries where date is in the past and
         create moves for them."""
-        today = fields.Date.from_string(fields.Date.today())
-        year = today.strftime('%Y')
-        month = today.strftime('%m')
-        month_range = calendar.monthrange(int(year), int(month.lstrip('0')))
-        end_date = today.replace(day=month_range[1])
-
         lines = self.search([
-            ('line_date', '<=', end_date),
+            ('line_date', '<=', fields.Date.today()),
             ('move_id', '=', False)]
         )
-
         lines.create_moves()

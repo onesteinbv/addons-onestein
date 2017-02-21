@@ -5,9 +5,9 @@
 import calendar
 from datetime import datetime
 from functools import reduce
-
 from dateutil.relativedelta import relativedelta
 
+from odoo.exceptions import Warning
 from odoo import _, api, fields, models
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import odoo.addons.decimal_precision as dp
@@ -541,5 +541,11 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def compute_spread_board(self):
         for line in self:
+
+            if line.account_id.deprecated:
+                raise Warning(
+                    _("Account on one of the invoice lines you're trying"
+                      "to validate is deprecated"))
+
             if line.price_subtotal:
                 line._compute_spread_board()

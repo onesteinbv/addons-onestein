@@ -25,3 +25,11 @@ class AccountInvoice(models.Model):
             if invl.spread_account_id:
                 line['account_id'] = invl.spread_account_id.id
         return res
+
+    @api.multi
+    def action_invoice_cancel(self):
+        res = self.action_cancel()
+        for invoice in self:
+            for line in invoice.invoice_line_ids:
+                line.spread_line_ids.unlink()
+        return res
