@@ -14,6 +14,7 @@
     'depends': [
         'hr_holidays',
         'hr_public_holidays',
+        'hr_leave_hours',
     ],
     'data': [
         'security/hr_public_holiday_security.xml',
