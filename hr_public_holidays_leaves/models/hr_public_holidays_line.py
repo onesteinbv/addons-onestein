@@ -39,7 +39,7 @@ class HrHolidaysPublicLine(models.Model):
 
         def get_matches(emp, existing, holiday_line):
             matches = [h for h in existing
-                       if h.employee_id.id == emp.id and
+                       if h.employee_id and h.employee_id.id == emp.id and
                        h.public_holiday_id.id == holiday_line.id]
             return matches
 
@@ -99,18 +99,18 @@ class HrHolidaysPublicLine(models.Model):
 
         for holiday_line in self:
             for emp in employees:
-                    matches = get_matches(emp, existing, holiday_line)
-                    if matches:
-                        existing = get_matches_existing(existing, matches)
-                    else:
-                        vals = init_vals(emp.id, holiday_line, res_id)
-                        vals = self.holiday_vals_hook(vals, emp)
-                        new_holiday = self.env['hr.holidays'].with_context(
-                            tz=('UTC')).create(vals)
-                        new_holiday.onchange_date()
-                        new_holiday.number_of_hours = \
-                            new_holiday.number_of_hours_temp
-                        new.append(new_holiday)
+                matches = get_matches(emp, existing, holiday_line)
+                if matches:
+                    existing = get_matches_existing(existing, matches)
+                else:
+                    vals = init_vals(emp.id, holiday_line, res_id)
+                    vals = self.holiday_vals_hook(vals, emp)
+                    new_holiday = self.env['hr.holidays'].with_context(
+                        tz=('UTC')).create(vals)
+                    new_holiday.onchange_date()
+                    new_holiday.number_of_hours = \
+                        new_holiday.number_of_hours_temp
+                    new.append(new_holiday)
 
         unlink_existing(existing)
 
