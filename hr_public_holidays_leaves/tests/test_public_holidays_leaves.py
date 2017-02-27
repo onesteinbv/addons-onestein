@@ -19,14 +19,6 @@ class TestPublicHolidaysLeave(common.TransactionCase):
         self.PublicLine = self.env["hr.holidays.public.line"]
         self.Employee = self.env['hr.employee']
 
-        self.today_start = datetime.today().replace(
-            hour=8, minute=0, second=0, microsecond=0)
-        self.today_end = datetime.today().replace(
-            hour=18, minute=0, second=0, microsecond=0)
-
-        today_start = self.today_start.strftime(DF)
-        today_end = self.today_end.strftime(DF)
-
         self.category_1 = self.Category.create({
             'name': 'Category 1',
         })
