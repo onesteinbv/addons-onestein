@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
-# ©  2015 Salton Massally <smassally@idtlabs.sl>
+# Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp.tests import common
 from odoo.exceptions import Warning
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
 
 
 class TestPublicHolidaysLeave(common.TransactionCase):
@@ -16,6 +19,32 @@ class TestPublicHolidaysLeave(common.TransactionCase):
         self.Public = self.env["hr.holidays.public"]
         self.PublicLine = self.env["hr.holidays.public.line"]
         self.Employee = self.env['hr.employee']
+        self.Calendar = self.env['resource.calendar']
+        self.Workday = self.env['resource.calendar.attendance']
+
+        self.today_start = datetime.today().replace(
+            hour=8, minute=0, second=0, microsecond=0)
+        self.today_end = datetime.today().replace(
+            hour=18, minute=0, second=0, microsecond=0)
+
+        today_start = self.today_start.strftime(DF)
+        today_end = self.today_end.strftime(DF)
+
+        yesterday_start = self.today_start - relativedelta(days=1)
+        yesterday_end = self.today_end - relativedelta(days=1)
+
+        self.calendar = self.Calendar.create({
+            'name': 'Calendar 1',
+        })
+
+        for i in range(0, 7):
+            self.Workday.create({
+                'name': 'Day ' + str(i),
+                'dayofweek': str(i),
+                'hour_from': 8.0,
+                'hour_to': 16.0,
+                'calendar_id': self.calendar.id,
+            })
 
         self.category_1 = self.Category.create({
             'name': 'Category 1',
@@ -24,6 +53,7 @@ class TestPublicHolidaysLeave(common.TransactionCase):
         self.employee_1 = self.Employee.create(
             {
                 'name': 'Employee 1',
+                'calendar_id': self.calendar.id,
                 'address_id': self.env['res.partner'].create(
                     {
                         'name': 'Employee 1',
@@ -35,6 +65,7 @@ class TestPublicHolidaysLeave(common.TransactionCase):
         self.employee_2 = self.Employee.create(
             {
                 'name': 'Employee 2',
+                'calendar_id': self.calendar.id,
                 'address_id': self.env['res.partner'].create(
                     {
                         'name': 'Employee 2',
@@ -82,6 +113,8 @@ class TestPublicHolidaysLeave(common.TransactionCase):
             'holiday_status_id': self.status_1.id,
             'holiday_type': 'employee',
             'type': 'remove',
+            'date_from': today_start,
+            'date_to': today_end,
             'employee_id': self.employee_1.id,
             'public_holiday_id': self.holiday2.line_ids.ids[0],
         })
@@ -103,6 +136,16 @@ class TestPublicHolidaysLeave(common.TransactionCase):
             'public_holiday_id': self.holiday2.line_ids.ids[0],
         })
 
+        self.leave_4 = self.Leave.create({
+            'holiday_status_id': self.status_1.id,
+            'holiday_type': 'employee',
+            'type': 'remove',
+            'date_from': yesterday_start,
+            'date_to': yesterday_end,
+            'employee_id': self.employee_1.id,
+            'public_holiday_id': self.holiday2.line_ids.ids[0],
+        })
+
     def test_01_validate(self):
         self.holiday2.validate()
         self.assertEqual(self.holiday2.state, 'validate')
@@ -117,3 +160,22 @@ class TestPublicHolidaysLeave(common.TransactionCase):
         type.unlink()
         with self.assertRaises(Warning):
             self.holiday2.validate()
+
+    def test_04_action_validate1(self):
+        self.leave_1.action_validate()
+
+    def test_05_action_validate2(self):
+        type = self.env.ref('hr_public_holidays_leaves.hr_public_holiday')
+        type.unlink()
+        with self.assertRaises(Warning):
+            self.leave_2.action_validate()
+
+    def test_06_action_validate3(self):
+        self.leave_3.action_validate()
+
+    def test_07_action_validate4(self):
+        public_status_id = self.env.ref(
+            'hr_public_holidays_leaves.hr_public_holiday')
+        self.leave_4.write({
+            'holiday_status_id': public_status_id.id})
+        self.leave_4.action_validate()
