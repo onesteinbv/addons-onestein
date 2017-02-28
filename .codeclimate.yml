@@ -33,3 +33,5 @@ ratings:
 exclude_paths:
 - "hr_holidays_leave_repeated/tests/test_holidays_leave_repeated.py"
 - "hr_leave_hours/tests/test_leave_hours.py"
+- "account_asset_maintenance/tests/test_account_asset_maintenance.py"
+- "hr_public_holidays_leaves/tests/test_public_holidays_leaves.py"
