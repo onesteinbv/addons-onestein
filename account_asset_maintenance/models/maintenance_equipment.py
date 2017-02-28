@@ -38,12 +38,12 @@ class maintenance_equipment(models.Model):
             ctx = dict(self.env.context, internal_call=True)
             if not self._context.get(
                     'internal_call',
-                    False) and equip.asset_id:
+                    False) and 'asset_id' in values:
                 equip.asset_id.with_context(ctx).write({'equipment_id': None})
             super(maintenance_equipment, equip).write(values)
             if not self._context.get(
                     'internal_call',
-                    False) and equip.asset_id:
+                    False) and 'asset_id' in values:
                 equip.asset_id.with_context(ctx).write(
                     {'equipment_id': equip.id})
         return True

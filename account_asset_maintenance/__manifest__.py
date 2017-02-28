@@ -13,6 +13,7 @@
     'depends': [
         'account_asset',
         'maintenance',
+        'mail',
     ],
     'data': [
         'views/account_asset.xml',
