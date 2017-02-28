@@ -63,8 +63,7 @@ class ProjectIssue(models.Model):
     def _track_template(self, tracking):
         self.ensure_one()
         res = super(ProjectIssue, self)._track_template(tracking)
-        if 'stage_id' in res:
-            del res['stage_id']
+        res.pop('stage_id', None)
         return res
 
     def _track_subtype(self, init_values):
