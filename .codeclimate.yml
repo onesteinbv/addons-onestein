@@ -36,3 +36,4 @@ exclude_paths:
 - "account_asset_maintenance/tests/test_account_asset_maintenance.py"
 - "hr_public_holidays_leaves/tests/test_public_holidays_leaves.py"
 - "project_issue_stage/tests/test_project_issue_stage.py"
+- "hr_contract_approval/tests/test_hr_contract_approval.py"
