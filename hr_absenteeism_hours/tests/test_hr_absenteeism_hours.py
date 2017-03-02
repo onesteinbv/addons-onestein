@@ -5,8 +5,6 @@
 from datetime import datetime
 from odoo.tests import common
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
-from dateutil.relativedelta import relativedelta
-from odoo.exceptions import Warning
 
 
 class TestHRAbsenteeismHours(common.TransactionCase):
