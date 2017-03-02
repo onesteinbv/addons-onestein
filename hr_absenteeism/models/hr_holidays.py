@@ -25,15 +25,14 @@ class hr_holidays(models.Model):
         date_to = datetime.today().strftime(DTS)
 
         # Compute and update the number of days
-        if (date_to and date_from) and (date_from <= date_to):
+        number_of_days_temp = 0
+        if date_from <= date_to:
             from_dt = datetime.strptime(date_from, DTS)
             to_dt = datetime.strptime(date_to, DTS)
             timedelta = to_dt - from_dt
             diff_day = timedelta.days + float(timedelta.seconds) / 86400
 
             number_of_days_temp = round(math.floor(diff_day)) + 1
-        else:
-            number_of_days_temp = 0
 
         self.write({'date_to': date_to,
                     'number_of_days_temp': number_of_days_temp})
@@ -50,21 +49,17 @@ class hr_holidays(models.Model):
         for sick_day in sick_day_ids:
             date_from = sick_day.date_from
             date_to = datetime.today().strftime(DTS)
-            if date_from:
-                # The following is based on addons/hr_holidays/hr_holidays.py
-                # date_to has to be greater than date_from
-                if (date_from and date_to) and (date_from > date_to):
-                    _logger.warning(
-                        'The start date must be anterior to the end date.'
-                    )
-                    raise Warning(
-                        _('The start date must be anterior to the end date.')
-                    )
-                sick_day.compute_interval()
-            else:
+
+            # The following is based on addons/hr_holidays/hr_holidays.py
+            # date_to has to be greater than date_from
+            if date_from > date_to:
                 _logger.warning(
-                    'ONESTEiN hr_holidays increase_date_to no date_from set'
+                    'The start date must be anterior to the end date.'
                 )
+                raise Warning(
+                    _('The start date must be anterior to the end date.')
+                )
+            sick_day.compute_interval()
 
     def _compute_notify_date(self, notification, holiday):
         notify_date = datetime.strptime(
