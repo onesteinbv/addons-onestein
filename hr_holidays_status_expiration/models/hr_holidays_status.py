@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from datetime import datetime
-
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from odoo import api, fields, models
 
 
@@ -38,21 +38,14 @@ class HrHolidaysStatus(models.Model):
                 )
             )
             if self.expiration_date:
-                try:
-                    name = name + (
-                        ' - Exp. Date %s)' % (
-                            datetime.strptime(
-                                self.expiration_date,
-                                '%Y-%m-%d'
-                            ).strftime('%m/%d/%Y')
-                        )
+                name = name + (
+                    ' - Exp. Date %s)' % (
+                        datetime.strptime(
+                            self.expiration_date,
+                            DF
+                        ).strftime(DF)
                     )
-                except:
-                    name = name + (
-                        ' - Exp. Date %s)' % (
-                            self.expiration_date
-                        )
-                    )
+                )
             else:
                 name = name + ')'
         res.append((self.id, name))

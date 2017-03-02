@@ -40,3 +40,4 @@ exclude_paths:
 - "hr_absenteeism/tests/test_hr_absenteeism.py"
 - "hr_absenteeism_hours/tests/test_hr_absenteeism_hours.py"
 - "hr_holidays_expiration/tests/test_holidays_expiration.py"
+- "hr_holidays_status_expiration/tests/test_holidays_status_expiration.py"
