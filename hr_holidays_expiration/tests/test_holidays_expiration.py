@@ -56,8 +56,6 @@ class TestHolidaysExpiration(common.TransactionCase):
             'expire_template_id': self.template.id,
         })
 
-        None
-
     def test_01_validate(self):
         self.leave_1.action_approve()
         self.assertEqual(self.leave_1.approval_date, date.today().strftime(DF))
