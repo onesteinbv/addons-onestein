@@ -5,8 +5,8 @@
 {
     'name': "Absence Management",
     'summary': """Create time based absence notifications""",
-    'author': "Onestein",
-    'website': "http://www.onestein.eu",
+    'author': 'Onestein',
+    'website': 'http://www.onestein.eu',
     'images': ['static/description/main_screenshot.png'],
     'category': 'Human Resources',
     'version': '10.0.1.0.0',

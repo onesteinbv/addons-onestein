@@ -19,7 +19,8 @@ class account_asset(models.Model):
     @api.model
     def create(self, values):
         context = self.env.context.copy()
-        if context.get('default_type', False) == 'in_invoice':
+        inv_types = ['in_invoice', 'in_refund', 'out_invoice', 'out_refund']
+        if context.get('default_type', False) in inv_types:
             context.pop('default_type')
         res = super(account_asset, self.with_context(context)).create(values)
         if self._check_internal_call(res.equipment_id):
