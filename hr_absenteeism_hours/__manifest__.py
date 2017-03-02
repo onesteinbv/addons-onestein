@@ -14,6 +14,7 @@
     'depends': [
         'hr_holidays',
         'hr_absenteeism',
+        'hr_leave_hours',
     ],
     'installable': True,
     'auto_install': True,
