@@ -48,6 +48,3 @@ class TestHolidaysStatusExpiration(common.TransactionCase):
             name2[0][1],
             tst_name
         )
-
-    def test_dummy(self):
-        None
