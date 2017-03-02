@@ -27,12 +27,6 @@ class HRHolidays(models.Model):
 
         return res
 
-    @api.multi
-    def holidays_validate(self):
-        self.approval_date = datetime.today()
-        res = super(HRHolidays, self).holidays_validate()
-        return res
-
     @api.model
     def check_expiring(self):
         _logger.debug("ONESTEiN hr_holidays check_expiring")

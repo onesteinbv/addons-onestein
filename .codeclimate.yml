@@ -38,3 +38,5 @@ exclude_paths:
 - "project_issue_stage/tests/test_project_issue_stage.py"
 - "hr_contract_approval/tests/test_hr_contract_approval.py"
 - "hr_absenteeism/tests/test_hr_absenteeism.py"
+- "hr_absenteeism_hours/tests/test_hr_absenteeism_hours.py"
+- "hr_holidays_expiration/tests/test_holidays_expiration.py"
