@@ -89,6 +89,3 @@ class TestHRAbsenteeism(common.TransactionCase):
         })
         with self.assertRaises(Warning):
             self.Holidays.increase_date_to()
-
-    def test_dummy(self):
-        None
