@@ -46,9 +46,7 @@ class AccountAnalyticAccount(models.Model):
                 raise UserError(
                     _('You can only approve Analytic Accounts '
                       'in status Waiting for Approval.'))
-
-            if analytic_account.analytic_state == 'waiting':
-                analytic_account.analytic_state = 'approved'
+            analytic_account.analytic_state = 'approved'
 
     @api.multi
     def action_decline(self):
