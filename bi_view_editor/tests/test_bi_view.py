@@ -2,11 +2,11 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo.tests import common
+from odoo.tests.common import TransactionCase, at_install, post_install
 from odoo.exceptions import Warning as UserError
 
 
-class TestBiViewEditor(common.TransactionCase):
+class TestBiViewEditor(TransactionCase):
 
     def setUp(self):
 
@@ -179,8 +179,8 @@ class TestBiViewEditor(common.TransactionCase):
         bi_view2 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view2.user_ids), len(employees_group.users))
 
-    @common.at_install(False)
-    @common.post_install(True)
+    @at_install(False)
+    @post_install(True)
     def test_07_create_open_bve_object(self):
         vals = self.bi_view1_vals
         employees_group = self.env.ref('base.group_user')
@@ -200,12 +200,12 @@ class TestBiViewEditor(common.TransactionCase):
         self.assertEqual(len(model), 1)
 
         # open view
-        # open_action = bi_view3.open_view()
-        # self.assertEqual(isinstance(open_action, dict), True)
+        open_action = bi_view3.open_view()
+        self.assertEqual(isinstance(open_action, dict), True)
 
-        # # remove view
-        # bi_view3.action_reset()
-        # bi_view3.unlink()
+        # remove view
+        bi_view3.action_reset()
+        bi_view3.unlink()
 
     def test_08_check_empty_data(self):
         vals = {
