@@ -179,9 +179,28 @@ class TestBiViewEditor(TransactionCase):
         bi_view2 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view2.user_ids), len(employees_group.users))
 
+    def test_07_check_empty_data(self):
+        vals = {
+            'name': 'Test View Empty',
+            'state': 'draft',
+            'data': ''
+        }
+        bi_view4 = self.env['bve.view'].create(vals)
+        self.assertEqual(len(bi_view4), 1)
+
+        # create sql view
+        with self.assertRaises(UserError):
+            bi_view4._create_sql_view()
+
+    def test_08_get_models(self):
+        Model = self.env['ir.model']
+        models = Model.get_models()
+        self.assertIsInstance(models, list)
+        self.assertGreater(len(models), 0)
+
     @at_install(False)
     @post_install(True)
-    def test_07_create_open_bve_object(self):
+    def test_09_create_open_bve_object(self):
         vals = self.bi_view1_vals
         employees_group = self.env.ref('base.group_user')
         vals.update({
@@ -206,22 +225,3 @@ class TestBiViewEditor(TransactionCase):
         # remove view
         bi_view3.action_reset()
         bi_view3.unlink()
-
-    def test_08_check_empty_data(self):
-        vals = {
-            'name': 'Test View Empty',
-            'state': 'draft',
-            'data': ''
-        }
-        bi_view4 = self.env['bve.view'].create(vals)
-        self.assertEqual(len(bi_view4), 1)
-
-        # create sql view
-        with self.assertRaises(UserError):
-            bi_view4._create_sql_view()
-
-    def test_09_get_models(self):
-        Model = self.env['ir.model']
-        models = Model.get_models()
-        self.assertIsInstance(models, list)
-        self.assertGreater(len(models), 0)
