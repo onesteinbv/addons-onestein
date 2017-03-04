@@ -204,7 +204,7 @@ class TestBiViewEditor(TransactionCase):
         vals = self.bi_view1_vals
         employees_group = self.env.ref('base.group_user')
         vals.update({
-            'name': 'Test View3',
+            'name': 'Test View4',
             'group_ids': [(6, 0, [employees_group.id])],
         })
         bi_view3 = self.env['bve.view'].create(vals)
@@ -213,8 +213,8 @@ class TestBiViewEditor(TransactionCase):
         # create bve object
         bi_view3.action_create()
         model = self.env['ir.model'].search([
-            ('model', '=', 'x_bve.testview3'),
-            ('name', '=', 'Test View3')
+            ('model', '=', 'x_bve.testview4'),
+            ('name', '=', 'Test View4')
         ])
         self.assertEqual(len(model), 1)
 
