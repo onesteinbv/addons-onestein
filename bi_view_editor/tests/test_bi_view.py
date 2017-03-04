@@ -218,8 +218,8 @@ class TestBiViewEditor(common.TransactionCase):
     #     with self.assertRaises(UserError):
     #         bi_view4._create_sql_view()
 
-    def test_09_get_models(self):
-        Model = self.env['ir.model']
-        models = Model.get_models()
-        self.assertIsInstance(models, list)
-        self.assertGreater(len(models), 0)
+    # def test_09_get_models(self):
+    #     Model = self.env['ir.model']
+    #     models = Model.get_models()
+    #     self.assertIsInstance(models, list)
+    #     self.assertGreater(len(models), 0)

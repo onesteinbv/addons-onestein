@@ -18,7 +18,7 @@
     'data': [
         'security/ir.model.access.csv',
         'security/rules.xml',
-#        'templates/assets_template.xml',
+        'templates/assets_template.xml',
         'views/bve_view.xml',
     ],
     'qweb': [
