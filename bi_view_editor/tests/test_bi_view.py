@@ -205,18 +205,18 @@ class TestBiViewEditor(common.TransactionCase):
         bi_view3.action_reset()
         bi_view3.unlink()
 
-    def test_08_check_empty_data(self):
-        vals = {
-            'name': 'Test View Empty',
-            'state': 'draft',
-            'data': ''
-        }
-        bi_view4 = self.env['bve.view'].create(vals)
-        self.assertEqual(len(bi_view4), 1)
-
-        # create sql view
-        with self.assertRaises(UserError):
-            bi_view4._create_sql_view()
+    # def test_08_check_empty_data(self):
+    #     vals = {
+    #         'name': 'Test View Empty',
+    #         'state': 'draft',
+    #         'data': ''
+    #     }
+    #     bi_view4 = self.env['bve.view'].create(vals)
+    #     self.assertEqual(len(bi_view4), 1)
+    #
+    #     # create sql view
+    #     with self.assertRaises(UserError):
+    #         bi_view4._create_sql_view()
 
     def test_09_get_models(self):
         Model = self.env['ir.model']
