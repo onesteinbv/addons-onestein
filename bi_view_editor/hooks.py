@@ -9,9 +9,6 @@ def pre_init_hook(cr):
     cr.execute("""
         delete from ir_model where model like 'x_bve.%'
     """)
-    cr.execute("""
-        delete from bve_view where model_name like 'x_bve.%'
-        """)
 
 def uninstall_hook(cr, registry):
     # delete dirty data that could cause problems
