@@ -190,7 +190,7 @@ class TestBiViewEditor(TransactionCase):
 
         # create sql view
         with self.assertRaises(UserError):
-            bi_view4._create_sql_view()
+            bi_view4.action_create()
 
     def test_08_get_models(self):
         Model = self.env['ir.model']
