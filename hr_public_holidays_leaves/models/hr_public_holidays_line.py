@@ -43,11 +43,12 @@ class HrHolidaysPublicLine(models.Model):
                        h.public_holiday_id.id == holiday_line.id]
             return matches
 
-        def get_leave_type(Data):
-            try:
-                res = Data.get_object(
-                    'hr_public_holidays_leaves', 'hr_public_holiday')
-            except ValueError:
+        def get_leave_type():
+            res = self.env.ref(
+                'hr_public_holidays_leaves.hr_public_holiday',
+                False
+            )
+            if not res:
                 raise Warning(
                     _("Leave Type for Public Holiday not found!"))
             return res.id
@@ -85,7 +86,7 @@ class HrHolidaysPublicLine(models.Model):
             }
             return vals
 
-        res_id = get_leave_type(self.env['ir.model.data'])
+        res_id = get_leave_type()
 
         employees = get_employees(
             self.env['hr.employee'],
