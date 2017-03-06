@@ -26,13 +26,13 @@ class TestAlignFollowers(common.TransactionCase):
             'analytic_account_id': self.aa_1.id,
         })
 
-        self.foll_2 = Follower.create({
+        self.foll_1 = Follower.create({
             'res_model': 'account.analytic.account',
             'res_id': self.aa_1.id,
             'partner_id': self.env.user.partner_id.id,
         })
 
-        self.foll_1 = Follower.create({
+        self.foll_2 = Follower.create({
             'res_model': 'project.project',
             'res_id': self.proj_1.id,
             'partner_id': self.env.user.partner_id.id,
@@ -43,6 +43,3 @@ class TestAlignFollowers(common.TransactionCase):
 
     def test_02_unlink_aa(self):
         self.aa_1.unlink()
-
-    def test_dummy(self):
-        None
