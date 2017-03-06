@@ -190,7 +190,7 @@ class TestBiViewEditor(TransactionCase):
 
         # create sql view
         with self.assertRaises(UserError):
-            bi_view4._create_sql_view()
+            bi_view4.action_create()
 
     def test_08_get_models(self):
         Model = self.env['ir.model']
@@ -207,11 +207,11 @@ class TestBiViewEditor(TransactionCase):
             'name': 'Test View4',
             'group_ids': [(6, 0, [employees_group.id])],
         })
-        bi_view3 = self.env['bve.view'].create(vals)
-        self.assertEqual(len(bi_view3), 1)
+        bi_view = self.env['bve.view'].create(vals)
+        self.assertEqual(len(bi_view), 1)
 
         # create bve object
-        bi_view3.action_create()
+        bi_view.action_create()
         model = self.env['ir.model'].search([
             ('model', '=', 'x_bve.testview4'),
             ('name', '=', 'Test View4')
@@ -219,9 +219,9 @@ class TestBiViewEditor(TransactionCase):
         self.assertEqual(len(model), 1)
 
         # open view
-        open_action = bi_view3.open_view()
+        open_action = bi_view.open_view()
         self.assertEqual(isinstance(open_action, dict), True)
 
-        # remove view
-        # bi_view3.action_reset()
-        # bi_view3.unlink()
+        # try to remove view
+        with self.assertRaises(UserError):
+            bi_view.unlink()
