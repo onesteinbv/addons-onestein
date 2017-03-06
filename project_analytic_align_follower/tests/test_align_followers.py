@@ -2,10 +2,7 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import date, timedelta
 from odoo.tests import common
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from odoo.exceptions import ValidationError
 
 
 class TestAlignFollowers(common.TransactionCase):
