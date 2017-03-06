@@ -29,14 +29,14 @@ class TestAlignFollowers(common.TransactionCase):
         self.aa_1.unlink()
 
     def test_03_aa_foll_create(self):
-        foll_1 = self.env['mail.followers'].create({
+        self.env['mail.followers'].create({
             'res_model': 'account.analytic.account',
             'res_id': self.aa_1.id,
             'partner_id': self.env.ref('base.res_partner_2').id,
         })
 
     def test_04_proj_foll_create(self):
-        foll_2 = self.env['mail.followers'].create({
+        self.env['mail.followers'].create({
             'res_model': 'project.project',
             'res_id': self.proj_1.id,
             'partner_id': self.env.ref('base.res_partner_2').id,
