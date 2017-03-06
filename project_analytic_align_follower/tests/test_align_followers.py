@@ -12,7 +12,6 @@ class TestAlignFollowers(common.TransactionCase):
 
         AnalyticAccount = self.env['account.analytic.account']
         Project = self.env['project.project']
-        Follower = self.env['mail.followers']
 
         self.aa_1 = AnalyticAccount.create({
             'name': 'Analytic Account 1',
@@ -23,20 +22,22 @@ class TestAlignFollowers(common.TransactionCase):
             'analytic_account_id': self.aa_1.id,
         })
 
-        self.foll_1 = Follower.create({
-            'res_model': 'account.analytic.account',
-            'res_id': self.aa_1.id,
-            'partner_id': self.env.user.partner_id.id,
-        })
-
-        self.foll_2 = Follower.create({
-            'res_model': 'project.project',
-            'res_id': self.proj_1.id,
-            'partner_id': self.env.user.partner_id.id,
-        })
-
     def test_01_unlink_proj(self):
         self.proj_1.unlink()
 
     def test_02_unlink_aa(self):
         self.aa_1.unlink()
+
+    def test_03_aa_foll_create(self):
+        foll_1 = self.env['mail.followers'].create({
+            'res_model': 'account.analytic.account',
+            'res_id': self.aa_1.id,
+            'partner_id': self.env.ref('base.res_partner_2').id,
+        })
+
+    def test_04_proj_foll_create(self):
+        foll_2 = self.env['mail.followers'].create({
+            'res_model': 'project.project',
+            'res_id': self.proj_1.id,
+            'partner_id': self.env.ref('base.res_partner_2').id,
+        })
