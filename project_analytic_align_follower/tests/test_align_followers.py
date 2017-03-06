@@ -43,4 +43,3 @@ class TestAlignFollowers(common.TransactionCase):
             'partner_id': self.env.ref('base.res_partner_2').id,
         })
         foll_2.unlink()
-
