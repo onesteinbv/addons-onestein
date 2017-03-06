@@ -24,9 +24,6 @@
     'qweb': [
         'templates/qweb_template.xml',
     ],
-    'js': [
-        'static/src/js/bve.js'
-    ],
     'installable': True,
     'uninstall_hook': 'uninstall_hook'
 }

@@ -2,11 +2,11 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo.tests import common
+from odoo.tests.common import TransactionCase, at_install, post_install
 from odoo.exceptions import Warning as UserError
 
 
-class TestBiViewEditor(common.TransactionCase):
+class TestBiViewEditor(TransactionCase):
 
     def setUp(self):
 
@@ -179,24 +179,7 @@ class TestBiViewEditor(common.TransactionCase):
         bi_view2 = self.env['bve.view'].create(vals)
         self.assertEqual(len(bi_view2.user_ids), len(employees_group.users))
 
-    def test_07_create_open_bve_object(self):
-        vals = self.bi_view1_vals
-        employees_group = self.env.ref('base.group_user')
-        vals.update({
-            'name': 'Test View3',
-            'group_ids': [(6, 0, [employees_group.id])],
-        })
-        bi_view3 = self.env['bve.view'].create(vals)
-        self.assertEqual(len(bi_view3), 1)
-
-        # create sql view
-        bi_view3._create_sql_view()
-
-        # remove view
-        bi_view3.action_reset()
-        bi_view3.unlink()
-
-    def test_08_check_empty_data(self):
+    def test_07_check_empty_data(self):
         vals = {
             'name': 'Test View Empty',
             'state': 'draft',
@@ -207,10 +190,38 @@ class TestBiViewEditor(common.TransactionCase):
 
         # create sql view
         with self.assertRaises(UserError):
-            bi_view4._create_sql_view()
+            bi_view4.action_create()
 
-    def test_09_get_models(self):
+    def test_08_get_models(self):
         Model = self.env['ir.model']
         models = Model.get_models()
         self.assertIsInstance(models, list)
         self.assertGreater(len(models), 0)
+
+    @at_install(False)
+    @post_install(True)
+    def test_09_create_open_bve_object(self):
+        vals = self.bi_view1_vals
+        employees_group = self.env.ref('base.group_user')
+        vals.update({
+            'name': 'Test View4',
+            'group_ids': [(6, 0, [employees_group.id])],
+        })
+        bi_view = self.env['bve.view'].create(vals)
+        self.assertEqual(len(bi_view), 1)
+
+        # create bve object
+        bi_view.action_create()
+        model = self.env['ir.model'].search([
+            ('model', '=', 'x_bve.testview4'),
+            ('name', '=', 'Test View4')
+        ])
+        self.assertEqual(len(model), 1)
+
+        # open view
+        open_action = bi_view.open_view()
+        self.assertEqual(isinstance(open_action, dict), True)
+
+        # try to remove view
+        with self.assertRaises(UserError):
+            bi_view.unlink()

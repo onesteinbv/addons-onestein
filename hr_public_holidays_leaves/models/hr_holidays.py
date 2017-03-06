@@ -27,14 +27,15 @@ class HrHolidays(models.Model):
             if not holiday.holiday_type == 'employee':
                 return super(HrHolidays, self).action_validate()
 
-            try:
-                res_id = self.env['ir.model.data'].get_object(
-                    'hr_public_holidays_leaves', 'hr_public_holiday').id
-            except ValueError:
+            res = self.env.ref(
+                'hr_public_holidays_leaves.hr_public_holiday',
+                False
+            )
+            if not res:
                 raise Warning(
                     _("Leave Type for Public Holiday not found!"))
 
-            if holiday.holiday_status_id.id != res_id:
+            if holiday.holiday_status_id.id != res.id:
                 return super(HrHolidays, self).action_validate()
 
             calendar = self.get_employee_calendar(holiday.employee_id)
