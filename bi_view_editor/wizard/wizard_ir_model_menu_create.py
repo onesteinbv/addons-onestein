@@ -19,7 +19,7 @@ class WizardModelMenuCreate(models.TransientModel):
                 'parent_id': self.menu_id.id,
                 'action': 'ir.actions.act_window,%d' % (bve_view.action_id,)
             })
-            return {'type': 'ir.actions.act_window_close'}
+            return {'type': 'ir.actions.client', 'tag': 'reload'}
         return super(WizardModelMenuCreate, self).menu_create()
 
     @api.model
