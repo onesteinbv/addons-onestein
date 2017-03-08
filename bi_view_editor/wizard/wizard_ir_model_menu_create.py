@@ -5,16 +5,17 @@
 from odoo import api, models
 
 
-class WizardIrModelMenuCreate(models.TransientModel):
+class WizardModelMenuCreate(models.TransientModel):
     _inherit = 'wizard.ir.model.menu.create'
 
     @api.multi
     def menu_create(self):
         if self._context.get('active_model') == 'bve.view':
+            self.ensure_one()
             active_id = self._context.get('active_id')
             bve_view = self.env['bve.view'].browse(active_id)
             menu = self.env['ir.ui.menu'].create({
-                'name': bve_view.name,
+                'name': self.name,
                 'parent_id': self.menu_id.id,
                 'action': 'ir.actions.act_window,%d' % (bve_view.action_id,)
             })
@@ -26,4 +27,13 @@ class WizardIrModelMenuCreate(models.TransientModel):
                 'res_id': menu.id,
             })
             return {'type': 'ir.actions.act_window_close'}
-        return super(WizardIrModelMenuCreate, self).menu_create()
+        return super(WizardModelMenuCreate, self).menu_create()
+
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super(WizardModelMenuCreate, self).default_get(fields_list)
+        if self._context.get('active_model') == 'bve.view':
+            active_id = self._context.get('active_id')
+            bve_view = self.env['bve.view'].browse(active_id)
+            defaults.setdefault('name', bve_view.name)
+        return defaults
