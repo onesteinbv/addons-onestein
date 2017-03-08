@@ -61,9 +61,25 @@ class BveView(models.Model):
     ]
 
     @api.multi
+    def unlink(self):
+        for view in self:
+            if view.state == 'created':
+                raise UserError(
+                    _('You cannot delete a created view! '
+                      'Reset the view to draft first.'))
+        return super(BveView, self).unlink()
+
+    @api.multi
     def action_reset(self):
         self.ensure_one()
+
         if self.action_id:
+            action = 'ir.actions.act_window,%d' % (self.action_id.id,)
+            menus = self.env['ir.ui.menu'].sudo().search(
+                [('action', '=', action)]
+            )
+            menus.sudo().unlink()
+
             if self.action_id.view_id:
                 self.action_id.view_id.sudo().unlink()
             self.action_id.sudo().unlink()
@@ -214,10 +230,6 @@ class BveView(models.Model):
                 (f['table_alias'],
                  f['join'],
                  f['select_field']) for f in info if f['join'] is not False]
-            if not join_nodes:
-                raise UserError(
-                    _('Please select also a field from another model.')
-                )
 
             table_name = self.model_name.replace('.', '_')
             tools.drop_view_if_exists(self.env.cr, table_name)
@@ -347,12 +359,3 @@ class BveView(models.Model):
         self.ensure_one()
         default = dict(default or {}, name=_("%s (copy)") % self.name)
         return super(BveView, self).copy(default=default)
-
-    @api.multi
-    def unlink(self):
-        for view in self:
-            if view.state == 'created':
-                raise UserError(
-                    _('You cannot delete a created view! '
-                      'Reset the view to draft first.'))
-        return super(BveView, self).unlink()

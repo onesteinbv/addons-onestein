@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record model="ir.rule" id="bve_view_rule">
+    <record id="bve_view_rule" model="ir.rule">
         <field name="name">bve_view read access</field>
         <field name="model_id" search="[('model','=','bve.view')]" model="ir.model"/>
         <field name="global" eval="True"/>

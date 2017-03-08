@@ -252,12 +252,15 @@ class IrModel(models.Model):
             for alias, model_id in model_ids.items():
                 if model_id == new_field['model_id']:
                     join_nodes.append({'table_alias': alias})
-            for d in self.get_related_fields(model_ids):
-                c = [d['join_node'] == -1, d['table_alias'] == -1]
-                a = (new_field['model'] == d['relation'])
-                b = (new_field['model_id'] == d['model_id'])
-                if (a and c[0]) or (b and c[1]):
-                    join_nodes.append(d)
+            for dict_field in self.get_related_fields(model_ids):
+                condition = [
+                    dict_field['join_node'] == -1,
+                    dict_field['table_alias'] == -1
+                ]
+                relation = (new_field['model'] == dict_field['relation'])
+                model = (new_field['model_id'] == dict_field['model_id'])
+                if (relation and condition[0]) or (model and condition[1]):
+                    join_nodes.append(dict_field)
             return join_nodes
 
         model_ids = _get_model_ids(field_data)
@@ -312,9 +315,6 @@ class IrModel(models.Model):
         q = ("""UPDATE ir_model SET state = 'manual'
                WHERE id = """ + str(res.id))
         self.env.cr.execute(q)
-
-        if self._context.get('skip_update_registry'):
-            return res
 
         # update registry
         if self._context.get('bve'):
