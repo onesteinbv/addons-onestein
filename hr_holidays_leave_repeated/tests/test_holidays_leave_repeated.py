@@ -18,10 +18,8 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
         self.Workday = self.env['resource.calendar.attendance']
         self.Employee = self.env['hr.employee']
 
-        self.today_start = datetime.today().replace(
-            hour=8, minute=0, second=0)
-        self.today_end = datetime.today().replace(
-            hour=18, minute=0, second=0)
+        self.today_start = datetime(2016, 12, 1, 8, 0, 0, 0)
+        self.today_end = datetime(2016, 12, 1, 18, 0, 0, 0)
 
         today_start = self.today_start.strftime(DF)
         today_end = self.today_end.strftime(DF)
@@ -126,51 +124,55 @@ class TestHolidaysLeaveRepeated(common.TransactionCase):
         self.assertEqual(len(leave_2_list.ids), 4)
         self.assertEqual(len(leave_3_list.ids), 3)
         self.assertEqual(len(leave_4_list.ids), 2)
-    '''
+
     def test_02_workdays(self):
         for i in range(0, 5):
+            check_from = (self.today_start + timedelta(days=i)).strftime(DF)
+            check_to = (self.today_end + timedelta(days=i)).strftime(DF)
             self.assertEqual(len(self.Holidays.search(
                 [('holiday_status_id', '=', self.status_1.id),
                  ('employee_id', '=', self.employee_1.id),
-                 ('date_from', '=', (self.today_start +
-                                     timedelta(days=i)).strftime(DF)),
-                 ('date_to', '=', (self.today_end +
-                                   timedelta(days=i)).strftime(DF))]
+                 ('date_from', '=', check_from),
+                 ('date_to', '=', check_to)]
             ).ids), 1)
 
     def test_03_weeks(self):
+
         for i in range(0, 4):
+            check_from = (self.today_start + timedelta(
+                days=i * 7)).strftime(DF)
+            check_to = (self.today_end + timedelta(days=i * 7)).strftime(DF)
             self.assertEqual(len(self.Holidays.search(
                 [('holiday_status_id', '=', self.status_1.id),
                  ('employee_id', '=', self.employee_2.id),
-                 ('date_from', '=', (self.today_start +
-                                     timedelta(days=i * 7)).strftime(DF)),
-                 ('date_to', '=', (self.today_end +
-                                   timedelta(days=i * 7)).strftime(DF))]
+                 ('date_from', '=', check_from),
+                 ('date_to', '=', check_to)]
             ).ids), 1)
 
     def test_04_biweeks(self):
         for i in range(0, 3):
+            check_from = (self.today_start + timedelta(
+                days=i * 14)).strftime(DF)
+            check_to = (self.today_end + timedelta(days=i * 14)).strftime(DF)
             self.assertEqual(len(self.Holidays.search(
                 [('holiday_status_id', '=', self.status_1.id),
                  ('employee_id', '=', self.employee_3.id),
-                 ('date_from', '=', (self.today_start +
-                                     timedelta(days=i * 14)).strftime(DF)),
-                 ('date_to', '=', (self.today_end +
-                                   timedelta(days=i * 14)).strftime(DF))]
+                 ('date_from', '=', check_from),
+                 ('date_to', '=', check_to)]
             ).ids), 1)
 
     def test_05_months(self):
         for i in range(0, 2):
+            check_from = (self.today_start + timedelta(
+                days=i * 28)).strftime(DF)
+            check_to = (self.today_end + timedelta(days=i * 28)).strftime(DF)
             self.assertEqual(len(self.Holidays.search(
                 [('holiday_status_id', '=', self.status_1.id),
                  ('employee_id', '=', self.employee_4.id),
-                 ('date_from', '=', (self.today_start +
-                                     timedelta(days=i * 28)).strftime(DF)),
-                 ('date_to', '=', (self.today_end +
-                                   timedelta(days=i * 28)).strftime(DF))]
+                 ('date_from', '=', check_from),
+                 ('date_to', '=', check_to)]
             ).ids), 1)
-    '''
+
     def test_06_check_dates(self):
         with self.assertRaises(ValidationError):
             self.Holidays.create({
