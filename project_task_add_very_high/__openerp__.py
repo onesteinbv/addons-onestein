@@ -3,13 +3,14 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Project Task Add Very High',
-    'summary': "Adds an extra option 'Very High' on tasks",
-    'version': '9.0.1.0.0',
-    'author': "Onestein",
-    'license': "AGPL-3",
-    'category': 'Project Management',
-    'website': 'http://www.onestein.eu',
-    'depends': ['project'],
-    'installable': True,
+    "name": "Project Task Add Very High",
+    "summary": "Adds an extra option 'Very High' on tasks",
+    "version": "9.0.1.0.0",
+    "author": "Onestein",
+    "license": "AGPL-3",
+    "category": "Project Management",
+    "website": "http://www.onestein.eu",
+    "depends": ["project"],
+    "installable": True,
+    "uninstall_hook": "uninstall_hook"
 }
