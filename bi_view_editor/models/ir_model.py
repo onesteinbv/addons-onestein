@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, models
+from odoo.modules.registry import RegistryManager
 
 NO_BI_MODELS = [
     'temp.range',
@@ -221,10 +222,22 @@ class IrModel(models.Model):
                     join_nodes.append(field)
             return join_nodes
 
+        def remove_duplicate_nodes(join_nodes):
+            seen = set()
+            nodes_list = []
+            for node in join_nodes:
+                node_tuple = tuple(node.items())
+                if node_tuple not in seen:
+                    seen.add(node_tuple)
+                    nodes_list.append(node)
+            return nodes_list
+
         model_ids = _get_model_ids(field_data)
         keys = [(field['table_alias'], field['id'])
                 for field in field_data if field.get('join_node', -1) != -1]
         join_nodes = _get_join_nodes_dict(model_ids, new_field)
+        join_nodes = remove_duplicate_nodes(join_nodes)
+
         return filter(
             lambda x: 'id' not in x or
                       (x['table_alias'], x['id']) not in keys, join_nodes)
@@ -257,3 +270,26 @@ class IrModel(models.Model):
             reverse=True
         )
         return sorted_fields
+
+    @api.model
+    def create(self, vals):
+        if self._context and self._context.get('bve'):
+            vals['state'] = 'base'
+        res = super(IrModel, self).create(vals)
+
+        # this sql update is necessary since a write method here would
+        # be not working (an orm constraint is restricting the modification
+        # of the state field while updating ir.model)
+        q = ("""UPDATE ir_model SET state = 'manual'
+               WHERE id = """ + str(res.id))
+        self.env.cr.execute(q)
+
+        # # update registry
+        if self._context.get('bve'):
+            # setup models; this reloads custom models in registry
+            self.pool.setup_models(self._cr, partial=(not self.pool.ready))
+
+            # signal that registry has changed
+            RegistryManager.signal_registry_change(self.env.cr.dbname)
+
+        return res

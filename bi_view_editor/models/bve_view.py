@@ -42,7 +42,7 @@ class BveView(models.Model):
     data = fields.Text(
         help="Use the special query builder to define the query "
              "to generate your report dataset. "
-             "NOTE: Te be edited, the query should be in 'Draft' status.")
+             "NOTE: To be edited, the query should be in 'Draft' status.")
     action_id = fields.Many2one('ir.actions.act_window', string='Action')
     view_id = fields.Many2one('ir.ui.view', string='View')
     group_ids = fields.Many2many(
@@ -73,11 +73,9 @@ class BveView(models.Model):
     def _create_view_arch(self):
         self.ensure_one()
 
-        def _get_field_def(name, type=False):
+        def _get_field_def(name, type=''):
             if not type:
-                return """<field name="x_{}" />""".format(
-                    name
-                )
+                return ''
             return """<field name="x_{}" type="{}" />""".format(
                 name, type
             )
@@ -90,30 +88,40 @@ class BveView(models.Model):
 
         def _get_field_list(fields_info):
             view_fields = []
-            all_fields = []
             for field_info in fields_info:
                 field_name = field_info['name']
-                field_type = field_info['type']
                 def_type = _get_field_type(field_info)
-                field_def = _get_field_def(field_name, def_type)
                 if def_type:
+                    field_def = _get_field_def(field_name, def_type)
                     view_fields.append(field_def)
-                if field_type not in ['many2one', 'one2many', 'many2many']:
-                    all_fields.append(field_def)
-            return view_fields, all_fields
+            return view_fields
 
         fields_info = json.loads(self._get_format_data(self.data))
-        is_tree_view = self._context.get('no_empty')
-
-        view_fields, all_fields = _get_field_list(fields_info)
-        if not view_fields and is_tree_view:
-            view_fields = all_fields
+        view_fields = _get_field_list(fields_info)
         return view_fields
 
     @api.multi
     def _create_tree_view_arch(self):
         self.ensure_one()
-        return self.with_context(no_empty=True)._create_view_arch()
+
+        def _get_field_def(name):
+            return """<field name="x_{}" />""".format(
+                name
+            )
+
+        def _get_field_list(fields_info):
+            view_fields = []
+            for field_info in fields_info:
+                field_name = field_info['name']
+                if field_info['list'] and 'join_node' not in field_info:
+                    field_def = _get_field_def(field_name)
+                    view_fields.append(field_def)
+            return view_fields
+
+        fields_info = json.loads(self._get_format_data(self.data))
+
+        view_fields = _get_field_list(fields_info)
+        return view_fields
 
     @api.multi
     def _create_bve_view(self):
@@ -273,7 +281,7 @@ class BveView(models.Model):
             return fields
 
         def check_empty_data(data):
-            if not data:
+            if not data or data == '[]':
                 raise UserError(_('No data to process.'))
 
         check_empty_data(self.data)
@@ -285,9 +293,8 @@ class BveView(models.Model):
         join_nodes = get_join_nodes(info)
 
         table_name = self.model_name.replace('.', '_')
-        tools.drop_view_if_exists(self.env.cr, table_name)
 
-        # this line is only for robustness in case something goes wrong
+        # robustness in case something went wrong
         self._cr.execute('DROP TABLE IF EXISTS "%s"' % table_name)
 
         basic_fields = [
@@ -336,6 +343,9 @@ class BveView(models.Model):
                     vals.update({'selection': selection_domain})
                 return vals
 
+        # clean dirty view (in case something went wrong)
+        self.action_reset()
+
         # create sql view
         self._create_sql_view()
 
@@ -350,7 +360,8 @@ class BveView(models.Model):
                 for field in data
                 if 'join_node' not in field]
         }
-        model = self.env['ir.model'].sudo().create(model_vals)
+        Model = self.env['ir.model'].sudo().with_context(bve=True)
+        model = Model.create(model_vals)
 
         # give access rights
         self._build_access_rules(model)
@@ -374,7 +385,16 @@ class BveView(models.Model):
     @api.multi
     def action_reset(self):
         self.ensure_one()
+
+        has_menus = False
         if self.action_id:
+            action = 'ir.actions.act_window,%d' % (self.action_id.id,)
+            menus = self.env['ir.ui.menu'].sudo().search(
+                [('action', '=', action)]
+            )
+            has_menus = True if menus else False
+            menus.sudo().unlink()
+
             if self.action_id.view_id:
                 self.action_id.view_id.sudo().unlink()
             self.action_id.sudo().unlink()
@@ -388,6 +408,9 @@ class BveView(models.Model):
         tools.drop_view_if_exists(self.env.cr, table_name)
 
         self.state = 'draft'
+
+        if has_menus:
+            return {'type': 'ir.actions.client', 'tag': 'reload'}
 
     @api.multi
     def unlink(self):
