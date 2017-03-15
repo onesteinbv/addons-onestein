@@ -42,7 +42,7 @@ class BveView(models.Model):
     data = fields.Text(
         help="Use the special query builder to define the query "
              "to generate your report dataset. "
-             "NOTE: Te be edited, the query should be in 'Draft' status.")
+             "NOTE: To be edited, the query should be in 'Draft' status.")
     action_id = fields.Many2one('ir.actions.act_window', string='Action')
     view_id = fields.Many2one('ir.ui.view', string='View')
     group_ids = fields.Many2many(
@@ -281,7 +281,7 @@ class BveView(models.Model):
             return fields
 
         def check_empty_data(data):
-            if not data:
+            if not data or data == '[]':
                 raise UserError(_('No data to process.'))
 
         check_empty_data(self.data)
@@ -293,9 +293,8 @@ class BveView(models.Model):
         join_nodes = get_join_nodes(info)
 
         table_name = self.model_name.replace('.', '_')
-        tools.drop_view_if_exists(self.env.cr, table_name)
 
-        # this line is only for robustness in case something goes wrong
+        # robustness in case something went wrong
         self._cr.execute('DROP TABLE IF EXISTS "%s"' % table_name)
 
         basic_fields = [
@@ -344,6 +343,9 @@ class BveView(models.Model):
                     vals.update({'selection': selection_domain})
                 return vals
 
+        # clean dirty view (in case something went wrong)
+        self.action_reset()
+
         # create sql view
         self._create_sql_view()
 
@@ -358,7 +360,8 @@ class BveView(models.Model):
                 for field in data
                 if 'join_node' not in field]
         }
-        model = self.env['ir.model'].sudo().create(model_vals)
+        Model = self.env['ir.model'].sudo().with_context(bve=True)
+        model = Model.create(model_vals)
 
         # give access rights
         self._build_access_rules(model)
