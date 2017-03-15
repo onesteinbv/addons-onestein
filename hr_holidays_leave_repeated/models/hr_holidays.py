@@ -32,17 +32,6 @@ class HrHolidays(models.Model):
     @api.model
     def _update_workday_from_to(self, employee, from_dt, to_dt, days):
 
-        def clean_timezone(date, sign=1):
-            if date:
-                reference_date = fields.Datetime.context_timestamp(
-                    self.env.user,
-                    datetime(1990, 2, 8, 12)
-                )
-                tz_dt = fields.Datetime.context_timestamp(self.env.user, date)
-                date += (tz_dt.tzinfo._utcoffset)*sign
-                date -= (reference_date.tzinfo._utcoffset)*sign
-            return date
-
         user = self.env.user
         orig_from_dt = fields.Datetime.context_timestamp(user, from_dt)
         orig_to_dt = fields.Datetime.context_timestamp(user, to_dt)
@@ -57,15 +46,9 @@ class HrHolidays(models.Model):
             from_dt = from_dt + relativedelta(days=days)
             to_dt = to_dt + relativedelta(days=days)
 
-            check_from_dt = clean_timezone(from_dt, -1)
-            check_to_dt = clean_timezone(to_dt, -1)
-
-            from_dt = clean_timezone(from_dt)
-            to_dt = clean_timezone(to_dt)
-
             new_work_hours = working_hours.get_working_hours(
-                check_from_dt,
-                check_to_dt,
+                from_dt,
+                to_dt,
                 compute_leaves=True,
                 resource_id=employee.resource_id.id,
             )
