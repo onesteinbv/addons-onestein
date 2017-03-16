@@ -131,7 +131,6 @@ class HrHolidays(models.Model):
         'holiday_type',
         'type',
         'employee_id',
-        'holiday_status_id',
         'holiday_status_id')
     def _check_holidays(self):
         if not(self.holiday_type != 'employee' or self.type != 'remove' or
