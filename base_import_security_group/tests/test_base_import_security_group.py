@@ -76,17 +76,15 @@ class TestImportSecurityGroupHTTP(HttpCase):
          After the adjacent button is loaded, allow for a second for
          the asynchronous call to finish and update the visibility """
         code = """
-        window.setTimeout(function () {
             if (%s$('.o_button_import').is(':visible')) {
                 console.log('ok');
             } else {
                 console.log('error');
             };
-        }, 1000);
         """ % ('!' if falsify else '')
         link = '/web#action=%s' % self.env.ref('base.action_res_users').id
 
-        #with mute_logger('openerp.addons.base.res.res_users'):
+        # with mute_logger('openerp.addons.base.res.res_users'):
         # Mute debug log about failing row lock upon user login
         self.phantom_js(
             link, code, "$('button.o_list_button_add').length",
