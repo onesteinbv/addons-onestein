@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from lxml import etree
-
 from odoo import api, fields, models
 
 
@@ -39,12 +38,12 @@ class AccountInvoice(models.Model):
                 extra_ctx = "'cost_center_default': 1, " \
                     "'cost_center_id': cost_center_id"
                 for el in invoice_line:
-                    ctx = el.get('context')
-                    if ctx:
+                    ctx = "{" + extra_ctx + "}"
+                    if el.get('context'):
+                        ctx = el.get('context')
                         ctx_strip = ctx.rstrip("}").strip().rstrip(",")
                         ctx = ctx_strip + ", " + extra_ctx + "}"
-                    else:
-                        ctx = "{" + extra_ctx + "}"
+
                     el.set('context', str(ctx))
                     res['arch'] = etree.tostring(view_obj)
         return res
