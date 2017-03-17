@@ -5,7 +5,7 @@
 import logging
 
 from os import listdir
-from os.path import isfile, join, exists
+from os.path import isfile, join, exists, normpath, realpath
 from odoo import api, fields, models, _
 from odoo.exceptions import Warning
 
@@ -61,8 +61,13 @@ class IrFilesystemDirectory(models.Model):
 
         def get_files(directory, files):
             for file_name in listdir(directory):
-                if isfile(join(directory, file_name)) and file_name[0] != '.':
-                    files.append(file_name)
+                full_path = join(directory, file_name)
+
+                # Symbolic links and up-level references are not considered
+                norm_path = normpath(realpath(full_path))
+                if norm_path in full_path:
+                    if isfile(full_path) and file_name[0] != '.':
+                        files.append(file_name)
 
         self.ensure_one()
         files = []

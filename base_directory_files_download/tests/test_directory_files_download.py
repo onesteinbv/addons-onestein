@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import os
+from tempfile import gettempdir
 
 from odoo.tests import common
 from odoo.exceptions import Warning
@@ -13,7 +14,7 @@ class TestBaseDirectoryFilesDownload(common.TransactionCase):
     def test_01_create(self):
         test_dir = self.env['ir.filesystem.directory'].create({
             'name': 'Test Directory 1',
-            'directory': '/tmp'
+            'directory': gettempdir()
         })
 
         # test method get_dir()
@@ -50,7 +51,7 @@ class TestBaseDirectoryFilesDownload(common.TransactionCase):
     def test_02_copy(self):
         test_dir = self.env['ir.filesystem.directory'].create({
             'name': 'Test Orig',
-            'directory': '/tmp'
+            'directory': gettempdir()
         })
 
         # test copy
@@ -68,6 +69,6 @@ class TestBaseDirectoryFilesDownload(common.TransactionCase):
         self.assertEqual(len(test_dir.file_ids), test_dir.file_count)
 
         # test onchange directory (to existing)
-        test_dir.directory = '/tmp'
+        test_dir.directory = gettempdir()
         self.assertGreaterEqual(len(test_dir.file_ids), 0)
         self.assertEqual(len(test_dir.file_ids), test_dir.file_count)
