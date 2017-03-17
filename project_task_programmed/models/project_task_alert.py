@@ -42,8 +42,8 @@ class ProjectTaskAlert(models.Model):
     )
     active = fields.Boolean(default=True)
 
-    @api.model
-    def _merge_placeholders(self, incoming, rec):
+    @classmethod
+    def _merge_placeholders(cls, incoming, rec):
         values = rec.read()
         try:
             result = incoming % values
