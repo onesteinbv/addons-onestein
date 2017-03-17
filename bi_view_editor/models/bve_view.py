@@ -294,9 +294,6 @@ class BveView(models.Model):
 
         table_name = self.model_name.replace('.', '_')
 
-        # robustness in case something went wrong
-        self._cr.execute('DROP TABLE IF EXISTS "%s"' % table_name)
-
         basic_fields = [
             ("t0.id", "id")
         ]
@@ -406,6 +403,9 @@ class BveView(models.Model):
 
         table_name = self.model_name.replace('.', '_')
         tools.drop_view_if_exists(self.env.cr, table_name)
+
+        # robustness in case something went wrong
+        self._cr.execute('DROP TABLE IF EXISTS "%s"' % table_name)
 
         self.state = 'draft'
 
