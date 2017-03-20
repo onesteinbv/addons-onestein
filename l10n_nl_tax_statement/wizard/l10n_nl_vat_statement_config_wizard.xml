@@ -91,7 +91,7 @@
     </record>
 
     <record id="action_account_vat_statement_nl_config" model="ir.actions.act_window">
-        <field name="name">NL BTW Tags Config</field>
+        <field name="name">NL BTW Tags</field>
         <field name="res_model">l10n.nl.vat.statement.config.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">inline</field>
@@ -99,8 +99,9 @@
 
     <menuitem
         id="menu_account_vat_statement_nl_config"
-        parent="account_tax_balance.menu_tax_balances"
+        parent="account.menu_finance_configuration"
         groups="account.group_account_user"
+        sequence="5"
         action="action_account_vat_statement_nl_config"/>
 
 </odoo>

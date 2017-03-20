@@ -18,12 +18,16 @@ Configuration
 
 This module depends on the tax tags (eg.: 1a, 1b, 1c, 1d, 2a...) as prescribed by the Dutch tax laws.
 
-To use this module, the user should have installed the default Dutch chart of accounts (module l10n_nl) that will add these tags automatically.
+If the default Odoo Dutch chart of accounts is installed (module l10n_nl) then these tags are automatically present in the database.
+If this is the case, go to menu: Invoicing -> Configuration -> NL BTW Tags, and check that the tags are correctly set; click Apply to confirm.
+
+If a non-standard chart of accounts is installed, you have to manually create the tax tags and properly set them into the tax definition.
+After that, go to go to menu: Invoicing -> Configuration -> NL BTW Tags, and manually set the tags in the configuration form; click Apply to confirm.
 
 Usage
 =====
 
-#. Go to the menu: Reports > Taxes Balance > NL BTW Statement
+#. Go to the menu: Invoicing -> Reports > Taxes Balance > NL BTW Statement
 #. Create a statement, providing a name and specifying start date and end date
 #. Press the Update button to calculate the report: the report lines will be displayed in the tab Statement
 #. Press the Post button to set the status of the statement to Posted; the statements set to this state cannot be modified anymore
@@ -37,8 +41,7 @@ Usage
 Known issues / Roadmap
 ======================
 
-* Exporting in SBR/XBLR format not yet available (work in progress...)
-* Making this module decoupled from l10n_nl (work in progress...)
+* Exporting in SBR/XBLR format not yet available
 * Including in the report being created, not only the data filtered by the selected date range, but also all the old data that was not included in the previous tax declarations (work in progress...)
 
 Bug Tracker
