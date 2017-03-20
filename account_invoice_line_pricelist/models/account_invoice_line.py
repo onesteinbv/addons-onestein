@@ -3,6 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import api, models
+from datetime import date
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DT
 
 
 class AccountInvoiceLine(models.Model):
@@ -31,7 +33,9 @@ class AccountInvoiceLine(models.Model):
             uom=self.uom_id.id
         )
 
-        self.price_unit = self.env['account.tax']._fix_tax_included_price(
+        inv_date = self.invoice_id.date_invoice or date.today().strftime(DT)
+        self.price_unit = self.env['account.tax'].with_context(
+            date=inv_date)._fix_tax_included_price(
             product.price,
             product.taxes_id,
             self.invoice_line_tax_ids
