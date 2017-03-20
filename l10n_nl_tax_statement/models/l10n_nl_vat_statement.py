@@ -159,26 +159,34 @@ class VatStatement(models.Model):
 
     @api.model
     def _get_tags_map(self):
+        company_id = self.env.user.company_id.id
+        config = self.env['l10n.nl.vat.statement.config'].search([
+            ('company_id', '=', company_id)], limit=1
+        )
+        if not config:
+            raise UserError(
+                _('Tags mapping not configured for this Company! '
+                  'Check the NL BTW Tags Configuration.'))
         return {
-            self.env.ref('l10n_nl.tag_nl_03').id: ('1a', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_20').id: ('1a', 'btw'),
-            self.env.ref('l10n_nl.tag_nl_05').id: ('1b', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_22').id: ('1b', 'btw'),
-            self.env.ref('l10n_nl.tag_nl_06').id: ('1c', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_23').id: ('1c', 'btw'),
-            self.env.ref('l10n_nl.tag_nl_07').id: ('1d', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_24').id: ('1d', 'btw'),
-            self.env.ref('l10n_nl.tag_nl_08').id: ('1e', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_10').id: ('2a', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_27').id: ('2a', 'btw'),
-            self.env.ref('l10n_nl.tag_nl_12').id: ('3a', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_13').id: ('3b', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_14').id: ('3c', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_16').id: ('4a', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_29').id: ('4a', 'btw'),
-            self.env.ref('l10n_nl.tag_nl_17').id: ('4b', 'omzet'),
-            self.env.ref('l10n_nl.tag_nl_30').id: ('4b', 'btw'),
-            self.env.ref('l10n_nl.tag_nl_33').id: ('5b', 'btw'),
+            config.tag_1a_omzet.id: ('1a', 'omzet'),
+            config.tag_1a_btw.id: ('1a', 'btw'),
+            config.tag_1b_omzet.id: ('1b', 'omzet'),
+            config.tag_1b_btw.id: ('1b', 'btw'),
+            config.tag_1c_omzet.id: ('1c', 'omzet'),
+            config.tag_1c_btw.id: ('1c', 'btw'),
+            config.tag_1d_omzet.id: ('1d', 'omzet'),
+            config.tag_1d_btw.id: ('1d', 'btw'),
+            config.tag_1e_omzet.id: ('1e', 'omzet'),
+            config.tag_2a_omzet.id: ('2a', 'omzet'),
+            config.tag_2a_btw.id: ('2a', 'btw'),
+            config.tag_3a_omzet.id: ('3a', 'omzet'),
+            config.tag_3b_omzet.id: ('3b', 'omzet'),
+            config.tag_3c_omzet.id: ('3c', 'omzet'),
+            config.tag_4a_omzet.id: ('4a', 'omzet'),
+            config.tag_4a_btw.id: ('4a', 'btw'),
+            config.tag_4b_omzet.id: ('4b', 'omzet'),
+            config.tag_4b_btw.id: ('4b', 'btw'),
+            config.tag_5b_btw.id: ('5b', 'btw'),
         }
 
     @api.multi

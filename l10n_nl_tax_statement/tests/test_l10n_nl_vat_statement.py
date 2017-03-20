@@ -22,7 +22,7 @@ class TestVatStatement(TransactionCase):
         to_date = fields.Date.to_string(fy_dates['date_to'])
         self.assertEquals(statement.from_date, from_date)
         self.assertEquals(statement.to_date, to_date)
-        self.assertEquals(statement.company, company)
+        self.assertEquals(statement.company_id, company)
         self.assertEquals(statement.name, company.name)
 
     def test_02_statement_lines(self):

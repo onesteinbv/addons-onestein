@@ -11,11 +11,11 @@
     'website': 'http://www.onestein.eu',
     'depends': [
         'account_tax_balance',
-        'l10n_nl',
     ],
     'data': [
         'security/ir.model.access.csv',
         'views/l10n_nl_vat_statement.xml',
+        'wizard/l10n_nl_vat_statement_config_wizard.xml',
     ],
     'installable': True,
 }
