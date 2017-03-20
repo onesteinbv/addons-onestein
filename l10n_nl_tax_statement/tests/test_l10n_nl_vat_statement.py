@@ -5,6 +5,7 @@
 from datetime import datetime
 
 from odoo import fields
+from odoo.exceptions import Warning as UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -74,5 +75,6 @@ class TestVatStatement(TransactionCase):
         # create tax statement
         statement = self.env['l10n.nl.vat.statement'].create({})
 
-        # calculate lines
-        statement.update()
+        # try to calculate lines
+        with self.assertRaises(UserError):
+            statement.update()
