@@ -448,34 +448,34 @@ class AccountInvoiceLine(models.Model):
         self.ensure_one()
         return (self.name or str(self.id)) + '/' + str(seq)
 
+    @api.model
+    def _internal_compute_spread_board_lines(self, spread_start_date, table):
+        lines = table[0]['lines']
+        lines1 = []
+        lines2 = []
+        if lines:
+
+            for line in lines:
+                flag = line['date'] < spread_start_date
+                if flag:
+                    lines1.append(line)
+                else:
+                    lines2.append(line)
+        if lines1:
+            def group_lines(x, y):
+                y.update({'amount': x['amount'] + y['amount']})
+                return y
+
+            lines1 = [reduce(group_lines, lines1)]
+            lines1[0]['spreaded_value'] = 0.0
+        return lines1 + lines2
+
     @api.multi
     def _compute_spread_board(self):
         self.ensure_one()
 
         def get_format_date(date):
             return datetime.strptime(date, '%Y-%m-%d').date()
-
-        def compute_lines(spread_start_date, table):
-            lines = table[0]['lines']
-            lines1 = []
-            lines2 = []
-            if lines:
-                flag = lines[0]['date'] < spread_start_date
-                for line in lines:
-                    if flag:
-                        lines1.append(line)
-                        if line['date'] >= spread_start_date:
-                            flag = False
-                    else:
-                        lines2.append(line)
-            if lines1:
-                def group_lines(x, y):
-                    y.update({'amount': x['amount'] + y['amount']})
-                    return y
-
-                lines1 = [reduce(group_lines, lines1)]
-                lines1[0]['spreaded_value'] = 0.0
-            return lines1 + lines2
 
         def get_spread_line_id(last_spread_line):
             return last_spread_line and last_spread_line.id
@@ -495,7 +495,8 @@ class AccountInvoiceLine(models.Model):
 
             # group lines prior to spread start period
             spread_start_date = get_format_date(self.spread_start_date)
-            total_lines = compute_lines(spread_start_date, table)
+            total_lines = self._internal_compute_spread_board_lines(
+                spread_start_date, table)
             table[0]['lines'] = total_lines
 
             # check table with posted entries and

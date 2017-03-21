@@ -128,6 +128,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'spread_date': None
         })
         self.invoice.write({'date_invoice': None})
+        self.invoice_line._compute_spread_start_date()
 
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
@@ -287,3 +288,58 @@ class TestAccountCostSpread(AccountingTestCase):
         years = self.invoice_line._get_years(fy_dates)
 
         self.assertEqual(years, 3)
+
+    def test_12_compute_spread_table(self):
+
+        self.invoice_line.write({
+            'spread_account_id': None,
+        })
+
+        table = self.invoice_line._compute_spread_table()
+        self.assertEqual([], table)
+
+    def test_13_internal_compute_spread_board_lines(self):
+        table = [{'lines': [
+            {
+                'date': datetime.strptime('2017-01-01', '%Y-%m-%d').date(),
+                'amount': 100.0,
+            },
+            {
+                'date': datetime.strptime('2017-03-01', '%Y-%m-%d').date(),
+                'amount': 200.0,
+            },
+            {
+                'date': datetime.strptime('2017-01-01', '%Y-%m-%d').date(),
+                'amount': 500.0,
+            }
+        ]}]
+
+        self.invoice_line.write({
+            'spread_start_date': '2017-02-01',
+        })
+
+        spread_start_date = datetime.strptime(
+            self.invoice_line.spread_start_date, '%Y-%m-%d').date()
+
+        tst_lines = [
+            {
+                'amount': 600.0,
+                'date': datetime.strptime('2017-01-01', '%Y-%m-%d').date(),
+                'spreaded_value': 0.0
+            },
+            {
+                'amount': 200.0,
+                'date': datetime.strptime('2017-03-01', '%Y-%m-%d').date(),
+            }
+        ]
+        lines = self.invoice_line._internal_compute_spread_board_lines(
+            spread_start_date, table)
+        self.assertEqual(tst_lines, lines)
+
+    def test_14_compute_spread_board(self):
+        self.invoice_line.account_id.write({
+            'deprecated': True,
+        })
+
+        with self.assertRaises(Warning):
+            self.invoice_line.compute_spread_board()
