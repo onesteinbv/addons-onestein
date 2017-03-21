@@ -2,6 +2,8 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from tempfile import gettempdir
+
 from odoo.tests import common
 from odoo.exceptions import Warning
 
@@ -21,7 +23,7 @@ class TestAutoBackupDownload(common.TransactionCase):
             'auto_backup_download.default_backup_directory')
         self.env['db.backup'].create({
             'name': 'Test Backup 1',
-            'folder': '/tmp'
+            'folder': gettempdir()
         })
 
         # test method get_dir()
