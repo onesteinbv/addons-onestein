@@ -373,3 +373,4 @@ class TestAccountCostSpread(AccountingTestCase):
 
     def test_16_create_move_out_invoice(self):
         self.invoice_2.action_invoice_open()
+        self.invoice_line_2.spread_line_ids.create_moves()
