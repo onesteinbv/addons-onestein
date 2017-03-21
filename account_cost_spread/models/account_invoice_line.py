@@ -130,6 +130,35 @@ class AccountInvoiceLine(models.Model):
             }
         return view
 
+    @api.model
+    def _get_years(self, fy_dates):
+        fy_date_start = datetime.strptime(
+            fy_dates['date_from'].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        fy_year_start = int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
+        fy_date_stop = datetime.strptime(
+            fy_dates['date_to'].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        fy_year_stop = int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4])
+        year = fy_year_start
+        cnt = fy_year_stop - fy_year_start + 1
+        factor = 0
+        for i in range(cnt):
+            cy_days = calendar.isleap(year) and 366 or 365
+            if i == 0:  # first year
+                if fy_date_stop.year == year:
+                    duration = (fy_date_stop - fy_date_start).days + 1
+                else:
+                    duration = (datetime(year, 12, 31) -
+                                fy_date_start).days + 1
+                factor = float(duration) / cy_days
+            elif i == cnt - 1:  # last year
+                duration = fy_date_stop - datetime(year, 1, 1)
+                duration_days = duration.days + 1
+                factor += float(duration_days) / cy_days
+            else:
+                factor += 1.0
+            year += 1
+        return factor
+
     @api.multi
     def _get_fy_duration(self, invoice_date, option='days'):
         """
@@ -140,34 +169,6 @@ class AccountInvoiceLine(models.Model):
                   a started month is counted as a full month
         - years: duration in calendar years, considering also leap years
         """
-
-        def get_years(fy_dates):
-            fy_date_start = datetime.strptime(
-                fy_dates['date_from'].strftime('%Y-%m-%d'), '%Y-%m-%d')
-            fy_year_start = int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])
-            fy_date_stop = datetime.strptime(
-                fy_dates['date_to'].strftime('%Y-%m-%d'), '%Y-%m-%d')
-            fy_year_stop = int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4])
-            year = fy_year_start
-            cnt = fy_year_stop - fy_year_start + 1
-            factor = 0
-            for i in range(cnt):
-                cy_days = calendar.isleap(year) and 366 or 365
-                if i == 0:  # first year
-                    if fy_date_stop.year == year:
-                        duration = (fy_date_stop - fy_date_start).days + 1
-                    else:
-                        duration = (datetime(year, 12, 31) -
-                                    fy_date_start).days + 1
-                    factor = float(duration) / cy_days
-                elif i == cnt - 1:  # last year
-                    duration = fy_date_stop - datetime(year, 1, 1)
-                    duration_days = duration.days + 1
-                    factor += float(duration_days) / cy_days
-                else:
-                    factor += 1.0
-                year += 1
-            return factor
 
         def get_months(fy_dates):
             months = (int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4]) -
@@ -195,7 +196,7 @@ class AccountInvoiceLine(models.Model):
             months = get_months(fy_dates)
             return months
         elif option == 'years':
-            factor = get_years(fy_dates)
+            factor = self._get_years(fy_dates)
             return factor
 
     @api.multi

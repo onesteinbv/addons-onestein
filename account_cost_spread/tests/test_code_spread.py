@@ -3,7 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.addons.account.tests.account_test_classes import AccountingTestCase
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from datetime import datetime
 from odoo.exceptions import Warning
+from odoo import fields
 
 
 class TestAccountCostSpread(AccountingTestCase):
@@ -107,7 +110,7 @@ class TestAccountCostSpread(AccountingTestCase):
             total_line_amount += line.amount
         self.assertLessEqual(abs(total_line_amount - 2000.0), 0.0001)
 
-        # simulate the click on the arrow that displays the spead details
+        # simulate the click on the arrow that displays the spread details
         details = self.invoice_line.spread_details()
         self.assertEqual(details['res_id'], self.invoice_line.id)
 
@@ -124,6 +127,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'period_type': 'year',
             'spread_date': None
         })
+        self.invoice.write({'date_invoice': None})
 
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
@@ -208,3 +212,78 @@ class TestAccountCostSpread(AccountingTestCase):
                          self.invoice_line.spread_line_ids[2].amount)
         self.assertEqual('2017-03-31',
                          self.invoice_line.spread_line_ids[2].line_date)
+
+    def test_07_supplier_invoice(self):
+        # spread date set
+        self.invoice_line.write({
+            'period_number': 12,
+            'period_type': 'month',
+            'spread_date': '2017-02-01'
+        })
+
+        # change the state of invoice to open by clicking Validate button
+        self.invoice.action_invoice_open()
+        self.invoice.journal_id.write({'update_posted': True})
+        self.invoice.action_invoice_cancel()
+        self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
+
+    def test_08_supplier_invoice(self):
+        # spread date set
+        self.invoice_line.write({
+            'period_number': 12,
+            'period_type': 'month',
+            'spread_date': '2017-02-01'
+        })
+
+        # change the state of invoice to open by clicking Validate button
+        self.invoice.action_invoice_open()
+        self.invoice.journal_id.write({'update_posted': True})
+        self.invoice.action_invoice_cancel()
+        self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
+
+    def test_09_get_fy_duration_days(self):
+        # spread date set
+        fy_dates = {
+            'date_from': fields.Date.from_string('2017-01-01'),
+            'date_to': fields.Date.from_string('2017-12-31'),
+        }
+
+        date_invoice_formatted = datetime.strptime('2017-01-01', DF).date()
+        days = self.invoice_line._get_fy_duration('2017-01-01', option='days')
+
+        self.assertEqual(
+            days, (fy_dates['date_to'] - date_invoice_formatted).days + 1)
+
+    def test_10_get_fy_duration_months(self):
+        # spread date set
+        fy_dates = {
+            'date_from': fields.Date.from_string('2017-01-01'),
+            'date_to': fields.Date.from_string('2017-12-31'),
+        }
+
+        months = self.invoice_line._get_fy_duration(
+            '2017-01-01', option='months')
+
+        self.assertEqual(
+            months,
+            (int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4]) -
+             int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])) * 12 +
+            (int(fy_dates['date_to'].strftime('%Y-%m-%d')[5:7]) -
+             int(fy_dates['date_from'].strftime('%Y-%m-%d')[5:7])) + 1
+        )
+
+    def test_11_get_fy_duration_years(self):
+        # spread date set
+
+        self.invoice.write({
+            'date_invoice': '2015-01-01',
+        })
+
+        fy_dates = {
+            'date_from': fields.Date.from_string('2015-01-01'),
+            'date_to': fields.Date.from_string('2017-12-31'),
+        }
+
+        years = self.invoice_line._get_years(fy_dates)
+
+        self.assertEqual(years, 3)
