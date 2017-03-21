@@ -18,10 +18,6 @@
         </field>
     </record>
 
-    <record id="base_directory_files_download.ir_filesystem_directory_action" model="ir.actions.act_window">
-        <field name="domain">[('is_backup', '!=', True)]</field>
-    </record>
-
     <record id="ir_filesystem_directory_backup_action" model="ir.actions.act_window">
         <field name="name">Backups</field>
         <field name="res_model">ir.filesystem.directory</field>
