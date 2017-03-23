@@ -34,7 +34,7 @@ class TestProjectTaskCreateAlerts(TransactionCase):
         self.partner1 = create_partner(Partner, 'Partner 1', delta=1)
         self.partner2 = create_partner(Partner, 'Partner 2', delta=8)
 
-        date_field = self.env.ref('base.field_res_partner_date')
+        self.date_field = self.env.ref('base.field_res_partner_date')
 
         self.task_alert1, self.task_alert2 = create_task_alerts([
             {
@@ -42,25 +42,28 @@ class TestProjectTaskCreateAlerts(TransactionCase):
                 'days_delta': 3,
                 'task_description': 'Description of Task Alert1',
                 'project_id': self.project.id,
-                'date_field_id': date_field.id,
+                'date_field_id': self.date_field.id,
             },
             {
                 'name': 'Task Alert Test2',
                 'days_delta': 8,
                 'task_description': 'Description of Task Alert2',
                 'project_id': self.project.id,
-                'date_field_id': date_field.id,
+                'date_field_id': self.date_field.id,
             }
         ], Alert)
 
-    def test_create_alerts(self):
+    def test_01_create_alerts(self):
         self.task_alert1.create_task_alerts()
         task = self.env['project.task'].search([
             ('name', '=', 'Task Alert Test1')])
         self.assertEqual(len(task), 1)
 
-    def test_run_alerts(self):
+    def test_02_run_alerts(self):
         self.env['project.task.alert'].run_task_alerts()
         task = self.env['project.task'].search([
             ('name', '=', 'Task Alert Test2')])
         self.assertEqual(len(task), 1)
+
+    def test_03_name_search(self):
+        self.env['ir.model.fields'].name_search(self.date_field.name)
