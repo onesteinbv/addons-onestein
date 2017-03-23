@@ -2,8 +2,6 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from datetime import datetime
-from odoo import fields
 from odoo.exceptions import Warning as UserError
 from odoo.tests.common import TransactionCase
 
@@ -18,7 +16,8 @@ class TestVatStatement(TransactionCase):
         self.DateRangeType = self.env['date.range.type']
         self.Config = self.env['l10n.nl.vat.statement.config']
 
-        self.config = self.Config.create({'company_id': self.env.user.company_id.id})
+        self.config = self.Config.create(
+            {'company_id': self.env.user.company_id.id})
 
         self.daterange_type = self.DateRangeType.create({'name': 'Type 1'})
 
