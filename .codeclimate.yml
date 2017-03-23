@@ -48,3 +48,4 @@ exclude_paths:
 - "partner_sequence/tests/test_partner_sequence.py"
 - "account_invoice_line_pricelist/tests/test_invoice_line_pricelist.py"
 - "account_cost_spread/tests/test_code_spread.py"
+- "account_budgetary_position_one_account/tests/test_account_budget_position.py"
