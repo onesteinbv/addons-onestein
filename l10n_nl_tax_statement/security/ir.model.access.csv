@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_nl_vat_statement_line,access_l10n_nl_vat_statement_line,model_l10n_nl_vat_statement_line,account.group_account_user,1,1,1,1
+access_l10n_nl_vat_statement,access_l10n_nl_vat_statement,model_l10n_nl_vat_statement,account.group_account_user,1,1,1,1
+access_l10n_nl_vat_statement_config,access_l10n_nl_vat_statement_config,model_l10n_nl_vat_statement_config,account.group_account_user,1,1,1,1
