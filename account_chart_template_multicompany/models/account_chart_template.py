@@ -8,7 +8,7 @@ from odoo import api, models
 class AccountChartTemplate(models.Model):
     _inherit = "account.chart.template"
 
-    @api.one
+    @api.multi
     def try_loading_for_current_company(self):
         self.ensure_one()
         res = super(AccountChartTemplate,

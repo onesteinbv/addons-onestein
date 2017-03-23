@@ -9,7 +9,7 @@
     'depends': [
         'account',
     ],
-    'author': "Onestein",
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'images': [],
