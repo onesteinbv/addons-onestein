@@ -15,8 +15,6 @@ class HrEmployee(models.Model):
             employee.fnct_display_personal_data = False
             if self.user_has_groups('hr.group_hr_user'):
                 employee.fnct_display_personal_data = True
-            elif self.user_has_groups('hr.group_hr_manager'):
-                employee.fnct_display_personal_data = True
             elif employee.user_id == self.env.user:
                 employee.fnct_display_personal_data = True
 
