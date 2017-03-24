@@ -180,21 +180,10 @@ class TestVatStatement(TransactionCase):
             self.statement_1.line_ids.unlink()
 
     def test_11_wizard_execute(self):
-        if self.env.ref('l10n_nl.l10nnl_chart_template', False):
-            self.env.user.company_id.write({
-                'chart_template_id': self.env.ref(
-                    'l10n_nl.l10nnl_chart_template')
-            })
         wizard = self.Wizard.create({})
 
-        if self.env.ref('l10n_nl.l10nnl_chart_template', False):
-            self.assertEqual(
-                wizard.tag_1a_omzet, self.env.ref('l10n_nl.tag_nl_03'))
-            self.assertEqual(
-                wizard.tag_1a_btw, self.env.ref('l10n_nl.tag_nl_20'))
-        else:
-            self.assertEqual(wizard.tag_1a_omzet, self.tag_1)
-            self.assertEqual(wizard.tag_1a_btw, self.tag_2)
+        self.assertEqual(wizard.tag_1a_omzet, self.tag_1)
+        self.assertEqual(wizard.tag_1a_btw, self.tag_2)
 
         wizard.write({
             'tag_1a_btw': self.tag_1.id,
@@ -202,6 +191,10 @@ class TestVatStatement(TransactionCase):
         })
 
         self.config.unlink()
+
+        wizard_2 = self.Wizard.create({})
+        self.assertNotEqual(wizard_2.tag_1a_omzet, self.tag_1)
+        self.assertNotEqual(wizard_2.tag_1a_btw, self.tag_2)
 
         config = self.Config.search(
             [('company_id', '=', self.env.user.company_id.id)],
