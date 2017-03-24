@@ -5,7 +5,9 @@
 from odoo.exceptions import Warning as UserError
 from odoo.tests.common import TransactionCase
 from datetime import datetime
+import logging
 
+_logger = logging.getLogger(__name__)
 
 class TestVatStatement(TransactionCase):
 
@@ -13,6 +15,7 @@ class TestVatStatement(TransactionCase):
         super(TestVatStatement, self).setUp()
 
         self.Statement = self.env['l10n.nl.vat.statement']
+        self.StatementLine = self.env['l10n.nl.vat.statement.line']
         self.DateRange = self.env['date.range']
         self.DateRangeType = self.env['date.range.type']
         self.Config = self.env['l10n.nl.vat.statement.config']
@@ -85,19 +88,11 @@ class TestVatStatement(TransactionCase):
             'type': 'out_invoice',
         })
 
-        self.invoice_2 = self.Invoice.create({
-            'partner_id': self.partner.id,
-            'account_id': invoice_line_account,
-            'journal_id': self.journal_1.id,
-            'date_invoice': datetime.today(),
-            'type': 'in_invoice',
-        })
-
-        self.invoice_line = self.InvoiceLine.create({
+        self.invoice_line_1 = self.InvoiceLine.create({
             'name': 'Test line',
             'quantity': 1.0,
             'account_id': invoice_line_account,
-            'price_unit': 1.0,
+            'price_unit': 100.0,
             'invoice_id': self.invoice_1.id,
             'invoice_line_tax_ids': [(6, 0, [self.tax_1.id])],
         })
@@ -106,8 +101,8 @@ class TestVatStatement(TransactionCase):
             'name': 'Test line 2',
             'quantity': 1.0,
             'account_id': invoice_line_account,
-            'price_unit': 1.0,
-            'invoice_id': self.invoice_2.id,
+            'price_unit': 50.0,
+            'invoice_id': self.invoice_1.id,
             'invoice_line_tax_ids': [(6, 0, [self.tax_2.id])],
         })
 
@@ -153,12 +148,27 @@ class TestVatStatement(TransactionCase):
 
     def test_08_update_exception2(self):
         self.config.unlink()
-        self.statement_1.post()
         with self.assertRaises(UserError):
             self.statement_1.update()
 
     def test_09_update_working(self):
+        self.invoice_1._onchange_invoice_line_ids()
         self.invoice_1.action_invoice_open()
-        self.invoice_2.action_invoice_open()
         self.statement_1.update()
         self.assertEqual(len(self.statement_1.line_ids.ids), 19)
+
+        _1 = self.StatementLine.search(
+            [('code','=','1'),('id','in',self.statement_1.line_ids.ids)],
+            limit=1)
+
+        _1a = self.StatementLine.search(
+            [('code','=','1a'),('id','in',self.statement_1.line_ids.ids)],
+            limit=1)
+
+        self.assertFalse(_1.format_omzet)
+        self.assertFalse(_1.format_btw)
+        self.assertTrue(_1.is_group)
+
+        self.assertEqual(_1a.format_omzet, '100.00')
+        self.assertEqual(_1a.format_btw, '10.50')
+        self.assertFalse(_1a.is_group)
