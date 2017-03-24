@@ -107,10 +107,10 @@ class VatStatement(models.Model):
             'name': _('Leveringen en/of diensten binnenland')}
         lines['1a'] = {
             'code': '1a', 'omzet': 0.0, 'btw': 0.0,
-            'name': _('Leveringen/diensten belast met 21%')}
+            'name': _('Leveringen/diensten belast met hoog tarief')}
         lines['1b'] = {
             'code': '1b', 'omzet': 0.0, 'btw': 0.0,
-            'name': _('Leveringen/diensten belast met 6%')}
+            'name': _('Leveringen/diensten belast met laag tarief')}
         lines['1c'] = {
             'code': '1c', 'omzet': 0.0, 'btw': 0.0,
             'name': _('Leveringen/diensten belast met overige tarieven '

@@ -47,24 +47,26 @@
                             <br/><br/><br/><br/>
                         </div>
 
+                        <!-- Top header -->
                         <div class="act_as_table data_table" style="width: 1140px;">
+                            <div class="act_as_row lines">
+                                <div class="act_as_cell left" style="width: 900px;"> </div>
+                                <div class="act_as_cell right">Omzet</div>
+                                <div class="act_as_cell right">BTW</div>
+                            </div>
                             <!-- Display lines -->
                             <t t-foreach="o.line_ids" t-as="line">
-                                <div t-if="not line.is_group" class="act_as_row lines">
-                                    <!--## code and description-->
-                                    <div class="act_as_cell left" style="width: 900px;"> &amp;nbsp; &amp;nbsp; <span t-field="line.code"/> - <span t-field="line.name"/></div>
-                                    <!--## omzet-->
-                                    <div class="act_as_cell amount"><span t-field="line.format_omzet"/></div>
-                                    <!--## btw-->
-                                    <div class="act_as_cell amount"><span t-field="line.format_btw"/></div>
-                                </div>
                                 <div t-if="line.is_group" class="act_as_row labels">
-                                    <!--## code and description-->
+                                    <!--## line header-->
                                     <div class="act_as_cell left" style="width: 900px;"><span t-field="line.code"/> - <span t-field="line.name"/></div>
-                                    <!--## void-->
-                                    <div class="act_as_cell amount">Omzet</div>
-                                    <!--## void-->
-                                    <div class="act_as_cell amount">BTW</div>
+                                    <div class="act_as_cell right"> </div>
+                                    <div class="act_as_cell right"> </div>
+                                </div>
+                                <div t-if="not line.is_group" class="act_as_row lines">
+                                    <!--## code, description, omzet, btw-->
+                                    <div class="act_as_cell left" style="width: 900px;"> &amp;nbsp; &amp;nbsp; <span t-field="line.code"/> - <span t-field="line.name"/></div>
+                                    <div class="act_as_cell right"><span t-field="line.format_omzet"/></div>
+                                    <div class="act_as_cell right"><span t-field="line.format_btw"/></div>
                                 </div>
                             </t>
                         </div>

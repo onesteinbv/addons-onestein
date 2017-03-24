@@ -47,11 +47,14 @@
                                         </group>
                                     </group>
                                 </form>
-                                <tree colors="grey:code in ('1','2','3','4','5')">
+                                <tree colors="grey:is_group">
+                                    <field name="is_group" invisible="1"/>
                                     <field name="code"/>
                                     <field name="name"/>
-                                    <field name="omzet"/>
-                                    <field name="btw"/>
+                                    <field name="format_omzet" invisible="1"/>
+                                    <field name="format_btw" invisible="1"/>
+                                    <field name="omzet" attrs="{'invisible': [('format_omzet', '=', False)]}"/>
+                                    <field name="btw" attrs="{'invisible': [('format_btw', '=', False)]}"/>
                                 </tree>
                             </field>
                         </page>

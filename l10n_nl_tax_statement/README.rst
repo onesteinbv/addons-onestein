@@ -11,7 +11,8 @@ This module provides you with the Tax Statement in the Dutch format.
 Installation
 ============
 
-This module depends from module account_tax_balance available at https://github.com/OCA/account-financial-reporting.
+* This module depends from module account_tax_balance available at https://github.com/OCA/account-financial-reporting.
+* This module also depends from module date_range that is supported as of postgresql 9.2 or later versions.
 
 Configuration
 =============
