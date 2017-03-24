@@ -5,9 +5,7 @@
 from odoo.exceptions import Warning as UserError
 from odoo.tests.common import TransactionCase
 from datetime import datetime
-import logging
 
-_logger = logging.getLogger(__name__)
 
 class TestVatStatement(TransactionCase):
 
@@ -15,7 +13,7 @@ class TestVatStatement(TransactionCase):
         super(TestVatStatement, self).setUp()
 
         self.Statement = self.env['l10n.nl.vat.statement']
-        self.StatementLine = self.env['l10n.nl.vat.statement.line']
+        self.StatLine = self.env['l10n.nl.vat.statement.line']
         self.DateRange = self.env['date.range']
         self.DateRangeType = self.env['date.range.type']
         self.Config = self.env['l10n.nl.vat.statement.config']
@@ -157,12 +155,12 @@ class TestVatStatement(TransactionCase):
         self.statement_1.update()
         self.assertEqual(len(self.statement_1.line_ids.ids), 19)
 
-        _1 = self.StatementLine.search(
-            [('code','=','1'),('id','in',self.statement_1.line_ids.ids)],
+        _1 = self.StatLine.search(
+            [('code', '=', '1'), ('id', 'in', self.statement_1.line_ids.ids)],
             limit=1)
 
-        _1a = self.StatementLine.search(
-            [('code','=','1a'),('id','in',self.statement_1.line_ids.ids)],
+        _1a = self.StatLine.search(
+            [('code', '=', '1a'), ('id', 'in', self.statement_1.line_ids.ids)],
             limit=1)
 
         self.assertFalse(_1.format_omzet)
