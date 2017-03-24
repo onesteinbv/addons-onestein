@@ -21,6 +21,7 @@ class TestVatStatement(TransactionCase):
         self.Tax = self.env['account.tax']
         self.Invoice = self.env['account.invoice']
         self.InvoiceLine = self.env['account.invoice.line']
+        self.Wizard = self.env['l10n.nl.vat.statement.config.wizard']
 
         self.tag_1 = self.Tag.create({
             'name': 'Tag 1',
@@ -170,3 +171,48 @@ class TestVatStatement(TransactionCase):
         self.assertEqual(_1a.format_omzet, '100.00')
         self.assertEqual(_1a.format_btw, '10.50')
         self.assertFalse(_1a.is_group)
+
+    def test_10_line_unlink_exception(self):
+        self.invoice_1.action_invoice_open()
+        self.statement_1.update()
+        self.statement_1.post()
+        with self.assertRaises(UserError):
+            self.statement_1.line_ids.unlink()
+
+    def test_11_wizard_execute(self):
+        if self.env.ref('l10n_nl.l10nnl_chart_template', False):
+            self.env.user.company_id.write({
+                'chart_template_id': self.env.ref(
+                    'l10n_nl.l10nnl_chart_template')
+            })
+        wizard = self.Wizard.create({})
+
+        if self.env.ref('l10n_nl.l10nnl_chart_template', False):
+            self.assertEqual(
+                wizard.tag_1a_omzet, self.env.ref('l10n_nl.tag_nl_03'))
+            self.assertEqual(
+                wizard.tag_1a_btw, self.env.ref('l10n_nl.tag_nl_20'))
+        else:
+            self.assertEqual(wizard.tag_1a_omzet, self.tag_1)
+            self.assertEqual(wizard.tag_1a_btw, self.tag_2)
+
+        wizard.write({
+            'tag_1a_btw': self.tag_1.id,
+            'tag_1a_omzet': self.tag_2.id,
+        })
+
+        self.config.unlink()
+
+        config = self.Config.search(
+            [('company_id', '=', self.env.user.company_id.id)],
+            limit=1)
+        self.assertFalse(config)
+
+        wizard.execute()
+
+        config = self.Config.search(
+            [('company_id', '=', self.env.user.company_id.id)],
+            limit=1)
+        self.assertTrue(config)
+        self.assertEqual(config.tag_1a_btw, self.tag_1)
+        self.assertEqual(config.tag_1a_omzet, self.tag_2)
