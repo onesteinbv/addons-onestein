@@ -11,7 +11,7 @@ body, table, td, span, div {
 .act_as_cell {
     display: table-cell;
     page-break-inside: avoid;
-    font-size:16px;
+    font-size:18px;
 }
 .act_as_row.labels {
     background-color:#F0F0F0;
@@ -22,11 +22,11 @@ body, table, td, span, div {
     border-left:0px;
     border-right:0px;
     text-align:left;
-    font-size:16px;
+    font-size:18px;
     padding-right:3px;
     padding-left:3px;
-    padding-top:2px;
-    padding-bottom:2px;
+    padding-top:3px;
+    padding-bottom:3px;
     border-collapse:collapse;
 }
 .data_table .act_as_cell{
@@ -37,7 +37,7 @@ body, table, td, span, div {
 .data_table .act_as_row.labels {
     font-weight: bold;
 }
-.act_as_cell.amount {
+.act_as_cell.right {
     word-wrap:normal;
     text-align:right;
 }
@@ -45,5 +45,5 @@ body, table, td, span, div {
     text-align:left;
 }
 .custom_footer {
-    font-size:16px !important;
+    font-size:18px;
 }

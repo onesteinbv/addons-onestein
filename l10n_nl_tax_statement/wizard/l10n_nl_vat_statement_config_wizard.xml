@@ -104,7 +104,7 @@
         id="menu_account_vat_statement_nl_config"
         parent="account.account_account_menu"
         groups="account.group_account_user"
-        sequence="5"
+        sequence="15"
         action="action_account_vat_statement_nl_config"/>
 
 </odoo>

@@ -44,6 +44,7 @@ Known issues / Roadmap
 
 * Exporting in SBR/XBLR format not yet available
 * Including in the report being created, not only the data filtered by the selected date range, but also all the old data that was not included in the previous tax declarations (work in progress...)
+* This module depends from module date_range that is supported as of postgresql 9.2 or later versions
 
 Bug Tracker
 ===========
