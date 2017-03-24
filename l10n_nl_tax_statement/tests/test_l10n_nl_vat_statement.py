@@ -4,6 +4,7 @@
 
 from odoo.exceptions import Warning as UserError
 from odoo.tests.common import TransactionCase
+from datetime import datetime
 
 
 class TestVatStatement(TransactionCase):
@@ -15,9 +16,38 @@ class TestVatStatement(TransactionCase):
         self.DateRange = self.env['date.range']
         self.DateRangeType = self.env['date.range.type']
         self.Config = self.env['l10n.nl.vat.statement.config']
+        self.Tag = self.env['account.account.tag']
+        self.Tax = self.env['account.tax']
+        self.Invoice = self.env['account.invoice']
+        self.InvoiceLine = self.env['account.invoice.line']
 
-        self.config = self.Config.create(
-            {'company_id': self.env.user.company_id.id})
+        self.tag_1 = self.Tag.create({
+            'name': 'Tag 1',
+            'applicability': 'taxes',
+        })
+
+        self.tag_2 = self.Tag.create({
+            'name': 'Tag 2',
+            'applicability': 'taxes',
+        })
+
+        self.tax_1 = self.Tax.create({
+            'name': 'Tax 1',
+            'amount': 21,
+            'tag_ids': [(6, 0, [self.tag_1.id])],
+        })
+
+        self.tax_2 = self.Tax.create({
+            'name': 'Tax 2',
+            'amount': 21,
+            'tag_ids': [(6, 0, [self.tag_2.id])],
+        })
+
+        self.config = self.Config.create({
+            'company_id': self.env.user.company_id.id,
+            'tag_1a_omzet': self.tag_1.id,
+            'tag_1a_btw': self.tag_2.id,
+        })
 
         self.daterange_type = self.DateRangeType.create({'name': 'Type 1'})
 
@@ -30,6 +60,55 @@ class TestVatStatement(TransactionCase):
 
         self.statement_1 = self.Statement.create({
             'name': 'Statement 1',
+        })
+
+        self.journal_1 = self.env['account.journal'].create({
+            'name': 'Journal 1',
+            'code': 'Jou1',
+            'type': 'sale',
+        })
+
+        self.partner = self.env['res.partner'].create({
+            'name': 'Test partner'})
+
+        type_account = self.env.ref('account.data_account_type_receivable')
+
+        invoice_line_account = self.env['account.account'].search([
+            ('user_type_id', '=', type_account.id)
+        ], limit=1).id
+
+        self.invoice_1 = self.Invoice.create({
+            'partner_id': self.partner.id,
+            'account_id': invoice_line_account,
+            'journal_id': self.journal_1.id,
+            'date_invoice': datetime.today(),
+            'type': 'out_invoice',
+        })
+
+        self.invoice_2 = self.Invoice.create({
+            'partner_id': self.partner.id,
+            'account_id': invoice_line_account,
+            'journal_id': self.journal_1.id,
+            'date_invoice': datetime.today(),
+            'type': 'in_invoice',
+        })
+
+        self.invoice_line = self.InvoiceLine.create({
+            'name': 'Test line',
+            'quantity': 1.0,
+            'account_id': invoice_line_account,
+            'price_unit': 1.0,
+            'invoice_id': self.invoice_1.id,
+            'invoice_line_tax_ids': [(6, 0, [self.tax_1.id])],
+        })
+
+        self.invoice_line_2 = self.InvoiceLine.create({
+            'name': 'Test line 2',
+            'quantity': 1.0,
+            'account_id': invoice_line_account,
+            'price_unit': 1.0,
+            'invoice_id': self.invoice_2.id,
+            'invoice_line_tax_ids': [(6, 0, [self.tax_2.id])],
         })
 
     def test_01_onchange(self):
@@ -59,16 +138,27 @@ class TestVatStatement(TransactionCase):
         with self.assertRaises(UserError):
             self.statement_1.write({'name': 'Test Name'})
 
-    def test_05_unlink(self):
+    def test_05_unlink_exception(self):
         self.statement_1.post()
         with self.assertRaises(UserError):
             self.statement_1.unlink()
 
-    def test_06_update_exception(self):
+    def test_06_unlink_working(self):
+        self.statement_1.unlink()
+
+    def test_07_update_exception1(self):
         self.statement_1.post()
         with self.assertRaises(UserError):
             self.statement_1.update()
 
-    def test_07_update_working(self):
+    def test_08_update_exception2(self):
+        self.config.unlink()
+        self.statement_1.post()
+        with self.assertRaises(UserError):
+            self.statement_1.update()
+
+    def test_09_update_working(self):
+        self.invoice_1.action_invoice_open()
+        self.invoice_2.action_invoice_open()
         self.statement_1.update()
         self.assertEqual(len(self.statement_1.line_ids.ids), 19)
