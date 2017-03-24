@@ -13,4 +13,4 @@ class TestEmployeeNumber(TransactionCase):
             'employee_number': '-',
         })
 
-        self.assertNotEqual(employee.employee_number, '1')
+        self.assertNotEqual(employee.employee_number, '-')
