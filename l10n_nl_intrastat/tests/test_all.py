@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
+from datetime import date
 from dateutil.relativedelta import relativedelta
 
 from odoo.tests.common import TransactionCase
@@ -35,10 +35,10 @@ class TestIntrastatNL(TransactionCase):
         })
 
         # Create a date range spanning the last three months
-        start_datetime = datetime.today() + relativedelta(months=-3)
+        start_date = date.today() + relativedelta(months=-3)
         date_range = self.env['date.range'].create({
             'name': 'FS2016',
-            'date_start': start_datetime.strftime(DF),
+            'date_start': start_date.strftime(DF),
             'date_end': fields.Date.today(),
             'company_id': company.id,
             'type_id': type.id
@@ -48,6 +48,8 @@ class TestIntrastatNL(TransactionCase):
         report = self.env['l10n_nl.report.intrastat'].create({
             'company_id': company.id,
             'date_range_id': date_range.id,
+            'date_from': start_date.strftime(DF),
+            'date_to': fields.Date.today(),
 
         })
         report.onchange_date_range_id()
@@ -93,7 +95,7 @@ class TestIntrastatNL(TransactionCase):
         consumable = self.env.ref('product.product_product_10')
 
         # Create a new invoice to GhostStep, dated last month, price: 250
-        a_date_in_last_month = datetime.today() + \
+        a_date_in_last_month = date.today() + \
             relativedelta(day=1, months=-1)
         fp = self.env['account.fiscal.position'].create(
             dict(name="fiscal position", sequence=1)
