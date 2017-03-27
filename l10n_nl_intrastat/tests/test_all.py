@@ -102,7 +102,6 @@ class TestIntrastatNL(TransactionCase):
             'street': 'Main Street, 10',
             'phone': '123456789',
             'email': 'info@ghoststep.com',
-#            'vat': 'FR32123456789',
             'type': 'contact'
         })
 
@@ -164,7 +163,8 @@ class TestIntrastatNL(TransactionCase):
         report.set_draft()
         report.generate_lines()
 
-        # try to delete the report, must be denied since it's validated
+        # validate and try to delete the report, must be denied
+        report.set_done()
         with self.assertRaises(UserError):
             report.unlink()
 
@@ -220,6 +220,7 @@ class TestIntrastatNL(TransactionCase):
         self.assertTrue(abs(report.total_amount - total - 361.42) <= 0.01)
 
         # try to delete the report, must be denied since it's validated
+        report.set_done()
         with self.assertRaises(UserError):
             report.unlink()
 
