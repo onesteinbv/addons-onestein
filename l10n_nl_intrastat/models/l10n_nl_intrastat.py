@@ -173,7 +173,7 @@ class ReportIntrastat(models.Model):
 class ReportIntrastatLine(models.Model):
     """Lines for dutch ICP report."""
     _name = 'l10n_nl.report.intrastat.line'
-    _description = 'Declaration of intracommunautary transactions (ICP) line'
+    _description = 'Declaration of intra-Community transactions (ICP) line'
     _order = 'partner_id, country_code'
     _rec_name = 'partner_id'
 

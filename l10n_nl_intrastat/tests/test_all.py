@@ -223,7 +223,3 @@ class TestIntrastatNL(TransactionCase):
         report.set_done()
         with self.assertRaises(UserError):
             report.unlink()
-
-        # set the report to draft and delete it
-        report.set_draft()
-        report.unlink()
