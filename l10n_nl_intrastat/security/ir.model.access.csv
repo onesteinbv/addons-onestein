@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_l10n_nl_report_intrastat,Account manager can use ICP reports,model_l10n_nl_report_intrastat,account.group_account_manager,1,1,1,1
+access_l10n_nl_report_intrastat_line,Account manager can use ICP report lines,model_l10n_nl_report_intrastat_line,account.group_account_manager,1,1,1,1
