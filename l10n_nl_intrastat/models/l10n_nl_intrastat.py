@@ -164,7 +164,9 @@ class ReportIntrastat(models.Model):
         """
         for report in self:
             if report.state != 'draft':
-                raise Warning(_('Cannot remove IPC reports in a non-draft state'))
+                raise Warning(
+                    _('Cannot remove IPC reports in a non-draft state')
+                )
         return super(ReportIntrastat, self).unlink()
 
 

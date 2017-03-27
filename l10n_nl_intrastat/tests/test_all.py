@@ -15,7 +15,7 @@ class TestIntrastatNL(TransactionCase):
 
         type_receivable = self.env.ref('account.data_account_type_receivable')
         self.account_receivable = self.env['account.account'].search(
-            [('user_type_id', '=',type_receivable.id)],
+            [('user_type_id', '=', type_receivable.id)],
             limit=1
         )
         self.land_account = self.env.ref('account.demo_sale_of_land_account')
