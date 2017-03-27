@@ -102,7 +102,7 @@ class TestIntrastatNL(TransactionCase):
             'street': 'Main Street, 10',
             'phone': '123456789',
             'email': 'info@ghoststep.com',
-            'vat': 'FR32123456789',
+#            'vat': 'FR32123456789',
             'type': 'contact'
         })
 
