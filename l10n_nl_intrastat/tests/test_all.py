@@ -4,6 +4,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from odoo.tests.common import TransactionCase
+from odoo import fields
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 
 
@@ -38,7 +39,7 @@ class TestIntrastatNL(TransactionCase):
         date_range = self.env['date.range'].create({
             'name': 'FS2016',
             'date_start': start_datetime.strftime(DF),
-            'date_end': self.Date.today(),
+            'date_end': fields.Date.today(),
             'company_id': company.id,
             'type_id': type.id
         })
