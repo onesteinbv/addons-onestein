@@ -163,11 +163,6 @@ class TestIntrastatNL(TransactionCase):
         report.set_draft()
         report.generate_lines()
 
-        # validate and try to delete the report, must be denied
-        report.set_done()
-        with self.assertRaises(UserError):
-            report.unlink()
-
         # The invoice should not be included because it has no country,
         # and so is assumed to have the same country as the main company
         self.assertEquals(report.total_amount, total)
