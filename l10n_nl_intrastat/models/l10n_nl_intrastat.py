@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models, fields, api, _
-from odoo.exceptions import Warning
+from odoo.exceptions import Warning as UserError
 
 
 class ReportIntrastat(models.Model):
@@ -164,7 +164,7 @@ class ReportIntrastat(models.Model):
         """
         for report in self:
             if report.state != 'draft':
-                raise Warning(
+                raise UserError(
                     _('Cannot remove IPC reports in a non-draft state')
                 )
         return super(ReportIntrastat, self).unlink()
