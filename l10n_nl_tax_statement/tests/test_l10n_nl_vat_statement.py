@@ -152,7 +152,7 @@ class TestVatStatement(TransactionCase):
 
     def test_09_update_working(self):
         self.invoice_1._onchange_invoice_line_ids()
-        self.invoice_1.action_invoice_open()
+        self.invoice_1.signal_workflow('invoice_open')
         self.statement_1.update()
         self.assertEqual(len(self.statement_1.line_ids.ids), 19)
 
@@ -173,7 +173,7 @@ class TestVatStatement(TransactionCase):
         self.assertFalse(_1a.is_group)
 
     def test_10_line_unlink_exception(self):
-        self.invoice_1.action_invoice_open()
+        self.invoice_1.signal_workflow('invoice_open')
         self.statement_1.update()
         self.statement_1.post()
         with self.assertRaises(UserError):
