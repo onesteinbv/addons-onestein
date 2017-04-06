@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_specific" inherit_id="report.assets_common">
+        <xpath expr="." position="inside">
+            <link href="/l10n_nl_tax_statement/static/src/css/report.css" rel="stylesheet"/>
+        </xpath>
+    </template>
+
+    <template id="l10n_nl_tax_statement.internal_layout">
+        <div class="header">
+            <div class="row">
+                <div class="col-xs-6">
+                    <span t-esc="title"/>
+                </div>
+                <div class="col-xs-6 text-right">
+                    <span t-esc="company_name"/>
+                </div>
+            </div>
+        </div>
+        <t t-raw="0" />
+        <div class="footer">
+            <div class="row">
+                <div class="col-xs-6 custom_footer">
+                    <span>Printed: </span>
+                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                </div>
+                <div class="col-xs-6 text-right custom_footer">
+                    <ul class="list-inline">
+                        <li><span class="page"/></li>
+                        <li>/</li>
+                        <li><span class="topage"/></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</odoo>

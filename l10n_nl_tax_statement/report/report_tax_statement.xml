@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="l10n_nl_tax_statement.report_tax_statement_filters">
+        <div class="act_as_table data_table" style="width: 1140px;">
+            <div class="act_as_row labels">
+                <div class="act_as_cell">Date range</div>
+                <div class="act_as_cell">Target moves</div>
+                <div class="act_as_cell">Currency</div>
+                <div class="act_as_cell">Date posted</div>
+                <div class="act_as_cell">Date update</div>
+            </div>
+            <div class="act_as_row">
+                <div class="act_as_cell">
+                    <span t-field="o.from_date"/>
+                    <span t-field="o.to_date"/>
+                </div>
+                <div class="act_as_cell">
+                    <span t-field="o.target_move"/>
+                </div>
+                <div class="act_as_cell">
+                    <span t-field="o.currency_id"/>
+                </div>
+                <div class="act_as_cell">
+                    <span t-field="o.date_posted"/>
+                </div>
+                <div class="act_as_cell">
+                    <span t-field="o.date_update"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="l10n_nl_tax_statement.report_tax_statement">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="l10n_nl_tax_statement.internal_layout">
+                    <!-- Defines global variables used by internal layout -->
+                    <t t-set="title">Aangifte omzetbelasting</t>
+                    <t t-set="company_name" t-value="o.company_id.name"/>
+
+                    <div class="page">
+                        <!-- Display filters -->
+                        <t t-call="l10n_nl_tax_statement.report_tax_statement_filters"/>
+
+                        <div>
+                            <br/><br/><br/><br/>
+                        </div>
+
+                        <!-- Top header -->
+                        <div class="act_as_table data_table" style="width: 1140px;">
+                            <div class="act_as_row lines">
+                                <div class="act_as_cell left" style="width: 900px;"> </div>
+                                <div class="act_as_cell right">Omzet</div>
+                                <div class="act_as_cell right">BTW</div>
+                            </div>
+                            <!-- Display lines -->
+                            <t t-foreach="o.line_ids" t-as="line">
+                                <div t-if="line.is_group" class="act_as_row labels">
+                                    <!--## line header-->
+                                    <div class="act_as_cell left" style="width: 900px;"><span t-field="line.code"/> - <span t-field="line.name"/></div>
+                                    <div class="act_as_cell right"> </div>
+                                    <div class="act_as_cell right"> </div>
+                                </div>
+                                <div t-if="not line.is_group" class="act_as_row lines">
+                                    <!--## code, description, omzet, btw-->
+                                    <div class="act_as_cell left" style="width: 900px;"> &amp;nbsp; &amp;nbsp; <span t-field="line.code"/> - <span t-field="line.name"/></div>
+                                    <div class="act_as_cell right"><span t-field="line.format_omzet"/></div>
+                                    <div class="act_as_cell right"><span t-field="line.format_btw"/></div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
