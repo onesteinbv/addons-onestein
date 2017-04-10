@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="l10n_nl_intrastat.report_nl_intrastat_filters">
+        <div class="act_as_table data_table" style="width: 1140px;">
+            <div class="act_as_row labels">
+                <div class="act_as_cell">Date range</div>
+                <div class="act_as_cell">Company Currency</div>
+                <div class="act_as_cell">Date update</div>
+            </div>
+            <div class="act_as_row">
+                <div class="act_as_cell">
+                    <span t-field="o.date_from"/>
+                    <span t-field="o.date_to"/>
+                </div>
+                <div class="act_as_cell">
+                    <span t-field="o.currency_id"/>
+                </div>
+                <div class="act_as_cell">
+                    <span t-field="o.last_updated"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="l10n_nl_intrastat.report_nl_intrastat">
+        <t t-call="report.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="l10n_nl_intrastat.internal_layout">
+                    <!-- Defines global variables used by internal layout -->
+                    <t t-set="title">Intrastat report (ICP)</t>
+                    <t t-set="company_name" t-value="o.company_id.name"/>
+
+                    <div class="page">
+                        <!-- Display filters -->
+                        <t t-call="l10n_nl_intrastat.report_nl_intrastat_filters"/>
+
+                        <div>
+                            <br/><br/><br/><br/>
+                        </div>
+
+                        <!-- Top header -->
+                        <div class="act_as_table data_table" style="width: 1140px;">
+                            <!-- Display lines -->
+                            <div class="act_as_row labels">
+                                <!--## line header-->
+                                <div class="act_as_cell left">Partner</div>
+                                <div class="act_as_cell left">VAT</div>
+                                <div class="act_as_cell left">Country Code</div>
+                                <div class="act_as_cell right">Currency</div>
+                                <div class="act_as_cell right">Amount Product</div>
+                                <div class="act_as_cell right">Amount Service</div>
+                            </div>
+                            <t t-foreach="o.line_ids" t-as="line">
+                                <div class="act_as_row lines">
+                                    <!--## code, description, omzet, btw-->
+                                    <div class="act_as_cell left"><span t-field="line.partner_id"/></div>
+                                    <div class="act_as_cell left"><span t-field="line.vat"/></div>
+                                    <div class="act_as_cell left"><span t-field="line.country_code"/></div>
+                                    <div class="act_as_cell right"><span t-field="line.currency_id"/></div>
+                                    <div class="act_as_cell right"><span t-field="line.amount_product"/></div>
+                                    <div class="act_as_cell right"><span t-field="line.amount_service"/></div>
+                                </div>
+                            </t>
+                            <div class="act_as_row labels">
+                                <!--## total amount-->
+                                <div class="act_as_cell left"> </div>
+                                <div class="act_as_cell left"> </div>
+                                <div class="act_as_cell left"> </div>
+                                <div class="act_as_cell right">Total amount</div>
+                                <div class="act_as_cell right">(product + service)</div>
+                                <div class="act_as_cell right"><span t-field="o.total_amount"/></div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

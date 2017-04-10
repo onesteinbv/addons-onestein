@@ -1,0 +1,172 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* l10n_nl_intrastat
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 6.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-04 11:31+0000\n"
+"PO-Revision-Date: 2012-12-04 11:31+0000\n"
+"Last-Translator: <stefan@therp.nl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_nl_intrastat
+#: model:ir.model,name:l10n_nl_intrastat.model_l10n_nl_report_intrastat
+msgid "Declaration of intracommunautary transactions (ICP)"
+msgstr "Opgaaf Intracommunautaire Prestaties (ICP)"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat.line,amount_service:0
+msgid "Amount services"
+msgstr "Totaalbedrag diensten"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat,state:0
+msgid "State"
+msgstr "Status"
+
+#. module: l10n_nl_intrastat
+#: selection:l10n_nl.report.intrastat,state:0
+msgid "Draft"
+msgstr "Concept"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat.line,amount_product:0
+msgid "Amount products"
+msgstr "Totaalbedrag leveringen"
+
+#. module: l10n_nl_intrastat
+#: code:addons/l10n_nl_intrastat/model/l10n_nl_intrastat.py:144
+#, python-format
+msgid "Missing country on the invoice addresses of the following partners:\n"
+"%s"
+msgstr "Ontbrekend land op het factuuradresvan de volgende partner:\n"
+"%s"
+
+#. module: l10n_nl_intrastat
+#: help:l10n_nl.report.intrastat,notes:0
+msgid "You can add some comments here if you want."
+msgstr "Hier kunnen eventuele aantekeningen geplaatst worden."
+
+#. module: l10n_nl_intrastat
+#: help:l10n_nl.report.intrastat,company_id:0
+msgid "Related company."
+msgstr "Bedrijf van deze aangifte."
+
+#. module: l10n_nl_intrastat
+#: help:l10n_nl.report.intrastat,date_done:0
+msgid "Last date when the intrastat declaration was converted to 'Done' state."
+msgstr "Datum van de laatste statuswijziging naar 'Gereed'."
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat,company_id:0
+msgid "Company"
+msgstr "Bedrijf"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat.line,vat:0
+msgid "VAT"
+msgstr "BTW-nummer"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat,total_amount:0
+msgid "Total amount"
+msgstr "Totaalbedrag"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat.line,country_code:0
+msgid "Country Code"
+msgstr "Landcode"
+
+#. module: l10n_nl_intrastat
+#: view:l10n_nl.report.intrastat:0
+#: field:l10n_nl.report.intrastat,notes:0
+msgid "Notes"
+msgstr "Aantekeningen"
+
+#. module: l10n_nl_intrastat
+#: model:ir.model,name:l10n_nl_intrastat.model_l10n_nl_report_intrastat_line
+msgid "ICP report line"
+msgstr "ICP aangifteregel"
+
+#. module: l10n_nl_intrastat
+#: code:addons/l10n_nl_intrastat/model/l10n_nl_intrastat.py:219
+#, python-format
+msgid "Cannot remove IPC reports in a non-draft state"
+msgstr "Alleen aangiften in concept-status kunnen worden verwijderd"
+
+#. module: l10n_nl_intrastat
+#: code:addons/l10n_nl_intrastat/model/l10n_nl_intrastat.py:119
+#: code:addons/l10n_nl_intrastat/model/l10n_nl_intrastat.py:143
+#: code:addons/l10n_nl_intrastat/model/l10n_nl_intrastat.py:218
+#, python-format
+msgid "Error"
+msgstr "Fout"
+
+#. module: l10n_nl_intrastat
+#: help:l10n_nl.report.intrastat,state:0
+msgid "State of the declaration. When the state is set to 'Done', the parameters become read-only."
+msgstr "Status van de aangifte. Wanneer de status op 'Gereed' staat, worden de gegevens alleen-lezen."
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat.line,report_id:0
+msgid "ICP report"
+msgstr "Aangifte ICP"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat,line_ids:0
+msgid "ICP line"
+msgstr "ICP-regel"
+
+#. module: l10n_nl_intrastat
+#: help:l10n_nl.report.intrastat,total_amount:0
+msgid "Total amount in company currency of the declaration."
+msgstr "Totaalbedrag van de aangifte in de bedrijfsvaluta"
+
+#. module: l10n_nl_intrastat
+#: code:addons/l10n_nl_intrastat/model/l10n_nl_intrastat.py:120
+#, python-format
+msgid "Cannot generate reports lines in a non-draft state"
+msgstr "Kan alleen regels genereren voor een aangifte in concept-status"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat,period_id:0
+msgid "Period"
+msgstr "Periode"
+
+#. module: l10n_nl_intrastat
+#: view:l10n_nl.report.intrastat:0
+msgid "Generate lines"
+msgstr "Regels aanmaken"
+
+#. module: l10n_nl_intrastat
+#: selection:l10n_nl.report.intrastat,state:0
+msgid "Done"
+msgstr "Gereed"
+
+#. module: l10n_nl_intrastat
+#: view:l10n_nl.report.intrastat:0
+msgid "Cancel"
+msgstr "Annuleer"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat.line,partner_id:0
+msgid "Partner"
+msgstr "Relatie"
+
+#. module: l10n_nl_intrastat
+#: model:ir.actions.act_window,name:l10n_nl_intrastat.l10n_nl_intrastat_tree_action
+#: model:ir.ui.menu,name:l10n_nl_intrastat.l10n_nl_intrastat_report_menu
+msgid "ICP Report"
+msgstr "Aangifte ICP"
+
+#. module: l10n_nl_intrastat
+#: field:l10n_nl.report.intrastat,date_done:0
+msgid "Date done"
+msgstr "Datum gereed"
+
