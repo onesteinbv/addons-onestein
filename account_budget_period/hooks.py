@@ -2,7 +2,7 @@
 # Copyright 2016 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import SUPERUSER_ID, api
+from openerp import SUPERUSER_ID, api, exceptions
 
 
 def post_init_hook(cr, registry):
@@ -14,16 +14,24 @@ def post_init_hook(cr, registry):
     budget_obj = registry['crossovered.budget']
     period_obj = registry['account.period']
     for budget_data in cr.fetchall():
-        period_start = budget_data[1] and period_obj.find(
-            cr, SUPERUSER_ID,
-            budget_data[1],
-            context={'company_id': budget_data[3]}
-        ) or None
-        period_stop = budget_data[2] and period_obj.find(
-            cr, SUPERUSER_ID,
-            budget_data[2],
-            context={'company_id': budget_data[3]}
-        ) or None
+        period_start = None
+        try:
+            period_start = budget_data[1] and period_obj.find(
+                cr, SUPERUSER_ID,
+                budget_data[1],
+                context={'company_id': budget_data[3]}
+            ) or None
+        except exceptions.RedirectWarning:
+            pass
+        period_stop = None
+        try:
+            period_stop = budget_data[2] and period_obj.find(
+                cr, SUPERUSER_ID,
+                budget_data[2],
+                context={'company_id': budget_data[3]}
+            ) or None
+        except exceptions.RedirectWarning:
+            pass
 
         budget_obj.write(
             cr, SUPERUSER_ID, budget_data[0],
