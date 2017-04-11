@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/onesteinbv/addons-onestein.svg?branch=9.0)](https://travis-ci.org/onesteinbv/addons-onestein)
 [![codecov](https://codecov.io/gh/onesteinbv/addons-onestein/branch/9.0/graph/badge.svg)](https://codecov.io/gh/onesteinbv/addons-onestein/branch/9.0)
 
-======================
 Onestein - Odoo addons
 ======================
 
