@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_vat_statement_nl_config" model="ir.ui.view">
+        <field name="model">l10n.nl.vat.statement.config.wizard</field>
+        <field name="arch" type="xml">
+            <form class="oe_form_configuration">
+                <header>
+                    <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                </header>
+                <separator string="BTW Tags Settings"/>
+                <group string="Leveringen en/of diensten binnenland">
+                    <label for="id" string="1a"/>
+                    <div>
+                        <field name="tag_1a_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                        <field name="tag_1a_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                    <label for="id" string="1b"/>
+                    <div>
+                        <field name="tag_1b_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                        <field name="tag_1b_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                    <label for="id" string="1c"/>
+                    <div>
+                        <field name="tag_1c_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                        <field name="tag_1c_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                    <label for="id" string="1d"/>
+                    <div>
+                        <field name="tag_1d_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                        <field name="tag_1d_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                    <label for="id" string="1e"/>
+                    <div>
+                        <field name="tag_1e_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                    </div>
+                </group>
+                <group string="Verleggingsregelingen: BTW naar u verlegd">
+                    <label for="id" string="2a"/>
+                    <div>
+                        <field name="tag_2a_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                        <field name="tag_2a_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                </group>
+                <group string="Leveringen naar het buitenland">
+                    <label for="id" string="3a"/>
+                    <div>
+                        <field name="tag_3a_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                    </div>
+                    <label for="id" string="3b"/>
+                    <div>
+                        <field name="tag_3b_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                    </div>
+                    <label for="id" string="3c"/>
+                    <div>
+                        <field name="tag_3c_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                    </div>
+                </group>
+                <group string="Leveringen vanuit het buitenland">
+                    <label for="id" string="4a"/>
+                    <div>
+                        <field name="tag_4a_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                        <field name="tag_4a_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                    <label for="id" string="4b"/>
+                    <div>
+                        <field name="tag_4b_omzet" class="oe_inline" placeholder="Omzet"/>
+                        <span style="margin-right:5px;"></span>
+                        <field name="tag_4b_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                </group>
+                <group string="Voorbelasting">
+                    <label for="id" string="5b"/>
+                    <div>
+                        <field name="tag_5b_btw" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                    <label for="id" string="5b bis"/>
+                    <div>
+                        <field name="tag_5b_btw_bis" class="oe_inline" placeholder="BTW"/>
+                    </div>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_vat_statement_nl_config" model="ir.actions.act_window">
+        <field name="name">NL BTW Tags</field>
+        <field name="res_model">l10n.nl.vat.statement.config.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+
+    <menuitem
+        id="menu_account_vat_statement_nl_config"
+        parent="account.account_account_menu"
+        groups="account.group_account_user"
+        sequence="15"
+        action="action_account_vat_statement_nl_config"/>
+
+</odoo>

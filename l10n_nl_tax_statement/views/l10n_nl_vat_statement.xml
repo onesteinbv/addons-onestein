@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_l10n_nl_vat_report_form" model="ir.ui.view">
+        <field name="model">l10n.nl.vat.statement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="reset" string="Reset to Draft" states="posted" type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="update" string="Update" states="draft" type="object" class="oe_stat_button" icon="fa-repeat"/>
+                        <button name="post" string="Post" states="draft" type="object" class="oe_stat_button" icon="fa-arrow-right text-success"/>
+                    </div>
+                    <label for="name"/>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group name="tax_report">
+                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                            <field name="date_range_id" domain="[('company_id','=',company_id)]" attrs="{'readonly': [('state','=','posted')]}"/>
+                            <field name="from_date" attrs="{'readonly': [('state','=','posted')]}"/>
+                            <field name="to_date" attrs="{'readonly': [('state','=','posted')]}"/>
+                        </group>
+                        <group name="extra_parameters">
+                            <field name="date_posted"/>
+                            <field name="date_update"/>
+                            <field name="currency_id"/>
+                            <field name="target_move"/>
+                        </group>
+                    </group>
+                    <notebook name="notebook">
+                        <page name="statement" string="Statement">
+                            <field name="line_ids" readonly="1">
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="code"/>
+                                            <field name="name"/>
+                                        </group>
+                                        <group>
+                                            <field name="omzet"/>
+                                            <field name="btw"/>
+                                        </group>
+                                    </group>
+                                </form>
+                                <tree colors="grey:is_group">
+                                    <field name="is_group" invisible="1"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="format_omzet" invisible="1"/>
+                                    <field name="format_btw" invisible="1"/>
+                                    <field name="omzet" attrs="{'invisible': [('format_omzet', '=', False)]}"/>
+                                    <field name="btw" attrs="{'invisible': [('format_btw', '=', False)]}"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_l10n_nl_vat_report_tree" model="ir.ui.view">
+        <field name="model">l10n.nl.vat.statement</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="from_date"/>
+                <field name="to_date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_account_vat_statement_nl" model="ir.actions.act_window">
+        <field name="name">NL BTW Statement</field>
+        <field name="res_model">l10n.nl.vat.statement</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_account_vat_statement_nl"
+        parent="account_tax_balance.menu_tax_balances"
+        groups="account.group_account_user"
+        action="action_account_vat_statement_nl"/>
+
+</odoo>
