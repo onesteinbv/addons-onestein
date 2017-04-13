@@ -28,6 +28,7 @@ After that, go to go to menu: Invoicing -> Configuration -> Accounting -> NL BTW
 Usage
 =====
 
+#. Verify that you have enough permits. You need to belong at least to the Accountant group.
 #. Go to the menu: Invoicing -> Reports > Taxes Balance > NL BTW Statement
 #. Create a statement, providing a name and specifying start date and end date
 #. Press the Update button to calculate the report: the report lines will be displayed in the tab Statement
