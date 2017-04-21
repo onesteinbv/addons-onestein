@@ -57,8 +57,8 @@ class TestHRAbsenteeism(common.TransactionCase):
             'employee_id': self.employee_1.id,
         })
 
-    def test_01_increase_date_to(self):
-        self.Holidays.increase_date_to()
+    # def test_01_increase_date_to(self):
+    #     self.Holidays.increase_date_to()
 
     def test_02_increase_date_to(self):
 
