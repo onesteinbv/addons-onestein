@@ -13,7 +13,9 @@ class AccountChartTemplate(models.Model):
         self.ensure_one()
         res = super(AccountChartTemplate,
                     self).try_loading_for_current_company()
-        company_list = self.env['res.company'].search([])
+        company_list = self.env['res.company'].search([
+            ('id', '!=', self.env.user.company_id.id)
+        ])
         for company in company_list:
             # If we don't have any chart of account on this company,
             # install this chart of account
