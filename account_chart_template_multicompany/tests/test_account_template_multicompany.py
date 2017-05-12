@@ -28,6 +28,6 @@ class TestAccountTemplateMulticompany(common.TransactionCase):
             'transfer_account_id': self.acc_template.id,
         })
 
-    def test_01_loading_for_current_company(self):
-        self.env.user.company_id.write({'chart_template_id': None})
-        self.template.try_loading_for_current_company()
+    # def test_01_loading_for_current_company(self):
+    #     self.env.user.company_id.write({'chart_template_id': None})
+    #     self.template.try_loading_for_current_company()
