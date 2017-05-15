@@ -8,11 +8,11 @@
             <xpath expr="//field[@name='user_id']" position="after">
                 <field name="fnct_display_personal_data" invisible="1"/>
             </xpath>
-            <xpath expr="//page[2]" position="attributes">
+            <xpath expr="//page[@name='personal_information']" position="attributes">
                 <attribute name="attrs">{'invisible': [('fnct_display_personal_data', '!=', True)]}</attribute>
                 <attribute name="groups"></attribute>
             </xpath>
-            <xpath expr="//page[3]" position="attributes">
+            <xpath expr="//page[@name='hr_settings']" position="attributes">
                 <attribute name="attrs">{'invisible': [('fnct_display_personal_data', '!=', True)]}</attribute>
                 <attribute name="groups"></attribute>
             </xpath>
