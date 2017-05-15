@@ -6,6 +6,9 @@
     'name': "Task Alert Planner",
     'summary': """Plan task alerts for any date field.""",
     'description': """
+    
+    This module is obsolete, superseded by module 'project_task_programmed' !
+
     Plan when a task should be created based on a nearing deadline. Any date field can be used. How much time in
     advance the task should be created can be specified.
     """,
