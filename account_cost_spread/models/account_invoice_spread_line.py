@@ -50,7 +50,7 @@ class AccountInvoiceSpreadLine(models.Model):
          ],
         string='Type',
         readonly=True,
-        defaults='depreciate')
+        default='depreciate')
     init_entry = fields.Boolean(
         string='Initial Balance Entry',
         help="Set this flag for entries of previous fiscal years "
