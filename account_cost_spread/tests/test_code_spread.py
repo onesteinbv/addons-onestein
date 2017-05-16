@@ -15,7 +15,6 @@ class TestAccountCostSpread(AccountingTestCase):
         super(TestAccountCostSpread, self).setUp()
         receivable = self.env.ref('account.data_account_type_receivable')
         expenses = self.env.ref('account.data_account_type_expenses')
-        payable = self.env.ref('account.data_account_type_payable')
 
         def get_account(obj):
             res = self.env['account.account'].search([
@@ -24,7 +23,6 @@ class TestAccountCostSpread(AccountingTestCase):
             return res
 
         self.invoice_account = get_account(receivable)
-        self.invoice_account_2 = get_account(payable)
         self.invoice_line_account = get_account(expenses)
 
         self.spread_account = self.env['account.account'].search([
@@ -59,8 +57,8 @@ class TestAccountCostSpread(AccountingTestCase):
             default_type='in_invoice'
         ).create({
             'partner_id': self.partner.id,
-            'account_id': self.invoice_account_2.id,
-            'type': 'out_invoice',
+            'account_id': self.invoice_account.id,
+            'type': 'in_invoice',
         })
         self.invoice_line_2 = self.env['account.invoice.line'].create({
             'quantity': 1.0,
@@ -371,6 +369,6 @@ class TestAccountCostSpread(AccountingTestCase):
     def test_15_create_entries(self):
         self.env['account.invoice.spread.line']._create_entries()
 
-    def test_16_create_move_out_invoice(self):
+    def test_16_create_move_in_invoice(self):
         self.invoice_2.action_invoice_open()
         self.invoice_line_2.spread_line_ids.create_moves()
