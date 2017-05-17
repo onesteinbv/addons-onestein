@@ -24,18 +24,18 @@ class AccountInvoiceLine(models.Model):
         if not partner or not product or not pricelist:
             return res
 
+        inv_date = self.invoice_id.date_invoice or date.today().strftime(DT)
         product = product.with_context(
             lang=partner.lang,
             partner=partner.id,
             quantity=self.quantity,
-            date=self.invoice_id.date_invoice,
+            date=inv_date,
             pricelist=pricelist.id,
             uom=self.uom_id.id
         )
 
-        inv_date = self.invoice_id.date_invoice or date.today().strftime(DT)
-        self.price_unit = self.env['account.tax'].with_context(
-            date=inv_date)._fix_tax_included_price(
+
+        self.price_unit = self.env['account.tax']._fix_tax_included_price(
             product.price,
             product.taxes_id,
             self.invoice_line_tax_ids
