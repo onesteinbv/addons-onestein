@@ -543,7 +543,8 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def compute_spread_board(self):
         for line in self:
-
+            if not line.invoice_id or line.invoice_id.type != 'in_invoice':
+                continue
             if line.account_id.deprecated:
                 raise Warning(
                     _("Account on one of the invoice lines you're trying"

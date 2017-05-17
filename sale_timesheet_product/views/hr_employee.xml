@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_timesheet_employee_extd_form" model="ir.ui.view">
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="sale_timesheet.hr_timesheet_employee_extd_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='timesheet_cost']" position="before">
+                <field name="product_id" domain="[('type','=','service'),('track_service','=','manual')]"/>
+            </xpath>
+            <xpath expr="//field[@name='timesheet_cost']" position="attributes">
+                <attribute name="attrs">{'invisible': [('product_id', '!=', False)]}</attribute>
+            </xpath>
+        </field>
+
+    </record>
+</odoo>

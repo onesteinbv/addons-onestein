@@ -6,6 +6,8 @@
 Web Tours Disabled
 ==================
 
+**21 Dec 2016: This module is obsolete, superseded by OCA module "web_no_bubble" !**
+
 This module disables (hides) the animations of the Odoo Web Tours.
 
 In the standard Odoo there is already an UI option to disable the tour. It is

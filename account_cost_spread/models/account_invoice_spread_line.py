@@ -49,7 +49,7 @@ class AccountInvoiceSpreadLine(models.Model):
          ],
         string='Type',
         readonly=True,
-        defaults='depreciate')
+        default='depreciate')
 
     @api.model
     def create(self, vals):
