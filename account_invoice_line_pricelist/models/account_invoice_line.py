@@ -34,7 +34,6 @@ class AccountInvoiceLine(models.Model):
             uom=self.uom_id.id
         )
 
-
         self.price_unit = self.env['account.tax']._fix_tax_included_price(
             product.price,
             product.taxes_id,
