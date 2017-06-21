@@ -10,5 +10,5 @@
     'website': 'http://www.acsone.eu',
     'depends': ['web', 'base_setup'],
     'license': 'AGPL-3',
-    'installable': False,
+    'installable': True,
 }

@@ -145,6 +145,7 @@ Contributors
 ------------
 
 * Laurent Mignon <laurent.mignon@acsone.eu>
+* Andrea Stirpe <a.stirpe@onestein.nl>
 
 Maintainer
 ----------
