@@ -27,7 +27,7 @@ def mock_cursor(cr):
 class TestResUsers(common.TransactionCase):
 
     def test_login(self):
-        ResUsers = self.registry('res.users')
+        ResUsers = self.env['res.users']
         res = ResUsers.authenticate(
             common.get_db_name(), 'admin', 'admin', None)
         uid = res
