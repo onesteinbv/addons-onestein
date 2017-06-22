@@ -10,8 +10,11 @@ class MailThread(models.AbstractModel):
 
     @api.model
     def message_parse(self, message, save_original=False):
-        msg_dict = super(MailThread, self).message_parse(message, save_original)
-        original_from = tools.decode_smtp_header(message.get('X-Original-From'))
+        msg_dict = super(MailThread, self)\
+            .message_parse(message, save_original)
+        original_from = tools.decode_smtp_header(
+            message.get('X-Original-From')
+        )
         if original_from:
             msg_dict['email_from'] = original_from
             msg_dict['from'] = original_from
