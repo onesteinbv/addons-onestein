@@ -11,6 +11,7 @@
     "summary": "CBS Export File for Dutch Intrahandel Sale",
     "data": [
         "security/ir.model.access.csv",
+        "security/cbs_export_file_security.xml",
         "data/cbs_export_file_sequence.xml",
         "data/cron_process_cbs_export.xml",
         "view/cbs_export_file_view.xml",

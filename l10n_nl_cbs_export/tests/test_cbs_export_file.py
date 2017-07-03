@@ -195,7 +195,8 @@ class TestCbsExportFile(TransactionCase):
         # Verify that the CBS record was generated
         cbs_export1 = self.env['cbs.export.file'].search([
             ('month', '=', last_month.strftime("%m")),
-            ('year', '=', last_month.strftime("%Y"))
+            ('year', '=', last_month.strftime("%Y")),
+            ('company_id', '=', self.company.id)
         ])
         self.assertTrue(cbs_export1)
         self.assertEqual(len(cbs_export1), 1)
@@ -210,7 +211,8 @@ class TestCbsExportFile(TransactionCase):
         # Verify that no other CBS records are generated
         cbs_export2 = self.env['cbs.export.file'].search([
             ('month', '=', last_month.strftime("%m")),
-            ('year', '=', last_month.strftime("%Y"))
+            ('year', '=', last_month.strftime("%Y")),
+            ('company_id', '=', self.company.id)
         ])
         self.assertTrue(cbs_export2)
         self.assertEqual(len(cbs_export2), 1)
