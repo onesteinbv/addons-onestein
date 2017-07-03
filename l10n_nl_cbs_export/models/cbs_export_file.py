@@ -5,10 +5,13 @@
 import base64
 import calendar
 import time
+import logging
 from datetime import datetime, date, timedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 class CbsExportFile(models.Model):
@@ -75,7 +78,14 @@ class CbsExportFile(models.Model):
     @api.multi
     def get_data(self):
         self.ensure_one()
-        self.set_invoice()
+        invoices = self.set_invoice()
+        if not invoices:
+            raise ValidationError(
+                _("There are no invoice lines for CBS Export "
+                  "during month %s in year %s") % (
+                    calendar.month_name[int(self.month)], self.year
+                )
+            )
         self.export_file()
 
     @api.constrains('year')
@@ -110,14 +120,7 @@ class CbsExportFile(models.Model):
                     days[1], int(self.month), int(self.year)
                 ), '%d-%m-%Y'))]
         )
-        if not invoices:
-            raise ValidationError(
-                _("There are no invoice lines for CBS Export "
-                  "during month %s in year %s") % (
-                    calendar.month_name[int(self.month)], self.year
-                )
-            )
-        else:
+        if invoices:
             self.env['account.invoice'].search([
                 ('cbs_export_id', '=', self.id),
                 ('company_id', '=', self.company_id.id),
@@ -126,6 +129,7 @@ class CbsExportFile(models.Model):
                 {'cbs_export_id': False}
             )
             invoices.write({'cbs_export_id': self.id})
+        return invoices
 
     @api.model
     def cron_get_cbs_export_file(self):
@@ -143,8 +147,16 @@ class CbsExportFile(models.Model):
                     'year': last_month.strftime("%Y"),
                     'company_id': company.id
                 })
-            cbs_export_file.set_invoice()
-            cbs_export_file.export_file()
+            invoices = cbs_export_file.set_invoice()
+            if not invoices:
+                _logger.info(
+                    "There are no invoice lines for CBS Export "
+                    "during month %s in year %s",
+                    calendar.month_name[int(cbs_export_file.month)],
+                    cbs_export_file.year
+                )
+            else:
+                cbs_export_file.export_file()
 
     @api.multi
     def export_file(self):

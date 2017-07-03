@@ -230,7 +230,7 @@ class TestCbsExportFile(TransactionCase):
         invoices = self.env['account.invoice'].search([
             ('type', '=', 'out_invoice'),
             ('state', 'in', ['open', 'paid']),
-            ('company_id', '=', self.company_id.id),
+            ('company_id', '=', cbs_export.company_id.id),
             ('date_invoice', '>=', datetime.strptime(
                 '%s-%s-%s' % (
                     1, int(next_month), int(next_month_year)
@@ -241,4 +241,4 @@ class TestCbsExportFile(TransactionCase):
 
         # Trying to export the CBS file raises an error
         with self.assertRaises(ValidationError):
-            cbs_export.export_file()
+            cbs_export.get_data()
