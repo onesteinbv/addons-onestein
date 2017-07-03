@@ -19,9 +19,6 @@ class TestCbsExportFile(TransactionCase):
         company = self.company
         company.country_id = self.env.ref('base.nl')
 
-        self.other_company = company.copy()
-        other_company_nl = self.other_company
-
         type_receivable = self.env.ref('account.data_account_type_receivable')
         self.account_receivable = self.env['account.account'].search(
             [('user_type_id', '=', type_receivable.id)],
@@ -62,38 +59,15 @@ class TestCbsExportFile(TransactionCase):
         # Create a new invoice to partner1, dated last month, price: 250
         a_date_in_last_month = date.today() + \
             relativedelta(day=1, months=-1)
+        fp = self.env['account.fiscal.position'].create(
+            dict(name="fiscal position", sequence=1)
+        )
         invoice1 = self.env['account.invoice'].create({
             'reference_type': 'none',
             'name': 'invoice to client',
             'account_id': self.account_receivable.id,
             'type': 'out_invoice',
-            'date_invoice': a_date_in_last_month.strftime(DF),
-            'partner_id': partner1.id,
-            'invoice_line_ids': [
-                (0, False, {
-                    'name': 'Sale of service',
-                    'invoice_line_tax_ids': [(6, 0, [tax1.id])],
-                    'account_id': invoice_line_account.id,
-                    'price_unit': 50.0,
-                    'product_id': service.id,
-                    'quantity': 5.0
-                }),
-                (0, False, {
-                    'name': 'Sale of consumable',
-                    'invoice_line_tax_ids': [(6, 0, [tax1.id])],
-                    'account_id': invoice_line_account.id,
-                    'price_unit': 35.0,
-                    'product_id': consumable.id,
-                    'quantity': 1.0
-                }),
-            ]
-        })
-        invoice_other_company = self.env['account.invoice'].create({
-            'reference_type': 'none',
-            'name': 'invoice to client',
-            'account_id': self.account_receivable.id,
-            'company_id': other_company_nl.id,
-            'type': 'out_invoice',
+            'fiscal_position_id': fp.id,
             'date_invoice': a_date_in_last_month.strftime(DF),
             'partner_id': partner1.id,
             'invoice_line_ids': [
@@ -123,6 +97,7 @@ class TestCbsExportFile(TransactionCase):
             'name': 'invoice to client',
             'account_id': self.account_receivable.id,
             'type': 'out_invoice',
+            'fiscal_position_id': fp.id,
             'date_invoice': a_date_in_this_month.strftime(DF),
             'partner_id': partner1.id,
             'invoice_line_ids': [
@@ -156,7 +131,6 @@ class TestCbsExportFile(TransactionCase):
         # validate the invoices
         invoice1.action_invoice_open()
         invoice2.action_invoice_open()
-        invoice_other_company.action_invoice_open()
 
     def test_01_defaults(self):
 
@@ -218,29 +192,28 @@ class TestCbsExportFile(TransactionCase):
         # Run job "Generate CBS Export File"
         self.env['cbs.export.file'].cron_get_cbs_export_file()
 
-        # Verify that the CBS record were generated
-        cbs_exports = self.env['cbs.export.file'].search([
+        # Verify that the CBS record was generated
+        cbs_export1 = self.env['cbs.export.file'].search([
             ('month', '=', last_month.strftime("%m")),
             ('year', '=', last_month.strftime("%Y"))
         ])
-        self.assertTrue(cbs_exports)
-        self.assertEqual(len(cbs_exports), 2)
+        self.assertTrue(cbs_export1)
+        self.assertEqual(len(cbs_export1), 1)
 
         # Verify that the csv file was generated
-        for cbs_export in cbs_exports:
-            result_file = cbs_export.cbs_export_invoice.decode('base64')
-            self.assertTrue(result_file)
+        result_file = cbs_export1.cbs_export_invoice.decode('base64')
+        self.assertTrue(result_file)
 
         # Run again job "Generate CBS Export File"
         self.env['cbs.export.file'].cron_get_cbs_export_file()
 
         # Verify that no other CBS records are generated
-        cbs_exports2 = self.env['cbs.export.file'].search([
+        cbs_export2 = self.env['cbs.export.file'].search([
             ('month', '=', last_month.strftime("%m")),
             ('year', '=', last_month.strftime("%Y"))
         ])
-        self.assertTrue(cbs_exports2)
-        self.assertEqual(len(cbs_exports2), 2)
+        self.assertTrue(cbs_export2)
+        self.assertEqual(len(cbs_export2), 1)
 
     def test_05_no_invoices(self):
 
