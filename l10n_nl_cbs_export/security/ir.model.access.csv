@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cbs_export_file_all,access_cbs_export_file all,model_cbs_export_file,,1,0,0,0
+access_cbs_export_file_advisor,access_cbs_export_file advisor,model_cbs_export_file,account.group_account_manager,1,1,1,1

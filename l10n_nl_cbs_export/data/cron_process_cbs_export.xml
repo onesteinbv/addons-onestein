@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="cbs_export_file" model="ir.cron">
+        <field name="name">Generate CBS Export File</field>
+        <field name="interval_type">months</field>
+        <field name="model">cbs.export.file</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="function" eval="'cron_get_cbs_export_file'"/>
+        <field name="args" eval="'()'" />
+    </record>
+
+</odoo>
