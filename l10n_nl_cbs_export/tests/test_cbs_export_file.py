@@ -156,6 +156,7 @@ class TestCbsExportFile(TransactionCase):
         # validate the invoices
         invoice1.action_invoice_open()
         invoice2.action_invoice_open()
+        invoice_other_company.action_invoice_open()
 
     def test_01_defaults(self):
 
