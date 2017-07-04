@@ -11,6 +11,13 @@ allowing to manage the approval process.
 
 
 
+Configuration
+=============
+
+To configure this module, you need to:
+
+#. To let any user be enable to approve a contract, assign them to the group "HR Contract Approver"
+
 
 Credits
 =======

@@ -27,32 +27,28 @@ class HRContract(models.Model):
     def action_request_approval(self):
         for contract in self:
             contract.state = 'wait_approval'
-        return True
 
     @api.multi
     def action_approve(self):
         for contract in self:
             contract.state = 'open'
-        return True
 
     @api.multi
     def action_disapprove(self):
         for contract in self:
             contract.state = 'close'
-        return True
 
     @api.multi
     def action_reset_to_new(self):
         for contract in self:
             contract.state = 'draft'
-        return True
 
     @api.model
     def _ckeck_date(self, contract, delta):
         if contract.date_end:
             date = datetime.strptime(contract.date_end[:10], SDT)
             return date <= datetime.today() + timedelta(delta)
-        return None
+        return False
 
     @api.model
     def check_expiring(self):

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record model="res.groups" id="group_hr_contract_approver">
+
+    <record id="group_hr_contract_approver" model="res.groups">
         <field name="name">HR Contract Approver</field>
         <field name="category_id" ref="base.module_category_hidden"/>
         <field name="implied_ids" eval="[(4, ref('hr.group_hr_manager'))]" />
     </record>
+
 </odoo>
