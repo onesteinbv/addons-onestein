@@ -1,0 +1,132 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_employee_related
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-04 09:33+0000\n"
+"PO-Revision-Date: 2017-05-04 11:35+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: nl\n"
+"X-Generator: Poedit 1.8.12\n"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_bsn_number
+msgid "BSN"
+msgstr "BSN"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_birth_date
+msgid "Birth date"
+msgstr "Geboortedatum"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_birth_name
+msgid "Birth name"
+msgstr "Meisjesnaam"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_create_uid
+msgid "Created by"
+msgstr "Aangemaakt door"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_create_date
+msgid "Created on"
+msgstr "Aangemaakt op"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_display_name
+msgid "Display Name"
+msgstr "Weergave naam"
+
+#. module: hr_employee_related
+#: model:ir.model,name:hr_employee_related.model_hr_employee
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_employee_id
+msgid "Employee"
+msgstr "Werknemer"
+
+#. module: hr_employee_related
+#: model:ir.model,name:hr_employee_related.model_hr_employee_related
+#: model:ir.ui.view,arch_db:hr_employee_related.view_employee_form_employee_related
+msgid "Employee related"
+msgstr "Gerelateerde medewerker"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_relation
+msgid "Employee relation"
+msgstr "Relatie medewerker"
+
+#. module: hr_employee_related
+#: selection:hr.employee.related,gender:0
+msgid "Female"
+msgstr "Vrouw"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_name
+msgid "First name"
+msgstr "Voornaam"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_gender
+msgid "Gender"
+msgstr "Geslacht"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_id
+msgid "ID"
+msgstr "ID"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related___last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_write_uid
+msgid "Last Updated by"
+msgstr "Laatst bijgewerkt door"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_write_date
+msgid "Last Updated on"
+msgstr "Laatst bijgewerkt op"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_last_name
+msgid "Last name"
+msgstr "Achternaam"
+
+#. module: hr_employee_related
+#: selection:hr.employee.related,gender:0
+msgid "Male"
+msgstr "Man"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_note
+msgid "Note"
+msgstr "Notitie"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_ids
+#: model:ir.ui.view,arch_db:hr_employee_related.view_employee_form_employee_related
+#: model:ir.ui.view,arch_db:hr_employee_related.view_hr_employee_related_form
+msgid "Related"
+msgstr "Familie"
+
+#. module: hr_employee_related
+#: model:ir.ui.view,arch_db:hr_employee_related.view_hr_employee_related_form
+msgid "Relatives"
+msgstr "Familie"
+
+#. module: hr_employee_related
+#: model:ir.model.fields,field_description:hr_employee_related.field_hr_employee_related_telephone
+msgid "Telephone"
+msgstr "Telefoon"
