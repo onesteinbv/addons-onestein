@@ -5,16 +5,17 @@
 from odoo import api, fields, models
 
 
-class maintenance_equipment(models.Model):
+class MaintenanceEquipment(models.Model):
 
     _inherit = 'maintenance.equipment'
 
-    asset_id = fields.Many2one('account.asset.asset', string="Asset")
+    asset_id = fields.Many2one('account.asset.asset', string='Asset')
     equipment_scrap_template_id = fields.Many2one(
         'mail.template',
-        string="Equipment Scrap Email Template",
+        string='Equipment Scrap Email Template',
         default=(lambda self:
-                 self.env.user.company_id.equipment_scrap_template_id))
+                 self.env.user.company_id.equipment_scrap_template_id)
+    )
 
     @api.multi
     def action_perform_scrap(self):
@@ -26,7 +27,7 @@ class maintenance_equipment(models.Model):
 
     @api.model
     def create(self, values):
-        res = super(maintenance_equipment, self).create(values)
+        res = super(MaintenanceEquipment, self).create(values)
         if not self._context.get('internal_call', False) and res.asset_id:
             ctx = dict(self.env.context, internal_call=True)
             res.asset_id.with_context(ctx).write({'equipment_id': res.id})
@@ -40,7 +41,7 @@ class maintenance_equipment(models.Model):
                     'internal_call',
                     False) and 'asset_id' in values:
                 equip.asset_id.with_context(ctx).write({'equipment_id': None})
-            super(maintenance_equipment, equip).write(values)
+            super(MaintenanceEquipment, equip).write(values)
             if not self._context.get(
                     'internal_call',
                     False) and 'asset_id' in values:

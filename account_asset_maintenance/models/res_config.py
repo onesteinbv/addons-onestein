@@ -11,4 +11,5 @@ class AccountConfigSettings(models.TransientModel):
     equipment_scrap_template_id = fields.Many2one(
         'mail.template',
         related='company_id.equipment_scrap_template_id',
-        string="Equipment Scrap Email Template *")
+        string='Equipment Scrap Email Template *'
+    )

@@ -5,10 +5,10 @@
 from odoo import api, fields, models
 
 
-class account_asset(models.Model):
-    _inherit = "account.asset.asset"
+class AccountAsset(models.Model):
+    _inherit = 'account.asset.asset'
 
-    equipment_id = fields.Many2one('maintenance.equipment', string="Equipment")
+    equipment_id = fields.Many2one('maintenance.equipment', string='Equipment')
 
     @api.model
     def _check_internal_call(self, equipment):
@@ -22,7 +22,7 @@ class account_asset(models.Model):
         inv_types = ['in_invoice', 'in_refund', 'out_invoice', 'out_refund']
         if context.get('default_type', False) in inv_types:
             context.pop('default_type')
-        res = super(account_asset, self.with_context(context)).create(values)
+        res = super(AccountAsset, self.with_context(context)).create(values)
         if self._check_internal_call(res.equipment_id):
             ctx = dict(context, internal_call=True)
             res.equipment_id.with_context(ctx).write({'asset_id': res.id})
@@ -34,8 +34,9 @@ class account_asset(models.Model):
             ctx = dict(self.env.context, internal_call=True)
             if self._check_internal_call(asset.equipment_id):
                 asset.equipment_id.with_context(ctx).write({'asset_id': None})
-            super(account_asset, asset).write(values)
+            super(AccountAsset, asset).write(values)
             if self._check_internal_call(asset.equipment_id):
                 asset.equipment_id.with_context(ctx).write(
-                    {'asset_id': asset.id})
+                    {'asset_id': asset.id}
+                )
         return True

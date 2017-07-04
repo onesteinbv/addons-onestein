@@ -3,8 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': "Account Asset Maintenance",
-    'summary': """Account Asset Maintenance""",
+    'name': 'Account Asset Maintenance',
+    'summary': 'Add relation between assets and equipments',
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting & Finance',

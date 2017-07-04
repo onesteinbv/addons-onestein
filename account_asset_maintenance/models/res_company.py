@@ -5,8 +5,10 @@
 from odoo import fields, models
 
 
-class res_company(models.Model):
-    _inherit = "res.company"
+class ResCompany(models.Model):
+    _inherit = 'res.company'
 
     equipment_scrap_template_id = fields.Many2one(
-        'mail.template', string="Equipment Scrap Email Template")
+        'mail.template',
+        string='Equipment Scrap Email Template'
+    )

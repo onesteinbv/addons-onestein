@@ -2,7 +2,6 @@
 <odoo>
 
     <record model="ir.ui.view" id="view_account_config_asset_maintenance_form">
-        <field name="name">view.account.config.asset.maintenance</field>
         <field name="inherit_id" ref="account.view_account_config_settings"/>
         <field name="model">account.config.settings</field>
         <field name="arch" type="xml">

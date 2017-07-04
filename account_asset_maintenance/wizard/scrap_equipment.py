@@ -5,13 +5,16 @@
 from odoo import api, fields, models
 
 
-class EquipmentScrap(models.TransientModel):
+class WizardPerformEquipmentScrap(models.TransientModel):
     _name = "wizard.perform.equipment.scrap"
     _description = "Perform Scrap (Equipment)"
 
-    scrap_date = fields.Date(string='Scrap Date', required=True)
-    equipment_id = fields.Many2one('maintenance.equipment', 'Equipment',
-                                   required=True)
+    scrap_date = fields.Date(required=True)
+    equipment_id = fields.Many2one(
+        'maintenance.equipment',
+        'Equipment',
+        required=True
+    )
 
     @api.multi
     def do_scrap(self):
@@ -20,4 +23,3 @@ class EquipmentScrap(models.TransientModel):
             template = wizard.equipment_id.equipment_scrap_template_id
             if template:
                 template.send_mail(wizard.equipment_id.id)
-        return {'type': 'ir.actions.act_window_close'}

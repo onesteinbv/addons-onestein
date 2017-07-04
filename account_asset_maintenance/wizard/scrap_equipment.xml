@@ -2,10 +2,9 @@
 <odoo>
 
     <record id="view_perform_equipment_scrap" model="ir.ui.view">
-        <field name="name">wizard.perform.equipment.scrap.form</field>
         <field name="model">wizard.perform.equipment.scrap</field>
         <field name="arch" type="xml">
-            <form string="Scrap Equipment">
+            <form>
                 <sheet>
                     <group>
                         <group>
