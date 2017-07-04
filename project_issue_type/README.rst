@@ -6,15 +6,19 @@
 Project Issue Type
 ==================
 
-This module adds a many2one field 'type' to project issue.
+This module adds a model 'project.issue.type' and a many2one field 'type'
+in the project issue model. Both the model and the 'type' field are missing
+in the standard Odoo.
 
+This module is helpful when developing multiple features that require
+the same field.
 
-Configuration
-=============
+By installing this module, not any functionality will be added to your system.
+This module is meant to be a base module to be extended with other modules that
+need a field 'type' for the model 'project.issue'.
+Is a way to avoid that multiple modules create the same field, that would cause
+conflicts and confusion.
 
-To configure this module, you need to:
-
-#. No configuration needed. Just install the module.
 
 Usage
 =====
