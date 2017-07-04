@@ -49,10 +49,13 @@ class AccountAnalyticAccount(models.Model):
             debit = 0.0
             credit = 0.0
             for line in analytic_account.line_ids:
-                if line.amount > 0:
-                    credit += line.amount
-                else:
+                if line.project_id:
                     debit += line.amount
+                else:
+                    if line.amount > 0:
+                        credit += line.amount
+                    else:
+                        debit += line.amount
 
             analytic_account.realized_turnover = credit
             analytic_account.realized_costs = - debit
