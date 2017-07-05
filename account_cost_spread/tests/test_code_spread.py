@@ -248,7 +248,7 @@ class TestAccountCostSpread(AccountingTestCase):
         # change the state of invoice to open by clicking Validate button
         self.invoice.signal_workflow('invoice_open')
         self.invoice.journal_id.write({'update_posted': True})
-        self.invoice.action_invoice_cancel()
+        self.invoice.signal_workflow('invoice_cancel')
         self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
 
     def test_08_supplier_invoice(self):
@@ -262,7 +262,7 @@ class TestAccountCostSpread(AccountingTestCase):
         # change the state of invoice to open by clicking Validate button
         self.invoice.signal_workflow('invoice_open')
         self.invoice.journal_id.write({'update_posted': True})
-        self.invoice.action_invoice_cancel()
+        self.invoice.signal_workflow('invoice_cancel')
         self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
 
     def test_09_get_fy_duration_days(self):
