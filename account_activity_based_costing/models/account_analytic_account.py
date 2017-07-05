@@ -21,7 +21,8 @@ class AccountAnalyticAccount(models.Model):
         for analytic_account in self:
             consumed_hours = 0.0
             for line in analytic_account.line_ids:
-                consumed_hours += line.unit_amount
+                if line.is_timesheet:
+                    consumed_hours += line.unit_amount
             analytic_account.consumed_hours = consumed_hours
 
     @api.depends('expected_turnover', 'expected_costs')
