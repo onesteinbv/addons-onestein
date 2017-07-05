@@ -16,7 +16,7 @@ class AccountAnalyticAccount(models.Model):
             consumed_hours = analytic_account.consumed_hours
             analytic_account.hours_left = expected_hours - consumed_hours
 
-    @api.depends('line_ids', 'line_ids.unit_amount')
+    @api.depends('line_ids', 'line_ids.unit_amount', 'line_ids.is_timesheet')
     def _get_consumed_hours(self):
         for analytic_account in self:
             consumed_hours = 0.0
