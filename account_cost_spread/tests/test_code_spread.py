@@ -2,7 +2,8 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp.addons.account.tests.account_test_classes import AccountingTestCase
+from openerp.addons.account.tests.account_test_classes import \
+    AccountingTestCase
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 from openerp.exceptions import Warning
