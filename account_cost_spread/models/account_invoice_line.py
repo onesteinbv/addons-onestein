@@ -595,3 +595,9 @@ class AccountInvoiceLine(models.Model):
             this.write({
                 'spread_account_id': False,
             })
+
+    @api.multi
+    def action_recalculate_spread(self):
+        """Recalculate spread"""
+        self.mapped('spread_line_ids').filtered('move_id').unlink_move()
+        return self.compute_spread_board()
