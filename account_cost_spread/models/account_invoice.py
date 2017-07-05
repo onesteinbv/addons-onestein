@@ -28,7 +28,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_cancel(self):
-        res = self.action_cancel()
+        res = super(AccountInvoice, self).action_cancel()
         for invoice in self:
             for invoice_line in invoice.invoice_line_ids:
                 for spread_line in invoice_line.spread_line_ids:
