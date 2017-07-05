@@ -2,8 +2,8 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp.addons.account.tests.account_test_classes import \
-    AccountingTestCase
+from openerp.addons.account.tests.account_test_classes \
+    import AccountingTestCase
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from datetime import datetime
 from openerp.exceptions import Warning
@@ -82,7 +82,7 @@ class TestAccountCostSpread(AccountingTestCase):
         })
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
         self.assertEqual(len(self.invoice_line.spread_line_ids), 12)
         self.assertEqual(81.77, self.invoice_line.spread_line_ids[0].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[1].amount)
@@ -114,7 +114,7 @@ class TestAccountCostSpread(AccountingTestCase):
         })
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
 
         self.assertEqual(len(self.invoice_line.spread_line_ids), 8)
         self.assertEqual(100.96, self.invoice_line.spread_line_ids[0].amount)
@@ -151,7 +151,7 @@ class TestAccountCostSpread(AccountingTestCase):
         self.invoice_line._compute_spread_start_date()
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
 
         self.assertEqual(len(self.invoice_line.spread_line_ids), 4)
         self.assertEqual(333.33, self.invoice_line.spread_line_ids[1].amount)
@@ -174,7 +174,7 @@ class TestAccountCostSpread(AccountingTestCase):
         })
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
 
         # create moves for all the spread lines and open them
         self.invoice_line.spread_line_ids.create_moves()
@@ -198,7 +198,7 @@ class TestAccountCostSpread(AccountingTestCase):
         })
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
 
         # create moves for all the spread lines and open them
         self.invoice_line.spread_line_ids.create_moves()
@@ -222,7 +222,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'date_invoice': '2016-12-31'
         })
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
         self.assertEqual(len(self.invoice_line.spread_line_ids), 3)
         self.assertEqual(115.32,
                          self.invoice_line.spread_line_ids[0].amount)
@@ -246,7 +246,7 @@ class TestAccountCostSpread(AccountingTestCase):
         })
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
         self.invoice.journal_id.write({'update_posted': True})
         self.invoice.action_invoice_cancel()
         self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
@@ -260,7 +260,7 @@ class TestAccountCostSpread(AccountingTestCase):
         })
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
         self.invoice.journal_id.write({'update_posted': True})
         self.invoice.action_invoice_cancel()
         self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
@@ -371,5 +371,5 @@ class TestAccountCostSpread(AccountingTestCase):
         self.env['account.invoice.spread.line']._create_entries()
 
     def test_16_create_move_in_invoice(self):
-        self.invoice_2.action_invoice_open()
+        self.invoice_2.signal_workflow('invoice_open')
         self.invoice_line_2.spread_line_ids.create_moves()

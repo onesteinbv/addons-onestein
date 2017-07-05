@@ -17,7 +17,7 @@ class TestAccountCostSpreadAll(TestAccountCostSpread):
         })
 
         # change the state of invoice to open by clicking Validate button
-        self.invoice.action_invoice_open()
+        self.invoice.signal_workflow('invoice_open')
         self.assertEqual(len(self.invoice_line.spread_line_ids), 12)
 
         # create moves for all the spread lines
