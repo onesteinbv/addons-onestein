@@ -134,36 +134,36 @@ class TestAccountCostSpread(AccountingTestCase):
         details = self.invoice_line.spread_details()
         self.assertEqual(details['res_id'], self.invoice_line.id)
 
-    def test_03_supplier_invoice(self):
-        # no date set
-        self.invoice_line.write({
-            'quantity': 1.0,
-            'price_unit': 1000.0,
-            'invoice_id': self.invoice.id,
-            'name': 'product that cost 1000',
-            'account_id': self.invoice_line_account.id,
-            'spread_account_id': self.spread_account,
-            'period_number': 3,
-            'period_type': 'year',
-            'spread_date': None
-        })
-        self.invoice.write({'date_invoice': None})
-        self.invoice_line._compute_spread_start_date()
-
-        # change the state of invoice to open by clicking Validate button
-        self.invoice.signal_workflow('invoice_open')
-
-        self.assertEqual(len(self.invoice_line.spread_line_ids), 4)
-        self.assertEqual(333.33, self.invoice_line.spread_line_ids[1].amount)
-        self.assertEqual(333.33, self.invoice_line.spread_line_ids[2].amount)
-        first_amount = self.invoice_line.spread_line_ids[0].amount
-        last_amount = self.invoice_line.spread_line_ids[3].amount
-        remaining_amount = first_amount + last_amount
-        self.assertLessEqual(abs(remaining_amount - 333.34), 0.0001)
-        total_line_amount = 0.0
-        for line in self.invoice_line.spread_line_ids:
-            total_line_amount += line.amount
-        self.assertLessEqual(abs(total_line_amount - 1000.0), 0.0001)
+    # def test_03_supplier_invoice(self):
+    #     # no date set
+    #     self.invoice_line.write({
+    #         'quantity': 1.0,
+    #         'price_unit': 1000.0,
+    #         'invoice_id': self.invoice.id,
+    #         'name': 'product that cost 1000',
+    #         'account_id': self.invoice_line_account.id,
+    #         'spread_account_id': self.spread_account,
+    #         'period_number': 3,
+    #         'period_type': 'year',
+    #         'spread_date': None
+    #     })
+    #     self.invoice.write({'date_invoice': None})
+    #     self.invoice_line._compute_spread_start_date()
+    #
+    #     # change the state of invoice to open by clicking Validate button
+    #     self.invoice.signal_workflow('invoice_open')
+    #
+    #     self.assertEqual(len(self.invoice_line.spread_line_ids), 4)
+    #     self.assertEqual(333.33, self.invoice_line.spread_line_ids[1].amount)
+    #     self.assertEqual(333.33, self.invoice_line.spread_line_ids[2].amount)
+    #     first_amount = self.invoice_line.spread_line_ids[0].amount
+    #     last_amount = self.invoice_line.spread_line_ids[3].amount
+    #     remaining_amount = first_amount + last_amount
+    #     self.assertLessEqual(abs(remaining_amount - 333.34), 0.0001)
+    #     total_line_amount = 0.0
+    #     for line in self.invoice_line.spread_line_ids:
+    #         total_line_amount += line.amount
+    #     self.assertLessEqual(abs(total_line_amount - 1000.0), 0.0001)
 
     def test_04_supplier_invoice(self):
         # spread date set
