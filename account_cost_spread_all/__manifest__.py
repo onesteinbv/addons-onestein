@@ -3,12 +3,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Cost / Income Spread - All moves in one click',
-    'summary': """Create all the moves for Cost and Income
-    spreading in just one click""",
+    'name': 'Cost Spread - All moves in one click',
+    'summary': 'Create all the moves for Cost spreading in just one click',
     'version': '10.0.1.0.0',
     'license': 'AGPL-3',
-    'author': "Onestein",
+    'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Accounting',
     'depends': [

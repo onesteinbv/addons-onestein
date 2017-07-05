@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record forcecreate="True" id="ir_cron_cost_spread_create_entries" model="ir.cron">
+    <record id="ir_cron_cost_spread_create_entries" forcecreate="True" model="ir.cron">
         <field name="name">Cost Spread Create Entries</field>
         <field name="active" eval="True"/>
         <field name="user_id" ref="base.user_root"/>

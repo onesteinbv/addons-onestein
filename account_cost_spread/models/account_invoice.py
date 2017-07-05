@@ -30,6 +30,10 @@ class AccountInvoice(models.Model):
     def action_invoice_cancel(self):
         res = self.action_cancel()
         for invoice in self:
-            for line in invoice.invoice_line_ids:
-                line.spread_line_ids.unlink()
+            for invoice_line in invoice.invoice_line_ids:
+                for spread_line in invoice_line.spread_line_ids:
+                    if spread_line.move_id:
+                        spread_line.move_id.button_cancel()
+                        spread_line.move_id.unlink()
+                    spread_line.unlink()
         return res
