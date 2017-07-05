@@ -15,6 +15,7 @@
         'analytic',
         'web_widget_float_highlight',
         'project',
+        'hr_timesheet',
     ],
     'data': [
         'views/account_analytic_account.xml',

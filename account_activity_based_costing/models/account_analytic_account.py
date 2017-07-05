@@ -49,21 +49,21 @@ class AccountAnalyticAccount(models.Model):
             debit = 0.0
             credit = 0.0
             for line in analytic_account.line_ids:
-                if line.account_id:
+                if line.is_timesheet:
+                    debit += line.amount
+                else:
                     if line.amount > 0:
                         credit += line.amount
                     else:
                         debit += line.amount
-                else:
-                    debit += line.amount
+
             analytic_account.realized_turnover = credit
             analytic_account.realized_costs = - debit
             analytic_account.contribution = credit + debit
+            analytic_account.contribution_perc = 0.0
             if credit != 0:
                 contribution_perc = 100 * (credit + debit) / credit
                 analytic_account.contribution_perc = contribution_perc
-            else:
-                analytic_account.contribution_perc = 0.0
 
     @api.depends(
         'expected_turnover',
