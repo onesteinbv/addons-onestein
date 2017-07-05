@@ -136,7 +136,7 @@ class TestActivityBasedCosting(common.TransactionCase):
 
     def test_03_get_realized_data(self):
         self.assertEqual(self.aa_1.realized_turnover, 0.0)
-        self.assertEqual(self.aa_1.realized_costs, 500.0)
+        self.assertEqual(self.aa_1.realized_costs, -500.0)
         self.assertEqual(self.aa_1.contribution, 500.0)
         self.assertEqual(self.aa_1.contribution_perc, 50.0)
 
@@ -152,7 +152,7 @@ class TestActivityBasedCosting(common.TransactionCase):
 
     def test_04_get_budget_result(self):
         self.assertEqual(self.aa_1.budget_result_turnover, -1000.0)
-        self.assertEqual(self.aa_1.budget_result_cost, 0.0)
+        self.assertEqual(self.aa_1.budget_result_cost, 1000.0)
         self.assertEqual(self.aa_1.budget_result_contribution, 0.0)
         self.assertEqual(self.aa_1.budget_result_contribution_perc, 0.0)
 
