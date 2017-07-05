@@ -102,7 +102,10 @@ class AccountInvoiceSpreadLine(models.Model):
             'journal_id': invoice_line.invoice_id.journal_id.id,
             'partner_id': invoice_line.invoice_id.partner_id.id,
             'date': spread_date,
+            'analytic_account_id': invoice_line.account_analytic_id.id,
             }
+        if 'cost_center_id' in invoice_line._fields:
+            move_line_data['cost_center_id'] = invoice_line.cost_center_id.id
         return move_line_data
 
     @api.multi
