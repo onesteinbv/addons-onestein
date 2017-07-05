@@ -7,6 +7,7 @@ from openerp import models, fields, api, _
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import openerp.addons.decimal_precision as dp
+from openerp.exceptions import Warning as UserError
 
 
 class DummyFy(object):
@@ -545,3 +546,49 @@ class AccountInvoiceLine(models.Model):
                 line_i_start = 0
 
         return True
+
+    @api.multi
+    def _find_move_line(self):
+        """Look up the move lines mapped to this invoice lines"""
+        result = self.env['account.move.line'].browse([])
+        for this in self:
+            move_line_data = this.move_line_get_item(this)
+            for key in move_line_data.keys():
+                if not key in result._fields:
+                    move_line_data.pop(key)
+            result += this.invoice_id.move_id.line_id.filtered(
+                lambda x: move_line_data == {
+                    key: value
+                    for key, value in x.read(
+                        move_line_data.keys(), load='_classic_write',
+                    )[0].iteritems()
+                    if key != 'id'
+                }
+            )
+        return result
+
+    @api.multi
+    def action_undo_spread(self):
+        """Undo spreading: Remove all created moves, restore original account
+        on move line"""
+        for this in self:
+            this.mapped('spread_line_ids').filtered('move_id').unlink_move()
+            this.mapped('spread_line_ids').unlink()
+            move_line = this._find_move_line()
+            if not move_line and\
+                    this.invoice_id.journal_id.group_invoice_lines:
+                raise UserError(_(
+                    'Cannot reliably determine accounting entry on grouped '
+                    'journal'
+                ))
+            posted = move_line.move_id.state == 'posted'
+            if posted:
+                move_line.move_id.button_cancel()
+            move_line.write({
+                'account_id': this.account_id.id,
+            })
+            if posted:
+                move_line.move_id.button_validate()
+            this.write({
+                'spread_account_id': False,
+            })

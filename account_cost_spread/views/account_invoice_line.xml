@@ -7,6 +7,9 @@
             <field name="model">account.invoice.line</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button type="object" name="action_undo_spread" string="Undo spread" attrs="{'invisible': [('spread_line_ids', '=', [])]}" />
+                    </header>
                     <sheet>
                         <group>
                             <group>
