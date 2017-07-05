@@ -75,8 +75,9 @@ class AccountInvoiceSpreadLine(models.Model):
             'date': spread_date,
             'ref': spread_line.name,
             'period_id': period_id,
-            'journal_id': invoice.journal_id.id,
-            }
+            'journal_id': spread_line.invoice_line_id.spread_journal_id.id or
+            invoice.journal_id.id,
+        }
         return move_data
 
     @api.model

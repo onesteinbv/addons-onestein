@@ -20,6 +20,9 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     spread_date = fields.Date(string='Alternative Start Date')
+    spread_journal_id = fields.Many2one(
+        'account.journal', string='Alternative journal',
+    )
     period_number = fields.Integer(
         string='Number of Periods',
         default=12,
