@@ -33,10 +33,13 @@ def post_init_hook(cr, registry):
         except exceptions.RedirectWarning:
             pass
 
+        values = {}
+        if period_start:
+            values['period_start'] = period_start[0]
+        if period_stop:
+            values['period_stop'] = period_stop[0]
+
         budget_obj.write(
-            cr, SUPERUSER_ID, budget_data[0],
-            {'period_start': period_start and period_start[0] or None,
-             'period_stop': period_stop and period_stop[0] or None
-             },
+            cr, SUPERUSER_ID, budget_data[0], values,
             context={'skip_period_date_sync': 1}
         )
