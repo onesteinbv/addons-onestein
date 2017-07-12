@@ -288,6 +288,6 @@ class IrModel(models.Model):
             self.pool.setup_models(self._cr, partial=(not self.pool.ready))
 
             # signal that registry has changed
-            self.pool.signal_registry_change(self.env.cr.dbname)
+            self.pool.signal_registry_change()
 
         return res
