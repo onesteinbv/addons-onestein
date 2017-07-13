@@ -91,8 +91,6 @@ class HrHolidaysStatus(models.Model):
         for record in self:
             name = record.name
             if not record.limit:
-                name += ('  (%.1f Left)' % (
-                    record.max_hours-record.hours_taken
-                ))
+                name += ('  (%.1f Left)' % (record.remaining_hours))
             res.append((record.id, name))
         return res
