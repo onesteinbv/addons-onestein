@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright 2016 Onestein (<http://www.onestein.eu>)
+# Copyright 2016-2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import datetime
 
-from odoo import api, models
+from odoo import api, models, fields
 
 
 class ResourceCalendar(models.Model):
@@ -109,7 +109,35 @@ class ResourceCalendar(models.Model):
         # filter according to leaves
         intervals = []
         for interval in work_intervals:
-            work_interval = self.interval_remove_leaves(interval, leaves)
+            work_interval = self.with_context(
+                change_tz=True
+            ).interval_remove_leaves(interval, leaves)
             intervals += work_interval
 
         return intervals
+
+    @api.model
+    def interval_remove_leaves(self, interval, leave_intervals):
+        user = self.env.user
+        new_leave_intervals = []
+        if self.env.context.get('change_tz', False) and leave_intervals:
+            reference_date = fields.Datetime.context_timestamp(
+                user,
+                datetime.datetime(1990, 2, 8, 12)
+            )
+            for l_interval in leave_intervals:
+                new_interval = []
+                for el in l_interval:
+                    gmt_el = fields.Datetime.context_timestamp(user, el)
+                    gmt_el_offset = gmt_el.tzinfo._utcoffset
+                    ref_offset = reference_date.tzinfo._utcoffset
+                    new_interval.append(el + gmt_el_offset - ref_offset)
+                new_interval = tuple(new_interval)
+                new_leave_intervals.append(new_interval)
+        else:
+            new_leave_intervals = leave_intervals
+
+        return super(ResourceCalendar, self).interval_remove_leaves(
+            interval,
+            new_leave_intervals
+        )
