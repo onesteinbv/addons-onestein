@@ -5,10 +5,14 @@
 from odoo import fields, models
 
 
-class res_company(models.Model):
+class ResCompany(models.Model):
     _inherit = "res.company"
 
     notify_template_id = fields.Many2one(
-        'mail.template', string='Notify Email Template')
+        'mail.template',
+        string='Notify Email Template'
+    )
     expire_template_id = fields.Many2one(
-        'mail.template', string='Expired Email Template')
+        'mail.template',
+        string='Expired Email Template'
+    )

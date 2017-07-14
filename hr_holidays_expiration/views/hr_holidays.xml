@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
     <record id="edit_holiday_new_expiration" model="ir.ui.view">
-        <field name="name">edit.holiday.new.expiration</field>
         <field name="model">hr.holidays</field>
         <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
         <field name="arch" type="xml">

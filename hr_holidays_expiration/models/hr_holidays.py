@@ -18,13 +18,8 @@ class HRHolidays(models.Model):
     def default_get(self, fields):
         res = super(HRHolidays, self).default_get(fields)
         company = self.env.user.company_id
-        res['expire_template_id'] = (company.expire_template_id and
-                                     company.expire_template_id.id or
-                                     None)
-        res['notify_template_id'] = (company.notify_template_id and
-                                     company.notify_template_id.id or
-                                     None)
-
+        res['expire_template_id'] = (company.expire_template_id.id)
+        res['notify_template_id'] = (company.notify_template_id.id)
         return res
 
     @api.model
@@ -69,25 +64,25 @@ class HRHolidays(models.Model):
                     holiday.expire_template_id.send_mail(holiday.id)
 
     # notification
-    email_notify = fields.Boolean(
-        "Notify Expiration via Email", default=False)
+    email_notify = fields.Boolean('Notify Expiration via Email')
     notify_period = fields.Integer(
         "Notify period (days)",
         help="The amount of days before the holidays expire to send\
          out the notification email.")
     notify_template_id = fields.Many2one(
         'mail.template',
-        string="Notify Email Template")
-    notification_sent = fields.Boolean(
-        string="Expiration Notification Sent")
-    notify_to = fields.Many2one(
-        'hr.employee', string="Notify Expiration to")
+        string='Notify Email Template'
+    )
+    notification_sent = fields.Boolean(string='Expiration Notification Sent')
+    notify_to = fields.Many2one('hr.employee', string='Notify Expiration to')
 
     # expiring
-    expiration_date = fields.Date(string='Expiration Date')
-    expired = fields.Boolean(string="Expired", default=False)
+    expiration_date = fields.Date()
+    expired = fields.Boolean(default=False)
     expire_template_id = fields.Many2one(
-        'mail.template', string="Expired Email Template")
+        'mail.template',
+        string='Expired Email Template'
+    )
     approval_date = fields.Date(string="Date Approved")
 
     @api.multi

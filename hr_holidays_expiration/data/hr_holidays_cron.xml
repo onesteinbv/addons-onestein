@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
 
-    <record forcecreate="True" id="ir_cron_check_holiday_expiration" model="ir.cron">
+    <record id="ir_cron_check_holiday_expiration" forcecreate="True" model="ir.cron">
         <field name="name">Set expired holidays</field>
         <field name="active" eval="True"/>
         <field name="interval_number">1</field>
