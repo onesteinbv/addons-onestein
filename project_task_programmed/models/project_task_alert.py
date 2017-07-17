@@ -45,10 +45,7 @@ class ProjectTaskAlert(models.Model):
     @classmethod
     def _merge_placeholders(cls, incoming, rec):
         values = rec.read()
-        try:
-            result = incoming % values
-        except:
-            result = incoming
+        result = (values and incoming % values) or incoming
         return result
 
     @api.multi
