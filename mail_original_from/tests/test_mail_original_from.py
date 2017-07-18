@@ -5,7 +5,7 @@
 import email
 
 from odoo.tests import common
-from odoo.tools import mute_logger,decode_message_header
+from odoo.tools import decode_message_header
 
 
 MAIL_MESSAGE = """Return-Path: <support@odoo-community.org>
@@ -51,14 +51,12 @@ Content-Transfer-Encoding: quoted-printable
 
 class TestMailOriginalFrom(common.TransactionCase):
 
-    @mute_logger('odoo.addons.mail.models.mail_thread')
     def test_01_message_parse(self):
         message = email.message_from_string(MAIL_MESSAGE)
         msg = self.env['mail.thread'].message_parse(message)
         self.assertEqual(msg['email_from'], 'info@odoo-community.org')
         self.assertEqual(msg['from'], 'info@odoo-community.org')
 
-    @mute_logger('odoo.addons.mail.models.mail_thread')
     def test_02_message_route_verify(self):
         msg = email.message_from_string(MAIL_MESSAGE)
         route = ('res.users', 1, None, self.env.uid, '')
