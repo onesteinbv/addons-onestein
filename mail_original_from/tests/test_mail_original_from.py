@@ -2,6 +2,8 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import email
+
 from odoo.tests import common
 from odoo.tools import mute_logger
 
@@ -51,7 +53,8 @@ class TestMailOriginalFrom(common.TransactionCase):
 
     @mute_logger('odoo.addons.mail.models.mail_thread')
     def test_01_message_parse(self):
-        msg = self.env['mail.thread'].message_parse(MAIL_MESSAGE)
+        message = email.message_from_string(MAIL_MESSAGE)
+        msg = self.env['mail.thread'].message_parse(message)
         self.assertIn(
             'From: support@odoo-community.org',
             MAIL_MESSAGE,
@@ -65,7 +68,7 @@ class TestMailOriginalFrom(common.TransactionCase):
 
     @mute_logger('odoo.addons.mail.models.mail_thread')
     def test_02_message_route_verify(self):
-        message = MAIL_MESSAGE
+        message = email.message_from_string(MAIL_MESSAGE)
         route = ('mail.mail', 1, None, self.env.uid, '')
         self.env['mail.thread'].message_route_verify(message, {}, route)
         self.assertIn(
