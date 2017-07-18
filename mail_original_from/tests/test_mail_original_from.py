@@ -5,7 +5,7 @@
 import email
 
 from odoo.tests import common
-from odoo.tools import mute_logger
+from odoo.tools import mute_logger,decode_message_header
 
 
 MAIL_MESSAGE = """Return-Path: <support@odoo-community.org>
@@ -63,11 +63,5 @@ class TestMailOriginalFrom(common.TransactionCase):
         msg = email.message_from_string(MAIL_MESSAGE)
         route = ('res.users', 1, None, self.env.uid, '')
         self.env['mail.thread'].message_route_verify(msg, msg, route)
-        self.assertIn(
-            'From: info@odoo-community.org',
-            msg.get('body', ''),
-            'message_parse: missing From: info@odoo-community.org')
-        self.assertIn(
-            'X-Original-From: info@odoo-community.org',
-            msg.get('body', ''),
-            'message_parse: missing X-Original-From: info@odoo-community.org')
+        email_from = decode_message_header(msg, 'From')
+        self.assertEqual(email_from, 'info@odoo-community.org')
