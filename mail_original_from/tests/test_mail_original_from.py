@@ -46,17 +46,20 @@ Content-Transfer-Encoding: quoted-printable
 ------=_Part_4200734_24778174.1344608186754--
 """
 
+
 class TestMailOriginalFrom(common.TransactionCase):
 
     @mute_logger('odoo.addons.mail.models.mail_thread')
     def test_01_message_parse(self):
         msg = self.env['mail.thread'].message_parse(MAIL_MESSAGE)
-        self.assertIn('From: support@odoo-community.org',
-                      MAIL_MESSAGE,
-                      'message_parse: missing From: support@odoo-community.org')
-        self.assertIn('X-Original-From: info@odoo-community.org',
-                      MAIL_MESSAGE,
-                      'message_parse: missing X-Original-From: info@odoo-community.org')
+        self.assertIn(
+            'From: support@odoo-community.org',
+            MAIL_MESSAGE,
+            'message_parse: missing From: support@odoo-community.org')
+        self.assertIn(
+            'X-Original-From: info@odoo-community.org',
+            MAIL_MESSAGE,
+            'message_parse: missing X-Original-From: info@odoo-community.org')
         self.assertEqual(msg['email_from'], 'info@odoo-community.org')
         self.assertEqual(msg['from'], 'info@odoo-community.org')
 
@@ -65,9 +68,11 @@ class TestMailOriginalFrom(common.TransactionCase):
         message = MAIL_MESSAGE
         route = ('mail.mail', 1, None, self.env.uid, '')
         self.env['mail.thread'].message_route_verify(message, {}, route)
-        self.assertIn('From: info@odoo-community.org',
-                      message,
-                      'message_parse: missing From: info@odoo-community.org')
-        self.assertIn('X-Original-From: info@odoo-community.org',
-                      message,
-                      'message_parse: missing X-Original-From: info@odoo-community.org')
+        self.assertIn(
+            'From: info@odoo-community.org',
+            message,
+            'message_parse: missing From: info@odoo-community.org')
+        self.assertIn(
+            'X-Original-From: info@odoo-community.org',
+            message,
+            'message_parse: missing X-Original-From: info@odoo-community.org')
