@@ -4,7 +4,7 @@
 
 import email
 
-from odoo.tests import common, tools
+from odoo.tests import common
 from odoo.tools import mute_logger
 
 
