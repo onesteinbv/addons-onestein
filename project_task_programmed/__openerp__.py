@@ -3,12 +3,11 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Task Reminder Planner',
+    'name': 'Task Reminder Programmed',
     'summary': 'Plan task reminders for any date field',
-    'author': 'Onestein',
+    'author': 'Onestein, Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
-    'images': ['static/description/main_screenshot.png'],
     'category': 'Custom',
     'version': '8.0.1.0.0',
     'depends': [
