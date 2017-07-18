@@ -4,7 +4,7 @@
 
 import email
 
-from odoo.tests import common
+from odoo.tests import common, tools
 from odoo.tools import mute_logger
 
 
@@ -55,14 +55,6 @@ class TestMailOriginalFrom(common.TransactionCase):
     def test_01_message_parse(self):
         message = email.message_from_string(MAIL_MESSAGE)
         msg = self.env['mail.thread'].message_parse(message)
-        self.assertIn(
-            'From: support@odoo-community.org',
-            msg.get('body', ''),
-            'message_parse: missing From: support@odoo-community.org')
-        self.assertIn(
-            'X-Original-From: info@odoo-community.org',
-            msg.get('body', ''),
-            'message_parse: missing X-Original-From: info@odoo-community.org')
         self.assertEqual(msg['email_from'], 'info@odoo-community.org')
         self.assertEqual(msg['from'], 'info@odoo-community.org')
 
@@ -70,7 +62,7 @@ class TestMailOriginalFrom(common.TransactionCase):
     def test_02_message_route_verify(self):
         msg = email.message_from_string(MAIL_MESSAGE)
         route = ('res.users', 1, None, self.env.uid, '')
-        self.env['mail.thread'].message_route_verify(MAIL_MESSAGE, msg, route)
+        self.env['mail.thread'].message_route_verify(msg, msg, route)
         self.assertIn(
             'From: info@odoo-community.org',
             msg.get('body', ''),
