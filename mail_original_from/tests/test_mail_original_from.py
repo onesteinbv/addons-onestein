@@ -57,25 +57,25 @@ class TestMailOriginalFrom(common.TransactionCase):
         msg = self.env['mail.thread'].message_parse(message)
         self.assertIn(
             'From: support@odoo-community.org',
-            MAIL_MESSAGE,
+            msg.get('body', ''),
             'message_parse: missing From: support@odoo-community.org')
         self.assertIn(
             'X-Original-From: info@odoo-community.org',
-            MAIL_MESSAGE,
+            msg.get('body', ''),
             'message_parse: missing X-Original-From: info@odoo-community.org')
         self.assertEqual(msg['email_from'], 'info@odoo-community.org')
         self.assertEqual(msg['from'], 'info@odoo-community.org')
 
     @mute_logger('odoo.addons.mail.models.mail_thread')
     def test_02_message_route_verify(self):
-        message = email.message_from_string(MAIL_MESSAGE)
-        route = ('mail.mail', 1, None, self.env.uid, '')
-        self.env['mail.thread'].message_route_verify(message, {}, route)
+        msg = email.message_from_string(MAIL_MESSAGE)
+        route = ('res.users', 1, None, self.env.uid, '')
+        self.env['mail.thread'].message_route_verify(MAIL_MESSAGE, msg, route)
         self.assertIn(
             'From: info@odoo-community.org',
-            message,
+            msg.get('body', ''),
             'message_parse: missing From: info@odoo-community.org')
         self.assertIn(
             'X-Original-From: info@odoo-community.org',
-            message,
+            msg.get('body', ''),
             'message_parse: missing X-Original-From: info@odoo-community.org')
