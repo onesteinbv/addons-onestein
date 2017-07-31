@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_partner_interest,access_res_partner_interest,model_res_partner_interest,,1,0,0,0
+access_res_partner_interest_group,access_res_partner_interest,model_res_partner_interest,group_res_partner_interest,1,1,1,1

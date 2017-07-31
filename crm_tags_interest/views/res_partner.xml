@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016 Onestein (<http://www.onestein.eu>)
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo noupdate="0">
+
+    <record id="view_partner_form_interest" model="ir.ui.view">
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="has_user_group_interest" invisible="1"/>
+                <field name="interest_ids" widget="many2many_tags" placeholder="Interests..." options="{'no_create_edit': True}" attrs="{'invisible': [('parent_id', '!=', False)],'readonly': [('has_user_group_interest', '!=', True)]}"/>
+                <field name="contact_interest_ids" widget="many2many_tags" placeholder="Interests..." options="{'no_create_edit': True}" attrs="{'invisible': [('parent_id', '=', False)],'readonly': [('has_user_group_interest', '!=', True)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_partner_kanban_view" model="ir.ui.view">
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[contains(@class, 'oe_kanban_partner_categories')]" position="inside">
+                <span class="oe_kanban_list_many2many">
+                    <field name="interest_ids"/>
+                </span>
+                <span class="oe_kanban_list_many2many">
+                    <field name="contact_interest_ids"/>
+                </span>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

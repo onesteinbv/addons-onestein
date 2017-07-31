@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="menu_customer_interests"
+        action="res_partner_interest_action"
+        parent="crm.menu_crm_config_lead"
+        groups="group_res_partner_interest"
+        sequence="5"/>
+
+</odoo>
