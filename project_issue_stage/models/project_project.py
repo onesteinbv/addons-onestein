@@ -11,7 +11,7 @@ class ProjectProject(models.Model):
     @api.model
     def _get_issue_type_common(self):
         IssueStage = self.env['project.issue.stage']
-        return IssueStage.search([('case_default', '=', 1)], limit=1)
+        return IssueStage.search([('case_default', '=', 1)])
 
     issue_stage_ids = fields.Many2many(
         'project.issue.stage',
