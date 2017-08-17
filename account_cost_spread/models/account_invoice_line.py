@@ -8,8 +8,8 @@ from functools import reduce
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import Warning, ValidationError
-from odoo.tools import float_is_zero, DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.exceptions import Warning
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import odoo.addons.decimal_precision as dp
 
 
