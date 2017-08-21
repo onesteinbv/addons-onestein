@@ -67,12 +67,13 @@ class AccountInvoiceSpreadLine(models.Model):
     def _setup_move_data(self, spread_date):
         self.ensure_one()
         invoice = self.invoice_line_id.invoice_id
+        journal = invoice.journal_id
 
         move_data = {
             'name': invoice and invoice.number or "/",
             'date': spread_date,
             'ref': self.name,
-            'journal_id': invoice.journal_id.id,
+            'journal_id': journal.id,
             }
         return move_data
 
@@ -99,7 +100,10 @@ class AccountInvoiceSpreadLine(models.Model):
             'journal_id': invoice_line.invoice_id.journal_id.id,
             'partner_id': invoice_line.invoice_id.partner_id.id,
             'date': spread_date,
+            'analytic_account_id': invoice_line.account_analytic_id.id,
             }
+        if 'cost_center_id' in invoice_line._fields:
+            move_line_data['cost_center_id'] = invoice_line.cost_center_id.id
         return move_line_data
 
     @api.multi

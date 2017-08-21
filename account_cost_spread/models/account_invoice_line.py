@@ -7,8 +7,8 @@ from datetime import datetime
 from functools import reduce
 from dateutil.relativedelta import relativedelta
 
-from odoo.exceptions import Warning
 from odoo import _, api, fields, models
+from odoo.exceptions import Warning
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import odoo.addons.decimal_precision as dp
 
@@ -91,10 +91,12 @@ class AccountInvoiceLine(models.Model):
         string='Spread Account')
     remaining_amount = fields.Float(
         string='Residual Amount',
-        digits=dp.get_precision('Account'))
+        digits=dp.get_precision('Account'),
+        compute='_compute_remaining_amount')
     spreaded_amount = fields.Float(
         string='Spread Amount',
-        digits=dp.get_precision('Account'))
+        digits=dp.get_precision('Account'),
+        compute='_compute_remaining_amount')
     year_amount = fields.Float(
         compute='_compute_year_amount',
         string='Year Amount',
@@ -107,6 +109,15 @@ class AccountInvoiceLine(models.Model):
         comodel_name='account.invoice.spread.line',
         inverse_name='invoice_line_id',
         string='Spread Lines')
+
+    @api.depends('spread_line_ids.amount', 'price_subtotal')
+    def _compute_remaining_amount(self):
+        for this in self:
+            spread_amount = sum(this.mapped('spread_line_ids.amount'))
+            this.update({
+                'remaining_amount': this.price_subtotal - spread_amount,
+                'spreaded_amount': spread_amount,
+            })
 
     @api.multi
     def spread_details(self):
@@ -548,5 +559,29 @@ class AccountInvoiceLine(models.Model):
                     _("Account on one of the invoice lines you're trying"
                       "to validate is deprecated"))
 
+            if line.price_subtotal < 0.0:
+                raise Warning(
+                    _("Cannot spread the negative amount of "
+                      "one of the invoice lines")
+                )
+
             if line.price_subtotal:
                 line._compute_spread_board()
+
+    @api.multi
+    def action_recalculate_spread(self):
+        """Recalculate spread"""
+        self.mapped('spread_line_ids').filtered('move_id').unlink_move()
+        return self.compute_spread_board()
+
+    @api.multi
+    def action_undo_spread(self):
+        """Undo spreading: Remove all created moves, restore original account
+        on move line"""
+        for this in self:
+            this.mapped('spread_line_ids').filtered('move_id').unlink_move()
+            this.mapped('spread_line_ids').unlink()
+
+            this.write({
+                'spread_account_id': False,
+            })
