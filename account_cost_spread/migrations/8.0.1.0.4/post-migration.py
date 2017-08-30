@@ -5,8 +5,6 @@ from openerp import api, SUPERUSER_ID, tools
 
 
 def migrate(cr, version=None):
-    import pudb
-    pudb.set_trace()
     env = api.Environment(cr, SUPERUSER_ID, {})
     account_inv_sl_model = env['account.invoice.spread.line']
     for spreadline in account_inv_sl_model.search([]):
@@ -16,7 +14,7 @@ def migrate(cr, version=None):
         if len(spreadline.move_id.line_id.mapped('reconcile_id') +
                spreadline.move_id.line_id.mapped('reconcile_partial_id')) > 0:
             has_reconciliation = True
-        if (il_id.spread_account_id and 
+        if (il_id.spread_account_id and
                 il_id.spread_account_id.reconcile and
                 il_id.spread_account_id == il_id.account_id and
                 has_reconciliation == False):
