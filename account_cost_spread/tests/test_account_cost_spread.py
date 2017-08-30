@@ -4,7 +4,6 @@
 from openerp.tests.common import TransactionCase
 from openerp import fields, tools
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
-from openerp.modules import get_module_resource
 from datetime import date
 
 
@@ -12,6 +11,8 @@ class TestAccountCostSpread(TransactionCase):
 
     def setUp(self):
         super(TestAccountCostSpread, self).setUp()
+        import pudb
+        pudb.set_trace()
         self.acc_inv_model = self.env['account.invoice']
         self.acc_inv_l_model = self.env['account.invoice.line']
         self.acc_inv_spread_l_model = self.env['account.invoice.spread.line']
@@ -25,12 +26,8 @@ class TestAccountCostSpread(TransactionCase):
         self.currency_swiss_id = self.env.ref("base.CHF")
         self.currency_usd_id = self.env.ref("base.USD")
         self.account_rcv_id = self.env.ref("account.a_recv")
-        self.account_fx_income_id = self.env.ref(
-                "account.income_fx_income"
-        )
-        self.account_fx_expense_id = self.ref(
-             "account.income_fx_expense"
-        )
+        self.account_fx_income_id = self.env.ref("account.income_fx_income")
+        self.account_fx_expense_id = self.ref("account.income_fx_expense")
         self.product_id = self.ref("product.product_product_4")
         self.bank_journal_usd_id = self.env.ref("account.bank_journal_usd")
         self.account_usd_id = self.env.ref("account.usd_bnk")
@@ -57,7 +54,6 @@ class TestAccountCostSpread(TransactionCase):
             'partner_id':  self.partner_agrolait_id.id,
             'reference_type': 'none'
         })
-
         # confirm
         self.invoice.action_date_assign()
         self.invoice.action_move_create()
@@ -81,7 +77,7 @@ class TestAccountCostSpread(TransactionCase):
         self.invoice.invoice_line[0].action_recalculate_spread()
         self.assertEqual(len(self.invoice.invoice_line.spread_line_ids), 4)
         # create move for every spread
-        moves=[]
+        moves = []
         for spread in self.invoice.invoice_line.spread_line_ids:
             moves += spread.create_move()
         #check if reconciled
