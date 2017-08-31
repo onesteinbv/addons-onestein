@@ -14,16 +14,11 @@ class TestAccountCostSpread(TransactionCase):
         self.acc_inv_model = self.env['account.invoice']
         self.acc_inv_l_model = self.env['account.invoice.line']
         self.acc_inv_spread_l_model = self.env['account.invoice.spread.line']
-        self.acc_bank_stmt_model = self.env['account.bank.statement']
-        self.acc_bank_stmt_l_model = self.env['account.bank.statement.line']
         self.res_currency_model = self.env['res.currency']
-        self.res_currency_rate_model = self.env['res.currency.rate']
         self.partner_agrolait_id = self.env.ref(
             "base.res_partner_2"
         )
-        self.currency_swiss_id = self.env.ref("base.CHF")
         self.currency_usd_id = self.env.ref("base.USD")
-        self.account_rcv_id = self.env.ref("account.a_recv")
         self.account_fx_income_id = self.env.ref("account.income_fx_income")
         self.account_fx_expense_id = self.ref("account.income_fx_expense")
         self.product_id = self.ref("product.product_product_4")
@@ -91,8 +86,9 @@ class TestAccountCostSpread(TransactionCase):
             spread_l.unlink_move()
             # exists?
             self.assertEqual(spread_l.move_id.ids, [])
-            self.assertEqual(self.env['account.move'].search(
-                [('id', 'in', previous_move)]
+            self.assertEqual(
+                self.env['account.move'].search([('id', 'in', previous_move)]),
+                False
             )
         # make account_fx_income_id reconcilable
         self.account_fx_income_id.write({'reconcile':True})
@@ -141,7 +137,11 @@ class TestAccountCostSpread(TransactionCase):
             for line in move.line_id:
                 self.assertEqual(bool(line.reconcile_id), True)
         for spread_l in self.invoice.invoice_line.spread_line_ids:
+            previous_move = spread_l.move_id.ids
             spread_l.unlink_move()
             self.assertEqual(spread_l.move_id.ids, [])
-        # Check if the connected moves still exist
+            self.assertEqual(
+                self.env['account.move'].search([('id', 'in', previous_move)]),
+                False
+            )
 
