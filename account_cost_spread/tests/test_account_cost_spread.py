@@ -87,8 +87,10 @@ class TestAccountCostSpread(TransactionCase):
             # exists?
             self.assertEqual(spread_l.move_id.ids, [])
             self.assertEqual(
-                self.env['account.move'].search([('id', 'in', previous_move)]),
-                False
+                len(self.env['account.move'].search(
+                    [('id', 'in', previous_move)])
+                ),
+                0
             )
         # make account_fx_income_id reconcilable
         self.account_fx_income_id.write({'reconcile':True})
@@ -141,7 +143,9 @@ class TestAccountCostSpread(TransactionCase):
             spread_l.unlink_move()
             self.assertEqual(spread_l.move_id.ids, [])
             self.assertEqual(
-                self.env['account.move'].search([('id', 'in', previous_move)]),
-                False
+                len(
+                    self.env['account.move'].search([('id', 'in', previous_move)])
+                ),
+0                
             )
 
