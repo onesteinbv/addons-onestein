@@ -25,11 +25,10 @@ class TestAccountCostSpread(TransactionCase):
         self.bank_journal_usd_id = self.env.ref("account.bank_journal_usd")
         self.account_usd_id = self.env.ref("account.usd_bnk")
 
-
     def test_all(self):
         # make product with account
         self.product_t = self.env['product.product'].create({
-            'name':  'product_demo',
+            'name': 'product_demo',
             'type': 'service',
             'uos_id': self.env.ref('product.product_uom_categ_unit').id,
         })
@@ -40,13 +39,13 @@ class TestAccountCostSpread(TransactionCase):
             'currency_id': self.currency_usd_id.id,
             'invoice_line': [(
                 0, 0, {'account_id': self.account_fx_income_id.id,
-                       'name': 'line1' ,
+                       'name': 'line1',
                        'product_id': self.product_t.id,
                        'product_uom_qty': 2000,
                        'uos_id': self.product_t.uos_id.id,
                        'price_unit': 33}
             )],
-            'journal_id': self.bank_journal_usd_id.id ,
+            'journal_id': self.bank_journal_usd_id.id,
             'partner_id':  self.partner_agrolait_id.id,
             'reference_type': 'none'
         })
@@ -62,13 +61,11 @@ class TestAccountCostSpread(TransactionCase):
         )
         # create spread for this now confirmed invoice (if not confirmed it
         # would not have a date, therefore gen error
-
-        #Make a spread on the line for the next 4 months
+        # Make a spread on the line for the next 4 months
         self.invoice.invoice_line[0].write(
             {'spread_account_id': self.account_fx_income_id.id,
              'period_number': 4,
-             'period_type': 'month',
-            }
+             'period_type': 'month'}
         )
         self.invoice.invoice_line[0].action_recalculate_spread()
         self.assertEqual(len(self.invoice.invoice_line.spread_line_ids), 4)
@@ -76,11 +73,11 @@ class TestAccountCostSpread(TransactionCase):
         moves = []
         for spread_l in self.invoice.invoice_line.spread_line_ids:
             moves += spread_l.create_move()
-        #account cannot be reconciled
+        # account cannot be reconciled
         for move in self.env['account.move'].browse(moves):
             for line in move.line_id:
                 self.assertEqual(bool(line.reconcile_id), False)
-        #check if you can delete
+        # check if you can delete
         for spread_l in self.invoice.invoice_line.spread_line_ids:
             previous_move = spread_l.move_id.ids
             spread_l.unlink_move()
@@ -88,12 +85,11 @@ class TestAccountCostSpread(TransactionCase):
             self.assertEqual(spread_l.move_id.ids, [])
             self.assertEqual(
                 len(self.env['account.move'].search(
-                    [('id', 'in', previous_move)])
-                ),
+                    [('id', 'in', previous_move)])),
                 0
             )
         # make account_fx_income_id reconcilable
-        self.account_fx_income_id.write({'reconcile':True})
+        self.account_fx_income_id.write({'reconcile': True})
         # make an invoice with the new reconciliable account
         self.invoice_rec = self.acc_inv_model.create({
             'account_id': self.account_fx_income_id.id,
@@ -101,13 +97,13 @@ class TestAccountCostSpread(TransactionCase):
             'currency_id': self.currency_usd_id.id,
             'invoice_line': [(
                 0, 0, {'account_id': self.account_fx_income_id.id,
-                       'name': 'line1' ,
+                       'name': 'line1',
                        'product_id': self.product_t.id,
                        'product_uom_qty': 2000,
                        'uos_id': self.product_t.uos_id.id,
                        'price_unit': 33}
             )],
-            'journal_id': self.bank_journal_usd_id.id ,
+            'journal_id': self.bank_journal_usd_id.id,
             'partner_id':  self.partner_agrolait_id.id,
             'reference_type': 'none'
         })
@@ -126,15 +122,14 @@ class TestAccountCostSpread(TransactionCase):
         self.invoice_rec.invoice_line[0].write(
             {'spread_account_id': self.account_fx_income_id.id,
              'period_number': 4,
-             'period_type': 'month',
-            }
+             'period_type': 'month', }
         )
         self.invoice_rec.invoice_line[0].action_recalculate_spread()
         self.assertEqual(len(self.invoice_rec.invoice_line.spread_line_ids), 4)
         moves = []
         for spread in self.invoice_rec.invoice_line.spread_line_ids:
             moves += spread.create_move()
-        #account cannot be reconciled
+        # account cannot be reconciled
         for move in self.env['account.move'].browse(moves):
             for line in move.line_id:
                 self.assertEqual(bool(line.reconcile_id), True)
@@ -144,8 +139,9 @@ class TestAccountCostSpread(TransactionCase):
             self.assertEqual(spread_l.move_id.ids, [])
             self.assertEqual(
                 len(
-                    self.env['account.move'].search([('id', 'in', previous_move)])
+                    self.env['account.move'].search(
+                        [('id', 'in', previous_move)]
+                    )
                 ),
-0                
+                0
             )
-
