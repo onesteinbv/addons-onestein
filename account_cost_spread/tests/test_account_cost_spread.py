@@ -2,7 +2,6 @@
 # License AGPL-3.0 or later [http://www.gnu.org/licenses/agpl].
 
 from openerp.tests.common import TransactionCase
-from openerp import fields, tools
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from datetime import date
 

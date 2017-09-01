@@ -595,12 +595,12 @@ class AccountInvoiceLine(models.Model):
     @api.multi
     def unlink_reconciliations(self):
         for this in self:
-            full_reconciliations = this.mapped('reconcile_id')
-            part_reconciliations = this.mapped('reconcile_partial_id')
+            full_recs = this.mapped('reconcile_id')
+            part_recs = this.mapped('reconcile_partial_id')
             if full_lines:
-                this.full_recs.unlink()
+                full_recs.unlink()
             if part_recs:
-                this.part_reconciliations.unlink()
+                part_recs.unlink()
 
     @api.multi
     def action_undo_spread(self):
