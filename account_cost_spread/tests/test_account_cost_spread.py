@@ -40,7 +40,7 @@ class TestAccountCostSpread(TransactionCase):
                 0, 0, {'account_id': self.account_fx_income_id.id,
                        'name': 'line1',
                        'product_id': self.product_t.id,
-                       'product_uom_qty': 2000,
+                       'quantity': 2000,
                        'uos_id': self.product_t.uos_id.id,
                        'price_unit': 33}
             )],
@@ -98,7 +98,7 @@ class TestAccountCostSpread(TransactionCase):
                 0, 0, {'account_id': self.account_fx_income_id.id,
                        'name': 'line1',
                        'product_id': self.product_t.id,
-                       'product_uom_qty': 2000,
+                       'quantity': 2000,
                        'uos_id': self.product_t.uos_id.id,
                        'price_unit': 33}
             )],
