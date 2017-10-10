@@ -50,7 +50,7 @@ class AccountInvoiceLine(models.Model):
             product.taxes_id,
             self.invoice_line_tax_ids
         )
-        
+
     def create(self, vals):
         """
         Update price if missing, after real create()
@@ -63,7 +63,7 @@ class AccountInvoiceLine(models.Model):
                 if price_unit is not None and price_unit != 0:
                     line.price_unit = price_unit    #triggers write()
         return line
-    
+
     @api.multi
     def write(self, vals):
         """
