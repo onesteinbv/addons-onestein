@@ -18,7 +18,7 @@ class AccountInvoiceLine(models.Model):
         price_unit = self._common_recalc_price()
         if price_unit is not None and price_unit != 0:
             self.price_unit = price_unit
-        
+
         return res
 
     def _common_recalc_price(self):
@@ -58,7 +58,7 @@ class AccountInvoiceLine(models.Model):
         line = super(AccountInvoiceLine, self).create(vals)
         if line.invoice_id:
             invoice = line.invoice_id
-            if ((not line.price_unit) or price_unit == 0) and (invoice.pricelist_id and invoice.pricelist_id.id):
+            if ((not line.price_unit) or line.price_unit == 0) and (invoice.pricelist_id and invoice.pricelist_id.id):
                 price_unit = line._common_recalc_price()
                 if price_unit is not None and price_unit != 0:
                     line.price_unit = price_unit    #triggers write()
