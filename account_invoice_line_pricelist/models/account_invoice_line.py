@@ -72,7 +72,7 @@ class AccountInvoiceLine(models.Model):
         """
         for rec in self:
             if (rec.invoice_id.pricelist_id and rec.invoice_id.pricelist_id.id):
-                if 'price_unit' in vals and vals['price_unit'] is None or vals['price_unit'] == 0:
+                if 'price_unit' in vals and (vals['price_unit'] is None or vals['price_unit'] == 0):
                     #INSERT/UPDATE price_unit
                     price_unit = rec._common_recalc_price()
                     if price_unit is not None:
