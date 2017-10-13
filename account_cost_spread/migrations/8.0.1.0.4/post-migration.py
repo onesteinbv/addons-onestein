@@ -17,5 +17,5 @@ def migrate(cr, version=None):
         if (il_id.spread_account_id and
                 il_id.spread_account_id.reconcile and
                 il_id.spread_account_id == il_id.account_id and
-                has_reconciliation == False):
+                not has_reconciliation):
             spreadline.move_id.line_id.reconcile()

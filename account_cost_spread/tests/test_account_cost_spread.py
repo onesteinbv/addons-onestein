@@ -31,7 +31,6 @@ class TestAccountCostSpread(TransactionCase):
             'type': 'service',
             'uos_id': self.env.ref('product.product_uom_categ_unit').id,
         })
-        # make invoice
         self.invoice = self.acc_inv_model.create({
             'account_id': self.account_fx_income_id.id,
             'company_id': self.partner_agrolait_id.company_id.id,
@@ -59,12 +58,19 @@ class TestAccountCostSpread(TransactionCase):
             )
         )
         # create spread for this now confirmed invoice (if not confirmed it
-        # would not have a date, therefore gen error
+        # would not have a date,
         # Make a spread on the line for the next 4 months
+        # make invoice if the start date is intramonth the first spread  will
+        # be proportiaonally less, the others will be equal, if there is some
+        # left it will be added to an extra month. So in order to have exactly
+        # 4 months we must impose start date to the beginning of the month.
         self.invoice.invoice_line[0].write(
             {'spread_account_id': self.account_fx_income_id.id,
              'period_number': 4,
-             'period_type': 'month'}
+             'period_type': 'month',
+             'spread_date': date.today().replace(day=1).strftime(
+                 DEFAULT_SERVER_DATE_FORMAT
+             )}
         )
         self.invoice.invoice_line[0].action_recalculate_spread()
         self.assertEqual(len(self.invoice.invoice_line.spread_line_ids), 4)
@@ -121,7 +127,10 @@ class TestAccountCostSpread(TransactionCase):
         self.invoice_rec.invoice_line[0].write(
             {'spread_account_id': self.account_fx_income_id.id,
              'period_number': 4,
-             'period_type': 'month', }
+             'period_type': 'month',
+             'spread_date': date.today().replace(day=1).strftime(
+                 DEFAULT_SERVER_DATE_FORMAT)
+            }
         )
         self.invoice_rec.invoice_line[0].action_recalculate_spread()
         self.assertEqual(len(self.invoice_rec.invoice_line.spread_line_ids), 4)
