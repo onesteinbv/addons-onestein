@@ -24,6 +24,22 @@ class TestAccountCostSpread(TransactionCase):
         self.bank_journal_usd_id = self.env.ref("account.bank_journal_usd")
         self.account_usd_id = self.env.ref("account.usd_bnk")
 
+        #make fiscal year current
+
+        self.current_fiscalyear = self.env['account.fiscalyear'].create({
+            'name': 'thisyear',
+            'code': 'THS',
+            'company_id': self.partner_agrolait_id.company_id.id,
+            'date_start': date.today().replace(
+                month=1, day=1).strftime(DEFAULT_SERVER_DATE_FORMAT),
+            'date_stop': date.today().replace(
+                month=12, day=31).strftime(DEFAULT_SERVER_DATE_FORMAT)
+        })
+
+        # make period IDS for this period
+        self.current_fiscalyear.create_period()
+
+
     def test_all(self):
         # make product with account
         self.product_t = self.env['product.product'].create({
