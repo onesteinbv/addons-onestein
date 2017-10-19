@@ -24,21 +24,6 @@ class TestAccountCostSpread(TransactionCase):
         self.bank_journal_usd_id = self.env.ref("account.bank_journal_usd")
         self.account_usd_id = self.env.ref("account.usd_bnk")
 
-        #make fiscal year current
-
-        self.current_fiscalyear = self.env['account.fiscalyear'].create({
-            'name': 'thisyear',
-            'code': 'THS',
-            'company_id': self.partner_agrolait_id.company_id.id,
-            'date_start': date.today().replace(
-                month=1, day=1).strftime(DEFAULT_SERVER_DATE_FORMAT),
-            'date_stop': date.today().replace(
-                month=12, day=31).strftime(DEFAULT_SERVER_DATE_FORMAT)
-        })
-
-        # make period IDS for this period
-        self.current_fiscalyear.create_period()
-
 
     def test_all(self):
         # make product with account
@@ -80,6 +65,7 @@ class TestAccountCostSpread(TransactionCase):
         # be proportiaonally less, the others will be equal, if there is some
         # left it will be added to an extra month. So in order to have exactly
         # 4 months we must impose start date to the beginning of the month.
+        
         self.invoice.invoice_line[0].write(
             {'spread_account_id': self.account_fx_income_id.id,
              'period_number': 4,
@@ -88,6 +74,27 @@ class TestAccountCostSpread(TransactionCase):
                  DEFAULT_SERVER_DATE_FORMAT
              )}
         )
+
+        # if the test is launched after september and the spread goes beyond 
+        # current year we need to create new fiscalyear this year + 1
+
+        self.next_fiscalyear = self.env['account.fiscalyear'].create({
+            'name': 'thisyear',
+            'code': 'THS',
+            'company_id': 1,
+            'date_start': date.today().replace(
+                year=date.today().year+1, month=1, day=1).strftime(
+                    DEFAULT_SERVER_DATE_FORMAT),
+            'date_stop': date.today().replace(
+                year=date.today().year+1, month=12, day=31).strftime(
+                    DEFAULT_SERVER_DATE_FORMAT)
+        })
+
+        # make period IDS for this fy
+        result = self.next_fiscalyear.create_period()
+
+
+
         self.invoice.invoice_line[0].action_recalculate_spread()
         self.assertEqual(len(self.invoice.invoice_line.spread_line_ids), 4)
         # create move for every spread
