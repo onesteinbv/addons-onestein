@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="assets_specific" inherit_id="report.assets_common">
+    <template id="assets_common" name="l10n_nl_tax_statement pdf assets" inherit_id="web.report_assets_common">
         <xpath expr="." position="inside">
             <link href="/l10n_nl_tax_statement/static/src/css/report.css" rel="stylesheet"/>
         </xpath>
