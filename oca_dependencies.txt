@@ -2,3 +2,4 @@ hr
 server-tools
 account-financial-reporting
 intrastat
+server-ux
