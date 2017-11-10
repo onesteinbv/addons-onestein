@@ -15,7 +15,7 @@
         'account_tax_balance',
     ],
     'data': [
-        'views/account_config_settings.xml',
+        'views/res_config_settings.xml',
     ],
     'installable': True,
 }
