@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="view_invoice_line_spread_all" model="ir.ui.view">
+        <field name="name">account.invoice.line.spread.all</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account_cost_spread.view_invoice_line_spread"/>
+        <field name="arch" type="xml">
+            <field name="spread_date" position="after">
+                <field name="display_create_all_moves" invisible="1"/>
+                <button name="create_all_moves" string="Create All Moves" type="object"
+                        icon="fa-play"
+                        attrs="{'invisible':[('display_create_all_moves','!=',True)]}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

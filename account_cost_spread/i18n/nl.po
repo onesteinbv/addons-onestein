@@ -1,0 +1,265 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* account_cost_spread
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-16 11:58+0000\n"
+"PO-Revision-Date: 2017-05-16 11:58+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_cost_spread
+#: model:ir.model,name:account_cost_spread.model_account_invoice_spread_line
+msgid "Account Invoice Spread Lines"
+msgstr "Factuur Spreidregels"
+
+#. module: account_cost_spread
+#: code:addons/account_cost_spread/models/account_invoice_line.py:549
+#, python-format
+msgid "Account on one of the invoice lines you're tryingto validate is deprecated"
+msgstr "Account on one of the invoice lines you're tryingto validate is deprecated"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_spread_date
+msgid "Alternative Start Date"
+msgstr "Alternatieve Startdatum"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_amount
+msgid "Amount"
+msgstr "Bedrag"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_spreaded_value
+msgid "Amount Already Spread"
+msgstr "Bedrag Reeds Gespreid"
+
+#. module: account_cost_spread
+#: model:ir.ui.view,arch_db:account_cost_spread.view_invoice_line_spread
+msgid "Are you sure ?"
+msgstr "Weet u het zeker?"
+
+#. module: account_cost_spread
+#: selection:account.invoice.spread.line,type:0
+msgid "Asset Removal"
+msgstr "Activa Verwijdering"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_config_settings_module_account_cost_spread
+msgid "Cost spreading on Invoices"
+msgstr "Kosten spreiden op Facturen"
+
+#. module: account_cost_spread
+#: model:ir.ui.view,arch_db:account_cost_spread.view_invoice_line_spread
+msgid "Create Move"
+msgstr "Maak mutatie"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_create_uid
+msgid "Created by"
+msgstr "Aangemaakt door"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_create_date
+msgid "Created on"
+msgstr "Aangemaakt op"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_line_date
+msgid "Date"
+msgstr "Datum"
+
+#. module: account_cost_spread
+#: model:ir.ui.view,arch_db:account_cost_spread.view_invoice_line_spread
+msgid "Delete Move"
+msgstr "Verwijder Boeking"
+
+#. module: account_cost_spread
+#: selection:account.invoice.spread.line,type:0
+msgid "Depreciation"
+msgstr "Waardevermindering"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_display_name
+msgid "Display Name"
+msgstr "Weergave naam"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_id
+msgid "ID"
+msgstr "ID"
+
+#. module: account_cost_spread
+#: model:ir.model,name:account_cost_spread.model_account_invoice
+msgid "Invoice"
+msgstr "Factuur"
+
+#. module: account_cost_spread
+#: model:ir.model,name:account_cost_spread.model_account_invoice_line
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_invoice_line_id
+msgid "Invoice Line"
+msgstr "Factuurregel"
+
+#. module: account_cost_spread
+#: code:addons/account_cost_spread/models/account_invoice_spread_line.py:157
+#, python-format
+msgid "Journal Entry"
+msgstr "Dagboekregel"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line___last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_write_uid
+msgid "Last Updated by"
+msgstr "Laatst bijgewerkt door"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_write_date
+msgid "Last Updated on"
+msgstr "Laatst bijgewerkt op"
+
+#. module: account_cost_spread
+#: selection:account.invoice.line,period_type:0
+msgid "Month"
+msgstr "Maand"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_remaining_value
+msgid "Next Period Spread"
+msgstr "Volgende Spreid Periode"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_period_number
+#: model:ir.model.fields,help:account_cost_spread.field_account_invoice_line_period_number
+msgid "Number of Periods"
+msgstr "Aantal Periodes"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_period_amount
+msgid "Period Amount"
+msgstr "Period Amount"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,help:account_cost_spread.field_account_invoice_line_period_type
+msgid "Period length for the entries"
+msgstr "Periode lengte voor boekingen"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_period_type
+msgid "Period type"
+msgstr "Period type"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_previous_id
+msgid "Previous Spread Line"
+msgstr "Vorige Spreidlijn"
+
+#. module: account_cost_spread
+#: selection:account.invoice.line,period_type:0
+msgid "Quarter"
+msgstr "Kwartaal"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_remaining_amount
+msgid "Residual Amount"
+msgstr "Restbedrag"
+
+#. module: account_cost_spread
+#: model:ir.ui.view,arch_db:account_cost_spread.view_customer_invoice_spread
+#: model:ir.ui.view,arch_db:account_cost_spread.view_supplier_invoice_spread
+msgid "Spread"
+msgstr "Spreiding"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_spread_account_id
+msgid "Spread Account"
+msgstr "Grootboek Spreiding"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_spreaded_amount
+msgid "Spread Amount"
+msgstr "Bedrag Spreiding"
+
+#. module: account_cost_spread
+#: code:addons/account_cost_spread/models/account_invoice_line.py:121
+#, python-format
+msgid "Spread Details"
+msgstr "Details Spreiding"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_move_id
+msgid "Spread Entry"
+msgstr "Boeking Spreiding"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_spread_line_ids
+msgid "Spread Lines"
+msgstr "Boekingsregels Spreiding"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_name
+msgid "Spread Name"
+msgstr "Naam Spreiding"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_spread_start_date
+msgid "Spread start date"
+msgstr "Spread start date"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_spread_stop_date
+msgid "Spread stop date"
+msgstr "Spread stop date"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,help:account_cost_spread.field_account_config_settings_module_account_cost_spread
+msgid "This will allow you to spread the cost of an invoice.\n"
+"                The module account_cost spread will be installed."
+msgstr "Laat u de kosten van een factuur spreiden.\n"
+"               De module account_cost spread zal worden geïnstalleerd. "
+
+#. module: account_cost_spread
+#: model:ir.ui.view,arch_db:account_cost_spread.view_invoice_line_spread
+msgid "Total"
+msgstr "Totaal"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_spread_line_type
+msgid "Type"
+msgstr "Soort"
+
+#. module: account_cost_spread
+#: selection:account.invoice.spread.line,type:0
+msgid "Value"
+msgstr "Waarde"
+
+#. module: account_cost_spread
+#: model:ir.ui.view,arch_db:account_cost_spread.view_invoice_line_spread
+msgid "View Move"
+msgstr "Zie Boeking"
+
+#. module: account_cost_spread
+#: selection:account.invoice.line,period_type:0
+msgid "Year"
+msgstr "Jaar"
+
+#. module: account_cost_spread
+#: model:ir.model.fields,field_description:account_cost_spread.field_account_invoice_line_year_amount
+msgid "Year Amount"
+msgstr "Aantal jaar"
+
+#. module: account_cost_spread
+#: model:ir.model,name:account_cost_spread.model_account_config_settings
+msgid "account.config.settings"
+msgstr "account.config.settings"
+

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_invoice_line_spread" model="ir.ui.view">
+        <field name="model">account.invoice.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_recalculate_spread" type="object" string="Recalculate spread" class="oe_highlight" attrs="{'invisible': [('spread_account_id', '=', False)]}" />
+                    <button name="action_undo_spread" type="object" string="Undo spread" attrs="{'invisible': [('spread_line_ids', '=', [])]}" />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="account_id" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="price_subtotal" readonly="1"/>
+                            <field name="remaining_amount" attrs="{'invisible': [('remaining_amount', '=', 0)]}" class="oe_form_invalid" />
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="spread_account_id" required="1" domain="[('company_id', '=', company_id)]"/>
+                            <field name="period_number" required="1"/>
+                            <field name="period_type" required="1"/>
+                            <field name="spread_date"/>
+                        </group>
+                    </group>
+                    <field name="spread_line_ids" readonly="1">
+                        <tree>
+                            <field name="name" readonly="1"/>
+                            <field name="amount" readonly="1" sum="Total"/>
+                            <field name="line_date" readonly="1"/>
+                            <field name="move_id" readonly="1"/>
+                            <button name="create_move" icon="fa fa-play" string="Create Move" type="object"
+                                    attrs="{'invisible':[('move_id','!=',False)]}"/>
+                            <button name="open_move" icon="fa fa-plus-square-o" string="View Move" type="object"
+                                    attrs="{'invisible':[('move_id','=',False)]}"/>
+                            <button name="unlink_move" icon="fa fa-trash" string="Delete Move" type="object" confirm="Are you sure ?" groups="account.group_account_manager"
+                                    attrs="{'invisible':[('move_id','=',False)]}"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_invoice_line_spread_account_manager" model="ir.ui.view">
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="view_invoice_line_spread" />
+        <field name="groups_id" eval="[(4, ref('account.group_account_manager'))]" />
+        <field name="arch" type="xml">
+            <tree position="attributes">
+                <attribute name="editable">1</attribute>
+            </tree>
+            <field name="amount" position="attributes">
+                <attribute name="readonly"/>
+            </field>
+            <field name="spread_line_ids" position="attributes">
+                <attribute name="readonly"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
