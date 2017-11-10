@@ -26,7 +26,7 @@
         <field name="dpi">110</field>
     </record>
 
-    <record id="action_report_tax_statement" model="ir.actions.report.xml">
+    <record id="action_report_tax_statement" model="ir.actions.report">
         <field name="paperformat_id" ref="paperformat_nl_tax_statement"/>
     </record>
 
