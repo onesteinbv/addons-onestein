@@ -8,8 +8,8 @@ from functools import reduce
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import Warning, ValidationError
-from odoo.tools import float_is_zero, DEFAULT_SERVER_DATE_FORMAT as DF
+from odoo.exceptions import Warning
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import odoo.addons.decimal_precision as dp
 
 
@@ -118,17 +118,6 @@ class AccountInvoiceLine(models.Model):
                 'remaining_amount': this.price_subtotal - spread_amount,
                 'spreaded_amount': spread_amount,
             })
-
-    # @api.constrains('spread_line_ids')
-    # def _check_spread_line_ids(self):
-    #     for this in self:
-    #         if not float_is_zero(
-    #             this.remaining_amount,
-    #             self.env['decimal.precision'].precision_get('Account'),
-    #         ):
-    #             raise ValidationError(_(
-    #                 'You didn\'t distribute the total amount'
-    #             ))
 
     @api.multi
     def spread_details(self):
