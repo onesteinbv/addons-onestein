@@ -59,7 +59,7 @@ class TestTaxInvoiceBasis(TransactionCase):
 
         company = self.env.user.company_id
         # Factuurstelsel enabled by default
-        self.assertEquals(company.l10n_nl_tax_invoice_basis, True)
+        self.assertEqual(company.l10n_nl_tax_invoice_basis, True)
 
         # Validate invoice
         self.invoice.action_invoice_open()
@@ -67,19 +67,19 @@ class TestTaxInvoiceBasis(TransactionCase):
         tax_july = self.tax.with_context(self.period_july)
         tax_august = self.tax.with_context(self.period_august)
 
-        self.assertEquals(tax_july.base_balance, 0.)
-        self.assertEquals(tax_july.balance, 0.)
-        self.assertEquals(tax_july.base_balance_regular, 0.)
-        self.assertEquals(tax_july.balance_regular, 0.)
-        self.assertEquals(tax_july.base_balance_refund, 0.)
-        self.assertEquals(tax_july.balance_refund, 0.)
+        self.assertEqual(tax_july.base_balance, 0.)
+        self.assertEqual(tax_july.balance, 0.)
+        self.assertEqual(tax_july.base_balance_regular, 0.)
+        self.assertEqual(tax_july.balance_regular, 0.)
+        self.assertEqual(tax_july.base_balance_refund, 0.)
+        self.assertEqual(tax_july.balance_refund, 0.)
 
-        self.assertEquals(tax_august.base_balance, -100.)
-        self.assertEquals(tax_august.balance, -21.)
-        self.assertEquals(tax_august.base_balance_regular, 0.)
-        self.assertEquals(tax_august.balance_regular, 0.)
-        self.assertEquals(tax_august.base_balance_refund, -100.)
-        self.assertEquals(tax_august.balance_refund, -21.)
+        self.assertEqual(tax_august.base_balance, -100.)
+        self.assertEqual(tax_august.balance, -21.)
+        self.assertEqual(tax_august.base_balance_regular, 0.)
+        self.assertEqual(tax_august.balance_regular, 0.)
+        self.assertEqual(tax_august.base_balance_refund, -100.)
+        self.assertEqual(tax_august.balance_refund, -21.)
 
     def test_tax_standard(self):
 
@@ -92,19 +92,19 @@ class TestTaxInvoiceBasis(TransactionCase):
         tax_july = self.tax.with_context(self.period_july)
         tax_august = self.tax.with_context(self.period_august)
 
-        self.assertEquals(tax_july.base_balance, -100.)
-        self.assertEquals(tax_july.balance, -21.)
-        self.assertEquals(tax_july.base_balance_regular, 0.)
-        self.assertEquals(tax_july.balance_regular, 0.)
-        self.assertEquals(tax_july.base_balance_refund, -100.)
-        self.assertEquals(tax_july.balance_refund, -21.)
+        self.assertEqual(tax_july.base_balance, -100.)
+        self.assertEqual(tax_july.balance, -21.)
+        self.assertEqual(tax_july.base_balance_regular, 0.)
+        self.assertEqual(tax_july.balance_regular, 0.)
+        self.assertEqual(tax_july.base_balance_refund, -100.)
+        self.assertEqual(tax_july.balance_refund, -21.)
 
-        self.assertEquals(tax_august.base_balance, 0.)
-        self.assertEquals(tax_august.balance, 0.)
-        self.assertEquals(tax_august.base_balance_regular, 0.)
-        self.assertEquals(tax_august.balance_regular, 0.)
-        self.assertEquals(tax_august.base_balance_refund, 0.)
-        self.assertEquals(tax_august.balance_refund, 0.)
+        self.assertEqual(tax_august.base_balance, 0.)
+        self.assertEqual(tax_august.balance, 0.)
+        self.assertEqual(tax_august.base_balance_regular, 0.)
+        self.assertEqual(tax_august.balance_regular, 0.)
+        self.assertEqual(tax_august.base_balance_refund, 0.)
+        self.assertEqual(tax_august.balance_refund, 0.)
 
     def test_skip_by_context(self):
 
@@ -120,16 +120,16 @@ class TestTaxInvoiceBasis(TransactionCase):
         tax_july = self.tax.with_context(self.period_july)
         tax_august = self.tax.with_context(self.period_august)
 
-        self.assertEquals(tax_july.base_balance, -100.)
-        self.assertEquals(tax_july.balance, -21.)
-        self.assertEquals(tax_july.base_balance_regular, 0.)
-        self.assertEquals(tax_july.balance_regular, 0.)
-        self.assertEquals(tax_july.base_balance_refund, -100.)
-        self.assertEquals(tax_july.balance_refund, -21.)
+        self.assertEqual(tax_july.base_balance, -100.)
+        self.assertEqual(tax_july.balance, -21.)
+        self.assertEqual(tax_july.base_balance_regular, 0.)
+        self.assertEqual(tax_july.balance_regular, 0.)
+        self.assertEqual(tax_july.base_balance_refund, -100.)
+        self.assertEqual(tax_july.balance_refund, -21.)
 
-        self.assertEquals(tax_august.base_balance, 0.)
-        self.assertEquals(tax_august.balance, 0.)
-        self.assertEquals(tax_august.base_balance_regular, 0.)
-        self.assertEquals(tax_august.balance_regular, 0.)
-        self.assertEquals(tax_august.base_balance_refund, 0.)
-        self.assertEquals(tax_august.balance_refund, 0.)
+        self.assertEqual(tax_august.base_balance, 0.)
+        self.assertEqual(tax_august.balance, 0.)
+        self.assertEqual(tax_august.base_balance_regular, 0.)
+        self.assertEqual(tax_august.balance_regular, 0.)
+        self.assertEqual(tax_august.base_balance_refund, 0.)
+        self.assertEqual(tax_august.balance_refund, 0.)
