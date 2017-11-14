@@ -17,5 +17,5 @@ msgstr ""
 
 #. module: account_cost_spread
 #: model:ir.ui.menu,name:account_cost_spread.menu_invoice_line_spread
-msgid "Invoice line spreads"
+msgid "Invoice line Spreads"
 msgstr "Transitorische Boekingen (Spreadlines)"
