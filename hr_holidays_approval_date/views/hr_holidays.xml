@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2016-2017 Onestein (<http://www.onestein.eu>)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record id="edit_holiday_new_expiration" model="ir.ui.view">
+        <field name="model">hr.holidays</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='holiday_type']" position="before">
+                <field name="approval_date" readonly="1" attrs="{'invisible':[('approval_date','=',False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
