@@ -1,7 +1,6 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import base64
 from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.tools.misc import file_open
@@ -81,7 +80,7 @@ class TestImport(TransactionCase):
                 my_mock.return_value = statements
 
                 action = self.env['account.bank.statement.import'].create({
-                    'data_file': base64.b64encode(datafile),
+                    'data_file': datafile,
                 }).import_file()
 
                 transact = self.transactions[0]
@@ -148,7 +147,7 @@ class TestImport(TransactionCase):
                 my_mock.return_value = statements
 
                 action = self.env['account.bank.statement.import'].create({
-                    'data_file': base64.b64encode(datafile),
+                    'data_file': datafile,
                 }).import_file()
 
                 transact = self.transactions[0]
