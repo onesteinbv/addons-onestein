@@ -147,7 +147,7 @@ class MT940(object):
             while True:
                 if not self.current_statement:
                     self.handle_header(line, iterator)
-                line = iterator.next()
+                line = iterator.__next__()
                 if not self.is_tag(line) and not self.is_footer(line):
                     record_line = self.add_record_line(line, record_line)
                     continue
@@ -183,7 +183,7 @@ class MT940(object):
     def handle_header(self, dummy_line, iterator):
         """skip header lines, create current statement"""
         for dummy_i in range(self.header_lines):
-            iterator.next()
+            iterator.__next__()
         self.current_statement = {
             'name': None,
             'date': None,
