@@ -5,7 +5,7 @@
 import base64
 from mock import patch
 from odoo.tests.common import TransactionCase
-from odoo.tools.misc import file_open
+from odoo.modules.module import get_module_resource
 from ..mt940 import MT940, get_subfields, handle_common_subfields
 
 
@@ -65,38 +65,40 @@ class TestImport(TransactionCase):
                     line_vals['account_number'] = transact['account_number']
                     line_vals['ref'] = transact['ref']
 
-        with file_open(
-            'account_bank_statement_import_mt940_base/test_files/test-ing.940'
-        ) as testfile:
-            parser = MT940()
-            datafile = testfile.read()
-            statements = parser.parse(datafile)
+        testfile = get_module_resource(
+            'account_bank_statement_import_mt940_base',
+            'test_files',
+            'test-ing.940',
+        )
+        parser = MT940()
+        datafile = open(testfile, 'rb').read()
+        statements = parser.parse(datafile)
 
-            _prepare_statement_lines(statements)
+        _prepare_statement_lines(statements)
 
-            path_addon = 'odoo.addons.account_bank_statement_import.'
-            path_file = 'account_bank_statement_import.'
-            path_class = 'AccountBankStatementImport.'
-            method = path_addon + path_file + path_class + '_parse_file'
-            with patch(method) as my_mock:
-                my_mock.return_value = statements
+        path_addon = 'odoo.addons.account_bank_statement_import.'
+        path_file = 'account_bank_statement_import.'
+        path_class = 'AccountBankStatementImport.'
+        method = path_addon + path_file + path_class + '_parse_file'
+        with patch(method) as my_mock:
+            my_mock.return_value = statements
 
-                action = self.env['account.bank.statement.import'].create({
-                    'data_file': base64.b64encode(datafile.encode("utf-8")),
-                }).import_file()
+            action = self.env['account.bank.statement.import'].create({
+                'data_file': base64.b64encode(datafile),
+            }).import_file()
 
-                transact = self.transactions[0]
-                for statement in self.env['account.bank.statement'].browse(
-                    action['context']['statement_ids']
-                ):
-                    for line in statement.line_ids:
-                        self.assertTrue(
-                            line.bank_account_id.acc_number ==
-                            transact['account_number'])
-                        self.assertTrue(line.amount == transact['amount'])
-                        self.assertTrue(line.date == '2014-02-20')
-                        self.assertTrue(line.name == transact['name'])
-                        self.assertTrue(line.ref == transact['ref'])
+            transact = self.transactions[0]
+            for statement in self.env['account.bank.statement'].browse(
+                action['context']['statement_ids']
+            ):
+                for line in statement.line_ids:
+                    self.assertTrue(
+                        line.bank_account_id.acc_number ==
+                        transact['account_number'])
+                    self.assertTrue(line.amount == transact['amount'])
+                    self.assertTrue(line.date == '2014-02-20')
+                    self.assertTrue(line.name == transact['name'])
+                    self.assertTrue(line.ref == transact['ref'])
 
     def test_get_subfields(self):
         """Unit Test function get_subfields()."""
@@ -130,37 +132,39 @@ class TestImport(TransactionCase):
                     line_vals['account_number'] = transact['account_number']
                     line_vals['ref'] = transact['ref']
 
-        with file_open(
-            'account_bank_statement_import_mt940_base/test_files/test-rabo.swi'
-        ) as testfile:
-            parser = MT940()
-            parser.header_regex = '^:940:'  # Start of header
-            parser.header_lines = 1  # Number of lines to skip
-            datafile = testfile.read()
-            statements = parser.parse(datafile)
+        testfile = get_module_resource(
+            'account_bank_statement_import_mt940_base',
+            'test_files',
+            'test-rabo.swi',
+        )
+        parser = MT940()
+        parser.header_regex = '^:940:'  # Start of header
+        parser.header_lines = 1  # Number of lines to skip
+        datafile = open(testfile, 'rb').read()
+        statements = parser.parse(datafile)
 
-            _prepare_statement_lines(statements)
+        _prepare_statement_lines(statements)
 
-            path_addon = 'odoo.addons.account_bank_statement_import.'
-            path_file = 'account_bank_statement_import.'
-            path_class = 'AccountBankStatementImport.'
-            method = path_addon + path_file + path_class + '_parse_file'
-            with patch(method) as my_mock:
-                my_mock.return_value = statements
+        path_addon = 'odoo.addons.account_bank_statement_import.'
+        path_file = 'account_bank_statement_import.'
+        path_class = 'AccountBankStatementImport.'
+        method = path_addon + path_file + path_class + '_parse_file'
+        with patch(method) as my_mock:
+            my_mock.return_value = statements
 
-                action = self.env['account.bank.statement.import'].create({
-                    'data_file': base64.b64encode(datafile.encode("utf-8")),
-                }).import_file()
+            action = self.env['account.bank.statement.import'].create({
+                'data_file': base64.b64encode(datafile),
+            }).import_file()
 
-                transact = self.transactions[0]
-                for statement in self.env['account.bank.statement'].browse(
-                    action['context']['statement_ids']
-                ):
-                    for line in statement.line_ids:
-                        self.assertTrue(
-                            line.bank_account_id.acc_number ==
-                            transact['account_number'])
-                        self.assertTrue(line.amount == transact['amount'])
-                        self.assertTrue(line.date)
-                        self.assertTrue(line.name == transact['name'])
-                        self.assertTrue(line.ref == transact['ref'])
+            transact = self.transactions[0]
+            for statement in self.env['account.bank.statement'].browse(
+                action['context']['statement_ids']
+            ):
+                for line in statement.line_ids:
+                    self.assertTrue(
+                        line.bank_account_id.acc_number ==
+                        transact['account_number'])
+                    self.assertTrue(line.amount == transact['amount'])
+                    self.assertTrue(line.date)
+                    self.assertTrue(line.name == transact['name'])
+                    self.assertTrue(line.ref == transact['ref'])
