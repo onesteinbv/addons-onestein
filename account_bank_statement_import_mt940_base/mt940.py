@@ -139,7 +139,8 @@ class MT940(object):
 
     def parse(self, data):
         """Parse mt940 bank statement file contents."""
-        data = data.decode('utf-8')
+        if isinstance(data, bytes):
+            data = data.decode('utf-8')
         self.is_mt940(data)
         iterator = data.replace('\r\n', '\n').split('\n').__iter__()
         line = None
