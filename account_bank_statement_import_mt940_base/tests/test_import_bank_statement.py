@@ -2,7 +2,6 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import base64
 from mock import patch
 from odoo.tests.common import TransactionCase
 from odoo.tools.misc import file_open
