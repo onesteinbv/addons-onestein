@@ -82,7 +82,7 @@ class TestImport(TransactionCase):
                 my_mock.return_value = statements
 
                 action = self.env['account.bank.statement.import'].create({
-                    'data_file': base64.b64encode(datafile),
+                    'data_file': base64.b64encode(datafile.encode("utf-8")),
                 }).import_file()
 
                 transact = self.transactions[0]
@@ -149,7 +149,7 @@ class TestImport(TransactionCase):
                 my_mock.return_value = statements
 
                 action = self.env['account.bank.statement.import'].create({
-                    'data_file': base64.b64encode(datafile),
+                    'data_file': base64.b64encode(datafile.encode("utf-8")),
                 }).import_file()
 
                 transact = self.transactions[0]
