@@ -247,7 +247,9 @@ class AccountInvoiceLine(models.Model):
         fy_obj = self.env['account.fiscalyear']
         init_flag = False
         try:
-            fy_id = fy_obj.find(invline.invoice_id.date_invoice)
+            fy_id = fy_obj.find(
+                self.spread_date or invline.invoice_id.date_invoice
+            )
             fy = fy_obj.browse(fy_id)
             if fy.state == 'done':
                 init_flag = True
