@@ -173,7 +173,7 @@ class AccountInvoiceLine(models.Model):
 
         if firstyear:
             spread_date_start = datetime.strptime(
-                line.invoice_id.date_invoice, '%Y-%m-%d')
+                line.spread_date or line.invoice_id.date_invoice, '%Y-%m-%d')
             fy_date_stop = entry['date_stop']
             first_fy_spread_days = \
                 (fy_date_stop - spread_date_start).days + 1
@@ -244,7 +244,6 @@ class AccountInvoiceLine(models.Model):
                 not invline.spread_account_id or \
                 not invline.period_type:
             return table
-
         fy_obj = self.env['account.fiscalyear']
         init_flag = False
         try:
