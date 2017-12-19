@@ -263,6 +263,8 @@ class AccountInvoiceLine(models.Model):
             return table
 
         date_invoice = self.invoice_id.date_invoice
+        if not date_invoice:
+            fields.Date.context_today(self.invoice_id)
         date_invoice_formatted = datetime.strptime(date_invoice, DF).date()
         fy_dates = self.company_id.compute_fiscalyear_dates(
             date_invoice_formatted)
