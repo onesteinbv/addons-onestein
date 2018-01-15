@@ -5,7 +5,7 @@
 {
     'name': 'Task Reminder Programmed',
     'summary': 'Plan task reminders for any date field',
-    'author': 'Onestein, Odoo Community Association (OCA)',
+    'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'category': 'Custom',
