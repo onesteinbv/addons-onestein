@@ -561,7 +561,7 @@ class AccountInvoiceLine(models.Model):
                     _("Account on one of the invoice lines you're trying"
                       "to validate is deprecated"))
 
-            if line.price_subtotal < 0.0:
+            if line.spread_line_ids and line.price_subtotal < 0.0:
                 raise Warning(
                     _("Cannot spread the negative amount of "
                       "one of the invoice lines")
