@@ -1,6 +1,7 @@
 # Copyright 2017 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+import base64
 import logging
 import os
 
@@ -42,7 +43,8 @@ class IrFilesystemDirectoryLine(models.TransientModel):
             if bin_size:
                 r = human_size(os.path.getsize(full_path))
             else:
-                r = open(full_path, 'rb').read().encode('base64')
+                file_content = open(full_path, 'rb').read()
+                r = base64.b64encode(file_content)
         except (IOError, OSError):
             _logger.info("_read_file reading %s", fname, exc_info=True)
         return r
