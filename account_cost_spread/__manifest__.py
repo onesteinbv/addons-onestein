@@ -21,5 +21,5 @@
         'views/account_config_settings.xml',
         'data/spread_cron.xml',
     ],
-    'installable': True,
+    'installable': False,
 }
