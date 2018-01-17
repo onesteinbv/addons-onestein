@@ -65,7 +65,7 @@ class CreditControlMarker(models.TransientModel):
 
         self._mark_lines(filtered_lines, self.name)
 
-        return {'domain': unicode([('id', 'in', filtered_lines.ids)]),
+        return {'domain': str([('id', 'in', filtered_lines.ids)]),
                 'view_type': 'form',
                 'view_mode': 'tree,form',
                 'view_id': False,
