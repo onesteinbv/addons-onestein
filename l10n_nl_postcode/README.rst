@@ -1,5 +1,5 @@
-.. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
-   :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
+.. image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+   :target: https://www.gnu.org/licenses/agpl
    :alt: License: AGPL-3
 
 ================================
@@ -18,7 +18,7 @@ The module depends on the external library 'python-stdnum'.
 
 You can install that library by using pip:
 
-* pip install python-stdnum
+* pip3 install python-stdnum
 
 
 Configuration
