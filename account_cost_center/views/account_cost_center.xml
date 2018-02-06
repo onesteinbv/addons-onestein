@@ -57,7 +57,7 @@
         <field name="search_view_id" ref="account_cost_center_filter"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                Click to add a new event.
+                Click to add a new cost center.
             </p>
             <p>
                 Cost centers provide an extra analytic dimension
