@@ -4,7 +4,7 @@
 {
     'name': 'Holidays expiration',
     'summary': 'Automatic management of holidays expiration. Leave days can have a expiary date per leave type. E-mail warnings can be set.',
-    'images': [static/description/banner.png],
+    'images': ['static/description/banner.png'],
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
