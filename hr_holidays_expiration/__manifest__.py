@@ -1,9 +1,10 @@
-# Copyright 2016-2017 Onestein (<http://www.onestein.eu>)
+# Copyright 2016-2018 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
     'name': 'Holidays expiration',
-    'summary': 'Automatic management of holidays expiration',
+    'summary': 'Automatic management of holidays expiration. Leave days can have a expiary date per leave type. E-mail warnings can be set.',
+    'images': [static/description/banner.png],
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',
     'category': 'Human Resources',
