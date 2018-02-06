@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head></head>
+    <body>
+        <section class="oe_container">
+            <div class="oe_row oe_spaced">
+                <h2 class="oe_slogan">Holidays expiration</h2>
+                <div class="oe_span12">
+                    <p class="oe_mt32"><center>
+                        This module adds the possibility to manage the expiration of the holidays including the possibility to send a customizable warning email to the HR responsible.
+					</center></p>
+					<p class="oe_mt32"><center>
+						In a multi-company environment, the expiry is set at the allocation request. Then you can combine all holidays into one holiday leave type regardless of what is the current Company (this is the standard behavior of Odoo). This allows the end users to just have to select one type of holiday and the HR officer/manager can set their different expiry types (eg.: statutory / non - statutory) per allocation.
+					</center></p>
+					<p class="oe_mt32"><center>
+						The holiday allocations are consumed by the first expiration type first.
+                    </center></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="oe_container">
+            <div class="oe_row oe_spaced">
+                <h3 class="oe_slogan">Documentation</h3>
+				<div class="oe_span6">
+					<p class="oe_mt32"><center>
+						<em>Location:</em>
+					</center></p>				
+                    <p class='oe_mt32'>
+                       Leaves > My Leaves > Allocation Request > Tab "Expiration"
+                    </p>
+                </div>
+                <div class="oe_span6">
+                    <div class="oe_demo oe_picture oe_screenshot">
+                        <img src="screenshot1.png">
+                    </div>
+                </div>
+                <div class="oe_span12">
+                    <p class="oe_mt32"><center>
+						<em>Test scenario:</em>
+					</center></p>
+					<p class="oe_mt32"><center>
+						<ol>
+							<li>Create multiple holiday allocation with different expiration dates</li>
+							<li>Create leave requests and check allocation consumption. First expiring allocation should be consumed.</li>
+						</ol>
+					</center></p>
+					<p class="oe_mt32"><center>
+						The new version contains the following changes/modifications:
+					</center></p>
+					<p class="oe_mt32"><center>
+						<ol>
+							<li>Removed the following fields (full Validity field group) from the leave type:</li>
+							    <ul>
+									<li>expirable, validity in Month, notify expiration via email, notify period, Notify email template, expired email template
+									</li>
+								</ul>
+							<li>Added Notify email template, expired email template to the Company configuration form</li>
+							<li>When creating a leave allocation the Notify email template, the default expired email template is copied from the Company.</li>
+					</center></p>
+                </div>
+            </div>
+        </section>		
+		
+        <section class="oe_container">
+            <div class="oe_row oe_spaced">
+                <h3 class="oe_slogan">Support</h3>
+                <div class="oe_span12">
+                    <p class="oe_mt32"><center>
+                        This module is provide to you as is. No guarantees and warranties, as explained in its license.<br/>
+						However feel free to ask for help if needed, contact:<br/>
+						<a href="mailto:support@onestein.nl?subject=Support: Odoo Module hr_holiday_expiration">support@onestein.nl</a>
+					</center></p>
+                </div>
+            </div>
+        </section>
+		
+        <section class="oe_container">
+            <div class="oe_row oe_spaced">
+                <h3 class="oe_slogan">Credits</h3>
+                <div class="oe_span12">
+                    <p class="oe_mt32"><center>
+						<em>Contributors</em>
+					</center></p>
+                    <p class="oe_mt32"><center>
+						<a href="mailto:a.stirpe@onestein.nl?subject=Odoo Module hr_holiday_expiration">a.stirpe@onestein.nl</a>
+					</center></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="oe_container">
+            <div class="oe_row oe_spaced">
+                <h3 class="oe_slogan">License</h3>
+                <div class="oe_span12">
+                    <p class="oe_mt32"><center>
+						<a href="https://www.gnu.org/licenses/agpl" target="_blank"><img alt="License AGPL v3" src="https://www.gnu.org/graphics/agplv3-155x51.png"></a>
+					</center></p>
+                </div>
+            </div>
+        </section>			
+
+    </body>
+</html>
