@@ -82,7 +82,7 @@ class TestAccountCostSpread(AccountingTestCase):
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
         self.assertEqual(len(self.invoice_line.spread_line_ids), 12)
-        self.assertEqual(81.77, self.invoice_line.spread_line_ids[0].amount)
+        self.assertEqual(83.37, self.invoice_line.spread_line_ids[0].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[1].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[2].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[3].amount)
