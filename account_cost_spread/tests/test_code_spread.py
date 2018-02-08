@@ -93,7 +93,7 @@ class TestAccountCostSpread(AccountingTestCase):
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[8].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[9].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[10].amount)
-        self.assertEqual(84.93, self.invoice_line.spread_line_ids[11].amount)
+        self.assertEqual(83.33, self.invoice_line.spread_line_ids[11].amount)
 
         # Cancel the account move which is in posted state
         # and verifies that it gives warning message
