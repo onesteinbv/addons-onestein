@@ -22,7 +22,10 @@ class IrFilesystemDirectory(models.Model):
         compute='_compute_file_ids',
         string='Files'
     )
-    file_count = fields.Integer(compute='_file_count', string="# Files")
+    file_count = fields.Integer(
+        compute='_compute_file_count',
+        string="# Files"
+    )
 
     @api.multi
     def get_dir(self):
@@ -51,7 +54,7 @@ class IrFilesystemDirectory(models.Model):
             raise Warning(_('Directory does not exist'))
 
     @api.multi
-    def _file_count(self):
+    def _compute_file_count(self):
         for directory in self:
             directory.file_count = len(directory.file_ids)
 
