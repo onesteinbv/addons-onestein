@@ -18,8 +18,7 @@
         'security/ir.model.access.csv',
         'views/account_invoice_line.xml',
         'views/account_invoice.xml',
-        'views/account_config_settings.xml',
         'data/spread_cron.xml',
     ],
-    'installable': False,
+    'installable': True,
 }

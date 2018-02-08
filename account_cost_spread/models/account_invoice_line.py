@@ -264,7 +264,7 @@ class AccountInvoiceLine(models.Model):
 
         date_invoice = self.invoice_id.date_invoice
         if not date_invoice:
-            fields.Date.context_today(self.invoice_id)
+            date_invoice = fields.Date.context_today(self.invoice_id)
         date_invoice_formatted = datetime.strptime(date_invoice, DF).date()
         fy_dates = self.company_id.compute_fiscalyear_dates(
             date_invoice_formatted)
@@ -360,7 +360,7 @@ class AccountInvoiceLine(models.Model):
                 lines, period_amount):
             digits = self.env['decimal.precision'].precision_get('Account')
             fy_amount = entry['fy_amount']
-            if round(fy_amount_check - fy_amount, digits) != 0:
+            if lines and round(fy_amount_check - fy_amount, digits) != 0:
                 # handle rounding and extended/shortened
                 # fiscal year deviations
                 diff = fy_amount_check - fy_amount

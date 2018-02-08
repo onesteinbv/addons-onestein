@@ -5,4 +5,3 @@
 from . import account_invoice
 from . import account_invoice_line
 from . import account_invoice_spread_line
-from . import res_config_settings
