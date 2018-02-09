@@ -14,6 +14,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/account_cost_center_security.xml',
         'views/account_cost_center.xml',
         'views/account_move.xml',
         'views/account_move_line.xml',
