@@ -277,14 +277,15 @@ class AccountInvoiceLine(models.Model):
 
         # step 1:
         # calculate spread amount per fiscal year
-        i_max, invoice_sign, table = self._compute_spread_table_entries(
-            residual_amount, table)
+        if table:
+            i_max, invoice_sign, table = self._compute_spread_table_entries(
+                residual_amount, table)
 
-        # step 2: spread amount per fiscal year
-        # over the periods
-        self._compute_spread_table_lines(
-            self.period_type, amount_to_spread, i_max, invoice_sign,
-            residual_amount, spread_start_date, spread_stop_date, table)
+            # step 2: spread amount per fiscal year
+            # over the periods
+            self._compute_spread_table_lines(
+                self.period_type, amount_to_spread, i_max, invoice_sign,
+                residual_amount, spread_start_date, spread_stop_date, table)
 
         return table
 
