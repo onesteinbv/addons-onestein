@@ -14,7 +14,7 @@
                     <attribute name="context">{'type': type, 'pricelist_id': parent.pricelist_id}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_line']/tree/field[@name='quantity']" position="attributes">
-                    <attribute name="context">{'type': type, 'pricelist_id': parent.pricelist_id}</attribute>
+                    <attribute name="context">{'type': type, 'pricelist_id': parent.pricelist_id, 'trigger': 'qty'}</attribute>
                     <attribute name="on_change">product_id_change(product_id, uos_id, quantity, name, parent.type, parent.partner_id, parent.fiscal_position, price_unit, parent.currency_id, parent.company_id, context)</attribute>
                 </xpath>
             </field>

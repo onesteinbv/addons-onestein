@@ -20,6 +20,10 @@ class AccountInvoiceLine(models.Model):
             company_id=company_id)
         if not res or not res['value']:
             return res
+
+        if self.env.context.get('trigger') == 'qty':
+            res = {'value': {'price_unit': res['value']['price_unit']}}
+
         if type not in ['out_invoice', 'out_refund']:
             return res
         if not partner_id or not product:
@@ -54,4 +58,5 @@ class AccountInvoiceLine(models.Model):
 
                 price_unit = currency.round(price_unit)
                 res['value']['price_unit'] = price_unit
+
         return res
