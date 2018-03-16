@@ -8,13 +8,11 @@ Cost Spread
 
 Allows to spread costs over a customizable period.
 
-The computation code in this module is based on
-the Assets Management module by OpenERP & Noviat:
-https://www.odoo.com/apps/modules/8.0/account_asset_management/
-
-
 Credits
 =======
+
+The computation code in this module is based on
+the Assets Management module by Odoo SA.
 
 Contributors
 ------------

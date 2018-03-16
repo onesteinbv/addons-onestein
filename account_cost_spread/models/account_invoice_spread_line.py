@@ -40,15 +40,36 @@ class AccountInvoiceSpreadLine(models.Model):
     move_id = fields.Many2one(
         comodel_name='account.move',
         string='Spread Entry', readonly=True)
+    move_check = fields.Boolean(
+        compute='_get_move_check',
+        string='Linked',
+        track_visibility='always',
+        store=True)
+    move_posted_check = fields.Boolean(
+        compute='_get_move_posted_check',
+        string='Posted',
+        track_visibility='always',
+        store=True)
+    sequence = fields.Integer(required=True, default=1)
 
-    type = fields.Selection(
-        [('create', 'Value'),
-         ('depreciate', 'Depreciation'),
-         ('remove', 'Asset Removal'),
-         ],
-        string='Type',
-        readonly=True,
-        default='depreciate')
+    type = fields.Selection([
+        ('create', 'Value'),
+        ('depreciate', 'Depreciation'),
+        ('remove', 'Asset Removal'),
+    ], readonly=True, default='depreciate')
+
+    @api.multi
+    @api.depends('move_id')
+    def _get_move_check(self):
+        for line in self:
+            line.move_check = bool(line.move_id)
+
+    @api.multi
+    @api.depends('move_id.state')
+    def _get_move_posted_check(self):
+        for line in self:
+            is_posted = line.move_id and line.move_id.state == 'posted'
+            line.move_posted_check = True if is_posted else False
 
     @api.model
     def create(self, vals):
@@ -78,14 +99,14 @@ class AccountInvoiceSpreadLine(models.Model):
 
     @api.multi
     def _setup_move_line_data(self, spread_date,
-                              account_id, type, move_id):
+                              account_id, move_type, move_id):
         self.ensure_one()
         invoice_line = self.invoice_line_id
 
-        if type == 'debit':
+        if move_type == 'debit':
             debit = self.amount
             credit = 0.0
-        elif type == 'credit':
+        elif move_type == 'credit':
             debit = 0.0
             credit = self.amount
 
@@ -120,12 +141,11 @@ class AccountInvoiceSpreadLine(models.Model):
         Also called by a cron job.
         """
         self.ensure_one()
-        Move = self.env['account.move']
 
         invoice_line = self.invoice_line_id
         spread_date = self.line_date
         move_vals = self._setup_move_data(spread_date)
-        move = Move.create(move_vals)
+        move = self.env['account.move'].create(move_vals)
         _logger.debug('MoveID: %s', (move.id))
 
         if invoice_line.invoice_id.type in ('in_invoice', 'out_refund'):
@@ -179,11 +199,11 @@ class AccountInvoiceSpreadLine(models.Model):
             line.move_id = False
 
     @api.model
-    def _create_entries(self, automatic=False):
+    def _create_entries(self):
         """Find spread line entries where date is in the past and
         create moves for them."""
         lines = self.search([
             ('line_date', '<=', fields.Date.today()),
-            ('move_id', '=', False)]
-        )
+            ('move_id', '=', False)
+        ])
         lines.create_moves()

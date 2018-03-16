@@ -82,7 +82,7 @@ class TestAccountCostSpread(AccountingTestCase):
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
         self.assertEqual(len(self.invoice_line.spread_line_ids), 12)
-        self.assertEqual(83.37, self.invoice_line.spread_line_ids[0].amount)
+        self.assertEqual(83.33, self.invoice_line.spread_line_ids[0].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[1].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[2].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[3].amount)
@@ -93,7 +93,7 @@ class TestAccountCostSpread(AccountingTestCase):
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[8].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[9].amount)
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[10].amount)
-        self.assertEqual(83.33, self.invoice_line.spread_line_ids[11].amount)
+        self.assertEqual(83.37, self.invoice_line.spread_line_ids[11].amount)
 
         # Cancel the account move which is in posted state
         # and verifies that it gives warning message
@@ -114,15 +114,14 @@ class TestAccountCostSpread(AccountingTestCase):
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
 
-        self.assertEqual(len(self.invoice_line.spread_line_ids), 8)
-        self.assertEqual(100.96, self.invoice_line.spread_line_ids[0].amount)
-        self.assertEqual(285.72, self.invoice_line.spread_line_ids[1].amount)
-        self.assertEqual(285.72, self.invoice_line.spread_line_ids[2].amount)
-        self.assertEqual(285.72, self.invoice_line.spread_line_ids[3].amount)
-        self.assertEqual(285.72, self.invoice_line.spread_line_ids[4].amount)
-        self.assertEqual(285.72, self.invoice_line.spread_line_ids[5].amount)
-        self.assertEqual(285.72, self.invoice_line.spread_line_ids[6].amount)
-        self.assertEqual(184.72, self.invoice_line.spread_line_ids[7].amount)
+        self.assertEqual(len(self.invoice_line.spread_line_ids), 7)
+        self.assertEqual(285.71, self.invoice_line.spread_line_ids[0].amount)
+        self.assertEqual(285.71, self.invoice_line.spread_line_ids[1].amount)
+        self.assertEqual(285.71, self.invoice_line.spread_line_ids[2].amount)
+        self.assertEqual(285.71, self.invoice_line.spread_line_ids[3].amount)
+        self.assertEqual(285.71, self.invoice_line.spread_line_ids[4].amount)
+        self.assertEqual(285.71, self.invoice_line.spread_line_ids[5].amount)
+        self.assertEqual(285.74, self.invoice_line.spread_line_ids[6].amount)
         total_line_amount = 0.0
         for line in self.invoice_line.spread_line_ids:
             total_line_amount += line.amount
@@ -224,15 +223,15 @@ class TestAccountCostSpread(AccountingTestCase):
         self.assertEqual(len(self.invoice_line.spread_line_ids), 3)
         self.assertEqual(115.32,
                          self.invoice_line.spread_line_ids[0].amount)
-        self.assertEqual('2017-01-31',
+        self.assertEqual('2017-01-01',
                          self.invoice_line.spread_line_ids[0].line_date)
         self.assertEqual(115.32,
                          self.invoice_line.spread_line_ids[1].amount)
-        self.assertEqual('2017-02-28',
+        self.assertEqual('2017-02-01',
                          self.invoice_line.spread_line_ids[1].line_date)
         self.assertEqual(115.32,
                          self.invoice_line.spread_line_ids[2].amount)
-        self.assertEqual('2017-03-31',
+        self.assertEqual('2017-03-01',
                          self.invoice_line.spread_line_ids[2].line_date)
 
     def test_07_supplier_invoice(self):
@@ -262,100 +261,6 @@ class TestAccountCostSpread(AccountingTestCase):
         self.invoice.journal_id.write({'update_posted': True})
         self.invoice.action_invoice_cancel()
         self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
-
-    def test_09_get_fy_duration_days(self):
-        # spread date set
-        fy_dates = {
-            'date_from': fields.Date.from_string('2017-01-01'),
-            'date_to': fields.Date.from_string('2017-12-31'),
-        }
-
-        date_invoice_formatted = datetime.strptime('2017-01-01', DF).date()
-        days = self.invoice_line._get_fy_duration('2017-01-01', option='days')
-
-        self.assertEqual(
-            days, (fy_dates['date_to'] - date_invoice_formatted).days + 1)
-
-    def test_10_get_fy_duration_months(self):
-        # spread date set
-        fy_dates = {
-            'date_from': fields.Date.from_string('2017-01-01'),
-            'date_to': fields.Date.from_string('2017-12-31'),
-        }
-
-        months = self.invoice_line._get_fy_duration(
-            '2017-01-01', option='months')
-
-        self.assertEqual(
-            months,
-            (int(fy_dates['date_to'].strftime('%Y-%m-%d')[:4]) -
-             int(fy_dates['date_from'].strftime('%Y-%m-%d')[:4])) * 12 +
-            (int(fy_dates['date_to'].strftime('%Y-%m-%d')[5:7]) -
-             int(fy_dates['date_from'].strftime('%Y-%m-%d')[5:7])) + 1
-        )
-
-    def test_11_get_fy_duration_years(self):
-        # spread date set
-
-        self.invoice.write({
-            'date_invoice': '2015-01-01',
-        })
-
-        fy_dates = {
-            'date_from': fields.Date.from_string('2015-01-01'),
-            'date_to': fields.Date.from_string('2017-12-31'),
-        }
-
-        years = self.invoice_line._get_years(fy_dates)
-
-        self.assertEqual(years, 3)
-
-    def test_12_compute_spread_table(self):
-
-        self.invoice_line.write({
-            'spread_account_id': None,
-        })
-
-        table = self.invoice_line._compute_spread_table()
-        self.assertEqual([], table)
-
-    def test_13_internal_compute_spread_board_lines(self):
-        table = [{'lines': [
-            {
-                'date': datetime.strptime('2017-01-01', '%Y-%m-%d').date(),
-                'amount': 100.0,
-            },
-            {
-                'date': datetime.strptime('2017-03-01', '%Y-%m-%d').date(),
-                'amount': 200.0,
-            },
-            {
-                'date': datetime.strptime('2017-01-01', '%Y-%m-%d').date(),
-                'amount': 500.0,
-            }
-        ]}]
-
-        self.invoice_line.write({
-            'spread_start_date': '2017-02-01',
-        })
-
-        spread_start_date = datetime.strptime(
-            self.invoice_line.spread_start_date, '%Y-%m-%d').date()
-
-        tst_lines = [
-            {
-                'amount': 600.0,
-                'date': datetime.strptime('2017-01-01', '%Y-%m-%d').date(),
-                'spreaded_value': 0.0
-            },
-            {
-                'amount': 200.0,
-                'date': datetime.strptime('2017-03-01', '%Y-%m-%d').date(),
-            }
-        ]
-        lines = self.invoice_line._internal_compute_spread_board_lines(
-            spread_start_date, table)
-        self.assertEqual(tst_lines, lines)
 
     def test_14_compute_spread_board(self):
         self.invoice_line.account_id.write({
