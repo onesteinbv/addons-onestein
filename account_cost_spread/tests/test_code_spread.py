@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo.addons.account.tests.account_test_classes import AccountingTestCase
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 
 
 class TestAccountCostSpread(AccountingTestCase):
@@ -94,7 +94,7 @@ class TestAccountCostSpread(AccountingTestCase):
 
         # Cancel the account move which is in posted state
         # and verifies that it gives warning message
-        with self.assertRaises(Warning):
+        with self.assertRaises(UserError):
             self.invoice.move_id.button_cancel()
 
     def test_02_supplier_invoice(self):
@@ -264,7 +264,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'deprecated': True,
         })
 
-        with self.assertRaises(Warning):
+        with self.assertRaises(UserError):
             self.invoice_line.compute_spread_board()
 
     def test_15_create_entries(self):
