@@ -27,28 +27,8 @@ class AccountInvoiceLine(models.Model):
                 date = year + '-01-01'
             line.spread_start_date = date
 
-    @api.multi
-    def _compute_spread_stop_date(self):
-        for line in self:
-            start_date = line.spread_start_date
-            spread_start_date = datetime.strptime(start_date, '%Y-%m-%d')
-
-            spread_stop_date = None
-            if line.period_type == 'month':
-                spread_stop_date = spread_start_date + relativedelta(
-                    months=line.period_number, days=-1)
-            elif line.period_type == 'quarter':
-                spread_stop_date = spread_start_date + relativedelta(
-                    months=line.period_number * 3, days=-1)
-            elif line.period_type == 'year':
-                spread_stop_date = spread_start_date + relativedelta(
-                    years=line.period_number, days=-1)
-            spread_stop_date = spread_stop_date.strftime('%Y-%m-%d')
-            line.spread_stop_date = spread_stop_date
-
     spread_date = fields.Date(string='Alternative Start Date')
     spread_start_date = fields.Date(compute='_compute_spread_start_date')
-    spread_stop_date = fields.Date(compute='_compute_spread_stop_date')
     period_number = fields.Integer(
         string='Number of Periods',
         default=12,
