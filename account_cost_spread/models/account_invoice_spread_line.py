@@ -41,12 +41,12 @@ class AccountInvoiceSpreadLine(models.Model):
         comodel_name='account.move',
         string='Spread Entry', readonly=True)
     move_check = fields.Boolean(
-        compute='_get_move_check',
+        compute='_compute_move_check',
         string='Linked',
         track_visibility='always',
         store=True)
     move_posted_check = fields.Boolean(
-        compute='_get_move_posted_check',
+        compute='_compute_move_posted_check',
         string='Posted',
         track_visibility='always',
         store=True)
@@ -60,13 +60,13 @@ class AccountInvoiceSpreadLine(models.Model):
 
     @api.multi
     @api.depends('move_id')
-    def _get_move_check(self):
+    def _compute_move_check(self):
         for line in self:
             line.move_check = bool(line.move_id)
 
     @api.multi
     @api.depends('move_id.state')
-    def _get_move_posted_check(self):
+    def _compute_move_posted_check(self):
         for line in self:
             is_posted = line.move_id and line.move_id.state == 'posted'
             line.move_posted_check = True if is_posted else False

@@ -2,10 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo.addons.account.tests.account_test_classes import AccountingTestCase
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from datetime import datetime
 from odoo.exceptions import Warning
-from odoo import fields
 
 
 class TestAccountCostSpread(AccountingTestCase):

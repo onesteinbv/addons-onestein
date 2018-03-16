@@ -79,18 +79,19 @@ class AccountInvoiceLine(models.Model):
         inverse_name='invoice_line_id',
         string='Spread Lines')
 
-    @api.one
+    @api.multi
     @api.depends(
         'price_subtotal',
         'spread_line_ids.move_check',
         'spread_line_ids.amount')
     def _compute_remaining_amount(self):
-        total_amount = 0.0
-        for line in self.spread_line_ids:
-            if line.move_check:
-                total_amount += line.amount
-        self.remaining_amount = self.price_subtotal - total_amount
-        self.spreaded_amount = total_amount
+        for line in self:
+            total_amount = 0.0
+            for spread_line in line.spread_line_ids:
+                if spread_line.move_check:
+                    total_amount += spread_line.amount
+            line.remaining_amount = line.price_subtotal - total_amount
+            line.spreaded_amount = total_amount
 
     @api.multi
     def spread_details(self):
