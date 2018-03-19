@@ -220,15 +220,15 @@ class TestAccountCostSpread(AccountingTestCase):
         self.assertEqual(len(self.invoice_line.spread_line_ids), 3)
         self.assertEqual(115.32,
                          self.invoice_line.spread_line_ids[0].amount)
-        self.assertEqual('2017-01-01',
+        self.assertEqual('2017-01-31',
                          self.invoice_line.spread_line_ids[0].line_date)
         self.assertEqual(115.32,
                          self.invoice_line.spread_line_ids[1].amount)
-        self.assertEqual('2017-02-01',
+        self.assertEqual('2017-02-28',
                          self.invoice_line.spread_line_ids[1].line_date)
         self.assertEqual(115.32,
                          self.invoice_line.spread_line_ids[2].amount)
-        self.assertEqual('2017-03-01',
+        self.assertEqual('2017-03-31',
                          self.invoice_line.spread_line_ids[2].line_date)
 
     def test_07_supplier_invoice(self):

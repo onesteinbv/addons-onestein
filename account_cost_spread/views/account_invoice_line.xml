@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_recalculate_spread" type="object" string="Recalculate entire spread" class="oe_highlight" confirm="This will recalculate all the lines. Movements already posted will be canceled. Are you sure ?" attrs="{'invisible': [('spread_account_id', '=', False)]}" />
+                    <button name="action_recalculate_spread" type="object" string="Recalculate entire spread" class="oe_highlight" attrs="{'invisible': [('spread_account_id', '=', False)]}" />
                     <button name="action_undo_spread" type="object" string="Undo spread" attrs="{'invisible': [('spread_line_ids', '=', [])]}" />
                 </header>
                 <sheet>
