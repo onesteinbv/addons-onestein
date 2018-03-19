@@ -46,7 +46,7 @@ class AccountInvoiceLine(models.Model):
         string='Residual Amount',
         digits=dp.get_precision('Account'),
         compute='_compute_remaining_amount')
-    spreaded_amount = fields.Float(
+    unposted_amount = fields.Float(
         string='Spread Amount',
         digits=dp.get_precision('Account'),
         compute='_compute_remaining_amount')
@@ -63,15 +63,19 @@ class AccountInvoiceLine(models.Model):
     @api.depends(
         'price_subtotal',
         'spread_line_ids.move_check',
+        'spread_line_ids.move_posted_check',
         'spread_line_ids.amount')
     def _compute_remaining_amount(self):
         for line in self:
             total_amount = 0.0
+            posted_amount = 0.0
             for spread_line in line.spread_line_ids:
                 if spread_line.move_check:
                     total_amount += spread_line.amount
+                if spread_line.move_posted_check:
+                    posted_amount += spread_line.amount
             line.remaining_amount = line.price_subtotal - total_amount
-            line.spreaded_amount = total_amount
+            line.unposted_amount = line.price_subtotal - posted_amount
 
     @api.multi
     def spread_details(self):
@@ -106,16 +110,16 @@ class AccountInvoiceLine(models.Model):
         self.ensure_one()
 
         posted_line_ids = self.spread_line_ids.filtered(
-            lambda x: x.move_check).sorted(key=lambda l: l.line_date)
+            lambda x: x.move_posted_check).sorted(key=lambda l: l.line_date)
         unposted_line_ids = self.spread_line_ids.filtered(
-            lambda x: not x.move_check)
+            lambda x: not x.move_posted_check)
 
         # Remove old unposted spread lines.
         # We cannot use unlink() with One2many field
         commands = [(2, line_id.id, False) for line_id in unposted_line_ids]
 
-        if self.remaining_amount != 0.0:
-            amount_to_spread = residual_amount = self.remaining_amount
+        if self.unposted_amount != 0.0:
+            amount_to_spread = residual_amount = self.unposted_amount
 
             # if we already have some previous validated entries,
             # starting date is last entry + method period
@@ -145,6 +149,7 @@ class AccountInvoiceLine(models.Model):
                     continue
                 residual_amount -= amount
                 name = self._get_spread_entry_name(sequence)
+                line_date = self._get_line_date(spread_date)
                 vals = {
                     'amount': amount,
                     'invoice_line_id': self.id,
@@ -152,7 +157,7 @@ class AccountInvoiceLine(models.Model):
                     'name': name,
                     'remaining_value': residual_amount,
                     'spreaded_value': self.price_subtotal - (residual_amount),
-                    'line_date': spread_date.strftime(DF),
+                    'line_date': line_date,
                 }
                 commands.append((0, False, vals))
 
@@ -169,6 +174,11 @@ class AccountInvoiceLine(models.Model):
         self.write({'spread_line_ids': commands})
 
         return True
+
+    def _get_line_date(self, spread_date):
+        date = spread_date + relativedelta(day=31)
+        line_date = date.strftime(DF)
+        return line_date
 
     def _compute_board_undone_dotation_nb(self, spread_date):
         undone_dotation_number = self.period_number
@@ -209,6 +219,12 @@ class AccountInvoiceLine(models.Model):
 
             if line.price_subtotal:
                 line._compute_spread_board()
+
+    @api.multi
+    def action_recalculate_spread(self):
+        """Recalculate spread"""
+        self.mapped('spread_line_ids').filtered('move_id').unlink_move()
+        return self.compute_spread_board()
 
     @api.multi
     def action_undo_spread(self):

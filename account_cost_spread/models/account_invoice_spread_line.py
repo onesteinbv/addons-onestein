@@ -1,12 +1,10 @@
 # Copyright 2016-2018 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-import logging
-
-import odoo.addons.decimal_precision as dp
 from odoo import _, api, fields, models
-
-_logger = logging.getLogger(__name__)
+from odoo.exceptions import UserError
+from odoo.tools import float_compare
+import odoo.addons.decimal_precision as dp
 
 
 class AccountInvoiceSpreadLine(models.Model):
@@ -15,7 +13,7 @@ class AccountInvoiceSpreadLine(models.Model):
 
     _order = 'type, line_date'
 
-    name = fields.Char('Spread Name', size=64, readonly=True)
+    name = fields.Char('Spread Name', readonly=True)
     invoice_line_id = fields.Many2one(
         comodel_name='account.invoice.line',
         string='Invoice Line',
@@ -84,49 +82,6 @@ class AccountInvoiceSpreadLine(models.Model):
         return res
 
     @api.multi
-    def _setup_move_data(self, spread_date):
-        self.ensure_one()
-        invoice = self.invoice_line_id.invoice_id
-        journal = invoice.journal_id
-
-        move_data = {
-            'name': invoice and invoice.number or "/",
-            'date': spread_date,
-            'ref': self.name,
-            'journal_id': journal.id,
-            }
-        return move_data
-
-    @api.multi
-    def _setup_move_line_data(self, spread_date,
-                              account_id, move_type, move_id):
-        self.ensure_one()
-        invoice_line = self.invoice_line_id
-
-        if move_type == 'debit':
-            debit = self.amount
-            credit = 0.0
-        elif move_type == 'credit':
-            debit = 0.0
-            credit = self.amount
-
-        move_line_data = {
-            'name': invoice_line.name,
-            'ref': self.name,
-            'move_id': move_id,
-            'account_id': account_id,
-            'credit': credit,
-            'debit': debit,
-            'journal_id': invoice_line.invoice_id.journal_id.id,
-            'partner_id': invoice_line.invoice_id.partner_id.id,
-            'date': spread_date,
-            'analytic_account_id': invoice_line.account_analytic_id.id,
-            }
-        if 'cost_center_id' in invoice_line._fields:
-            move_line_data['cost_center_id'] = invoice_line.cost_center_id.id
-        return move_line_data
-
-    @api.multi
     def create_moves(self):
         for line in self:
             invoice_line = line.invoice_line_id
@@ -142,34 +97,73 @@ class AccountInvoiceSpreadLine(models.Model):
         """
         self.ensure_one()
 
-        invoice_line = self.invoice_line_id
-        spread_date = self.line_date
-        move_vals = self._setup_move_data(spread_date)
-        move = self.env['account.move'].create(move_vals)
-        _logger.debug('MoveID: %s', (move.id))
+        created_moves = self.env['account.move']
+        for line in self:
+            if line.move_id:
+                raise UserError(_('This spread line is already linked to a '
+                                  'journal entry! Please post or delete it.'))
+            move_vals = line._prepare_move()
+            move = self.env['account.move'].create(move_vals)
 
-        if invoice_line.invoice_id.type in ('in_invoice', 'out_refund'):
+            line.write({'move_id': move.id})
+            created_moves |= move
+        return [x.id for x in created_moves]
+
+    @api.multi
+    def _prepare_move(self):
+        self.ensure_one()
+
+        spread_date = self.env.context.get('spread_date') or self.line_date
+        invoice_line = self.invoice_line_id
+        invoice = invoice_line.invoice_id
+        analytic = invoice_line.account_analytic_id
+
+        if invoice.type in ('in_invoice', 'out_refund'):
             debit_acc_id = invoice_line.account_id.id
             credit_acc_id = invoice_line.spread_account_id.id
         else:
             debit_acc_id = invoice_line.spread_account_id.id
             credit_acc_id = invoice_line.account_id.id
 
-        line_list = []
-        line_list += [(0, 0, self._setup_move_line_data(
-            spread_date, debit_acc_id,
-            'debit', move.id
-        ))]
+        company_currency = invoice.company_id.currency_id
+        current_currency = invoice_line.currency_id
+        not_same_curr = company_currency != current_currency
+        prec = company_currency.decimal_places
+        amount = current_currency.with_context(date=spread_date).compute(
+            self.amount, company_currency)
+        is_sale = invoice.journal_id.type == 'sale'
+        is_purchase = invoice.journal_id.type == 'purchase'
+        is_positive = float_compare(amount, 0.0, precision_digits=prec) > 0
 
-        line_list += [(0, 0, self._setup_move_line_data(
-            spread_date, credit_acc_id,
-            'credit', move.id
-        ))]
-
-        move.write({'line_ids': line_list, })
-
-        # Add move_id to spread line
-        self.write({'move_id': move.id})
+        move_line_1 = {
+            'name': invoice_line.name,
+            'account_id': credit_acc_id if is_positive else debit_acc_id,
+            'debit': 0.0 if is_positive else -amount,
+            'credit': amount if is_positive else 0.0,
+            'partner_id': invoice.partner_id.id,
+            'analytic_account_id': analytic.id if is_sale else False,
+            'currency_id': not_same_curr and current_currency.id or False,
+            'amount_currency': not_same_curr and - 1.0 * self.amount or 0.0,
+        }
+        move_line_2 = {
+            'name': invoice_line.name,
+            'account_id': debit_acc_id if is_positive else credit_acc_id,
+            'credit': 0.0 if is_positive else -amount,
+            'debit': amount if is_positive else 0.0,
+            'partner_id': invoice.partner_id.id,
+            'analytic_account_id': analytic.id if is_purchase else False,
+            'currency_id': not_same_curr and current_currency.id or False,
+            'amount_currency': not_same_curr and self.amount or 0.0,
+        }
+        move_vals = {
+            'name': invoice and invoice.number or "/",
+            'ref': self.name,
+            'date': spread_date or False,
+            'journal_id': invoice.journal_id.id,
+            'line_ids': [(0, 0, move_line_1), (0, 0, move_line_2)],
+            'company_id': invoice.journal_id.company_id.id,
+        }
+        return move_vals
 
     @api.multi
     def open_move(self):
