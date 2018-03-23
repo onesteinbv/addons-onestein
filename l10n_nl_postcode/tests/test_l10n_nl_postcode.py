@@ -18,13 +18,6 @@ class TestL10NNLPostcode(common.TransactionCase):
             'zip': '80021',
         }
 
-        field_onchange = self.partner_1._onchange_spec()
-        self.assertEqual(field_onchange.get('zip'), '1')
-
-        # self.partner_1.onchange(values, 'zip', field_onchange)
-        # self.partner_1.with_context(skip_postcode_check=True).onchange(
-        #     values, 'zip', field_onchange)
-
         self.partner_2.write({
             'country_id': self.env.ref('base.nl').id,
             'zip': values['zip'],
@@ -42,3 +35,26 @@ class TestL10NNLPostcode(common.TransactionCase):
             'zip': '4813LE',
         })
         self.partner_2.onchange_zip_l10n_nl_postcode()
+
+    def test_02_onchange(self):
+        values = {
+            'zip': '80021',
+        }
+
+        field_onchange = self.Partner._onchange_spec()
+        self.assertEqual(field_onchange.get('zip'), '1')
+
+        # workaround to avoid _compute_sale_order_count() being called
+        # since self.read(['child_ids']) will raise an access right error
+        to_remove_fields = [
+            'sale_order_count',
+            'purchase_order_count',
+            'supplier_invoice_count'
+        ]
+        for to_remove in to_remove_fields:
+            if to_remove in field_onchange.keys():
+                del field_onchange[to_remove]
+
+        self.Partner.onchange(values, 'zip', field_onchange)
+        self.Partner.with_context(skip_postcode_check=True).onchange(
+            values, 'zip', field_onchange)
