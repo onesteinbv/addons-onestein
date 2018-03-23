@@ -16,5 +16,5 @@ class AccountInvoiceLine(models.Model):
         'account.cost.center',
         string='Cost Center',
         index=True,
-        default=_default_cost_center
+        default=lambda self: self._default_cost_center(),
     )

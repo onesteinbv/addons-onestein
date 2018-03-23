@@ -33,10 +33,10 @@
     <record id="account_cost_center_tree" model="ir.ui.view">
         <field name="model">account.cost.center</field>
         <field name="arch" type="xml">
-            <tree string="Cost Centers">
+            <tree>
                 <field name="code"/>
                 <field name="name"/>
-                <field name="company_id"  groups="base.group_multi_company"/>
+                <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
@@ -44,7 +44,7 @@
     <record id="account_cost_center_filter" model="ir.ui.view">
         <field name="model">account.cost.center</field>
         <field name="arch" type="xml">
-            <search string="Cost Centers">
+            <search>
                 <field name="name" string="Name/Code" filter_domain="['|', ('code','ilike', self), ('name','ilike',self)]"/>
             </search>
         </field>
