@@ -22,8 +22,8 @@ class TestL10NNLPostcode(common.TransactionCase):
         self.assertEqual(field_onchange.get('zip'), '1')
 
         # self.partner_1.onchange(values, 'zip', field_onchange)
-        self.partner_1.with_context(skip_postcode_check=True).onchange(
-            values, 'zip', field_onchange)
+        # self.partner_1.with_context(skip_postcode_check=True).onchange(
+        #     values, 'zip', field_onchange)
 
         self.partner_2.write({
             'country_id': self.env.ref('base.nl').id,
