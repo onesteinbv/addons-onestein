@@ -1,12 +1,12 @@
-# Copyright 2017 Onestein (<http://www.onestein.eu>)
+# Copyright 2017-2018 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-import base64
 import logging
 import os
+import base64
 
 from odoo import api, fields, models, _
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 from odoo.tools import human_size
 
 _logger = logging.getLogger(__name__)
@@ -28,7 +28,7 @@ class IrFilesystemDirectoryLine(models.TransientModel):
     def _file_read(self, fname, bin_size=False):
 
         def file_not_found(fname):
-            raise Warning(_(
+            raise UserError(_(
                 '''Error while reading file %s.
                 Maybe it was removed or permission is changed.
                 Please refresh the list.''' % fname))
@@ -43,8 +43,7 @@ class IrFilesystemDirectoryLine(models.TransientModel):
             if bin_size:
                 r = human_size(os.path.getsize(full_path))
             else:
-                file_content = open(full_path, 'rb').read()
-                r = base64.b64encode(file_content)
+                r = base64.b64encode(open(full_path, 'rb').read())
         except (IOError, OSError):
             _logger.info("_read_file reading %s", fname, exc_info=True)
         return r

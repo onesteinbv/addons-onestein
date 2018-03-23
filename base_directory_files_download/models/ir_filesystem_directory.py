@@ -1,4 +1,4 @@
-# Copyright 2017 Onestein (<http://www.onestein.eu>)
+# Copyright 2017-2018 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 import logging
@@ -6,7 +6,7 @@ import logging
 from os import listdir
 from os.path import isfile, join, exists, normpath, realpath
 from odoo import api, fields, models, _
-from odoo.exceptions import Warning
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ class IrFilesystemDirectory(models.Model):
     @api.onchange('directory')
     def onchange_directory(self):
         if self.directory and not exists(self.directory):
-            raise Warning(_('Directory does not exist'))
+            raise UserError(_('Directory does not exist'))
 
     @api.multi
     def _compute_file_count(self):
