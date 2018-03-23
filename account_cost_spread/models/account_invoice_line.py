@@ -175,7 +175,8 @@ class AccountInvoiceLine(models.Model):
 
         return True
 
-    def _get_line_date(self, spread_date):
+    @staticmethod
+    def _get_line_date(spread_date):
         date = spread_date + relativedelta(day=31)
         line_date = date.strftime(DF)
         return line_date
