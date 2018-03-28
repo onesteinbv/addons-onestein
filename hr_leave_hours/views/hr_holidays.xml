@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- Leave Hours: On Change view changes-->
+        <record id="edit_holiday_new_inherit_leave_hours" model="ir.ui.view">
+            <field name="name">edit.holiday.new.inherit.leave_hours</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_from']" position="attributes">
+                    <attribute name="on_change">onchange_date_from(employee_id, date_to, date_from, number_of_hours_temp, context)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_to']" position="attributes">
+                    <attribute name="on_change">onchange_date_to(employee_id, date_to, date_from, number_of_hours_temp, context)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='employee_id']" position="attributes">
+                    <attribute name="on_change">onchange_employee(employee_id, date_to, date_from, number_of_hours_temp, context)</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/group/group/div/div[1]" position="after">
+                    <label for="number_of_hours_temp" string="Hours"/>
+                    <field name="number_of_hours_temp" context="{'change_number_of_hours_temp': True}"/>
+                </xpath>
+                <xpath expr="//form/sheet/group/group/div/div[1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="allocation_company_new_inherit_leave_hours" model="ir.ui.view">
+            <field name="name">Leaves Management</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.allocation_company_new" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_from']" position="attributes">
+                    <attribute name="on_change">onchange_date_from(employee_id, date_to, date_from, number_of_hours_temp, context)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_to']" position="attributes">
+                    <attribute name="on_change">onchange_date_to(employee_id, date_to, date_from, number_of_hours_temp, context)</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_evaluation_report_graph_inherit_leave_hours" model="ir.ui.view">
+            <field name="name">hr.holidays.graph.inherit.leave.hours</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.view_evaluation_report_graph"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number_of_days']" position="replace">
+                    <field name="number_of_hours" type="measure"/>
+                    <field name="virtual_hours" type="measure"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_holiday_allocation_tree_inherit_leave_hours" model="ir.ui.view">
+            <field name="name">hr.holidays.allocation.tree.inherit.leave.hours</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.view_holiday_allocation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number_of_days']" position="after">
+                    <field name="number_of_hours" string="Approved Hours" sum="Remaining Hours"/>
+                    <field name="virtual_hours" string="Virtual Hours" sum="Virtual Remaining Hours"/>
+                </xpath>
+                <xpath expr="//field[@name='number_of_days']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_holiday_simple_inherit_leave_hours" model="ir.ui.view">
+            <field name="name">hr.holidays.report_tree.inherit.leave.hours</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.view_holiday_simple"/>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number_of_days']" position="after">
+                    <field name="number_of_hours" string="Approved Hours" sum="Remaining Hours"/>
+                    <field name="virtual_hours" string="Virtual Hours" sum="Virtual Remaining Hours"/>
+                </xpath>
+                <xpath expr="//field[@name='number_of_days']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_holiday_inherit_leave_hours" model="ir.ui.view">
+            <field name="name">hr.holidays.tree.inherit.leave.hours</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.view_holiday"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number_of_days']" position="after">
+                    <field name="number_of_hours" string="Approved Hours" sum="Remaining Hours"/>
+                    <field name="virtual_hours" string="Virtual Hours" sum="Virtual Remaining Hours"/>
+                </xpath>
+                <xpath expr="//field[@name='number_of_days']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

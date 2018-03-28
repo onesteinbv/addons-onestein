@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <record id="view_hr_holidays_remaining_leaves_user_tree_inherit_leave_hours" model="ir.ui.view">
+        <field name="name">hr.holidays.remaining.leaves.user.tree.inherit.leave.hours</field>
+        <field name="model">hr.holidays.remaining.leaves.user</field>
+        <field name="inherit_id" ref="hr_holidays.view_hr_holidays_remaining_leaves_user_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='no_of_leaves']" position="after">
+                <field name="no_of_hours"/>
+                <field name="virtual_hours"/>
+            </xpath>
+            <xpath expr="//field[@name='no_of_leaves']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_hr_holidays_remaining_leaves_user_graph_inherit_leave_hours" model="ir.ui.view">
+        <field name="name">hr.holidays.remaining.leaves.user.graph.inherit.leave.hours</field>
+        <field name="model">hr.holidays.remaining.leaves.user</field>
+        <field name="inherit_id" ref="hr_holidays.view_hr_holidays_remaining_leaves_user_graph" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='no_of_leaves']" position="replace">
+                <field name="no_of_hours" type="measure"/>
+                <field name="virtual_hours" type="measure"/>
+            </xpath>
+        </field>
+    </record>
+
+    </data>
+</openerp>

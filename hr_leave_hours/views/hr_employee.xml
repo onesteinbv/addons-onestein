@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Hr employee inherit Legal Leaves -->
+        <record id="view_employee_form_inherit_leave_hours" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherit.leave.hours</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr_holidays.view_employee_form_leave_inherit"/>
+            <field name="priority" eval="99"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Leaves']" position="after">
+                    <group string="Hours">
+                        <field name="remaining_hours_ids" nolabel="1">
+                            <tree>
+                                <field name="employee_id"/>
+                                <field name="leave_type"/>
+                                <field name="no_of_hours"/>
+                                <field name="no_of_leaves"/>
+                                <field name="virtual_hours"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="name" invisible="1"/>
+                                        <field name="employee_id"/>
+                                        <field name="leave_type"/>
+                                        <field name="no_of_hours"/>
+                                        <field name="no_of_leaves"/>
+                                    </group>
+                                    <group>
+                                        <field name="user_id"/>
+                                        <field name="virtual_hours"/>
+                                        <field name="leave_type"/>
+                                    </group>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                </xpath>
+                <xpath expr="//group[@string='Leaves']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
