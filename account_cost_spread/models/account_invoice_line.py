@@ -50,10 +50,6 @@ class AccountInvoiceLine(models.Model):
         string='Spread Amount',
         digits=dp.get_precision('Account'),
         compute='_compute_remaining_amount')
-    period_amount = fields.Float(
-        compute='_compute_period_amount',
-        string='Period Amount',
-        digits=dp.get_precision('Account'))
     spread_line_ids = fields.One2many(
         comodel_name='account.invoice.spread.line',
         inverse_name='invoice_line_id',
@@ -109,6 +105,30 @@ class AccountInvoiceLine(models.Model):
     def _compute_spread_board(self):
         self.ensure_one()
 
+        def _init_spread_date(spread_start_date, posted_line_ids):
+            # if we already have some previous validated entries,
+            # starting date is last entry + method period
+            if posted_line_ids and posted_line_ids[-1].line_date:
+                last_spread_date = datetime.strptime(
+                    posted_line_ids[-1].line_date, DF
+                ).date()
+                spread_date = last_spread_date + relativedelta(months=+1)
+            else:
+                # spread_date computed from the purchase date
+                spread_date = datetime.strptime(spread_start_date, DF)
+            return spread_date
+
+        def _increase_spread_date(month_day, spread_date):
+            spread_date = spread_date + relativedelta(months=+1)
+            if month_day > 28:
+                max_day_in_month = calendar.monthrange(
+                    spread_date.year, spread_date.month
+                )[1]
+                spread_date = spread_date.replace(
+                    day=min(max_day_in_month, month_day)
+                )
+            return spread_date
+
         posted_line_ids = self.spread_line_ids.filtered(
             lambda x: x.move_posted_check).sorted(key=lambda l: l.line_date)
         unposted_line_ids = self.spread_line_ids.filtered(
@@ -121,17 +141,8 @@ class AccountInvoiceLine(models.Model):
         if self.unposted_amount != 0.0:
             amount_to_spread = residual_amount = self.unposted_amount
 
-            # if we already have some previous validated entries,
-            # starting date is last entry + method period
-            if posted_line_ids and posted_line_ids[-1].line_date:
-                last_spread_date = datetime.strptime(
-                    posted_line_ids[-1].line_date, DF
-                ).date()
-                spread_date = last_spread_date + relativedelta(months=+1)
-            else:
-                # spread_date computed from the purchase date
-                spread_date = self.spread_start_date
-                spread_date = datetime.strptime(spread_date, DF)
+            spread_date = _init_spread_date(
+                self.spread_start_date, posted_line_ids)
 
             month_day = spread_date.day
             undone_dotation = self._compute_board_undone_dotation_nb(
@@ -148,28 +159,18 @@ class AccountInvoiceLine(models.Model):
                 if float_is_zero(amount, precision_rounding=rounding):
                     continue
                 residual_amount -= amount
-                name = self._get_spread_entry_name(sequence)
-                line_date = self._get_line_date(spread_date)
                 vals = {
                     'amount': amount,
                     'invoice_line_id': self.id,
                     'sequence': sequence,
-                    'name': name,
+                    'name': self._get_spread_entry_name(sequence),
                     'remaining_value': residual_amount,
                     'spreaded_value': self.price_subtotal - (residual_amount),
-                    'line_date': line_date,
+                    'line_date': self._get_line_date(spread_date),
                 }
                 commands.append((0, False, vals))
 
-                spread_date = spread_date + relativedelta(months=+1)
-
-                if month_day > 28:
-                    max_day_in_month = calendar.monthrange(
-                        spread_date.year, spread_date.month
-                    )[1]
-                    spread_date = spread_date.replace(
-                        day=min(max_day_in_month, month_day)
-                    )
+                spread_date = _increase_spread_date(month_day, spread_date)
 
         self.write({'spread_line_ids': commands})
 
