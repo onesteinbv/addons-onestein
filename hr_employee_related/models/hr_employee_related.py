@@ -29,7 +29,7 @@ class HrEmployeeRelated(models.Model):
          ('sister', 'Sister'),
          ],
         string='Employee relation',
-        default='depreciate')
+        default='partner')
     bsn_number = fields.Char('BSN')
     birth_date = fields.Date('Birth date')
     telephone = fields.Char('Telephone')
