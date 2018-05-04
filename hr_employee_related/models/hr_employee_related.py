@@ -27,6 +27,8 @@ class HrEmployeeRelated(models.Model):
          ('mother', 'Mother'),
          ('brother', 'Brother'),
          ('sister', 'Sister'),
+         ('caretaker', 'Caretaker'),
+         ('other', 'Other'),
          ],
         string='Employee relation',
         default='partner')
