@@ -138,6 +138,21 @@ class AccountInvoiceSpreadLine(models.Model):
                 debit_acc_id = invoice_line.spread_account_id.id
                 credit_acc_id = invoice_line.account_id.id
 
+            if invoice_line.invoice_id.move_id:
+                # we need to pretend to have the original invoice line
+                # without spread, otherwise we won't find the line with
+                # the original account
+                data = invoice_line._convert_to_write({
+                    key: value
+                    for key, value in invoice_line._cache.items()
+                    if key != 'spread_account_id'
+                })
+                # this might be empty, in this case, we do a noop write
+                move_line = invoice_line.new(data)._find_move_line()
+                move_line.write({
+                    'account_id': invoice_line.spread_account_id.id,
+                }, update_check=False)
+
             move_line_obj.create(
                 self._setup_move_line_data(
                     line, spread_date, period_id.id, debit_acc_id,
