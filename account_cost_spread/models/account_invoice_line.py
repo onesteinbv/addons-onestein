@@ -167,10 +167,8 @@ class AccountInvoiceLine(models.Model):
             return factor
 
     def _get_fy_duration_factor(self, entry, line, firstyear):
-
         duration_factor = 1.0
         fy_id = entry['fy_id']
-
         if firstyear:
             spread_date_start = datetime.strptime(
                 line.spread_date or line.invoice_id.date_invoice, '%Y-%m-%d')
@@ -582,7 +580,7 @@ class AccountInvoiceLine(models.Model):
         for this in self:
             move_line_data = this.move_line_get_item(this)
             for key in move_line_data.keys():
-                if not key in result._fields:
+                if key not in result._fields:
                     move_line_data.pop(key)
             result += this.invoice_id.move_id.line_id.filtered(
                 lambda x: move_line_data == {
@@ -596,12 +594,28 @@ class AccountInvoiceLine(models.Model):
         return result
 
     @api.multi
+    def unlink_reconciliations(self):
+        for this in self:
+            full_recs = this.mapped('reconcile_id')
+            part_recs = this.mapped('reconcile_partial_id')
+            if full_lines:
+                full_recs.unlink()
+            if part_recs:
+                part_recs.unlink()
+
+    @api.multi
     def action_undo_spread(self):
         """Undo spreading: Remove all created moves, restore original account
         on move line"""
         for this in self:
-            this.mapped('spread_line_ids').filtered('move_id').unlink_move()
-            this.mapped('spread_line_ids').unlink()
+            spread_lines = this.mapped('spread_line_ids')
+            moves = spread_lines.filtered('move_id')
+            # deleting reconciliation work is being put into
+            # unlink_reconciliation
+            if this.spread_account_id.reconcile:
+                this.unlink_reconciliations()
+            moves.unlink_move()
+            spread_lines.unlink()
             move_line = this._find_move_line()
             if not move_line and\
                     this.invoice_id.journal_id.group_invoice_lines:

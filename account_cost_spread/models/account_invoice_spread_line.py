@@ -116,14 +116,11 @@ class AccountInvoiceSpreadLine(models.Model):
         period_obj = self.env['account.period']
         move_obj = self.env['account.move']
         move_line_obj = self.env['account.move.line']
-#         currency_obj = self.env['res.currency']
+        #  currency_obj = self.env['res.currency']
         created_move_ids = []
-
         for line in self:
-
             invoice_line = line.invoice_line_id
             spread_date = line.line_date
-
             period_ids = period_obj.with_context(
                 account_period_prefer_normal=True).find(
                 spread_date
@@ -156,9 +153,14 @@ class AccountInvoiceSpreadLine(models.Model):
 
             # Add move_id to spread line
             line.write({'move_id': move_id.id})
-
+            # from spread line to invoice line to spread account to see if it
+            # allows reconciliation and if the two accounts (spread and
+            # invoice) are the same
+            il_id = self.invoice_line_id
+            if (il_id.spread_account_id.reconcile and
+                    il_id.spread_account_id == il_id.account_id):
+                move_id.line_id.reconcile()
             created_move_ids.append(move_id.id)
-
         return created_move_ids
 
     @api.multi
