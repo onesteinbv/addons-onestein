@@ -55,6 +55,16 @@ class AccountInvoiceSpreadLine(models.Model):
         string='Initial Balance Entry',
         help="Set this flag for entries of previous fiscal years "
              "for which OpenERP has not generated accounting entries.")
+    can_create_move = fields.Boolean(
+        compute=lambda self: [
+            this.update({
+                'can_create_move': bool(filter(None, this.mapped(
+                    'invoice_line_id.invoice_id.internal_number'
+                )))
+            })
+            for this in self
+        ]
+    )
 
     @api.depends('move_id')
     @api.one
@@ -153,13 +163,13 @@ class AccountInvoiceSpreadLine(models.Model):
                     'account_id': invoice_line.spread_account_id.id,
                 }, update_check=False)
 
-            move_line_obj.create(
+            debit_move_line = move_line_obj.create(
                 self._setup_move_line_data(
                     line, spread_date, period_id.id, debit_acc_id,
                     'debit', move_id.id
                 )
             )
-            move_line_obj.create(
+            credit_move_line = move_line_obj.create(
                 self._setup_move_line_data(
                     line, spread_date, period_id.id, credit_acc_id,
                     'credit', move_id.id
@@ -168,13 +178,15 @@ class AccountInvoiceSpreadLine(models.Model):
 
             # Add move_id to spread line
             line.write({'move_id': move_id.id})
-            # from spread line to invoice line to spread account to see if it
-            # allows reconciliation and if the two accounts (spread and
-            # invoice) are the same
-            il_id = self.invoice_line_id
-            if (il_id.spread_account_id.reconcile and
-                    il_id.spread_account_id == il_id.account_id):
-                move_id.line_id.reconcile()
+
+            # reconcile if possible
+            if invoice_line.spread_account_id.reconcile:
+                (
+                    debit_move_line + credit_move_line +
+                    invoice_line._find_move_line()
+                ).filtered(
+                    lambda x: x.account_id == invoice_line.spread_account_id
+                ).reconcile_partial()
             created_move_ids.append(move_id.id)
         return created_move_ids
 

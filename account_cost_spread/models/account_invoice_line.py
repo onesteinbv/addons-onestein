@@ -52,6 +52,15 @@ class AccountInvoiceLine(models.Model):
         comodel_name='account.invoice.spread.line',
         inverse_name='invoice_line_id',
         string='Spread Lines')
+    spread_date_required = fields.Boolean(
+        compute=lambda self: [
+            this.update({
+                'spread_date_required':
+                bool(this.mapped('invoice_id.date_invoice'))
+            })
+            for this in self
+        ]
+    )
 
     @api.depends('spread_line_ids.amount', 'price_subtotal')
     def _compute_remaining_amount(self):
@@ -609,13 +618,10 @@ class AccountInvoiceLine(models.Model):
 
     @api.multi
     def unlink_reconciliations(self):
-        for this in self:
-            full_recs = this.mapped('reconcile_id')
-            part_recs = this.mapped('reconcile_partial_id')
-            if full_lines:
-                full_recs.unlink()
-            if part_recs:
-                part_recs.unlink()
+        self.mapped('spread_line_ids.move_id.line_id.reconcile_id').unlink()
+        self.mapped(
+            'spread_line_ids.move_id.line_id.reconcile_partial_id'
+        ).unlink()
 
     @api.multi
     def action_undo_spread(self):
