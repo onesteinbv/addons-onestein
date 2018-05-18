@@ -20,6 +20,7 @@ class TestAccountCostSpread(TransactionCase):
 
         # records for testing
         self.partner = self.env.ref('base.res_partner_2')
+        self.company = self.partner.company_id
         self.currency_usd = self.env.ref("base.USD")
         self.account_fx_income = self.env.ref("account.income_fx_income")
         self.account_fx_expense = self.ref("account.income_fx_expense")
@@ -32,8 +33,23 @@ class TestAccountCostSpread(TransactionCase):
         })
 
     def test_all(self):
-        # create invoice with test product and account
+        """ Test cost spreading """
         today = date.today()
+
+        # Some of our test spreads go beyond current year.
+        # So we need to create a new fiscalyear, this year + 1.
+        self.next_fiscalyear = self.env['account.fiscalyear'].create({
+            'name': 'thisyear',
+            'code': 'THS',
+            'company_id': self.company.id,
+            'date_start': fields.Date.to_string(
+                today.replace(year=today.year+1, month=1, day=1)),
+            'date_stop': fields.Date.to_string(
+                today.replace(year=today.year+1, month=12, day=31))
+        })
+        self.next_fiscalyear.create_period()
+
+        # create invoice with test product and account
         invoice1 = self.account_invoice_obj.create({
             'account_id': self.account_fx_income.id,
             'company_id': self.partner.company_id.id,
@@ -42,7 +58,7 @@ class TestAccountCostSpread(TransactionCase):
                 'account_id': self.account_fx_income.id,
                 'name': 'line1',
                 'product_id': self.product.id,
-                'quantity': 2000,
+                'quantity': 400,
                 'uos_id': self.product.uos_id.id,
                 'price_unit': 33
             })],
@@ -50,6 +66,8 @@ class TestAccountCostSpread(TransactionCase):
             'partner_id':  self.partner.id,
             'reference_type': 'none'
         })
+        self.assertFalse(invoice1.date_invoice)
+        self.assertTrue(invoice1.invoice_line.spread_date_required)
 
         # confirm invoice
         invoice1.action_date_assign()
@@ -57,38 +75,38 @@ class TestAccountCostSpread(TransactionCase):
         invoice1.action_number()
         invoice1.invoice_validate()
         self.assertEqual(invoice1.date_invoice, fields.Date.today())
+        self.assertFalse(invoice1.invoice_line.spread_date_required)
 
-        # create spread for this now confirmed invoice (if not confirmed it
-        # would not have a date,
-        # Make a spread on the line for the next 4 months
-        # make invoice if the start date is intramonth the first spread  will
-        # be proportionally less, the others will be equal, if there is some
-        # left it will be added to an extra month. So in order to have exactly
-        # 4 months we must impose start date to the beginning of the month.
+        # Make a spread on the line for the first 4 months of the year.
         invoice1.invoice_line[0].write({
             'spread_account_id': self.account_fx_income.id,
             'period_number': 4,
             'period_type': 'month',
-            'spread_date': fields.Date.to_string(today.replace(day=1))
+            'spread_date': fields.Date.to_string(today.replace(day=1, month=1))
         })
-
-        # if the test is launched after september and the spread goes beyond 
-        # current year we need to create new fiscalyear this year + 1
-        self.next_fiscalyear = self.env['account.fiscalyear'].create({
-            'name': 'thisyear',
-            'code': 'THS',
-            'company_id': 1,
-            'date_start': fields.Date.to_string(
-                today.replace(year=today.year+1, month=1, day=1)),
-            'date_stop': fields.Date.to_string(
-                today.replace(year=today.year+1, month=12, day=31))
-        })
-
-        # make period IDS for this fy
-        self.next_fiscalyear.create_period()
-
         invoice1.invoice_line[0].action_recalculate_spread()
-        self.assertEqual(len(invoice1.invoice_line.spread_line_ids), 4)
+
+        # This is an exact spread, so from first of month to end of a month.
+        # So it should have 4 equal periods of 3300 euros each.
+        spread_lines = invoice1.invoice_line.spread_line_ids
+        amounts = spread_lines.mapped('amount')
+        self.assertEqual(len(spread_lines), 4)
+        self.assertEqual(min(amounts), 3300.0)
+        self.assertEqual(max(amounts), 3300.0)
+
+        # Make a spread on the line for the 16 months from Jan 1st.
+        invoice1.invoice_line[0].write({
+            'spread_account_id': self.account_fx_income.id,
+            'period_number': 16,
+            'period_type': 'month',
+            'spread_date': fields.Date.to_string(today.replace(day=1, month=1))
+        })
+        invoice1.invoice_line[0].action_recalculate_spread()
+        spread_lines = invoice1.invoice_line.spread_line_ids
+        amounts = spread_lines.mapped('amount')
+        self.assertEqual(len(spread_lines), 16)
+        self.assertEqual(sum(amounts), 3300.0 * 4.0)
+
         # create move for every spread
         moves = []
         for spread_line in invoice1.invoice_line.spread_line_ids:
@@ -116,14 +134,14 @@ class TestAccountCostSpread(TransactionCase):
             'account_id': self.account_fx_income.id,
             'company_id': self.partner.company_id.id,
             'currency_id': self.currency_usd.id,
-            'invoice_line': [(
-                0, 0, {'account_id': self.account_fx_income.id,
-                       'name': 'line1',
-                       'product_id': self.product.id,
-                       'quantity': 2000,
-                       'uos_id': self.product.uos_id.id,
-                       'price_unit': 33}
-            )],
+            'invoice_line': [(0, 0, {
+                'account_id': self.account_fx_income.id,
+                'name': 'line1',
+                'product_id': self.product.id,
+                'quantity': 2000,
+                'uos_id': self.product.uos_id.id,
+                'price_unit': 33
+            })],
             'journal_id': self.bank_journal_usd.id,
             'partner_id':  self.partner.id,
             'reference_type': 'none'

@@ -53,14 +53,12 @@ class AccountInvoiceLine(models.Model):
         inverse_name='invoice_line_id',
         string='Spread Lines')
     spread_date_required = fields.Boolean(
-        compute=lambda self: [
-            this.update({
-                'spread_date_required':
-                bool(this.mapped('invoice_id.date_invoice'))
-            })
-            for this in self
-        ]
-    )
+        compute='_compute_spread_date_required')
+
+    @api.multi
+    def _compute_spread_date_required(self):
+        for this in self:
+            this.spread_date_required = not bool(this.invoice_id.date_invoice)
 
     @api.depends('spread_line_ids.amount', 'price_subtotal')
     def _compute_remaining_amount(self):

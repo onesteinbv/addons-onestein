@@ -13,7 +13,10 @@ class account_invoice_line(models.Model):
         for line in self:
             line.display_create_all_moves = False
             for spread in line.spread_line_ids:
-                if not spread.move_id:
+                if not spread.move_id \
+                        and not spread.init_entry \
+                        and not spread.move_check \
+                        and spread.can_create_move:
                     line.display_create_all_moves = True
                     break
 
@@ -25,5 +28,8 @@ class account_invoice_line(models.Model):
     def create_all_moves(self):
         for line in self:
             for spread in line.spread_line_ids:
-                if not spread.move_id:
+                if not spread.move_id \
+                        and not spread.init_entry \
+                        and not spread.move_check \
+                        and spread.can_create_move:
                     spread.create_move()
