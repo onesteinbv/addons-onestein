@@ -68,5 +68,31 @@
             </field>
         </record>
 
+    <record id="invoice_line_spread_tree" model="ir.ui.view">
+        <field name="name">account.invoice.line.tree</field>
+        <field name="model">account.invoice.spread.line</field>
+        <field name="arch" type="xml">
+            <tree string="Account Invoice Spread Line" editable="top">
+                <field name="name"/>
+                <field name="invoice_line_id"/>
+                <field name="amount"/>
+                <field name="type"/>
+                <field name="line_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_invoice_line_spread" model="ir.actions.act_window">
+        <field name="name">Invoice line Tree</field>
+        <field name="res_model">account.invoice.spread.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="invoice_line_spread_tree"></field>
+    </record>
+
+    <menuitem id="menu_invoice_line_spread" 
+        parent="account.menu_finance_receivables"
+        sequence="100" 
+        action="action_invoice_line_spread" 
+        name="Invoice line Spreads"/>
     </data>
 </openerp>
