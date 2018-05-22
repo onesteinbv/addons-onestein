@@ -32,12 +32,9 @@ class TestAccountCostSpread(TransactionCase):
             'uos_id': self.env.ref('product.product_uom_categ_unit').id,
         })
 
-    def test_all(self):
-        """ Test cost spreading """
-        today = date.today()
-
         # Some of our test spreads go beyond current year.
         # So we need to create a new fiscalyear, this year + 1.
+        today = date.today()
         self.next_fiscalyear = self.env['account.fiscalyear'].create({
             'name': 'thisyear',
             'code': 'THS',
@@ -50,7 +47,7 @@ class TestAccountCostSpread(TransactionCase):
         self.next_fiscalyear.create_period()
 
         # create invoice with test product and account
-        invoice1 = self.account_invoice_obj.create({
+        self.invoice1 = self.account_invoice_obj.create({
             'account_id': self.account_fx_income.id,
             'company_id': self.partner.company_id.id,
             'currency_id': self.currency_usd.id,
@@ -66,57 +63,48 @@ class TestAccountCostSpread(TransactionCase):
             'partner_id':  self.partner.id,
             'reference_type': 'none'
         })
-        self.assertFalse(invoice1.date_invoice)
-        self.assertTrue(invoice1.invoice_line.spread_date_required)
+
+    def test_4_months(self):
+        """ Test cost spreading """
+        self.assertFalse(self.invoice1.date_invoice)
+        self.assertTrue(self.invoice1.invoice_line.spread_date_required)
 
         # confirm invoice
-        invoice1.action_date_assign()
-        invoice1.action_move_create()
-        invoice1.action_number()
-        invoice1.invoice_validate()
-        self.assertEqual(invoice1.date_invoice, fields.Date.today())
-        self.assertFalse(invoice1.invoice_line.spread_date_required)
+        self.invoice1.action_date_assign()
+        self.invoice1.action_move_create()
+        self.invoice1.action_number()
+        self.invoice1.invoice_validate()
+        self.assertEqual(self.invoice1.date_invoice, fields.Date.today())
+        self.assertFalse(self.invoice1.invoice_line.spread_date_required)
 
         # Make a spread on the line for the first 4 months of the year.
-        invoice1.invoice_line[0].write({
+        today = date.today()
+        self.invoice1.invoice_line[0].write({
             'spread_account_id': self.account_fx_income.id,
             'period_number': 4,
             'period_type': 'month',
             'spread_date': fields.Date.to_string(today.replace(day=1, month=1))
         })
-        invoice1.invoice_line[0].action_recalculate_spread()
+        self.invoice1.invoice_line[0].action_recalculate_spread()
 
         # This is an exact spread, so from first of month to end of a month.
         # So it should have 4 equal periods of 3300 euros each.
-        spread_lines = invoice1.invoice_line.spread_line_ids
+        spread_lines = self.invoice1.invoice_line.spread_line_ids
         amounts = spread_lines.mapped('amount')
         self.assertEqual(len(spread_lines), 4)
         self.assertEqual(min(amounts), 3300.0)
         self.assertEqual(max(amounts), 3300.0)
 
-        # Make a spread on the line for the 16 months from Jan 1st.
-        invoice1.invoice_line[0].write({
-            'spread_account_id': self.account_fx_income.id,
-            'period_number': 16,
-            'period_type': 'month',
-            'spread_date': fields.Date.to_string(today.replace(day=1, month=1))
-        })
-        invoice1.invoice_line[0].action_recalculate_spread()
-        spread_lines = invoice1.invoice_line.spread_line_ids
-        amounts = spread_lines.mapped('amount')
-        self.assertEqual(len(spread_lines), 16)
-        self.assertEqual(sum(amounts), 3300.0 * 4.0)
-
         # create move for every spread
         moves = []
-        for spread_line in invoice1.invoice_line.spread_line_ids:
+        for spread_line in self.invoice1.invoice_line.spread_line_ids:
             moves += spread_line.create_move()
         # account cannot be reconciled
         for move in self.env['account.move'].browse(moves):
             for line in move.line_id:
                 self.assertEqual(bool(line.reconcile_id), False)
         # check if you can delete
-        for spread_line in invoice1.invoice_line.spread_line_ids:
+        for spread_line in self.invoice1.invoice_line.spread_line_ids:
             previous_move = spread_line.move_id.ids
             spread_line.unlink_move()
             # exists?
@@ -127,6 +115,28 @@ class TestAccountCostSpread(TransactionCase):
                 0
             )
 
+    def test_16_months(self):
+        # confirm invoice
+        self.invoice1.action_date_assign()
+        self.invoice1.action_move_create()
+        self.invoice1.action_number()
+        self.invoice1.invoice_validate()
+
+        # Make a spread on the line for the 16 months from Jan 1st.
+        today = date.today()
+        self.invoice1.invoice_line[0].write({
+            'spread_account_id': self.account_fx_income.id,
+            'period_number': 16,
+            'period_type': 'month',
+            'spread_date': fields.Date.to_string(today.replace(day=1, month=1))
+        })
+        self.invoice1.invoice_line[0].action_recalculate_spread()
+        spread_lines = self.invoice1.invoice_line.spread_line_ids
+        amounts = spread_lines.mapped('amount')
+        self.assertEqual(len(spread_lines), 16)
+        self.assertEqual(sum(amounts), 3300.0 * 4.0)
+
+    def test_reconcile(self):
         # make account_fx_income_id reconcilable
         self.account_fx_income.write({'reconcile': True})
         # make an invoice with the new reconcilable account
@@ -146,7 +156,6 @@ class TestAccountCostSpread(TransactionCase):
             'partner_id':  self.partner.id,
             'reference_type': 'none'
         })
-
         # confirm the invoice
         invoice2.action_date_assign()
         invoice2.action_move_create()
@@ -156,6 +165,7 @@ class TestAccountCostSpread(TransactionCase):
 
         # Make a spread on the line for the next 4 months
         # TODO a period must exist, verify that is always the case
+        today = date.today()
         invoice2.invoice_line[0].write({
             'spread_account_id': self.account_fx_income.id,
             'period_number': 4,
@@ -172,7 +182,7 @@ class TestAccountCostSpread(TransactionCase):
         for move in self.env['account.move'].browse(moves):
             for line in move.line_id:
                 self.assertEqual(bool(line.reconcile_id), True)
-        for spread_line in invoice1.invoice_line.spread_line_ids:
+        for spread_line in self.invoice1.invoice_line.spread_line_ids:
             previous_move = spread_line.move_id.ids
             spread_line.unlink_move()
             self.assertEqual(spread_line.move_id.ids, [])
