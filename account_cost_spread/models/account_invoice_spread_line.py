@@ -65,6 +65,7 @@ class AccountInvoiceSpreadLine(models.Model):
             for this in self
         ]
     )
+    sequence = fields.Integer(required=True, default=1)
 
     @api.depends('move_id')
     @api.one
