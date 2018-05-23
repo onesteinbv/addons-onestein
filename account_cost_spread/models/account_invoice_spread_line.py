@@ -149,7 +149,8 @@ class AccountInvoiceSpreadLine(models.Model):
                 debit_acc_id = invoice_line.spread_account_id.id
                 credit_acc_id = invoice_line.account_id.id
 
-            if invoice_line.invoice_id.move_id:
+            if invoice_line.invoice_id.move_id and\
+                    invoice_line.spread_account_id:
                 # we need to pretend to have the original invoice line
                 # without spread, otherwise we won't find the line with
                 # the original account
