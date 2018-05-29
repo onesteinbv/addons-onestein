@@ -230,8 +230,11 @@ class AccountInvoiceSpreadLine(models.Model):
             fields.Date.today()
         )
         period = periods and periods[0] or False
-        lines = self.search([('line_date', '<=', period.date_stop),
-                             ('move_id', '=', False)])
+        lines = self.search([
+            ('line_date', '<=', period.date_stop),
+            ('invoice_line_id.spread_account_id', '!=', False),
+            ('move_id', '=', False),
+        ])
 
         result = []
 
