@@ -90,7 +90,7 @@
     </record>
 
     <menuitem id="menu_invoice_line_spread" 
-        parent="account.menu_finance_receivables"
+        parent="account.menu_finance_entries"
         sequence="100" 
         action="action_invoice_line_spread" 
         name="Invoice line Spreads"/>
