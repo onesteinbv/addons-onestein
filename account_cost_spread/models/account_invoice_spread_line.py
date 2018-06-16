@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp import models, fields, api, _
+from openerp.exceptions import ValidationError
 import openerp.addons.decimal_precision as dp
 import logging
 _logger = logging.getLogger(__name__)
@@ -55,17 +56,60 @@ class AccountInvoiceSpreadLine(models.Model):
         string='Initial Balance Entry',
         help="Set this flag for entries of previous fiscal years "
              "for which OpenERP has not generated accounting entries.")
-    can_create_move = fields.Boolean(
-        compute=lambda self: [
-            this.update({
-                'can_create_move': bool(filter(None, this.mapped(
-                    'invoice_line_id.invoice_id.internal_number'
-                )))
-            })
-            for this in self
-        ]
-    )
+    can_create_move = fields.Boolean(compute='_compute_can_create_move')
     sequence = fields.Integer(required=True, default=1)
+
+    @api.multi
+    def _check_invoice_number(self):
+        """ Check invoice number """
+        if not bool(filter(None, self.mapped(
+            'invoice_line_id.invoice_id.internal_number'
+        ))):
+            raise ValidationError(
+                _('Linked invoice has no internal number.'))
+
+    @api.multi
+    def _check_invoice_state(self):
+        """ Check invoice state """
+        self.ensure_one()
+        state = self.mapped('invoice_line_id.invoice_id.state')[0]
+        if state not in ('open', 'paid'):
+            raise ValidationError(_('Cannot create moves when invoice state'
+                                    ' is \'%s\'.') % (state,))
+
+    @api.multi
+    def _check_existing_move(self):
+        """ Check existing move """
+        if self.move_id:
+            raise ValidationError(_('Move was already created.'))
+
+    @api.multi
+    def _check_init_entry(self):
+        """ Check init_entry """
+        if self.init_entry:
+            raise ValidationError(_('Cannot create move for initial entry.'))
+
+    @api.multi
+    def check_create_move(self):
+        """ Check if a move can be created for this spread line """
+        for this in self:
+            this._check_existing_move()
+            this._check_init_entry()
+            this._check_invoice_number()
+            this._check_invoice_state()
+
+    @api.depends(
+        'move_id', 'init_entry', 'invoice_line_id.invoice_id.state',
+        'invoice_line_id.invoice_id.number'
+    )
+    def _compute_can_create_move(self):
+        """ Computes 'can_create_move' """
+        for this in self:
+            this.can_create_move = True
+            try:
+                self.check_create_move()
+            except ValidationError:
+                this.can_create_move = False
 
     @api.depends('move_id')
     @api.one
