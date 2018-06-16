@@ -10,9 +10,21 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def action_move_create(self):
-        """Override, button Validate on invoices."""
+        """
+        When validating an invoice, already create spread lines for each
+        invoice line.
+        TODO: Isn't this a bit much? Not all invoice lines needs spreading.
+        """
         res = super(AccountInvoice, self).action_move_create()
-        for rec in self:
-            for line in rec.invoice_line:
+        for this in self:
+            for line in this.invoice_line:
                 line.compute_spread_board()
         return res
+
+    @api.multi
+    def action_cancel(self):
+        """ Undo spread when cancelling the invoice """
+        for this in self:
+            for line in this.invoice_line:
+                line.action_undo_spread()
+        return super(AccountInvoice, self).action_cancel()

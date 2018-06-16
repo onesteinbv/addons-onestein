@@ -39,7 +39,8 @@ class AccountInvoiceSpreadLine(models.Model):
         required=True)
     move_id = fields.Many2one(
         comodel_name='account.move',
-        string='Spread Entry', readonly=True)
+        string='Spread Entry',
+        readonly=True)
     move_check = fields.Boolean(
         compute='_move_check',
         string='Posted',
@@ -251,6 +252,12 @@ class AccountInvoiceSpreadLine(models.Model):
                 'nodestroy': True,
                 'domain': [('id', '=', line.move_id.id)],
                 }
+
+    @api.multi
+    def unlink(self):
+        """ Unlink moves when unlinking spread lines """
+        self.unlink_move()
+        super(AccountInvoiceSpreadLine, self).unlink()
 
     @api.multi
     def unlink_move(self):
