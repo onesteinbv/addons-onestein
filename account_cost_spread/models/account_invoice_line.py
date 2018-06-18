@@ -77,17 +77,8 @@ class AccountInvoiceLine(models.Model):
                 self.env['decimal.precision'].precision_get('Account'),
             ):
                 raise ValidationError(_(
-                    "You didn't distribute the total amount"
+                    'You didn\'t distribute the total amount'
                 ))
-
-    @api.multi
-    def write(self, vals):
-        if 'account_id' in vals and self.mapped('spread_line_ids.move_id'):
-            raise ValidationError(_(
-                "Before changing the account on this invoice line, you have to "
-                "cancel the spread."
-            ))
-        super(AccountInvoiceLine, self).write(vals)
 
     @api.multi
     def spread_details(self):
