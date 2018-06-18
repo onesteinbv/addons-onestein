@@ -34,15 +34,16 @@ class TestAccountCostSpread(TransactionCase):
 
         # Some of our test spreads go beyond current year.
         # So we need to create a new fiscalyear, this year + 1.
-        today = date.today()
+        self.today_string = fields.Date.context_today(self.product)
+        self.today = fields.Date.from_string(self.today_string)
         self.next_fiscalyear = self.env['account.fiscalyear'].create({
             'name': 'thisyear',
             'code': 'THS',
             'company_id': self.company.id,
             'date_start': fields.Date.to_string(
-                today.replace(year=today.year+1, month=1, day=1)),
+                self.today.replace(year=self.today.year+1, month=1, day=1)),
             'date_stop': fields.Date.to_string(
-                today.replace(year=today.year+1, month=12, day=31))
+                self.today.replace(year=self.today.year+1, month=12, day=31))
         })
         self.next_fiscalyear.create_period()
 
@@ -74,16 +75,17 @@ class TestAccountCostSpread(TransactionCase):
         self.invoice1.action_move_create()
         self.invoice1.action_number()
         self.invoice1.invoice_validate()
-        self.assertEqual(self.invoice1.date_invoice, fields.Date.today())
+        self.assertEqual(self.invoice1.date_invoice, self.today_string)
         self.assertFalse(self.invoice1.invoice_line.spread_date_required)
 
         # Make a spread on the line for the first 4 months of the year.
-        today = date.today()
         self.invoice1.invoice_line[0].write({
             'spread_account_id': self.account_fx_income.id,
             'period_number': 4,
             'period_type': 'month',
-            'spread_date': fields.Date.to_string(today.replace(day=1, month=1))
+            'spread_date': fields.Date.to_string(
+                 self.today.replace(day=1, month=1)
+            )
         })
         self.invoice1.invoice_line[0].action_recalculate_spread()
 
@@ -123,12 +125,12 @@ class TestAccountCostSpread(TransactionCase):
         self.invoice1.invoice_validate()
 
         # Make a spread on the line for the 16 months from Jan 1st.
-        today = date.today()
         self.invoice1.invoice_line[0].write({
             'spread_account_id': self.account_fx_income.id,
             'period_number': 16,
             'period_type': 'month',
-            'spread_date': fields.Date.to_string(today.replace(day=1, month=1))
+            'spread_date': fields.Date.to_string(
+                self.today.replace(day=1, month=1))
         })
         self.invoice1.invoice_line[0].action_recalculate_spread()
         spread_lines = self.invoice1.invoice_line.spread_line_ids
@@ -161,16 +163,16 @@ class TestAccountCostSpread(TransactionCase):
         invoice2.action_move_create()
         invoice2.action_number()
         invoice2.invoice_validate()
-        self.assertEqual(invoice2.date_invoice, fields.Date.today())
+        self.assertEqual(invoice2.date_invoice, self.today_string)
 
         # Make a spread on the line for the next 4 months
         # TODO a period must exist, verify that is always the case
-        today = date.today()
         invoice2.invoice_line[0].write({
             'spread_account_id': self.account_fx_income.id,
             'period_number': 4,
             'period_type': 'month',
-            'spread_date': fields.Date.to_string(today.replace(day=1))
+            'spread_date': fields.Date.to_string(
+                self.today.replace(day=1))
         })
         invoice2.invoice_line[0].action_recalculate_spread()
         self.assertEqual(len(invoice2.invoice_line.spread_line_ids), 4)
