@@ -87,7 +87,7 @@ class AccountInvoiceLine(models.Model):
                 "Before changing the account on this invoice line, you have to "
                 "cancel the spread."
             ))
-        super(AccountInvoiceLine, self).write(vals)
+        return super(AccountInvoiceLine, self).write(vals)
 
     @api.multi
     def spread_details(self):
