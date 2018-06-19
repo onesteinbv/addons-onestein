@@ -3,10 +3,10 @@
 
 from openerp import fields
 from openerp.tests.common import TransactionCase
-from datetime import date
 
 
 class TestAccountCostSpread(TransactionCase):
+    # pylint: disable=too-many-instance-attributes
 
     def setUp(self):
         super(TestAccountCostSpread, self).setUp()
@@ -84,7 +84,7 @@ class TestAccountCostSpread(TransactionCase):
             'period_number': 4,
             'period_type': 'month',
             'spread_date': fields.Date.to_string(
-                 self.today.replace(day=1, month=1)
+                self.today.replace(day=1, month=1)
             )
         })
         self.invoice1.invoice_line[0].action_recalculate_spread()

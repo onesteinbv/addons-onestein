@@ -35,11 +35,10 @@
                                 <field name="amount" readonly="1"/>
                                 <field name="line_date" readonly="1"/>
                                 <field name="move_id" readonly="1"/>
-                                <field name="init_entry" invisible="1"/>
                                 <field name="move_check" invisible="1"/>
                                 <field name="can_create_move" invisible="1"/>
                                 <button name="create_move" icon="gtk-execute" string="Create Move" type="object"
-                                        attrs="{'invisible':['|','|','|',('init_entry','=',True),('move_check','!=',False),('can_create_move','=',False)]}"/>
+                                        attrs="{'invisible':[('can_create_move','=',False)]}"/>
                                 <button name="open_move" icon="terp-gtk-jump-to-ltr" string="View Move" type="object"
                                         attrs="{'invisible':[('move_check','!=',True)]}"/>
                                 <button name="unlink_move" icon="gtk-cancel" string="Delete Move" type="object" confirm="Are you sure ?" groups="account.group_account_manager"
@@ -76,7 +75,6 @@
                 <field name="name"/>
                 <field name="invoice_line_id"/>
                 <field name="amount"/>
-                <field name="type"/>
                 <field name="line_date"/>
             </tree>
         </field>

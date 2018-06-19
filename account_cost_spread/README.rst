@@ -8,8 +8,7 @@ Cost / Income Spread
 
 Allows for spreading cost or income over a customizable period.
 The computation code in this module is based on
-the Assets Management module by OpenERP & Noviat:
-https://www.odoo.com/apps/modules/8.0/account_asset_management/
+the Assets Management module by Odoo SA.
 
 
 Credits
@@ -21,3 +20,6 @@ Contributors
 * Kevin Graveman <k.graveman@onestein.nl>
 * Richard Dijkstra <r.dijkstra@onestein.nl>
 * Andrea Stirpe <a.stirpe@onestein.nl>
+* Holger Brunn <hbrunn@therp.nl>
+* Giovanni Capalbo <gcapalbo@therp.nl>
+* Tom Blauwendraat <info@sunflowerweb.nl>

@@ -3,18 +3,18 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import calendar
-from openerp import models, fields, api, _
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
+
 import openerp.addons.decimal_precision as dp
+from openerp import models, fields, api, _
 from openerp.exceptions import Warning as UserError, ValidationError
 from openerp.tools import float_is_zero
 
-
-class DummyFy(object):
-    def __init__(self, *args, **argv):
-        for key, arg in argv.items():
-            setattr(self, key, arg)
+PERIODS = [
+    ('month', 'Month'),
+    ('quarter', 'Quarter'),
+    ('year', 'Year'),
+]
 
 
 class AccountInvoiceLine(models.Model):
@@ -29,11 +29,8 @@ class AccountInvoiceLine(models.Model):
         default=12,
         help="Number of Periods",
         required=True)
-    period_type = fields.Selection([
-        ('month', 'Month'),
-        ('quarter', 'Quarter'),
-        ('year', 'Year'),
-        ], string='Period Type',
+    period_type = fields.Selection(
+        PERIODS,
         default='month',
         help="Period length for the entries",
         required=True)
@@ -73,8 +70,8 @@ class AccountInvoiceLine(models.Model):
     def _check_spread_line_ids(self):
         for this in self:
             if not float_is_zero(
-                this.remaining_amount,
-                self.env['decimal.precision'].precision_get('Account'),
+                    this.remaining_amount,
+                    self.env['decimal.precision'].precision_get('Account'),
             ):
                 raise ValidationError(_(
                     'You didn\'t distribute the total amount'

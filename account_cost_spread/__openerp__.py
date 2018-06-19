@@ -5,8 +5,8 @@
 {
     'name': 'Cost / Income Spread',
     'summary': 'Cost and Income spreading',
-    'version': '8.0.1.0.4',
-    'author': 'Onestein',
+    'version': '8.0.1.0.5',
+    'author': 'Onestein BV',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
     'images': ['static/description/main_screenshot.png'],

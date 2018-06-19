@@ -11,7 +11,6 @@ class AccountInvoiceLine(models.Model):
 
     @api.depends(
         'spread_line_ids.move_id',
-        'spread_line_ids.init_entry',
         'invoice_id.state',
         'invoice_id.number',
         'spread_line_ids'

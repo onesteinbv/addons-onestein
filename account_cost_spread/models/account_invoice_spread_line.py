@@ -2,10 +2,12 @@
 # Copyright 2014 Onestein (<http://www.onestein.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import logging
 from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
 import openerp.addons.decimal_precision as dp
-import logging
+
+
 _logger = logging.getLogger(__name__)
 
 
@@ -13,7 +15,7 @@ class AccountInvoiceSpreadLine(models.Model):
     _name = 'account.invoice.spread.line'
     _description = 'Account Invoice Spread Lines'
 
-    _order = 'type, line_date'
+    _order = 'line_date'
 
     name = fields.Char('Spread Name', size=64, readonly=True)
     invoice_line_id = fields.Many2one(
@@ -25,15 +27,14 @@ class AccountInvoiceSpreadLine(models.Model):
         string='Previous Spread Line',
         readonly=True)
     amount = fields.Float(
-        string='Amount',
-        digits_compute=dp.get_precision('Account'),
+        digits=dp.get_precision('Account'),
         required=True)
     remaining_value = fields.Float(
         string='Next Period Spread',
-        digits_compute=dp.get_precision('Account'))
+        digits=dp.get_precision('Account'))
     spreaded_value = fields.Float(
         string='Amount Already Spread',
-        digits_compute=dp.get_precision('Account'))
+        digits=dp.get_precision('Account'))
     line_date = fields.Date(
         string='Date',
         required=True)
@@ -42,21 +43,9 @@ class AccountInvoiceSpreadLine(models.Model):
         string='Spread Entry',
         readonly=True)
     move_check = fields.Boolean(
-        compute='_move_check',
+        compute='_compute_move_check',
         string='Posted',
         store=True)
-    type = fields.Selection(
-        [('create', 'Value'),
-         ('depreciate', 'Depreciation'),
-         ('remove', 'Asset Removal'),
-         ],
-        string='Type',
-        readonly=True,
-        default='depreciate')
-    init_entry = fields.Boolean(
-        string='Initial Balance Entry',
-        help="Set this flag for entries of previous fiscal years "
-             "for which OpenERP has not generated accounting entries.")
     can_create_move = fields.Boolean(compute='_compute_can_create_move')
     sequence = fields.Integer(required=True, default=1)
 
@@ -85,22 +74,15 @@ class AccountInvoiceSpreadLine(models.Model):
             raise ValidationError(_('Move was already created.'))
 
     @api.multi
-    def _check_init_entry(self):
-        """ Check init_entry """
-        if self.init_entry:
-            raise ValidationError(_('Cannot create move for initial entry.'))
-
-    @api.multi
     def check_create_move(self):
         """ Check if a move can be created for this spread line """
         for this in self:
             this._check_existing_move()
-            this._check_init_entry()
             this._check_invoice_number()
             this._check_invoice_state()
 
     @api.depends(
-        'move_id', 'init_entry', 'invoice_line_id.invoice_id.state',
+        'move_id', 'invoice_line_id.invoice_id.state',
         'invoice_line_id.invoice_id.number'
     )
     def _compute_can_create_move(self):
@@ -113,12 +95,10 @@ class AccountInvoiceSpreadLine(models.Model):
                 this.can_create_move = False
 
     @api.depends('move_id')
-    @api.one
-    def _move_check(self):
-        if self.move_id:
-            self.move_check = True
-        else:
-            self.move_check = False
+    @api.multi
+    def _compute_move_check(self):
+        for this in self:
+            this.move_check = bool(this.move_id)
 
     @api.model
     def _setup_move_data(self, spread_line, spread_date,
@@ -131,12 +111,14 @@ class AccountInvoiceSpreadLine(models.Model):
             'date': spread_date,
             'ref': spread_line.name,
             'period_id': period_id,
-            'journal_id': spread_line.invoice_line_id.spread_journal_id.id or
-            invoice.journal_id.id,
+            'journal_id':
+                spread_line.invoice_line_id.spread_journal_id.id or
+                invoice.journal_id.id,
         }
         return move_data
 
     @api.model
+    # pylint: disable=redefined-builtin
     def _setup_move_line_data(self, spread_line, spread_date,
                               period_id, account_id, type, move_id):
         invoice_line = spread_line.invoice_line_id
@@ -172,20 +154,17 @@ class AccountInvoiceSpreadLine(models.Model):
         period_obj = self.env['account.period']
         move_obj = self.env['account.move']
         move_line_obj = self.env['account.move.line']
-        #  currency_obj = self.env['res.currency']
         created_move_ids = []
         for line in self:
             invoice_line = line.invoice_line_id
             spread_date = line.line_date
             period_ids = period_obj.with_context(
-                account_period_prefer_normal=True).find(
-                spread_date
-            )
+                account_period_prefer_normal=True).find(spread_date)
             period_id = period_ids and period_ids[0] or False
             move_id = move_obj.create(
                 self._setup_move_data(line, spread_date, period_id.id)
             )
-            _logger.debug('MoveID: %s', (move_id.id))
+            _logger.debug('MoveID: %s', (move_id.id,))
 
             if invoice_line.invoice_id.type in ('in_invoice', 'out_refund'):
                 debit_acc_id = invoice_line.account_id.id
@@ -254,10 +233,11 @@ class AccountInvoiceSpreadLine(models.Model):
                 }
 
     @api.multi
+    # pylint: disable=no-value-for-parameter,arguments-differ
     def unlink(self):
         """ Unlink moves when unlinking spread lines """
         self.unlink_move()
-        super(AccountInvoiceSpreadLine, self).unlink()
+        return super(AccountInvoiceSpreadLine, self).unlink()
 
     @api.multi
     def unlink_move(self):
@@ -277,9 +257,7 @@ class AccountInvoiceSpreadLine(models.Model):
         create moves for them."""
         period_obj = self.env['account.period']
         periods = period_obj.with_context(
-            account_period_prefer_normal=True).find(
-            fields.Date.today()
-        )
+            account_period_prefer_normal=True).find(fields.Date.today())
         period = periods and periods[0] or False
         lines = self.search([
             ('line_date', '<=', period.date_stop),
@@ -288,8 +266,6 @@ class AccountInvoiceSpreadLine(models.Model):
         ])
 
         result = []
-
         for line in lines:
             result += line.create_move()
-
         return result

@@ -132,11 +132,6 @@ msgid "ID"
 msgstr "ID"
 
 #. module: account_cost_spread
-#: field:account.invoice.spread.line,init_entry:0
-msgid "Initial Balance Entry"
-msgstr "Initial Balance Entry"
-
-#. module: account_cost_spread
 #: model:ir.model,name:account_cost_spread.model_account_invoice
 msgid "Invoice"
 msgstr "Factuuradres"
@@ -245,15 +240,6 @@ msgstr "Restbedrag"
 #: field:account.invoice.spread.line,sequence:0
 msgid "Sequence"
 msgstr "Reeks"
-
-#. module: account_cost_spread
-#: help:account.invoice.spread.line,init_entry:0
-msgid ""
-"Set this flag for entries of previous fiscal years for which OpenERP has not "
-"generated accounting entries."
-msgstr ""
-"Set this flag for entries of previous fiscal years for which OpenERP has not "
-"generated accounting entries."
 
 #. module: account_cost_spread
 #: view:account.invoice:account_cost_spread.view_customer_invoice_spread
