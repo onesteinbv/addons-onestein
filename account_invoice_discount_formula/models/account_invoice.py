@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError, Warning
+from odoo.exceptions import ValidationError, UserError
 import re
 
 
@@ -55,7 +55,7 @@ class AccountInvoiceLine(models.Model):
                         line.multiple_discount)
                 else:
                     line.discount = 0
-                    raise Warning(
+                    raise UserError(
                         _('Warning! The discount format is not recognized.'))
 
                 tokens = re.split(r'([+-])', normalized_discount)
