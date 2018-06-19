@@ -11,7 +11,7 @@ class AccountInvoiceSpreadLine(models.Model):
     _name = 'account.invoice.spread.line'
     _description = 'Account Invoice Spread Lines'
 
-    _order = 'type, line_date'
+    _order = 'line_date'
 
     name = fields.Char('Spread Name', readonly=True)
     invoice_line_id = fields.Many2one(
@@ -49,12 +49,6 @@ class AccountInvoiceSpreadLine(models.Model):
         track_visibility='always',
         store=True)
     sequence = fields.Integer(required=True, default=1)
-
-    type = fields.Selection([
-        ('create', 'Value'),
-        ('depreciate', 'Depreciation'),
-        ('remove', 'Asset Removal'),
-    ], readonly=True, default='depreciate')
 
     @api.multi
     @api.depends('move_id')
