@@ -11,8 +11,8 @@ class SaleOrderLine(models.Model):
 
     multiple_discount = fields.Char('Discount (%)')
 
-    @api.model
-    def _validate_discount(self, discount):
+    @staticmethod
+    def _validate_discount(discount):
         discount_regex = re.compile(
             r'^(\s*[-+]{0,1}\s*\d+([,.]\d+)?){1}'
             r'(\s*[-+]\s*\d+([,.]\d+)?\s*)*$'
