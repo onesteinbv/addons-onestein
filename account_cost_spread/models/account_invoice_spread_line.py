@@ -70,6 +70,7 @@ class AccountInvoiceSpreadLine(models.Model):
     @api.multi
     def _check_existing_move(self):
         """ Check existing move """
+        self.ensure_one()
         if self.move_id:
             raise ValidationError(_('Move was already created.'))
 
