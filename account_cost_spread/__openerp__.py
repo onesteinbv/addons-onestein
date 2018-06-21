@@ -5,7 +5,7 @@
 {
     'name': 'Cost / Income Spread',
     'summary': 'Cost and Income spreading',
-    'version': '8.0.1.0.0',
+    'version': '8.0.1.0.5',
     'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',
@@ -21,5 +21,5 @@
         'views/account_config_settings.xml',
         'data/spread_cron.xml',
     ],
-    'installable': True
+    'installable': True,
 }
