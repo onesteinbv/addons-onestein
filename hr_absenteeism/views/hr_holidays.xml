@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="edit_holiday_hr_absenteeism" model="ir.ui.view">
+        <field name="name">edit.holiday.hr.absenteeism</field>
+        <field name="model">hr.holidays</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_new" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='report_note']" position="after">
+                <field name="absenteeism_control" invisible="1" />
+                <field name="absenteeism_date_ids" readonly="1" attrs="{'invisible':[('absenteeism_control', '!=', True)]}">
+                    <tree>
+                        <field name="name"/>
+                        <field name="absent_notify_date"/>
+                    </tree>
+                </field>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

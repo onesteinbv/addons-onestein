@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_absenteeism_notifications,access_hr_absenteeism_notifications,model_hr_absenteeism_notifications,base.group_user,1,1,1,1
+access_hr_absenteeism_dates,access_hr_absenteeism_dates,model_hr_absenteeism_dates,base.group_user,1,1,1,1
+hr_holidays.access_hr_holydays_status_employee,hr.holidays.status employee,hr_absenteeism.model_hr_holidays_status,base.group_user,1,1,0,0
