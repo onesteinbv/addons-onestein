@@ -204,8 +204,19 @@ class AccountInvoiceLine(models.Model):
         return amount
 
     @api.multi
+    def is_all_set_for_spread(self):
+        self.ensure_one()
+        if not self.spread_account_id:
+            return False
+        return True
+
+    @api.multi
     def compute_spread_board(self):
         for line in self:
+
+            if not line.is_all_set_for_spread():
+                continue
+
             if line.account_id.deprecated:
                 raise UserError(
                     _("Account on one of the invoice lines you're trying"

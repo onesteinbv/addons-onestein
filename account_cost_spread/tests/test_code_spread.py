@@ -238,6 +238,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'period_type': 'month',
             'spread_date': '2017-02-01'
         })
+        self.assertTrue(self.invoice_line.is_all_set_for_spread())
 
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
@@ -252,6 +253,7 @@ class TestAccountCostSpread(AccountingTestCase):
             'period_type': 'month',
             'spread_date': '2017-02-01'
         })
+        self.assertTrue(self.invoice_line.is_all_set_for_spread())
 
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
@@ -259,17 +261,25 @@ class TestAccountCostSpread(AccountingTestCase):
         self.invoice.action_invoice_cancel()
         self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
 
-    def test_14_compute_spread_board(self):
+    def test_09_not_compute_spread_board(self):
+        self.invoice_line.write({
+            'spread_account_id': False,
+        })
+        self.assertFalse(self.invoice_line.is_all_set_for_spread())
+        self.invoice_line.compute_spread_board()
+        self.assertEqual(len(self.invoice_line.spread_line_ids), 0)
+
+    def test_10_compute_spread_board(self):
         self.invoice_line.account_id.write({
             'deprecated': True,
         })
-
+        self.assertTrue(self.invoice_line.is_all_set_for_spread())
         with self.assertRaises(UserError):
             self.invoice_line.compute_spread_board()
 
-    def test_15_create_entries(self):
+    def test_11_create_entries(self):
         self.env['account.invoice.spread.line']._create_entries()
 
-    def test_16_create_move_in_invoice(self):
+    def test_12_create_move_in_invoice(self):
         self.invoice_2.action_invoice_open()
         self.invoice_line_2.spread_line_ids.create_moves()
