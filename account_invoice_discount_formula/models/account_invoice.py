@@ -67,10 +67,10 @@ class AccountInvoiceLine(models.Model):
                     elif token == '+':
                         last_sign = 1
                     else:
-                        numeric_tokens.append(float(token)*last_sign)
+                        numeric_tokens.append(float(token) * last_sign)
                 marginal_discount = 1
                 for token in numeric_tokens:
-                    marginal_discount = marginal_discount * (1-(token/100))
+                    marginal_discount = marginal_discount * (1 - (token / 100))
                 total_discount = 1 - marginal_discount
                 line.discount = total_discount * 100
 
