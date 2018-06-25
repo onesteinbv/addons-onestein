@@ -2,12 +2,10 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 import calendar
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 import odoo.addons.decimal_precision as dp
 from odoo.tools import float_is_zero
 
@@ -92,7 +90,7 @@ class AccountInvoiceLine(models.Model):
             'target': 'current',
             'readonly': False,
             'res_id': self.id,
-            }
+        }
         return view
 
     @api.multi
@@ -109,13 +107,13 @@ class AccountInvoiceLine(models.Model):
             # if we already have some previous validated entries,
             # starting date is last entry + method period
             if posted_line_ids and posted_line_ids[-1].line_date:
-                last_spread_date = datetime.strptime(
-                    posted_line_ids[-1].line_date, DF
+                last_spread_date = fields.Datetime.from_string(
+                    posted_line_ids[-1].line_date
                 ).date()
                 spread_date = last_spread_date + relativedelta(months=+1)
             else:
                 # spread_date computed from the purchase date
-                spread_date = datetime.strptime(spread_start_date, DF)
+                spread_date = fields.Datetime.from_string(spread_start_date)
             return spread_date
 
         def _increase_spread_date(month_day, spread_date):
@@ -179,7 +177,7 @@ class AccountInvoiceLine(models.Model):
     @staticmethod
     def _get_line_date(spread_date):
         date = spread_date + relativedelta(day=31)
-        line_date = date.strftime(DF)
+        line_date = fields.Date.to_string(date)
         return line_date
 
     def _compute_board_undone_dotation_nb(self, spread_date):
@@ -198,7 +196,7 @@ class AccountInvoiceLine(models.Model):
                 self.period_number - len(posted_spread_line_ids)
             )
             if sequence == 1:
-                date = datetime.strptime(self.spread_start_date, DF)
+                date = fields.Datetime.from_string(self.spread_start_date)
                 month_days = calendar.monthrange(date.year, date.month)[1]
                 days = month_days - date.day + 1
                 period = self.period_number

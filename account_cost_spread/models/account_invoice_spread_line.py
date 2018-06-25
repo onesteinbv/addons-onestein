@@ -173,7 +173,7 @@ class AccountInvoiceSpreadLine(models.Model):
             'type': 'ir.actions.act_window',
             'nodestroy': True,
             'domain': [('id', '=', self.move_id.id)],
-            }
+        }
 
     @api.multi
     def unlink_move(self):
