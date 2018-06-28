@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="account.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@id='accounting_reports']" position="before">
-                <div class="row mt16 o_settings_container" id="accounting_fiscalyaer">
+                <div class="row mt16 o_settings_container" id="accounting_fiscalyear">
                     <div class="col-xs-12 col-md-6 o_setting_box" id="fiscalyear">
                         <div class="o_setting_left_pane"/>
                         <div class="o_setting_right_pane">
