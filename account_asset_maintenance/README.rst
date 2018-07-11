@@ -31,7 +31,9 @@ If you want to set a relationship between an equipment and an asset, you need to
 
 #. Go to 'Maintenance' -> 'Equipments' and create a new equipment or select an already existing one
 #. Select an asset in the new 'Asset' field
+
 OR
+
 #. Go to 'Accounting' -> 'Adviser' -> 'Assets' and create a new asset or select an already existing one
 #. Select an equipment in the new 'Equipment' field
 
