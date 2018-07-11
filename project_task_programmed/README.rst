@@ -32,7 +32,7 @@ Configuration
 By default, a cron job named "Create alert tasks" will be created while installing this module.
 This cron job can be found in:
 
-	**Settings > Technical > Automation > Scheduled Actions**
+    **Settings > Technical > Automation > Scheduled Actions**
 
 This job runs daily by default.
 

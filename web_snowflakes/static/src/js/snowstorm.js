@@ -16,55 +16,55 @@
  */
 (function($){
 
-	$.fn.snow = function(options){
-	        //var array = ['&#9731;','&#10052;','&#127877;','&#127873;']
+    $.fn.snow = function(options){
+            //var array = ['&#9731;','&#10052;','&#127877;','&#127873;']
 
             var $text = '&#10052;'; //snowflake
-			var $flake 			= $('<div id="flake" />').css({'position': 'absolute', 'top': '-50px', 'text-shadow': '-1px 0 grey, 0 1px grey, 1px 0 grey, 0 -1px grey'}).html($text),
-				documentHeight 	= $(document).height(),
-				documentWidth	= $(document).width(),
-				defaults		= {
-									minSize		: 10,
-									maxSize		: 20,
-									newOn		: 500,
-									flakeColor	: "#FFFFFF"
-								},
-				options			= $.extend({}, defaults, options);
+            var $flake             = $('<div id="flake" />').css({'position': 'absolute', 'top': '-50px', 'text-shadow': '-1px 0 grey, 0 1px grey, 1px 0 grey, 0 -1px grey'}).html($text),
+                documentHeight     = $(document).height(),
+                documentWidth    = $(document).width(),
+                defaults        = {
+                                    minSize        : 10,
+                                    maxSize        : 20,
+                                    newOn        : 500,
+                                    flakeColor    : "#FFFFFF"
+                                },
+                options            = $.extend({}, defaults, options);
 
 
-			var interval		= setInterval( function(){
-				var startPositionLeft 	= Math.random() * documentWidth - 100,
-				 	startOpacity		= 0.5 + Math.random(),
-					sizeFlake			= options.minSize + Math.random() * options.maxSize,
-					endPositionTop		= documentHeight - 40,
-					endPositionLeft		= startPositionLeft - 100 + Math.random() * 200,
-					durationFall		= documentHeight * 10 + Math.random() * 5000;
-				$flake
-					.clone()
-					.appendTo('body')
-					.css(
-						{
-							left: startPositionLeft,
-							opacity: startOpacity,
-							'font-size': sizeFlake,
-							color: options.flakeColor
-						}
-					)
-					//.html(array[Math.round(Math.random() * array.length -1)])
-					.animate(
-						{
-							top: endPositionTop,
-							left: endPositionLeft,
-							opacity: 0.2
-						},
-						durationFall,
-						'linear',
-						function() {
-							$(this).remove()
-						}
-					);
-			}, options.newOn);
+            var interval        = setInterval( function(){
+                var startPositionLeft     = Math.random() * documentWidth - 100,
+                     startOpacity        = 0.5 + Math.random(),
+                    sizeFlake            = options.minSize + Math.random() * options.maxSize,
+                    endPositionTop        = documentHeight - 40,
+                    endPositionLeft        = startPositionLeft - 100 + Math.random() * 200,
+                    durationFall        = documentHeight * 10 + Math.random() * 5000;
+                $flake
+                    .clone()
+                    .appendTo('body')
+                    .css(
+                        {
+                            left: startPositionLeft,
+                            opacity: startOpacity,
+                            'font-size': sizeFlake,
+                            color: options.flakeColor
+                        }
+                    )
+                    //.html(array[Math.round(Math.random() * array.length -1)])
+                    .animate(
+                        {
+                            top: endPositionTop,
+                            left: endPositionLeft,
+                            opacity: 0.2
+                        },
+                        durationFall,
+                        'linear',
+                        function() {
+                            $(this).remove()
+                        }
+                    );
+            }, options.newOn);
 
-	};
+    };
 
 })(jQuery);
