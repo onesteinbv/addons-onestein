@@ -14,7 +14,7 @@ from odoo.tools.translate import _
 _logger = logging.getLogger(__name__)
 
 
-class hr_holidays(models.Model):
+class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
 
     @api.multi
@@ -80,7 +80,7 @@ class hr_holidays(models.Model):
     @api.model
     def create(self, vals):
         # Create the related hr_absenteeism_dates
-        holiday = super(hr_holidays, self).create(vals)
+        holiday = super(HrHolidays, self).create(vals)
         if holiday.date_from:
             for notification in holiday.holiday_status_id.notification_ids:
                 notify_date = self._compute_notify_date(
@@ -101,4 +101,4 @@ class hr_holidays(models.Model):
         # monkey patch hr_holidays constraints
         str = 'You can not have 2 leaves that overlaps on same day!'
         self._constraints = [t for t in self._constraints if t[1] != str]
-        return super(hr_holidays, self)._validate_fields(field_names)
+        return super(HrHolidays, self)._validate_fields(field_names)

@@ -5,7 +5,7 @@
 from odoo import fields, models
 
 
-class hr_absenteeism_dates(models.Model):
+class HrAbsenteeismDates(models.Model):
     _name = "hr.absenteeism.dates"
     _description = "Absenteeism Notification Dates"
 

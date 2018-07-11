@@ -5,7 +5,7 @@
 from odoo import fields, models
 
 
-class hr_absenteeism_notifications(models.Model):
+class HrAbsenteeismNotifications(models.Model):
     _name = "hr.absenteeism.notifications"
     _description = "Absenteeism Notifications"
 
