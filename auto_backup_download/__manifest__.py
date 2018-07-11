@@ -12,7 +12,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base_setup',
-        'base_directory_files_download',
+        'base_directory_file_download',
         'auto_backup',
     ],
     'data': [

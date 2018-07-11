@@ -3,7 +3,7 @@
 
     <record id="ir_filesystem_directory_backup_form" model="ir.ui.view">
         <field name="model">ir.filesystem.directory</field>
-        <field name="inherit_id" ref="base_directory_files_download.ir_filesystem_directory_form"/>
+        <field name="inherit_id" ref="base_directory_file_download.ir_filesystem_directory_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='directory']" position='after'>
                 <field name="is_backup" invisible="1"/>
@@ -29,7 +29,7 @@
 
     <menuitem id="menu_ir_filesystem_directory_backup"
               action="ir_filesystem_directory_backup_action"
-              parent="base_directory_files_download.menu_ir_filesystem"
+              parent="base_directory_file_download.menu_ir_filesystem"
               groups="group_filesystem_directory_backup"/>
 
 </odoo>
