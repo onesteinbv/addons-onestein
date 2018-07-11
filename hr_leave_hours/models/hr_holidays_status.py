@@ -41,7 +41,7 @@ class HrHolidaysStatus(models.Model):
         return result
 
     @api.multi
-    def _user_left_hours(self):
+    def _compute_user_left_hours(self):
         employee_id = self._context.get('employee_id', False)
         employee = None
         if not employee_id:
@@ -66,18 +66,18 @@ class HrHolidaysStatus(models.Model):
                 ]
 
     max_hours = fields.Float(
-        compute="_user_left_hours",
+        compute="_compute_user_left_hours",
         string='Maximum Allowed Hours'
     )
     hours_taken = fields.Float(
-        compute="_user_left_hours",
+        compute="_compute_user_left_hours",
         string='Hours Already Taken'
     )
     remaining_hours = fields.Float(
-        compute="_user_left_hours"
+        compute="_compute_user_left_hours"
     )
     virtual_remaining_hours = fields.Float(
-        compute="_user_left_hours"
+        compute="_compute_user_left_hours"
     )
 
     @api.multi
