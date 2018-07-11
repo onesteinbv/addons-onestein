@@ -123,7 +123,8 @@ class AccountInvoiceSpreadLine(models.Model):
         current_currency = invoice_line.currency_id
         not_same_curr = company_currency != current_currency
         prec = company_currency.decimal_places
-        amount = current_currency.with_context(date=spread_date).compute(
+        date_amount = invoice.date or invoice.date_invoice or spread_date
+        amount = current_currency.with_context(date=date_amount).compute(
             self.amount, company_currency)
         is_sale = invoice.journal_id.type == 'sale'
         is_purchase = invoice.journal_id.type == 'purchase'
