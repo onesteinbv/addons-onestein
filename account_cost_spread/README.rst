@@ -1,5 +1,5 @@
-.. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
-   :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
+.. image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+   :target: https://www.gnu.org/licenses/agpl
    :alt: License: AGPL-3
 
 ===========
@@ -8,13 +8,11 @@ Cost Spread
 
 Allows to spread costs over a customizable period.
 
-The computation code in this module is based on
-the Assets Management module by OpenERP & Noviat:
-https://www.odoo.com/apps/modules/8.0/account_asset_management/
-
-
 Credits
 =======
+
+The computation code in this module is based on
+the Assets Management module by Odoo SA.
 
 Contributors
 ------------
