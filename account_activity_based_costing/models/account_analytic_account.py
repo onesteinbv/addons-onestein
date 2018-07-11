@@ -10,14 +10,14 @@ class AccountAnalyticAccount(models.Model):
     _inherit = "account.analytic.account"
 
     @api.depends('expected_hours', 'consumed_hours')
-    def _get_hours_left(self):
+    def _compute_hours_left(self):
         for analytic_account in self:
             expected_hours = analytic_account.expected_hours
             consumed_hours = analytic_account.consumed_hours
             analytic_account.hours_left = expected_hours - consumed_hours
 
     @api.depends('line_ids', 'line_ids.unit_amount')
-    def _get_consumed_hours(self):
+    def _compute_consumed_hours(self):
         for analytic_account in self:
             # total quantity of timesheet lines
             # on projects of this analytic account
@@ -29,7 +29,7 @@ class AccountAnalyticAccount(models.Model):
             analytic_account.consumed_hours = consumed_hours
 
     @api.depends('expected_turnover', 'expected_costs')
-    def _get_expected_contribution(self):
+    def _compute_expected_contribution(self):
         for analytic_account in self:
             expected_turnover = analytic_account.expected_turnover
             expected_costs = analytic_account.expected_costs
@@ -74,7 +74,7 @@ class AccountAnalyticAccount(models.Model):
         'expected_contribution_perc',
         'contribution',
         'contribution_perc')
-    def _get_budget_results(self):
+    def _compute_budget_results(self):
         for analytic_account in self:
             realized_turnover = analytic_account.realized_turnover
             expected_turnover = analytic_account.expected_turnover
@@ -113,12 +113,12 @@ class AccountAnalyticAccount(models.Model):
         digits=(16, 2)
     )
     consumed_hours = fields.Float(
-        compute='_get_consumed_hours',
+        compute='_compute_consumed_hours',
         store=True,
         string='Consumed Hours'
     )
     hours_left = fields.Float(
-        compute='_get_hours_left',
+        compute='_compute_hours_left',
         store=True,
         string='Hours Left'
     )
@@ -126,12 +126,12 @@ class AccountAnalyticAccount(models.Model):
     expected_turnover = fields.Monetary(string='Expected Turnover')
     expected_costs = fields.Monetary(string='Expected Costs')
     expected_contribution = fields.Monetary(
-        compute='_get_expected_contribution',
+        compute='_compute_expected_contribution',
         store=True,
         string='Expected Contribution'
     )
     expected_contribution_perc = fields.Float(
-        compute='_get_expected_contribution',
+        compute='_compute_expected_contribution',
         store=True,
         string='Expected Contribution [%]'
     )
@@ -158,22 +158,22 @@ class AccountAnalyticAccount(models.Model):
     )
 
     budget_result_turnover = fields.Monetary(
-        compute='_get_budget_results',
+        compute='_compute_budget_results',
         store=True,
         string='Result Turnover'
     )
     budget_result_cost = fields.Monetary(
-        compute='_get_budget_results',
+        compute='_compute_budget_results',
         store=True,
         string='Result Costs'
     )
     budget_result_contribution = fields.Monetary(
-        compute='_get_budget_results',
+        compute='_compute_budget_results',
         store=True,
         string='Result Contribution'
     )
     budget_result_contribution_perc = fields.Float(
-        compute='_get_budget_results',
+        compute='_compute_budget_results',
         store=True,
         string='Result Contribution [%]'
     )
