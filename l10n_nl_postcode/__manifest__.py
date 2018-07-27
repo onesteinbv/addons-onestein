@@ -2,9 +2,8 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 {
-    'name': 'Postcode validation for Partners',
-    'images': [],
-    'version': '11.0.0.1.0',
+    'name': 'Dutch postcode validation for Partners',
+    'version': '11.0.1.0.0',
     'category': 'Localization',
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',
@@ -15,5 +14,4 @@
     'external_dependencies': {
         'python': ['stdnum'],
     },
-    'post_init_hook': 'post_init_hook',
 }
