@@ -4,10 +4,9 @@ cache: pip
 addons:
   postgresql: "9.2" # minimal postgresql version for the daterange method
   apt:
-   packages:
+    packages:
       - expect-dev  # provides unbuffer utility
       - python-lxml # because pip installation is slow
-
 
 language: python
 
@@ -16,22 +15,16 @@ python:
 
 env:
   global:
-  - VERSION="11.0" TESTS="0" LINT_CHECK="0" TRANSIFEX="0"
-
+    - VERSION="11.0" TESTS="0" LINT_CHECK="0"
   matrix:
-  - LINT_CHECK="1"
-  - TESTS="1" ODOO_REPO="odoo/odoo"
-  - TESTS="1" ODOO_REPO="OCA/OCB"
+    - LINT_CHECK="1"
+    - TESTS="1" ODOO_REPO="odoo/odoo"
+    - TESTS="1" ODOO_REPO="OCA/OCB"
 
-
-before_install:
-  - "export DISPLAY=:911.0"
-  - "sh -e /etc/init.d/xvfb start"
 
 install:
   - git clone https://github.com/onesteinbv/maintainer-quality-tools.git -b onestein-addons ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
-  - export WKHTMLTOPDF_VERSION=0.12.4
   - travis_install_nightly
 
 script:
