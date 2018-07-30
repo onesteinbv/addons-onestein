@@ -1,5 +1,2 @@
 hr https://github.com/onesteinbv/hr 11_mig_hr_holidays_hour
-server-tools
-account-financial-reporting
-intrastat
 server-ux
