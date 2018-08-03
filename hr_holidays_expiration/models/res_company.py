@@ -15,3 +15,5 @@ class ResCompany(models.Model):
         'mail.template',
         string='Expired Email Template'
     )
+
+    auto_approve_on_leave_type_archival = fields.Boolean()

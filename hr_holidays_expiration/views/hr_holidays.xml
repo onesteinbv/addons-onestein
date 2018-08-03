@@ -13,10 +13,11 @@
                     <page autofocus="autofocus" name='expiration' string="Expiration" attrs="{'invisible':[('type','!=','add')]}">
                         <group name="validity">
                             <group string="Expiring">
-                                <field name="expiration_date"/>
+                                <field name="expiration_date" attrs="{'required':[('limit','!=',True),('type','=','add')]}"/>
                                 <field name="expire_template_id" attrs="{'required':[('expiration_date','!=',False)]}"/>
                                 <field name="email_notify"/>
                                 <field name="expired" invisible="1"/>
+                                <field name="limit" invisible="1"/>
                             </group>
                             <group string="Notification" attrs="{'invisible':[('email_notify','=',False)]}">
                                 <field name="notify_period" attrs="{'required':[('email_notify','!=',False)]}"/>
@@ -32,6 +33,32 @@
                         </group>
                     </page>
                 </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_holiday_allocation_expiration_tree" model="ir.ui.view">
+        <field name="model">hr.holidays</field>
+        <field name="inherit_id" ref="hr_holidays.view_holiday_allocation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_to']" position="after">
+                <field name="expiration_date" />
+            </xpath>
+            <xpath expr="//field[@name='date_from']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_to']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_holiday_simple" model="ir.ui.view">
+        <field name="model">hr.holidays</field>
+        <field name="inherit_id" ref="hr_holidays.view_holiday_simple"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_to']" position="after">
+                <field name="expiration_date" />
             </xpath>
         </field>
     </record>

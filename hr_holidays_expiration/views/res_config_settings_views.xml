@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Leaves expiration" string="Leaves Expiration" data-key="hr_holiday_expiration" groups="hr.group_hr_manager">
+                    <h2>Leaves Expiration</h2>
+                    <div class="row mt16 o_settings_container" title="Leaves Expiration Management">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="expire_template_id" string="Email Notifications"/>
+                                <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." groups="base.group_multi_company"/>
+                                <div class="row">
+                                    <div class="text-muted col-md-8">
+                                        Set default templates for email notifications.
+                                    </div>
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="notify_template_id"
+                                            class="o_light_label"
+                                            placeholder="Notification Template..." />
+                                    </div>
+                                    <div class="mt16">
+                                        <field name="expire_template_id"
+                                            class="o_light_label"
+                                            placeholder="Expired Leave Template..." />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-6 o_setting_box" title="Auto-approve on leave type archival">
+                            <div class="o_setting_left_pane">
+                                <field name="auto_approve_on_leave_type_archival"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="auto_approve_on_leave_type_archival"/>
+                                <div class="text-muted">
+                                    Auto-approve on leave type archival.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

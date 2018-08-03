@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="wizard_hr_holidays_status_archive" model="ir.ui.view">
+        <field name="model">wizard.hr.holidays.status.archive</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                	    <field name="holiday_status_id" domain="[('limit', '=', False),('id', '!=', context.get('active_id'))]"/>
+                    </group>
+                    <group>
+                    </group>
+                </group>
+                <footer>
+                    <button name="transfer_and_archive_status" string="Transfer and Archive" type="object" class="btn-primary"/>
+                    <button name="archive_status" string="Archive Only" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
