@@ -7,7 +7,7 @@
             <form>
                 <group>
                     <group>
-                	    <field name="holiday_status_id" domain="[('limit', '=', False),('id', '!=', context.get('active_id'))]"/>
+                        <field name="holiday_status_id" domain="[('limit', '=', False),('id', '!=', context.get('active_id'))]"/>
                     </group>
                     <group>
                     </group>

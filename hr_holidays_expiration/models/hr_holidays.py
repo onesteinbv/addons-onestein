@@ -24,17 +24,20 @@ class HRHolidays(models.Model):
             res = status._compute_consumed_allocations()
 
             for employee_id in res:
-                allocations_partial_consumed = res[employee_id]['allocations_partial_consumed']
-                allocations_not_consumed = res[employee_id]['allocations_not_consumed']
-                allocations_consumed = res[employee_id]['allocations_consumed']
+                partial_consumed = res[employee_id][
+                    'allocations_partial_consumed']
+                not_consumed = res[employee_id][
+                    'allocations_not_consumed']
+                consumed = res[employee_id][
+                    'allocations_consumed']
 
-                allocations_partial_consumed._set_notification()
-                allocations_partial_consumed._set_expiration()
+                partial_consumed._set_notification()
+                partial_consumed._set_expiration()
 
-                allocations_not_consumed._set_notification()
-                allocations_not_consumed._set_expiration()
+                not_consumed._set_notification()
+                not_consumed._set_expiration()
 
-                for allocation in allocations_consumed.filtered(
+                for allocation in consumed.filtered(
                         lambda r: r.expiration_date and r.state == 'validate' and not r.expired):
                     allocation.expired = True
 
@@ -48,10 +51,12 @@ class HRHolidays(models.Model):
                 lambda r: r.expiration_date and r.state == 'validate' and not r.expired):
             if notification_not_sent(holiday):
                 exp_date = datetime.strptime(holiday.expiration_date, DF)
-                note_date = datetime.today() + timedelta(holiday.notify_period)
+                note_date = datetime.today() + timedelta(
+                    holiday.notify_period)
 
                 if exp_date <= note_date and holiday.notify_template_id:
-                    recipients = holiday.notify_to.mapped('user_id.partner_id')
+                    recipients = holiday.notify_to.mapped(
+                        'user_id.partner_id')
                     holiday.notify_template_id.send_mail(
                         holiday.id, email_values={
                             'recipient_ids': [
@@ -66,7 +71,8 @@ class HRHolidays(models.Model):
             if datetime.strptime(expiration_date, DF) <= datetime.today():
                 holiday.expired = True
                 if holiday.expire_template_id:
-                    recipients = holiday.notify_to.mapped('user_id.partner_id')
+                    recipients = holiday.notify_to.mapped(
+                        'user_id.partner_id')
                     holiday.expire_template_id.send_mail(
                         holiday.id, email_values={
                             'recipient_ids': [
