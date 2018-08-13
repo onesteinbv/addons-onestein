@@ -11,6 +11,11 @@ It implements the changes proposed with https://github.com/odoo/odoo/pull/22696/
 
 See also the OCA module *account_lock_date_update*.
 
+Configuration
+=============
+
+The user must belong to the *Show Full Accounting Features* group, to be able to access the Fiscal Year configuration views.
+
 Contributors
 ------------
 
