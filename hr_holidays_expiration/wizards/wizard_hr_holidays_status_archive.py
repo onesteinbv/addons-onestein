@@ -30,9 +30,12 @@ class WizardHrHolidaysStatusArchive(models.TransientModel):
         new_type = self.holiday_status_id
 
         for employee_id in res:
-            allocations_partial_consumed = res[employee_id]['allocations_partial_consumed']
-            amount_partial_consumed = res[employee_id]['amount_partial_consumed']
-            allocations_not_consumed = res[employee_id]['allocations_not_consumed']
+            allocations_partial_consumed = res[employee_id][
+                'allocations_partial_consumed']
+            amount_partial_consumed = res[employee_id][
+                'amount_partial_consumed']
+            allocations_not_consumed = res[employee_id][
+                'allocations_not_consumed']
 
             if allocations_partial_consumed:
                 new = allocations_partial_consumed.copy()

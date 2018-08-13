@@ -43,21 +43,25 @@ class HrHolidaysStatus(models.Model):
             lambda r: r.type == 'add' and r.state in [
                 'confirm', 'validate1', 'validate']).sorted(
                 key=lambda r: r.expiration_date or ''):
-            employee_id = allocation.employee_id.id
-            allocated_amount = allocation._get_duration()
-            self._check_init_dict(employee_id, res)
-            if res[employee_id]['amount_counter'] + allocated_amount > \
-                    res[employee_id]['consumed_leaves']:
-                if res[employee_id]['amount_counter'] < res[employee_id]['consumed_leaves']:
-                    amount_partial_consumed = res[employee_id]['amount_counter'] + \
-                        allocated_amount - res[employee_id]['consumed_leaves']
-                    res[employee_id]['amount_partial_consumed'] = amount_partial_consumed
-                    res[employee_id]['allocations_partial_consumed'] += allocation
-                else:
-                    res[employee_id]['allocations_not_consumed'] += allocation
+            self._set_data_from_consumed_allocation(allocation, res)
+
+    @api.model
+    def _set_data_from_consumed_allocation(self, allocation, res):
+        employee_id = allocation.employee_id.id
+        allocated_amount = allocation._get_duration()
+        self._check_init_dict(employee_id, res)
+        if res[employee_id]['amount_counter'] + allocated_amount > \
+                res[employee_id]['consumed_leaves']:
+            if res[employee_id]['amount_counter'] < res[employee_id]['consumed_leaves']:
+                amount_partial_consumed = res[employee_id]['amount_counter'] + \
+                                          allocated_amount - res[employee_id]['consumed_leaves']
+                res[employee_id]['amount_partial_consumed'] = amount_partial_consumed
+                res[employee_id]['allocations_partial_consumed'] += allocation
             else:
-                res[employee_id]['allocations_consumed'] += allocation
-            res[employee_id]['amount_counter'] += allocated_amount
+                res[employee_id]['allocations_not_consumed'] += allocation
+        else:
+            res[employee_id]['allocations_consumed'] += allocation
+        res[employee_id]['amount_counter'] += allocated_amount
 
     @api.multi
     def _compute_consumed_allocations(self):
