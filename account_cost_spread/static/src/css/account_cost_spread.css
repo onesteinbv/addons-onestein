@@ -1,0 +1,4 @@
+.o_account_cost_spread > .o_form_sheet_bg > .o_form_sheet {
+    width: calc(100vw - 245px);
+    max-width: calc(100vw - 245px);
+}

@@ -4,7 +4,7 @@
     <record id="view_invoice_line_spread" model="ir.ui.view">
         <field name="model">account.invoice.line</field>
         <field name="arch" type="xml">
-            <form>
+            <form class="o_account_cost_spread">
                 <header>
                     <button name="action_recalculate_spread" type="object" string="Recalculate entire spread" class="oe_highlight" attrs="{'invisible': [('spread_account_id', '=', False)]}" />
                     <button name="action_undo_spread" type="object" string="Undo spread" attrs="{'invisible': [('spread_line_ids', '=', [])]}" />

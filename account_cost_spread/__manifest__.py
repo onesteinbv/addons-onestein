@@ -18,6 +18,7 @@
         'views/account_invoice_line.xml',
         'views/account_invoice.xml',
         'data/spread_cron.xml',
+        'templates/assets.xml',
     ],
     'installable': True,
 }

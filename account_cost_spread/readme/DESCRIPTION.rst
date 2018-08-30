@@ -1,1 +1,1 @@
-Allows to spread costs over a customizable period.
+Allows to spread costs and incomes over a customizable period.
