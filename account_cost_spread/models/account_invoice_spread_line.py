@@ -4,7 +4,7 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import float_compare
-import odoo.addons.decimal_precision as dp
+from odoo.addons import decimal_precision as dp
 
 
 class AccountInvoiceSpreadLine(models.Model):
@@ -79,9 +79,10 @@ class AccountInvoiceSpreadLine(models.Model):
     def create_moves(self):
         for line in self:
             invoice_line = line.invoice_line_id
-            if invoice_line and invoice_line.invoice_id:
+            if invoice_line and invoice_line.spread_account_id:
                 if invoice_line.invoice_id.number:
-                    line.create_move()
+                    if not invoice_line.account_id.deprecated:
+                        line.create_move()
 
     @api.multi
     def create_move(self):
