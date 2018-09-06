@@ -4,7 +4,7 @@
 {
     'name': 'Cost Spread',
     'summary': 'Cost spreading over a custom period',
-    'version': '11.0.2.0.0',
+    'version': '11.0.2.1.0',
     'author': 'Onestein',
     'license': 'AGPL-3',
     'website': 'http://www.onestein.eu',

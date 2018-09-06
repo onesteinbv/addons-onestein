@@ -171,7 +171,7 @@ class TestAccountCostSpread(AccountingTestCase):
         self.invoice.action_invoice_open()
 
         # create moves for all the spread lines and open them
-        self.invoice_line.spread_line_ids.create_moves()
+        self.invoice_line.spread_line_ids.create_and_reconcile_moves()
         for spread_line in self.invoice_line.spread_line_ids:
             attrs = spread_line.open_move()
             self.assertEqual(isinstance(attrs, dict), True)
@@ -195,7 +195,7 @@ class TestAccountCostSpread(AccountingTestCase):
         self.invoice.action_invoice_open()
 
         # create moves for all the spread lines and open them
-        self.invoice_line.spread_line_ids.create_moves()
+        self.invoice_line.spread_line_ids.create_and_reconcile_moves()
 
         # check move lines
         for spread_line in self.invoice_line.spread_line_ids:
@@ -282,4 +282,4 @@ class TestAccountCostSpread(AccountingTestCase):
 
     def test_12_create_move_in_invoice(self):
         self.invoice_2.action_invoice_open()
-        self.invoice_line_2.spread_line_ids.create_moves()
+        self.invoice_line_2.spread_line_ids.create_and_reconcile_moves()

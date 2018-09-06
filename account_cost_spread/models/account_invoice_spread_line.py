@@ -76,13 +76,19 @@ class AccountInvoiceSpreadLine(models.Model):
         return res
 
     @api.multi
-    def create_moves(self):
-        for line in self:
-            invoice_line = line.invoice_line_id
-            if invoice_line and invoice_line.spread_account_id:
-                if invoice_line.invoice_id.number:
-                    if not invoice_line.account_id.deprecated:
-                        line.create_move()
+    def create_and_reconcile_moves(self):
+        grouped_lines = {}
+        for spread_line in self:
+            invoice_line = spread_line.invoice_line_id
+            if invoice_line.invoice_id.number and invoice_line.spread_account_id and not invoice_line.account_id.deprecated and not invoice_line.spread_account_id.deprecated:
+                spread_line_list = grouped_lines.get(invoice_line, self.env['account.invoice.spread.line'])
+                grouped_lines.update({
+                    invoice_line: spread_line_list + spread_line
+                })
+        for invoice_line in grouped_lines:
+            created_moves = grouped_lines[invoice_line]._create_moves()
+
+            invoice_line._reconcile_spread_moves(created_moves)
 
     @api.multi
     def create_move(self):
@@ -91,7 +97,16 @@ class AccountInvoiceSpreadLine(models.Model):
         Also called by a cron job.
         """
         self.ensure_one()
+        if self.invoice_line_id.account_id.deprecated:
+            raise UserError(_('The account of this invoice line is '
+                              'deprecated! Please check.'))
+        if self.invoice_line_id.spread_account_id.deprecated:
+            raise UserError(_('The spread account of this invoice line is '
+                              'deprecated! Please check.'))
+        self.create_and_reconcile_moves()
 
+    @api.multi
+    def _create_moves(self):
         created_moves = self.env['account.move']
         for line in self:
             if line.move_id:
@@ -102,7 +117,7 @@ class AccountInvoiceSpreadLine(models.Model):
 
             line.write({'move_id': move.id})
             created_moves |= move
-        return [x.id for x in created_moves]
+        return created_moves
 
     @api.multi
     def _prepare_move(self):
@@ -130,9 +145,10 @@ class AccountInvoiceSpreadLine(models.Model):
         is_sale = invoice.journal_id.type == 'sale'
         is_purchase = invoice.journal_id.type == 'purchase'
         is_positive = float_compare(amount, 0.0, precision_digits=prec) > 0
+        spread_journal = invoice_line.spread_journal_id or invoice.journal_id
 
         move_line_1 = {
-            'name': invoice_line.name,
+            'name': invoice_line.name.split('\n')[0][:64],
             'account_id': credit_acc_id if is_positive else debit_acc_id,
             'debit': 0.0 if is_positive else -amount,
             'credit': amount if is_positive else 0.0,
@@ -142,7 +158,7 @@ class AccountInvoiceSpreadLine(models.Model):
             'amount_currency': not_same_curr and - 1.0 * self.amount or 0.0,
         }
         move_line_2 = {
-            'name': invoice_line.name,
+            'name': invoice_line.name.split('\n')[0][:64],
             'account_id': debit_acc_id if is_positive else credit_acc_id,
             'credit': 0.0 if is_positive else -amount,
             'debit': amount if is_positive else 0.0,
@@ -155,7 +171,7 @@ class AccountInvoiceSpreadLine(models.Model):
             'name': invoice and invoice.number or "/",
             'ref': self.name,
             'date': spread_date or False,
-            'journal_id': invoice.journal_id.id,
+            'journal_id': spread_journal.id,
             'line_ids': [(0, 0, move_line_1), (0, 0, move_line_2)],
             'company_id': invoice.journal_id.company_id.id,
         }
@@ -185,6 +201,7 @@ class AccountInvoiceSpreadLine(models.Model):
             move = line.move_id
             if move.state == 'posted':
                 move.button_cancel()
+            move.line_ids.remove_move_reconcile()
             move.unlink()
             line.move_id = False
 
@@ -196,4 +213,4 @@ class AccountInvoiceSpreadLine(models.Model):
             ('line_date', '<=', fields.Date.today()),
             ('move_id', '=', False)
         ])
-        lines.create_moves()
+        lines.create_and_reconcile_moves()

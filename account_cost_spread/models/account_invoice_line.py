@@ -26,6 +26,9 @@ class AccountInvoiceLine(models.Model):
             line.spread_start_date = date
 
     spread_date = fields.Date(string='Alternative Start Date')
+    spread_journal_id = fields.Many2one(
+        'account.journal', string='Alternative journal',
+    )
     spread_start_date = fields.Date(compute='_compute_spread_start_date')
     period_number = fields.Integer(
         string='Number of Periods',
@@ -248,3 +251,35 @@ class AccountInvoiceLine(models.Model):
             this.write({
                 'spread_account_id': False,
             })
+
+    @api.multi
+    def _find_move_line(self):
+        """Look up the move lines mapped to this invoice lines"""
+        self.ensure_one()
+        formatted_name = self.name.split('\n')[0][:64]
+        move_lines = self.env['account.move.line']
+        for move_line in self.invoice_id.move_id.line_ids:
+            if move_line.name == formatted_name:
+                move_lines += move_line
+                break
+
+        return move_lines
+
+    @api.multi
+    def _reconcile_spread_moves(self, created_moves):
+        self.ensure_one()
+        invoice_line = self
+        if invoice_line.invoice_id.number and invoice_line.spread_account_id and not invoice_line.spread_account_id.deprecated:
+
+            # reconcile if possible
+            spread_account = invoice_line.spread_account_id
+            is_liquidity = spread_account.internal_type == 'liquidity'
+            if spread_account.reconcile or is_liquidity:
+                spread_mls = invoice_line.spread_line_ids.mapped('move_id.line_ids')
+                inv_move_line = invoice_line._find_move_line()
+                created_move_lines = created_moves.mapped('line_ids')
+                to_reconcile = spread_mls + created_move_lines + inv_move_line
+                to_reconcile = to_reconcile.filtered(
+                    lambda x: x.account_id == spread_account)
+                to_reconcile.remove_move_reconcile()
+                to_reconcile.reconcile()
