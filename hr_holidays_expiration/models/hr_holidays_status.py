@@ -40,9 +40,9 @@ class HrHolidaysStatus(models.Model):
     def _set_consumed_allocations(self, res):
         self.ensure_one()
         for allocation in self.holiday_ids.filtered(
-            lambda r: r.type == 'add' and r.state in [
-                'confirm', 'validate1', 'validate']).sorted(
-                key=lambda r: r.expiration_date or ''):
+            lambda r: r.type == 'add' and
+                r.state in ['confirm', 'validate1', 'validate']
+        ).sorted(key=lambda r: r.expiration_date or ''):
             self._set_data_from_consumed_allocation(allocation, res)
 
     @api.model
