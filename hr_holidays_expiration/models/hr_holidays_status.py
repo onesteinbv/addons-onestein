@@ -54,7 +54,7 @@ class HrHolidaysStatus(models.Model):
                 res[employee_id]['consumed_leaves']:
             if res[employee_id]['amount_counter'] < res[employee_id]['consumed_leaves']:
                 amount_partial_consumed = res[employee_id]['amount_counter'] + \
-                                          allocated_amount - res[employee_id]['consumed_leaves']
+                    allocated_amount - res[employee_id]['consumed_leaves']
                 res[employee_id]['amount_partial_consumed'] = amount_partial_consumed
                 res[employee_id]['allocations_partial_consumed'] += allocation
             else:
