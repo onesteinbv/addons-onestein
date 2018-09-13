@@ -5,7 +5,7 @@
         <field name="model">account.analytic.account</field>
         <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='tag_ids']" position='after'>
+            <xpath expr="//field[@name='partner_id']" position='after'>
                 <field name="parent_id"/>
             </xpath>
             <xpath expr="//field[@name='code']" position='before'>
