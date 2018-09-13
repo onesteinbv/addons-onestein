@@ -23,7 +23,7 @@ class WizardHrHolidaysStatusArchive(models.TransientModel):
                 'Please select the Next Leave Type!')
             )
 
-        active_id = self._context.get('active_id')
+        active_id = self.env.context.get('active_id')
         old_type = self.env['hr.holidays.status'].browse(active_id)
         res = old_type._compute_consumed_allocations()
         old_type.active = False
@@ -51,6 +51,6 @@ class WizardHrHolidaysStatusArchive(models.TransientModel):
     def archive_status(self):
         self.ensure_one()
 
-        active_id = self._context.get('active_id')
+        active_id = self.env.context.get('active_id')
         old_type = self.env['hr.holidays.status'].browse(active_id)
         old_type.active = False

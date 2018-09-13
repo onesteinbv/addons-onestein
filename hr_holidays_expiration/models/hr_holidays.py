@@ -14,8 +14,8 @@ class HRHolidays(models.Model):
     def default_get(self, fields):
         res = super(HRHolidays, self).default_get(fields)
         company = self.env.user.company_id
-        res['expire_template_id'] = (company.expire_template_id.id)
-        res['notify_template_id'] = (company.notify_template_id.id)
+        res['expire_template_id'] = company.expire_template_id.id
+        res['notify_template_id'] = company.notify_template_id.id
         return res
 
     @api.model

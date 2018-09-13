@@ -8,6 +8,7 @@
         <field name="name">Holidays Expiration Notification</field>
         <field name="email_from">${(object.user_id.email or object.user_id.company_id.email or 'noreply@localhost')|safe}</field>
         <field name="subject">Holiday Expiration (${object.employee_id.name or 'n/a'})</field>
+        <!--<field name="partner_to">${object.notify_to and object.notify_to.id or ''}</field>-->
         <field name="model_id" ref="hr_holidays_expiration.model_hr_holidays"/>
         <field name="auto_delete" eval="True"/>
         <field name="body_html"><![CDATA[
@@ -25,6 +26,7 @@
         <field name="name">Holidays Expired Notification</field>
         <field name="email_from">${(object.user_id.email or object.user_id.company_id.email or 'noreply@localhost')|safe}</field>
         <field name="subject">Holidays Expired (${object.employee_id.name or 'n/a'})</field>
+        <!--<field name="partner_to">${object.notify_to and object.notify_to.id or ''}</field>-->
         <field name="model_id" ref="hr_holidays_expiration.model_hr_holidays"/>
         <field name="auto_delete" eval="True"/>
         <field name="body_html"><![CDATA[
