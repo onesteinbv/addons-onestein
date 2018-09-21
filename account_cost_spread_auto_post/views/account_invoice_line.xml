@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_invoice_line_spread" model="ir.ui.view">
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account_cost_spread.view_invoice_line_spread"/>
+        <field name="arch" type="xml">
+            <field name="spread_move_line_auto_post" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+
+</odoo>
