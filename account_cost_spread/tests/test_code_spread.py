@@ -92,6 +92,9 @@ class TestAccountCostSpread(AccountingTestCase):
         self.assertEqual(83.33, self.invoice_line.spread_line_ids[10].amount)
         self.assertEqual(83.37, self.invoice_line.spread_line_ids[11].amount)
 
+        for line in self.invoice_line.spread_line_ids:
+            self.assertFalse(line.move_id)
+
         # Cancel the account move which is in posted state
         # and verifies that it gives warning message
         with self.assertRaises(UserError):
@@ -123,6 +126,9 @@ class TestAccountCostSpread(AccountingTestCase):
         for line in self.invoice_line.spread_line_ids:
             total_line_amount += line.amount
         self.assertLessEqual(abs(total_line_amount - 2000.0), 0.0001)
+
+        for line in self.invoice_line.spread_line_ids:
+            self.assertFalse(line.move_id)
 
         # simulate the click on the arrow that displays the spread details
         details = self.invoice_line.spread_details()
@@ -159,6 +165,9 @@ class TestAccountCostSpread(AccountingTestCase):
             total_line_amount += line.amount
         self.assertLessEqual(abs(total_line_amount - 1000.0), 0.0001)
 
+        for line in self.invoice_line.spread_line_ids:
+            self.assertFalse(line.move_id)
+
     def test_04_supplier_invoice(self):
         # spread date set
         self.invoice_line.write({
@@ -182,7 +191,7 @@ class TestAccountCostSpread(AccountingTestCase):
             line.move_id.post()
         self.invoice_line.spread_line_ids.unlink_move()
         for spread_line in self.invoice_line.spread_line_ids:
-            self.assertEqual(len(spread_line.move_id), 0)
+            self.assertFalse(spread_line.move_id)
 
     def test_05_supplier_invoice(self):
         # spread date set
@@ -203,6 +212,10 @@ class TestAccountCostSpread(AccountingTestCase):
                 spread_account = self.invoice_line.spread_account_id
                 if move_line.account_id == spread_account:
                     self.assertEqual(move_line.credit, spread_line.amount)
+
+        for line in self.invoice_line.spread_line_ids:
+            self.assertTrue(line.move_id)
+            self.assertFalse(line.move_id.state == 'posted')
 
     def test_06_supplier_invoice(self):
         # spread date set
@@ -230,6 +243,9 @@ class TestAccountCostSpread(AccountingTestCase):
                          self.invoice_line.spread_line_ids[2].amount)
         self.assertEqual('2017-03-31',
                          self.invoice_line.spread_line_ids[2].line_date)
+
+        for line in self.invoice_line.spread_line_ids:
+            self.assertFalse(line.move_id)
 
     def test_07_supplier_invoice(self):
         # spread date set
@@ -282,4 +298,49 @@ class TestAccountCostSpread(AccountingTestCase):
 
     def test_12_create_move_in_invoice(self):
         self.invoice_2.action_invoice_open()
-        self.invoice_line_2.spread_line_ids.create_and_reconcile_moves()
+        for line in self.invoice_line_2.spread_line_ids:
+            self.assertFalse(line.move_id)
+            line.create_move()
+            self.assertTrue(line.move_id)
+            self.assertFalse(line.move_id.state == 'posted')
+
+        self.invoice_line_2.action_undo_spread()
+        for line in self.invoice_line_2.spread_line_ids:
+            self.assertFalse(line.move_id)
+
+    def test_13_supplier_invoice_auto_post(self):
+        # spread date set
+        self.invoice_line.write({
+            'period_number': 8,
+            'period_type': 'month',
+            'spread_move_line_auto_post': True,
+        })
+
+        # change the state of invoice to open by clicking Validate button
+        self.invoice.action_invoice_open()
+
+        # create moves for all the spread lines and open them
+        self.invoice_line.spread_line_ids.create_and_reconcile_moves()
+
+        # check move lines
+        for spread_line in self.invoice_line.spread_line_ids:
+            for move_line in spread_line.move_id.line_ids:
+                spread_account = self.invoice_line.spread_account_id
+                if move_line.account_id == spread_account:
+                    self.assertEqual(move_line.credit, spread_line.amount)
+
+        self.assertTrue(self.invoice_line.spread_move_line_auto_post)
+        for line in self.invoice_line.spread_line_ids:
+            self.assertTrue(line.move_id)
+            self.assertTrue(line.move_id.state == 'posted')
+
+    def test_14_create_move_in_invoice_auto_post(self):
+        self.invoice_line_2.write({
+            'spread_move_line_auto_post': True,
+        })
+        self.invoice_2.action_invoice_open()
+        for line in self.invoice_line_2.spread_line_ids:
+            self.assertFalse(line.move_id)
+            line.create_move()
+            self.assertTrue(line.move_id)
+            self.assertTrue(line.move_id.state == 'posted')

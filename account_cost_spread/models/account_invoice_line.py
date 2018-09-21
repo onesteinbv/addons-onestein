@@ -55,6 +55,8 @@ class AccountInvoiceLine(models.Model):
         comodel_name='account.invoice.spread.line',
         inverse_name='invoice_line_id',
         string='Spread Lines')
+    spread_move_line_auto_post = fields.Boolean(
+        string='Auto-post Journal Items')
 
     @api.multi
     @api.depends(

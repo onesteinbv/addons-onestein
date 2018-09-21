@@ -24,6 +24,7 @@
                             <field name="period_type" required="1"/>
                             <field name="spread_date"/>
                             <field name="spread_journal_id" />
+                            <field name="spread_move_line_auto_post" />
                         </group>
                     </group>
                     <field name="spread_line_ids" readonly="1">

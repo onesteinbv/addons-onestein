@@ -89,6 +89,8 @@ class AccountInvoiceSpreadLine(models.Model):
             created_moves = grouped_lines[invoice_line]._create_moves()
 
             invoice_line._reconcile_spread_moves(created_moves)
+            if created_moves and invoice_line.spread_move_line_auto_post:
+                created_moves.post()
 
     @api.multi
     def create_move(self):
@@ -214,3 +216,4 @@ class AccountInvoiceSpreadLine(models.Model):
             ('move_id', '=', False)
         ])
         lines.create_and_reconcile_moves()
+        return lines
