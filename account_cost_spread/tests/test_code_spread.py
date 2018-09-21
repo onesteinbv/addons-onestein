@@ -67,6 +67,10 @@ class TestAccountCostSpread(AccountingTestCase):
             'period_type': 'month',
             'spread_date': '2017-02-01'
         })
+        self.is_installed_auto_post = self.env['ir.module.module'].search([
+            ('name', '=', 'account_cost_spread_auto_post'),
+            ('state', '=', 'installed')
+        ]).id
 
     def test_01_supplier_invoice(self):
         # spread date set
@@ -302,11 +306,15 @@ class TestAccountCostSpread(AccountingTestCase):
             self.assertFalse(line.move_id)
             line.create_move()
             self.assertTrue(line.move_id)
-            self.assertFalse(line.move_id.state == 'posted')
+            if self.is_installed_auto_post:
+                self.assertTrue(line.move_id.state == 'posted')
+            else:
+                self.assertFalse(line.move_id.state == 'posted')
 
-        self.invoice_line_2.action_undo_spread()
-        for line in self.invoice_line_2.spread_line_ids:
-            self.assertFalse(line.move_id)
+        if not self.is_installed_auto_post:
+            self.invoice_line_2.action_undo_spread()
+            for line in self.invoice_line_2.spread_line_ids:
+                self.assertFalse(line.move_id)
 
     def test_13_supplier_invoice_auto_post(self):
         # spread date set
