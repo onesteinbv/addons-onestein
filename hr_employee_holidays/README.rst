@@ -6,7 +6,7 @@
 HR Employee Holidays
 ====================
 
-This module simply adds a holiday_ids field to the Employee model.
+This module simply adds a `holiday_ids` field to the Employee model.
 That field is missing in the standard Odoo but it turns very
 useful when developing features requiring that field.
 
@@ -21,7 +21,7 @@ Usage
 =====
 
 
-For example, my inheriting this module, this piece of code:
+For example, by inheriting this module, this piece of code:
 
 .. code-block:: python
 
