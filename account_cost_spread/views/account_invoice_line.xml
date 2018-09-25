@@ -10,7 +10,7 @@
                     <button name="action_undo_spread" type="object" string="Undo spread" attrs="{'invisible': [('spread_line_ids', '=', [])]}" />
                 </header>
                 <sheet>
-                    <group>
+                    <group name="main_info">
                         <group>
                             <field name="account_id" readonly="1"/>
                             <field name="name" readonly="1"/>
@@ -25,6 +25,12 @@
                             <field name="spread_date"/>
                             <field name="spread_journal_id" />
                             <field name="spread_move_line_auto_post" />
+                        </group>
+                    </group>
+                    <group name="extension">
+                        <group name="extension_left">
+                        </group>
+                        <group name="extension_right">
                         </group>
                     </group>
                     <field name="spread_line_ids" readonly="1">

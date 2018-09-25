@@ -18,9 +18,11 @@ class TestAccountCostSpreadAll(TestAccountCostSpread):
         # change the state of invoice to open by clicking Validate button
         self.invoice.action_invoice_open()
         self.assertEqual(len(self.invoice_line.spread_line_ids), 12)
+        for spread_line in self.invoice_line.spread_line_ids:
+            self.assertFalse(spread_line.move_id)
 
         # create moves for all the spread lines
         self.invoice_line.create_all_moves()
 
         for spread_line in self.invoice_line.spread_line_ids:
-            self.assertEqual(len(spread_line.move_id), 1)
+            self.assertTrue(spread_line.move_id)

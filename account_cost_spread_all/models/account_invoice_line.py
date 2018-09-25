@@ -11,10 +11,8 @@ class AccountInvoiceLine(models.Model):
     def _compute_display_create_all_moves(self):
         for line in self:
             line.display_create_all_moves = False
-            for spread in line.spread_line_ids:
-                if not spread.move_id:
-                    line.display_create_all_moves = True
-                    break
+            if any(not spread.move_id for spread in line.spread_line_ids):
+                line.display_create_all_moves = True
 
     display_create_all_moves = fields.Boolean(
         compute='_compute_display_create_all_moves',
