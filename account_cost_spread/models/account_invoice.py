@@ -10,14 +10,14 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_move_create(self):
         """Invoked when validating the invoices."""
-        res = super(AccountInvoice, self).action_move_create()
-        for rec in self:
-            rec.invoice_line_ids.compute_spread_board()
+        res = super().action_move_create()
+        for invoice in self:
+            invoice.invoice_line_ids.compute_spread_board()
         return res
 
     @api.multi
     def invoice_line_move_line_get(self):
-        res = super(AccountInvoice, self).invoice_line_move_line_get()
+        res = super().invoice_line_move_line_get()
         for line in res:
             invl_id = line.get('invl_id')
             invl = self.env['account.invoice.line'].browse(invl_id)

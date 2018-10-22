@@ -2,23 +2,24 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 {
-    'name': 'Cost Spread',
-    'summary': 'Cost spreading over a custom period',
-    'version': '11.0.2.2.0',
-    'author': 'Onestein',
-    'license': 'AGPL-3',
-    'website': 'http://www.onestein.eu',
-    'images': [],
-    'category': 'Accounting',
-    'depends': [
-        'account',
+    "name": "Cost-Revenue Spread",
+    "summary": "Spread costs and revenues over a custom period",
+    "version": "11.0.2.3.0",
+    "development_status": "Beta",
+    "author": "Onestein",
+    "maintainers": ["astirpe"],
+    "license": "AGPL-3",
+    "website": "https://github.com/OCA/account-financial-tools/",
+    "category": "Accounting & Finance",
+    "depends": [
+        "account",
     ],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/account_invoice_line.xml',
-        'views/account_invoice.xml',
-        'data/spread_cron.xml',
-        'templates/assets.xml',
+    "data": [
+        "security/ir.model.access.csv",
+        "views/account_invoice_line.xml",
+        "views/account_invoice.xml",
+        "data/spread_cron.xml",
+        "templates/assets.xml",
     ],
-    'installable': True,
+    "installable": True,
 }

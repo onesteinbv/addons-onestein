@@ -8,21 +8,20 @@ from odoo.exceptions import UserError
 class TestAccountCostSpread(AccountingTestCase):
 
     def setUp(self):
-        super(TestAccountCostSpread, self).setUp()
-        receivable = self.env.ref('account.data_account_type_receivable')
-        expenses = self.env.ref('account.data_account_type_expenses')
+        super().setUp()
+        type_receivable = self.env.ref('account.data_account_type_receivable')
+        type_expenses = self.env.ref('account.data_account_type_expenses')
 
         def get_account(obj):
-            res = self.env['account.account'].search([
+            return self.env['account.account'].search([
                 ('user_type_id', '=', obj.id)
             ], limit=1)
-            return res
 
-        self.invoice_account = get_account(receivable)
-        self.invoice_line_account = get_account(expenses)
+        self.invoice_account = get_account(type_receivable)
+        self.invoice_line_account = get_account(type_expenses)
 
         self.spread_account = self.env['account.account'].search([
-            ('user_type_id', '=', expenses.id),
+            ('user_type_id', '=', type_expenses.id),
             ('id', '!=', self.invoice_line_account.id)
         ], limit=1).id
 

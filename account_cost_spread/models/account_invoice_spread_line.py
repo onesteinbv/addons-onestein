@@ -10,7 +10,6 @@ from odoo.addons import decimal_precision as dp
 class AccountInvoiceSpreadLine(models.Model):
     _name = 'account.invoice.spread.line'
     _description = 'Account Invoice Spread Lines'
-
     _order = 'line_date'
 
     name = fields.Char('Spread Name', readonly=True)
@@ -23,7 +22,6 @@ class AccountInvoiceSpreadLine(models.Model):
         string='Previous Spread Line',
         readonly=True)
     amount = fields.Float(
-        string='Amount',
         digits=dp.get_precision('Account'),
         required=True)
     remaining_value = fields.Float(
@@ -38,42 +36,29 @@ class AccountInvoiceSpreadLine(models.Model):
     move_id = fields.Many2one(
         comodel_name='account.move',
         string='Spread Entry', readonly=True)
-    move_check = fields.Boolean(
-        compute='_compute_move_check',
-        string='Linked',
-        track_visibility='always',
-        store=True)
     move_posted_check = fields.Boolean(
         compute='_compute_move_posted_check',
         string='Posted',
         track_visibility='always',
         store=True)
-    sequence = fields.Integer(required=True, default=1)
-
-    @api.multi
-    @api.depends('move_id')
-    def _compute_move_check(self):
-        for line in self:
-            line.move_check = bool(line.move_id)
 
     @api.multi
     @api.depends('move_id.state')
     def _compute_move_posted_check(self):
         for line in self:
             is_posted = line.move_id and line.move_id.state == 'posted'
-            line.move_posted_check = True if is_posted else False
+            line.move_posted_check = is_posted
 
     @api.model
     def create(self, vals):
-        context = self.env.context.copy()
+        ctx = self.env.context.copy()
         inv_types = ['in_invoice', 'in_refund', 'out_invoice', 'out_refund']
-        if context.get('default_type', '') in inv_types:
-            context.pop('default_type')
-        res = super(
+        if ctx.get('default_type', '') in inv_types:
+            ctx.pop('default_type')
+        return super(
             AccountInvoiceSpreadLine,
-            self.with_context(context)
+            self.with_context(ctx)
         ).create(vals)
-        return res
 
     @api.multi
     def create_and_reconcile_moves(self):
