@@ -18,7 +18,20 @@ class HrEmployeeRelated(models.Model):
          ('female', 'Female')],
         string='Gender'
     )
-    relation = fields.Char('Employee relation')
+    relation = fields.Selection(
+        [('spouse', 'Spouse'),
+         ('partner', 'Partner'),
+         ('son', 'Son'),
+         ('daughter', 'Daughter'),
+         ('father', 'Father'),
+         ('mother', 'Mother'),
+         ('brother', 'Brother'),
+         ('sister', 'Sister'),
+         ('caretaker', 'Caretaker'),
+         ('other', 'Other'),
+         ],
+        string='Employee relation',
+        default='partner')
     bsn_number = fields.Char('BSN')
     birth_date = fields.Date('Birth date')
     telephone = fields.Char('Telephone')
