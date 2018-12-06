@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link href="/web_christmas_santa/static/src/css/web_christmas_santa.css"
+                  type="test/css" rel="stylesheet"/>
+
+            <script type="text/javascript" src="/web_christmas_santa/static/src/js/web_christmas_santa.js"></script>
+        </xpath>
+    </template>
+</odoo>

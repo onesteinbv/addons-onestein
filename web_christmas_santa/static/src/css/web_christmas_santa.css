@@ -1,0 +1,9 @@
+.santa {
+    position: fixed;
+    right: -10000px;
+    z-index: 500;
+}
+
+.santa.santa-right {
+    transform: scaleX(-1);
+}

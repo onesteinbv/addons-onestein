@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="Web Snowflakes Backend Assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/web_christmas_snowflakes/static/lib/jquery.snow.js"></script>
+            <script type="text/javascript" src="/web_christmas_snowflakes/static/src/js/web_christmas_snowflakes.js"></script>
+        </xpath>
+    </template>
+</odoo>

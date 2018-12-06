@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+    <t t-name="web_christmas_santa.Santa">
+        <img src="/web_christmas_santa/static/img/santa_wave.gif" class="santa"/>
+    </t>
+</template>
