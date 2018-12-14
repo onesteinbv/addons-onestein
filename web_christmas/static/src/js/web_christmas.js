@@ -18,7 +18,13 @@ odoo.define('christmas', function(require) {
             method: 'search_read',
             domain: [
                 ['id', '=', session.uid]
-            ]
+            ],
+            fields: [
+                'show_christmas_light',
+                'play_christmas_music',
+                'show_christmas_santa',
+                'show_christmas_snowflakes'
+            ] // TODO: Make inheritable for sub modules
         }).then(function (result) {
             userLoad.resolve(result[0]);
         });

@@ -5,7 +5,7 @@
         <field name="inherit_id" ref="web_christmas.view_users_form_simple_modif"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='preferences_christmas']">
-                <field name="show_christmas_snowflakes"/>
+                <field name="show_christmas_snowflakes" readonly="0"/>
             </xpath>
         </field>
     </record>
