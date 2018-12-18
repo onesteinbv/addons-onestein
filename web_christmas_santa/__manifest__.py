@@ -1,6 +1,7 @@
 {
     'name': 'Christmas Santa',
     'summary': 'Just hear those sleigh bells jingling.',
+    'images': ['static/description/main_screenshot.png'],
     'license': 'AGPL-3',
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',

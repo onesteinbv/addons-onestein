@@ -1,6 +1,7 @@
 {
     'name': 'Christmas Music',
     'summary': 'Endlessly plays christmas music',
+    'images': ['static/description/main_screenshot.png'],
     'license': 'AGPL-3',
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',

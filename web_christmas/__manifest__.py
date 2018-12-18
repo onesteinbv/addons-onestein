@@ -1,6 +1,7 @@
 {
     'name': 'Christmas Framework',
     'summary': 'Framework for christmas modules, kapish.',
+    'images': ['static/description/main_screenshot.png'],
     'license': 'AGPL-3',
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',

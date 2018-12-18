@@ -1,6 +1,7 @@
 {
     'name': 'Christmas Light',
     'summary': 'Cozy Christmas lights in Odoo',
+    'images': ['static/description/main_screenshot.png'],
     'license': 'AGPL-3',
     'author': 'Onestein',
     'website': 'http://www.onestein.eu',
