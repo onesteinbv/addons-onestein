@@ -8,6 +8,7 @@ Snowflakes on your Odoo
 
 This module instantly changes your Odoo website and back-end into a Christmas landscape.
 
+Watch preview: https://www.youtube.com/watch?v=8QtrbLSi3tU
 
 Usage
 =====
