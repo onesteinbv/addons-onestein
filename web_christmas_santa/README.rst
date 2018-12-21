@@ -23,9 +23,9 @@ Required module:
 Christmas Framework
 
 Christmas modules:
-Christmas Lights
-Christmas Music
-Christmas Santa
+Christmas Lights,
+Christmas Music,
+Christmas Santa,
 Christmas Snowflakes
 
 Watch preview: https://www.youtube.com/watch?v=8QtrbLSi3tU
