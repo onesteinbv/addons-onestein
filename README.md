@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/onesteinbv/addons-onestein.svg?branch=11.0)](https://travis-ci.org/onesteinbv/addons-onestein)
+[![Build Status](https://travis-ci.org/onesteinbv/addons-onestein.svg?branch=12.0)](https://travis-ci.org/onesteinbv/addons-onestein)
 [![Code Climate](https://codeclimate.com/github/onesteinbv/addons-onestein/badges/gpa.svg)](https://codeclimate.com/github/onesteinbv/addons-onestein)
-[![codecov](https://codecov.io/gh/onesteinbv/addons-onestein/branch/11.0/graph/badge.svg)](https://codecov.io/gh/onesteinbv/addons-onestein)
+[![codecov](https://codecov.io/gh/onesteinbv/addons-onestein/branch/12.0/graph/badge.svg)](https://codecov.io/gh/onesteinbv/addons-onestein)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4e5bb722b9bb48f8a18184dc519f134a)](https://www.codacy.com/app/astirpe/addons-onestein?utm_source=github.com&utm_medium=referral&utm_content=onesteinbv/addons-onestein&utm_campaign=badger)
 
 
