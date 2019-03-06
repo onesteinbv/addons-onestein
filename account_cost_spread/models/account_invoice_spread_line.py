@@ -263,6 +263,8 @@ class AccountInvoiceSpreadLine(models.Model):
         lines = self.search([
             ('line_date', '<=', period.date_stop),
             ('invoice_line_id.spread_account_id', '!=', False),
+            ('invoice_line_id.invoice_id.state', '!=', 'cancel'),
+            ('invoice_line_id.invoice_id.period_id.state', '!=', 'done'),
             ('move_id', '=', False),
         ])
 
