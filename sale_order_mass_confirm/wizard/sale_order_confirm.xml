@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_confirm_sale_order" model="ir.ui.view">
+        <field name="model">sale.order.confirm.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <footer>
+                    <button name="confirm_sale_orders" string="Confirm" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_confirm_sale_order" model="ir.actions.act_window">
+        <field name="name">Confirm Sale Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.confirm.wizard</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_confirm_sale_order" />
+        <field name="target">new</field>
+        <field name="multi">True</field>
+    </record>
+
+    <act_window id="confirm_sale_order"
+        name="Confirm Sale Orders"
+        src_model="sale.order"
+        res_model="sale.order.confirm.wizard"
+        view_type="form"
+        view_mode="form"
+        key2="client_action_multi"
+        target="new"/>
+
+</odoo>
