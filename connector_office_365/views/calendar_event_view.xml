@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 Onestein
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+    <record id="view_calendar_event_form" model="ir.ui.view">
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="office_365_id" readonly="True" attrs="{'invisible': [('office_365_id', '=', False)]}" />
+            </xpath>
+            <xpath expr="//button[@name='action_open_calendar_event']" position="after">
+                <field name="office_365_url" invisible="1" />
+                <button string="Open in Office 365"
+                        class="btn-link float-right"
+                        type="object"
+                        name="office_365_open" attrs="{'invisible': [('office_365_url', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

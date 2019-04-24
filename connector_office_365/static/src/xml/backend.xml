@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 Onestein
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+
+<template>
+    <t t-name="office_365.SyncButton">
+        <button type="button" class="office_365_sync_button oe_button btn btn-secondary mt4 mb4">
+            Sync with Office 365
+        </button>
+    </t>
+</template>

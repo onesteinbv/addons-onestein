@@ -1,0 +1,305 @@
+{
+   "@odata.context":"https://graph.microsoft.com/v1.0/$metadata#Collection(event)",
+   "@odata.nextLink":"https://graph.microsoft.com/v1.0/me/calendarview/delta?$skiptoken=b9658zLYx7ag_WbFCK2mQrlBrc4zTZlKuYxfQlHTRCrMNxS6xxgxhoTG-R41xa0kaaNt5sWYr3gquC1DUYWB1wS1UNpT9_Zyajl_gvgVdDSaVYWxezm6gCpIE2SEouFS_7knvOFXq2D7l6IX5r00XMgfnPnUfnNAX2RdVP2XrNlgX_JxWedNdD0eg1h0aA12DdO_ArTfxzll9di2KR0swg.8_NLuiF6s5npWJaejx6-sVWBENsnjEO0QAY3PPDi-lU",
+   "value":[
+      {
+         "@odata.type":"#microsoft.graph.event",
+         "@odata.etag":"W/\"KoZzd5M2CUu6n1RlQfxT1AADNFb67A==\"",
+         "createdDateTime":"2019-03-15T13:46:17.3261756Z",
+         "lastModifiedDateTime":"2019-03-15T13:46:17.3722126Z",
+         "changeKey":"KoZzd5M2CUu6n1RlQfxT1AADNFb67A==",
+         "categories":[
+
+         ],
+         "originalStartTimeZone":"W. Europe Standard Time",
+         "originalEndTimeZone":"W. Europe Standard Time",
+         "iCalUId":"040000008200E00074C5B7101A82E00800000000DBC6C97635DBD4010000000000000000100000008064B21233E2264D90186F0D872C64D1",
+         "reminderMinutesBeforeStart":15,
+         "isReminderOn":true,
+         "hasAttachments":false,
+         "subject":"Herhaling",
+         "bodyPreview":"",
+
+         "importance":"normal",
+         "sensitivity":"normal",
+
+         "isAllDay":false,
+         "isCancelled":false,
+         "isOrganizer":true,
+
+         "responseRequested":true,
+         "seriesMasterId":null,
+         "showAs":"busy",
+
+         "type":"seriesMaster",
+
+         "webLink":"https://outlook.live.com/owa/?itemid=AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAA%3D&exvsurl=1&path=/calendar/item",
+         "onlineMeetingUrl":null,
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAA=",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAA=",
+         "responseStatus":{
+            "response":"organizer",
+            "time":"0001-01-01T00:00:00Z"
+         },
+         "body":{
+            "contentType":"html",
+            "content":"<html><head><meta name=\"Generator\" content=\"Microsoft Exchange Server\">\r\n<!-- converted from text -->\r\n<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left: #800000 2px solid; } --></style></head>\r\n<body>\r\n<font size=\"2\"><span style=\"font-size:11pt;\"><div class=\"PlainText\">&nbsp;</div></span></font>\r\n</body>\r\n</html>\r\n"
+         },
+
+         "start":{
+            "dateTime":"2019-03-14T07:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "end":{
+            "dateTime":"2019-03-14T07:30:00.0000000",
+            "timeZone":"UTC"
+         },
+         "location":{
+            "displayName":"",
+            "locationType":"default",
+            "uniqueIdType":"unknown",
+            "address":{
+
+            },
+            "coordinates":{
+
+            }
+         },
+         "locations":[
+
+         ],
+         "recurrence":{
+            "pattern":{
+               "type":"daily",
+               "interval":1,
+               "month":0,
+               "dayOfMonth":0,
+               "firstDayOfWeek":"sunday",
+               "index":"first"
+            },
+            "range":{
+               "type":"endDate",
+               "startDate":"2019-03-14",
+               "endDate":"2019-03-20",
+               "recurrenceTimeZone":"W. Europe Standard Time",
+               "numberOfOccurrences":0
+            }
+         },
+         "attendees":[
+
+         ],
+         "organizer":{
+            "emailAddress":{
+               "name":"Onestein B.V.",
+               "address":"onesteinbv@outlook.com"
+            }
+         }
+      },
+      {
+         "@odata.type":"#microsoft.graph.event",
+         "@odata.etag":"W/\"KoZzd5M2CUu6n1RlQfxT1AADOV2Ziw==\"",
+         "createdDateTime":"2019-03-15T13:45:31.5475139Z",
+         "lastModifiedDateTime":"2019-03-21T12:36:33.2267198Z",
+         "changeKey":"KoZzd5M2CUu6n1RlQfxT1AADOV2Ziw==",
+         "categories":[
+
+         ],
+         "originalStartTimeZone":"UTC",
+         "originalEndTimeZone":"UTC",
+         "iCalUId":"040000008200E00074C5B7101A82E0080000000020F7805B35DBD4010000000000000000100000009993AE9ECA894347A3B53AFA75662BEC",
+         "reminderMinutesBeforeStart":420,
+         "isReminderOn":true,
+         "hasAttachments":false,
+         "subject":"All day",
+         "bodyPreview":"",
+         "importance":"normal",
+         "sensitivity":"normal",
+         "isAllDay":true,
+         "isCancelled":false,
+         "isOrganizer":true,
+         "responseRequested":true,
+         "seriesMasterId":null,
+         "showAs":"free",
+         "type":"singleInstance",
+         "webLink":"https://outlook.live.com/owa/?itemid=AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1AAAAA%3D&exvsurl=1&path=/calendar/item",
+         "onlineMeetingUrl":null,
+         "recurrence":null,
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1AAAAA=",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1AAAAA=",
+         "responseStatus":{
+            "response":"organizer",
+            "time":"0001-01-01T00:00:00Z"
+         },
+         "body":{
+            "contentType":"html",
+            "content":"<html><head><meta name=\"Generator\" content=\"Microsoft Exchange Server\">\r\n<!-- converted from text -->\r\n<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left: #800000 2px solid; } --></style></head>\r\n<body>\r\n<font size=\"2\"><span style=\"font-size:11pt;\"><div class=\"PlainText\">&nbsp;</div></span></font>\r\n</body>\r\n</html>\r\n"
+         },
+         "start":{
+            "dateTime":"2019-03-22T00:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "end":{
+            "dateTime":"2019-03-23T00:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "location":{
+            "displayName":"",
+            "locationType":"default",
+            "uniqueIdType":"unknown",
+            "address":{
+
+            },
+            "coordinates":{
+
+            }
+         },
+         "locations":[
+
+         ],
+         "attendees":[
+
+         ],
+         "organizer":{
+            "emailAddress":{
+               "name":"Onestein B.V.",
+               "address":"onesteinbv@outlook.com"
+            }
+         }
+      },
+      {
+         "@odata.type":"#microsoft.graph.event",
+         "@odata.etag":"W/\"KoZzd5M2CUu6n1RlQfxT1AADOV2ZgQ==\"",
+         "createdDateTime":"2019-03-21T12:36:05.7131689Z",
+         "lastModifiedDateTime":"2019-03-21T12:36:05.7561998Z",
+         "changeKey":"KoZzd5M2CUu6n1RlQfxT1AADOV2ZgQ==",
+         "categories":[
+
+         ],
+         "originalStartTimeZone":"W. Europe Standard Time",
+         "originalEndTimeZone":"W. Europe Standard Time",
+         "iCalUId":"040000008200E00074C5B7101A82E00800000000D748F3A6E2DFD40100000000000000001000000035E740E05FCECD44B60CA242A9F415A2",
+         "reminderMinutesBeforeStart":15,
+         "isReminderOn":true,
+         "hasAttachments":false,
+         "subject":"Anders",
+         "bodyPreview":"",
+         "importance":"normal",
+         "sensitivity":"normal",
+         "isAllDay":false,
+         "isCancelled":false,
+         "isOrganizer":true,
+         "responseRequested":true,
+         "seriesMasterId":null,
+         "showAs":"busy",
+         "type":"singleInstance",
+         "webLink":"https://outlook.live.com/owa/?itemid=AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzk6Vs0AAAA%3D&exvsurl=1&path=/calendar/item",
+         "onlineMeetingUrl":null,
+         "recurrence":null,
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzk6Vs0AAAA=",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzk6Vs0AAAA=",
+         "responseStatus":{
+            "response":"organizer",
+            "time":"0001-01-01T00:00:00Z"
+         },
+         "body":{
+            "contentType":"html",
+            "content":"<html><head><meta name=\"Generator\" content=\"Microsoft Exchange Server\">\r\n<!-- converted from text -->\r\n<style><!-- .EmailQuote { margin-left: 1pt; padding-left: 4pt; border-left: #800000 2px solid; } --></style></head>\r\n<body>\r\n<font size=\"2\"><span style=\"font-size:11pt;\"><div class=\"PlainText\">&nbsp;</div></span></font>\r\n</body>\r\n</html>\r\n"
+         },
+         "start":{
+            "dateTime":"2019-03-23T07:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "end":{
+            "dateTime":"2019-03-23T07:30:00.0000000",
+            "timeZone":"UTC"
+         },
+         "location":{
+            "displayName":"",
+            "locationType":"default",
+            "uniqueIdType":"unknown",
+            "address":{
+
+            },
+            "coordinates":{
+
+            }
+         },
+         "locations":[
+
+         ],
+         "attendees":[
+
+         ],
+         "organizer":{
+            "emailAddress":{
+               "name":"Onestein B.V.",
+               "address":"onesteinbv@outlook.com"
+            }
+         }
+      },
+      {
+         "@odata.type":"#microsoft.graph.event",
+         "@odata.etag":"W/\"DwAAABYAAAAqhnN3kzYJS7qfVGVB/FPUAAM0Vvrs\"",
+         "seriesMasterId":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAA=",
+         "type":"occurrence",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWqmt-sIAARgAAAofDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAAQ",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWqmt-sIAARgAAAofDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAAQ",
+         "start":{
+            "dateTime":"2019-03-17T07:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "end":{
+            "dateTime":"2019-03-17T07:30:00.0000000",
+            "timeZone":"UTC"
+         }
+      },
+      {
+         "@odata.type":"#microsoft.graph.event",
+         "@odata.etag":"W/\"DwAAABYAAAAqhnN3kzYJS7qfVGVB/FPUAAM0Vvrs\"",
+         "seriesMasterId":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAA=",
+         "type":"occurrence",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWqzSqGkAARgAAAofDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAAQ",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWqzSqGkAARgAAAofDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAAQ",
+         "start":{
+            "dateTime":"2019-03-18T07:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "end":{
+            "dateTime":"2019-03-18T07:30:00.0000000",
+            "timeZone":"UTC"
+         }
+      },
+      {
+         "@odata.type":"#microsoft.graph.event",
+         "@odata.etag":"W/\"DwAAABYAAAAqhnN3kzYJS7qfVGVB/FPUAAM0Vvrs\"",
+         "seriesMasterId":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAA=",
+         "type":"occurrence",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWq-3UhAAAAEYAAAKHwwazcXBWRKt7GhA1t-cUBwAqhnN3kzYJS7qfVGVB-FPUAAACAQ0AAAAqhnN3kzYJS7qfVGVB-FPUAAM0M39RAAAAEA==",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWq-3UhAAAAEYAAAKHwwazcXBWRKt7GhA1t-cUBwAqhnN3kzYJS7qfVGVB-FPUAAACAQ0AAAAqhnN3kzYJS7qfVGVB-FPUAAM0M39RAAAAEA==",
+         "start":{
+            "dateTime":"2019-03-19T07:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "end":{
+            "dateTime":"2019-03-19T07:30:00.0000000",
+            "timeZone":"UTC"
+         }
+      },
+      {
+         "@odata.type":"#microsoft.graph.event",
+         "@odata.etag":"W/\"DwAAABYAAAAqhnN3kzYJS7qfVGVB/FPUAAM0Vvrs\"",
+         "seriesMasterId":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoARgAAA4fDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAA=",
+         "type":"occurrence",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWrMb_7cAARgAAAofDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAAQ",
+         "id":"AQMkADAwATMwMAItYjU4Mi01Nzg3LTAwAi0wMAoBUQAICADWrMb_7cAARgAAAofDBrNxcFZEq3saEDW39xQHACqGc3eTNglLup9UZUH8U9QAAAIBDQAAACqGc3eTNglLup9UZUH8U9QAAzQzf1EAAAAQ",
+         "start":{
+            "dateTime":"2019-03-20T07:00:00.0000000",
+            "timeZone":"UTC"
+         },
+         "end":{
+            "dateTime":"2019-03-20T07:30:00.0000000",
+            "timeZone":"UTC"
+         }
+      }
+   ]
+}
