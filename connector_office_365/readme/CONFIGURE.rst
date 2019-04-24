@@ -1,6 +1,6 @@
 First you have to register your Odoo server with the Microsoft App Registration Portal:
 
-#. Go to `https://apps.dev.microsoft.com/`_;
+#. Go to https://apps.dev.microsoft.com/;
 #. under Converged applications click 'Add an app';
 #. fill in any name e.g. 'My Odoo Server';
 #. click 'Generate New Password' and store the password we will need it later;
