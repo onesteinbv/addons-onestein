@@ -37,7 +37,7 @@ First you have to register your Odoo server with the Microsoft App Registration 
 
 It should look like this:
 
-.. image:: static/description/screenshot-setup.png
+.. image:: readme/images/screenshot-setup.png
    :alt: Screenshot Microsoft App Registration Portal
 
 Setup Odoo:
