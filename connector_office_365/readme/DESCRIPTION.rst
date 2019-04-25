@@ -1,1 +1,1 @@
-This module allows you to synchronize your calendar Office 365 with Odoo.
+This module allows you to synchronize your Office 365 calendar with Odoo.

@@ -8,7 +8,7 @@ Office 365 Connector
 
 |badge2|
 
-This module allows you to synchronize your calendar Office 365 with Odoo.
+This module allows you to synchronize your Office 365 calendar with Odoo.
 
 **Table of contents**
 
@@ -37,7 +37,7 @@ First you have to register your Odoo server with the Microsoft App Registration 
 
 It should look like this:
 
-.. image:: readme/images/screenshot-setup.png
+.. image:: https://raw.githubusercontent.com/onesteinbv/addons-onestein/12.0/connector_office_365/static/description/screenshot-setup.png
    :alt: Screenshot Microsoft App Registration Portal
 
 Setup Odoo:
