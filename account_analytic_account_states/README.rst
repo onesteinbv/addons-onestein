@@ -9,6 +9,7 @@ Account Analytic Account State
 By installing this module, it will introduce a state workflow for the analytic accounts.
 
 The states introduced by this module are:
+
 #. Draft: It's the starting state of an analytic account;
 #. Waiting For Approval: The analytic account was submitted by the user. It can be approved or refused by a manager or reset back to draft;
 #. Approved: The analytic account was approved by a manager. It can still be reset to draft;
