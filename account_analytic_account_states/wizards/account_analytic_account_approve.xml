@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_approve_analytic_account" model="ir.ui.view">
+        <field name="model">account.analytic.account.approve</field>
+        <field name="arch" type="xml">
+            <form string="Approve Analytic Accounts">
+                <footer>
+                    <button name="approve_analytic_accounts" string="Approve" type="object" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_approve_analytic_account" model="ir.actions.act_window">
+        <field name="name">Approve Analytic Accounts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.analytic.account.approve</field>
+        <field name="binding_model_id" ref="model_account_analytic_account" />
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_approve_analytic_account" />
+        <field name="target">new</field>
+        <field name="multi">True</field>
+    </record>
+
+</odoo>

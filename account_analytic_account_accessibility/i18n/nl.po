@@ -1,0 +1,40 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_analytic_account_accessibility
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0alpha1e-20160728\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-01 08:23+0000\n"
+"PO-Revision-Date: 2016-08-01 10:23+0200\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: nl\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#. module: account_analytic_account_accessibility
+#: model:ir.ui.menu,name:account_analytic_account_accessibility.menu_analytic_account_all
+msgid "All Analytic Accounts"
+msgstr "Alle Kostenplaatsen"
+
+#. module: account_analytic_account_accessibility
+#: model:res.groups,name:account_analytic_account_accessibility.group_analytic_account_manager
+msgid "Analytic Account Manager"
+msgstr "Kostenplaats Manager"
+
+#. module: account_analytic_account_accessibility
+#: model:ir.ui.menu,name:account_analytic_account_accessibility.menu_analytic_account_accounts
+#: model:ir.ui.menu,name:account_analytic_account_accessibility.menu_hr_analytic_account_root
+msgid "Analytic Accounts"
+msgstr "Kostenplaatsen"
+
+#. module: account_analytic_account_accessibility
+#: model:ir.actions.act_window,name:account_analytic_account_accessibility.action_account_analytic_my_accounts_form
+#: model:ir.ui.menu,name:account_analytic_account_accessibility.menu_analytic_account_my_accounts
+msgid "My Analytic Accounts"
+msgstr "Mijn Kostenplaatsen"

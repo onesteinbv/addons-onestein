@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_hr_analytic_account_root"
+              name="Analytic Accounts"
+              sequence="100"
+              groups="analytic.group_analytic_accounting"
+              web_icon="account,static/description/icon.png"/>
+
+    <menuitem id="menu_analytic_account_accounts" name="Analytic Accounts" sequence="1" parent="menu_hr_analytic_account_root"/>
+
+    <menuitem id="menu_analytic_account_my_accounts" name="My Analytic Accounts" sequence="2" parent="menu_analytic_account_accounts"
+              action="action_account_analytic_my_accounts_form"/>
+
+    <menuitem id="menu_analytic_account_all" name="All Analytic Accounts" sequence="1" parent="menu_analytic_account_accounts"
+              groups="group_analytic_account_see_all"
+              action="analytic.action_account_analytic_account_form"/>
+</odoo>

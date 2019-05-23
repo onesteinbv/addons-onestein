@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Account-related subtypes for messaging / Chatter -->
+    <record id="mt_analytic_account_approved" model="mail.message.subtype">
+        <field name="name">Approved</field>
+        <field name="res_model">account.analytic.account</field>
+        <field name="default" eval="False"/>
+        <field name="description" eval="False"/>
+    </record>
+
+</odoo>
