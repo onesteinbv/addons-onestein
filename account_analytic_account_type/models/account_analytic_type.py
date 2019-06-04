@@ -6,6 +6,7 @@ from odoo import fields, models
 
 class AccountAnalyticType(models.Model):
     _name = "account.analytic.type"
+    _description = 'Analytic Account Type'
 
     name = fields.Char(required=True)
     code = fields.Char(required=True)
