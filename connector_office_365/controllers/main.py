@@ -9,7 +9,7 @@ class MainController(Controller):
     @route('/office-365-oauth/success', type='http')
     def success(self, **kwargs):
         user = request.env.user
-        token = user.office_365_get_token(request.httprequest.url.replace('http', 'https'))
+        token = user.office_365_get_token(request.httprequest.url)
         user.office_365_persist_token(token)
 
         return redirect('/')
