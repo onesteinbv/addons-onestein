@@ -1,11 +1,15 @@
 # Copyright 2019 Onestein
+# Copyright 2019 Camptocamp
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+import logging
 import json
 import re
 from dateutil import parser
 from datetime import timedelta
 
 from odoo import _, api, fields, models, exceptions
+
+_logger = logging.getLogger(__name__)
 
 
 class CalendarEvent(models.Model):
@@ -55,7 +59,7 @@ class CalendarEvent(models.Model):
         return {
             'body': {
                 'contentType': 'text',
-                'content': event.description
+                'content': event.description or '',
             },
             'end': {
                 'dateTime': fields.Datetime.to_string(end),
@@ -88,6 +92,44 @@ class CalendarEvent(models.Model):
             headers=headers
         ).text)
         self._office_365_process_changes(result['value'], start, end)
+
+    def _office_365_push_create(self):
+        if not self.user_id:
+            return
+        _logger.debug('post event %s', self.name)
+        result = self.user_id.office_365_post(
+            '/me/events/',
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(self._office_365_from_event(self))
+        )
+        o365_event = result.json()
+        self.write({
+            'office_365_id': o365_event['id'],
+            'office_365_series_id': o365_event.get('seriesMasterId'),
+            'office_365_url': o365_event['webLink'],
+        })
+
+    def _office_365_push_update(self):
+        _logger.debug('patch event %s', self.name)
+        self.env.user.office_365_patch(
+            '/me/events/{}'.format(self.office_365_id),
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(self._office_365_from_event(self))
+        )
+
+    @api.multi
+    def office_365_push(self):
+        for record in self:
+            if not record.office_365_id:
+                record._office_365_push_create()
+            else:
+                if record.user_id.id != self.env.user.id:
+                    raise exceptions.UserError(
+                        _('You are not the organizer of the event "{}"'
+                          ' please try to edit this event in Office 365.')
+                        .format(record.name)
+                    )
+                record._office_365_push_update()
 
     def _office_365_process_changes(self, changes, start, end):
         series = {}
@@ -142,6 +184,14 @@ class CalendarEvent(models.Model):
             'url': self.office_365_url
         }
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super(CalendarEvent, self).create(vals_list)
+        if (not self.env.context.get('office_365_force')
+                and self.env.context.get('create_o365_event')):
+            records.office_365_push()
+        return records
+
     @api.multi
     def write(self, vals):
         res = super(CalendarEvent, self).write(vals)
@@ -149,17 +199,9 @@ class CalendarEvent(models.Model):
         for event in self:
             if event.office_365_id and not \
                     self.env.context.get('office_365_force', False):
-                if event.user_id.id != user.id:
-                    raise exceptions.UserError(
-                        _('You are not the organizer of this '
-                          'event please try to edit this event in Office 365.')
-                    )
-
-                user.office_365_patch(
-                    '/me/events/{}'.format(event.office_365_id),
-                    headers={'Content-Type': 'application/json'},
-                    data=json.dumps(self._office_365_from_event(event))
-                )
+                if user != self.env.user:
+                    event = event.sudo(user)
+                event.office_365_push()
         return res
 
     @api.multi
