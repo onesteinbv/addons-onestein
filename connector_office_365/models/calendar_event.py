@@ -28,13 +28,18 @@ class CalendarEvent(models.Model):
         if event['isAllDay']:
             stop -= timedelta(days=1)
 
+        show_as_options = [sel[0] for sel in self._fields['show_as'].selection]
+        show_as = (
+            event['showAs'] if event['showAs'] in show_as_options else 'busy'
+        )
+
         return {
             'name': event['subject'],
             'privacy': 'private',
             'state': 'open',
             'allday': event['isAllDay'],
             'user_id': event['isOrganizer'] and user.id,
-            'show_as': event['showAs'],
+            'show_as': show_as,
             'office_365_url': event['webLink'],
             'office_365_id': event['id'],
             'office_365_series_id': event.get('seriesMasterId', False),
