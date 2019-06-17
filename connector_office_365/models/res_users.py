@@ -169,7 +169,7 @@ class ResUsers(models.Model):
                                    data=data,
                                    client_id=client_id,
                                    client_secret=client_secret)
-        if response.status_code not in [200, 204]:
+        if not response.ok:
             error = json.loads(response.text)
             raise Exception(error['error']['message'])
         return response
