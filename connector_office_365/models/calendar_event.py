@@ -52,28 +52,51 @@ class CalendarEvent(models.Model):
         end = event.stop
         start = event.start
 
-        # The Event.End property for an all-day event needs to be set to midnight
-        if event.allday:
-            end += timedelta(seconds=1)
-
-        return {
+        values = {
             'body': {
                 'contentType': 'text',
                 'content': event.description or '',
             },
-            'end': {
-                'dateTime': fields.Datetime.to_string(end),
-                'timeZone': 'utc'
-            },
-            'start': {
-                'dateTime': fields.Datetime.to_string(start),
-                'timeZone': 'utc'
-            },
             'isAllDay': event.allday,
             'showAs': event.show_as,
             'subject': event.name,
-
         }
+
+        if event.allday:
+            # The Event.End property for an all-day event needs to be set to
+            # midnight
+            start = start.date()
+            end = end.date()
+            # for all day events, we have to set the next day (for instance if
+            # start day is 21-06-2019, the end is 22-06-2019 for a one-day
+            # event)
+            end += timedelta(days=1)
+            # if we don't use a real TZ, the all day events are buggy
+            # and display an extra day on o365's calendar
+            values.update({
+                'end': {
+                    'dateTime': fields.Date.to_string(end),
+                    'timeZone': self.user_id.tz or 'utc'
+                },
+                'start': {
+                    'dateTime': fields.Date.to_string(start),
+                    'timeZone': self.user_id.tz or 'utc'
+                },
+            })
+
+        else:
+            values.update({
+                'end': {
+                    'dateTime': fields.Datetime.to_string(end),
+                    'timeZone': 'utc'
+                },
+                'start': {
+                    'dateTime': fields.Datetime.to_string(start),
+                    'timeZone': 'utc'
+                },
+            })
+
+        return values
 
     @api.model
     def office_365_fetch(self, start, end):
