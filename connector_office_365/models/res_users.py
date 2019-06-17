@@ -148,6 +148,12 @@ class ResUsers(models.Model):
     def office_365_request(self, method, url, data=None, headers=None):
         self.ensure_one()
 
+        if not self.office_365_access_token:
+            raise exceptions.UserError(
+                _('User "{}" not authenticated with Office 365')
+                .format(self.login)
+            )
+
         config = self.env['ir.config_parameter'].sudo()
         client_id = config.get_param('office_365.client_id')
         client_secret = config.get_param('office_365.client_secret')
