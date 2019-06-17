@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="hr_leave_view_form_o365" model="ir.ui.view">
+    <field name="name">hr.leave.view.form.o365</field>
+    <field name="model">hr.leave</field>
+    <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+    <field name="arch" type="xml">
+      <field name="state" position="before">
+        <field name="need_o365_authenticate" invisible="1"/>
+        <field name="need_o365_manual_push" invisible="1"/>
+        <button string="Office 365 authentication"
+                name="office_365_authenticate"
+                attrs="{'invisible': [('need_o365_authenticate', '=', False)]}"
+                type="object"/>
+        <button string="Office 365 Manual Push"
+                name="office_365_manual_push"
+                attrs="{'invisible': [
+                       '|',
+                        ('need_o365_authenticate', '=', True),
+                        ('need_o365_manual_push', '=', False)
+                       ]}"
+                type="object"/>
+
+      </field>
+    </field>
+  </record>
+
+</odoo>

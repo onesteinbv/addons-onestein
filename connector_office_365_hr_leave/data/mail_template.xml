@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <record id="mail_act_office_365_authenticate" model="mail.activity.type">
+    <field name="name">Office365 authentication needed</field>
+    <field name="icon">fa-key-o</field>
+    <field name="res_model_id" ref="hr_holidays.model_hr_leave"/>
+  </record>
+</odoo>
