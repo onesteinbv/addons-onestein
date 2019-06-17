@@ -79,3 +79,4 @@ Contributors
 ~~~~~~~~~~~~
 
 * Dennis Sluijk <d.sluijk@onestein.nl>
+* Guewen Baconnier <guewen.baconnier@camptocamp.com>
