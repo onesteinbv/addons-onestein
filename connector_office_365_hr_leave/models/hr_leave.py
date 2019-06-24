@@ -32,7 +32,9 @@ class HolidaysRequest(models.Model):
     def _office_365_push(self):
         user = self.meeting_id.user_id
         if user.office_365_access_token:
-            self.meeting_id.sudo(user).office_365_push()
+            self.meeting_id.sudo(user).with_context(
+                origin_leave_id=self.id
+            ).office_365_push()
         else:
             self.need_o365_manual_push = True
             # create activity to ask user to authenticate
