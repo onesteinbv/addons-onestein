@@ -18,4 +18,5 @@ class CalendarEvent(models.Model):
                 values['subject'] = '{} - {}'.format(
                     values['subject'], leave.name
                 )
+        values['ShowAs'] = 'oof'
         return values
