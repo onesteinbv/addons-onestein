@@ -21,11 +21,10 @@ class TestAccountCostSpread(TransactionCase):
         # records for testing
         self.partner = self.env.ref('base.res_partner_2')
         self.company = self.partner.company_id
-        self.currency_usd = self.env.ref("base.USD")
+        self.currency = self.env.ref('base.main_company').currency_id
         self.account_fx_income = self.env.ref("account.income_fx_income")
         self.account_fx_expense = self.ref("account.income_fx_expense")
         self.bank_journal_usd = self.env.ref("account.bank_journal_usd")
-        self.account_usd = self.env.ref("account.usd_bnk")
         self.product = self.env['product.product'].create({
             'name': 'product_demo',
             'type': 'service',
@@ -51,7 +50,7 @@ class TestAccountCostSpread(TransactionCase):
         self.invoice1 = self.account_invoice_obj.create({
             'account_id': self.account_fx_income.id,
             'company_id': self.partner.company_id.id,
-            'currency_id': self.currency_usd.id,
+            'currency_id': self.currency.id,
             'invoice_line': [(0, 0, {
                 'account_id': self.account_fx_income.id,
                 'name': 'line1',
@@ -145,7 +144,7 @@ class TestAccountCostSpread(TransactionCase):
         invoice2 = self.account_invoice_obj.create({
             'account_id': self.account_fx_income.id,
             'company_id': self.partner.company_id.id,
-            'currency_id': self.currency_usd.id,
+            'currency_id': self.currency.id,
             'invoice_line': [(0, 0, {
                 'account_id': self.account_fx_income.id,
                 'name': 'line1',
@@ -180,10 +179,12 @@ class TestAccountCostSpread(TransactionCase):
         for spread in invoice2.invoice_line.spread_line_ids:
             moves += spread.create_move()
 
-        # account cannot be reconciled
         for move in self.env['account.move'].browse(moves):
-            for line in move.line_id:
-                self.assertEqual(bool(line.reconcile_id), True)
+            # one line must be reconciled
+            self.assertEqual(
+                len(move.mapped('line_id.reconcile_partial_id')),
+                1
+            )
         for spread_line in self.invoice1.invoice_line.spread_line_ids:
             previous_move = spread_line.move_id.ids
             spread_line.unlink_move()
