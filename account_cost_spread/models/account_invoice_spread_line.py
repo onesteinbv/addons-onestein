@@ -208,11 +208,12 @@ class AccountInvoiceSpreadLine(models.Model):
 
             # reconcile if possible
             if invoice_line.spread_account_id.reconcile:
+                reconcile_move_line = invoice_line.invoice_id.type in (
+                    'in_invoice', 'out_refund'
+                ) and debit_move_line or credit_move_line
                 (
-                    debit_move_line + credit_move_line +
+                    reconcile_move_line +
                     invoice_line._find_move_line()
-                ).filtered(
-                    lambda x: x.account_id == invoice_line.spread_account_id
                 ).reconcile_partial()
             created_move_ids.append(move_id.id)
         return created_move_ids
