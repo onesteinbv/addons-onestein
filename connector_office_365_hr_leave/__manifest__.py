@@ -11,6 +11,10 @@
         'connector_office_365',
         'hr_holidays',
     ],
+    'external_dependencies': {
+        #only needed for tests
+        'python': ['responses']
+    },
     'data': [
         'data/mail_template.xml',
         'views/hr_leave_views.xml',
