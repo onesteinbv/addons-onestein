@@ -54,6 +54,7 @@ class HolidaysRequest(models.Model):
 
     @api.multi
     def action_refuse(self):
+        # Copied from odoo
         # not sure about the copy but _remove_resource_leave searches through
         # all leaves might be an issue with lots of data
         current_employee = self.env['hr.employee'].search(
@@ -78,6 +79,7 @@ class HolidaysRequest(models.Model):
                 })
             # Delete the meeting
             if holiday.meeting_id:
+                # Change from odoo pass meeting creator as user
                 holiday.meeting_id.with_context(
                     user=holiday.meeting_id.user_id
                 ).unlink()
