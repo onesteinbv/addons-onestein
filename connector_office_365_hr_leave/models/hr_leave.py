@@ -54,38 +54,7 @@ class HolidaysRequest(models.Model):
 
     @api.multi
     def action_refuse(self):
-        # Copied from odoo
-        # not sure about the copy but _remove_resource_leave searches through
-        # all leaves might be an issue with lots of data
-        current_employee = self.env['hr.employee'].search(
-            [('user_id', '=', self.env.uid)],
-            limit=1
-        )
-        for holiday in self:
-            if holiday.state not in ['confirm', 'validate', 'validate1']:
-                raise UserError(_(
-                    'Leave request must be confirmed or validated '
-                    'in order to refuse it.'))
-
-            if holiday.state == 'validate1':
-                holiday.write({
-                    'state': 'refuse',
-                    'first_approver_id': current_employee.id
-                })
-            else:
-                holiday.write({
-                    'state': 'refuse',
-                    'second_approver_id': current_employee.id
-                })
-            # Delete the meeting
-            if holiday.meeting_id:
-                # Change from odoo pass meeting creator as user
-                holiday.meeting_id.with_context(
-                    user=holiday.meeting_id.user_id
-                ).unlink()
-
-            # If a category that created several holidays, cancel all related
-            holiday.linked_request_ids.action_refuse()
-        self._remove_resource_leave()
-        self.activity_update()
-        return True
+        return super(
+            HolidaysRequest,
+            self.with_context(o365_override_user=True)
+        ).action_refuse()

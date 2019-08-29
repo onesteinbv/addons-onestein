@@ -20,3 +20,14 @@ class CalendarEvent(models.Model):
                 )
         values['showAs'] = 'oof'
         return values
+
+    @api.multi
+    def unlink(self):
+        if self.env.context.get('o365_override_user'):
+            for obj in self:
+                super(
+                    CalendarEvent,
+                    obj.with_context(user=obj.user_id)
+                ).unlink()
+        else:
+            super().unlink()
