@@ -79,5 +79,7 @@ class TestAdminDeleteLeaves(SavepointCase):
         })
         self.leave.action_approve()
         # we don't want to get a usererror here
+        self.assertEqual(len(self.leave.meeting_id), 1)
         self.leave.action_refuse()
         self.assertEqual(len(self.leave.meeting_id), 0)
+        self.assertEqual(self.leave.state, 'refuse')
