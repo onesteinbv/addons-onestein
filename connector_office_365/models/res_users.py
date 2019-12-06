@@ -189,4 +189,3 @@ class ResUsers(models.Model):
     @api.multi
     def office_365_delete(self, url, headers=None, data=None):
         return self.office_365_request('delete', url, data, headers)
-

@@ -195,6 +195,7 @@ class CalendarEvent(models.Model):
 
         to_delete = self.search([
             ('office_365_id', 'not in', ids),
+            ('office_365_id', '!=', False),
             ('user_id', '=', user.id),
             ('start', '<', end),
             ('stop', '>', start)
