@@ -8,6 +8,7 @@ from dateutil import parser
 from datetime import timedelta
 
 from odoo import _, api, fields, models, exceptions
+from .res_users import Office365Error
 
 _logger = logging.getLogger(__name__)
 
@@ -242,9 +243,20 @@ class CalendarEvent(models.Model):
                         _('You are not the organizer of this '
                           'event please try delete this event in Office 365.')
                     )
-
-                user.office_365_delete(
-                    '/me/events/{}'.format(event.office_365_id),
-                )
-
+                try:
+                    user.office_365_delete(
+                        '/me/events/{}'.format(event.office_365_id),
+                    )
+                except Office365Error as exc:
+                    if exc.code == 'ErrorItemNotFound':
+                        # don't block suppressing the calendar event in Odoo if
+                        # the event cannot be found in Office365 (this can
+                        # happen if it was manually deleted in Office365)
+                        _logger.info(
+                            "The event related to Odoo record %s "
+                            "in Office was not found: %s",
+                            event, exc
+                        )
+                    else:
+                        raise
         return super(CalendarEvent, self).unlink()

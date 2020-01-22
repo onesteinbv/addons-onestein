@@ -19,6 +19,14 @@ TOKEN_URI = '/oauth2/v2.0/token'
 API_BASE_URL = 'https://graph.microsoft.com/v1.0'
 
 
+class Office365Error(Exception):
+    """raised when an error is returned from an Office 365 API call"""
+    def __init__(self, status, code, message):
+        self.status = status
+        self.code = code
+        super().__init__(message)
+
+
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
@@ -175,7 +183,9 @@ class ResUsers(models.Model):
                                    client_secret=client_secret)
         if not response.ok:
             error = json.loads(response.text)
-            raise Exception(error['error']['message'])
+            status = response.status_code
+            error_code = error.get('error', {}).get('code')
+            raise Office365Error(status, error_code, error['error']['message'])
         return response
 
     @api.multi
