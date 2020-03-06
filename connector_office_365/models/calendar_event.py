@@ -216,8 +216,7 @@ class CalendarEvent(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         records = super(CalendarEvent, self).create(vals_list)
-        if (not self.env.context.get('office_365_force')
-                and self.env.context.get('create_o365_event')):
+        if not self.env.context.get('office_365_force'):
             records.office_365_push()
         return records
 
