@@ -13,9 +13,9 @@ try:
 except ImportError:
     logger.debug('Cannot import requests_oauthlib')
 
-
-AUTH_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
-TOKEN_URL = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+BASE_URL = 'https://login.microsoftonline.com/'
+AUTH_URI = '/oauth2/v2.0/authorize'
+TOKEN_URI = '/oauth2/v2.0/token'
 API_BASE_URL = 'https://graph.microsoft.com/v1.0'
 
 
@@ -93,18 +93,21 @@ class ResUsers(models.Model):
     @api.model
     def office_365_authorization_url(self, scope=None):
         session = self._office_365_get_session(scope=scope)
+        config = self.env['ir.config_parameter'].sudo()
+        tenant_id = config.get_param('office_365.tenant_id')
         return session.authorization_url(
-            url=AUTH_URL
+            url=BASE_URL + tenant_id + AUTH_URI
         )
 
     @api.model
     def office_365_get_token(self, authorization_response):
         config = self.env['ir.config_parameter'].sudo()
         client_secret = config.get_param('office_365.client_secret')
+        tenant_id = config.get_param('office_365.tenant_id')
 
         session = self._office_365_get_session()
         return session.fetch_token(
-            token_url=TOKEN_URL,
+            token_url=BASE_URL + tenant_id + TOKEN_URI,
             authorization_response=authorization_response,
             include_client_id=True,
             client_secret=client_secret
@@ -132,11 +135,12 @@ class ResUsers(models.Model):
             session = self._office_365_get_session()
 
             config = self.env['ir.config_parameter'].sudo()
+            tenant_id = config.get_param('office_365.tenant_id')
             client_id = config.get_param('office_365.client_id')
             client_secret = config.get_param('office_365.client_secret')
 
             token = session.refresh_token(
-                token_url=TOKEN_URL,
+                token_url=BASE_URL + tenant_id + TOKEN_URI,
                 client_id=client_id,
                 client_secret=client_secret,
                 refresh_token=self.office_365_refresh_token
