@@ -46,9 +46,9 @@ class HolidaysRequest(models.Model):
             self.activity_schedule(xmlid, user_id=self.user_id.id)
 
     def _validate_leave_request(self):
-        super()._validate_leave_request()
+        super(HolidaysRequest, self.with_context(office_365_force=True))._validate_leave_request()
         for leave in self:
-            if not leave.meeting_id and leave.meeting_id.user_id:
+            if not (leave.meeting_id and leave.meeting_id.user_id):
                 continue
             leave._office_365_push()
 
