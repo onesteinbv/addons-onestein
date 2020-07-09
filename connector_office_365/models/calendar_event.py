@@ -153,10 +153,14 @@ class CalendarEvent(models.Model):
                 record._office_365_push_create()
             else:
                 if record.user_id.id != self.env.user.id:
+                    _logger.error(
+                        'office_365_push: attempt by user %s to push '
+                        'record %s owned by user %s',
+                        self.env.user, record, record.user_id)
                     raise exceptions.UserError(
-                        _('You are not the organizer of the event "{}"'
+                        _('You are not the organizer of the event "{}" ({})'
                           ' please try to edit this event in Office 365.')
-                        .format(record.name)
+                        .format(record.name, record.user_id.name)
                     )
                 record._office_365_push_update()
 
@@ -239,9 +243,14 @@ class CalendarEvent(models.Model):
         for event in self:
             if event.office_365_id and not self.env.context.get('office_365_force', False):
                 if event.user_id.id != user.id:
+                    _logger.error(
+                        'calendar event unlink: attempt by user %s to unlink '
+                        'record %s owned by user %s',
+                        self.env.user, event, event.user_id)
                     raise exceptions.UserError(
-                        _('You are not the organizer of this '
-                          'event please try delete this event in Office 365.')
+                        _('You are not the organizer of the '
+                          'event {} ({}) please try delete this event in Office 365.').format(
+                              event.name, event.user_id.name)
                     )
                 try:
                     user.office_365_delete(
