@@ -72,7 +72,20 @@ class CrossoveredBudgetLines(models.Model):
                 FROM account_analytic_line aal
                 LEFT JOIN account_move_line aml
                     ON aml.id = aal.move_id
-                WHERE aal.account_id=%s
+                WHERE aal.account_id in (
+                    -- from: https://github.com/odoo/odoo/pull/6910/files
+                    with recursive account_analytic_account_hierarchy(id) as (
+                        select id from account_analytic_account
+                            where id=%s
+                        union all
+                        select account_analytic_account.id
+                        from account_analytic_account
+                        join account_analytic_account_hierarchy
+                        on account_analytic_account.parent_id=
+                            account_analytic_account_hierarchy.id
+                    )
+                    select id from account_analytic_account_hierarchy
+                )
                 AND aal.date BETWEEN to_date(%s,'yyyy-mm-dd')
                     AND to_date(%s,'yyyy-mm-dd')
                 AND aal.general_account_id=ANY(%s)
@@ -93,7 +106,20 @@ class CrossoveredBudgetLines(models.Model):
                     ON aml.id = aal.move_id
                 INNER JOIN account_period ap
                     ON ap.id = aml.period_id
-                WHERE aal.account_id=%s
+                WHERE aal.account_id in (
+                    -- from: https://github.com/odoo/odoo/pull/6910/files
+                    with recursive account_analytic_account_hierarchy(id) as (
+                        select id from account_analytic_account
+                            where id=%s
+                        union all
+                        select account_analytic_account.id
+                        from account_analytic_account
+                        join account_analytic_account_hierarchy
+                        on account_analytic_account.parent_id=
+                            account_analytic_account_hierarchy.id
+                    )
+                    select id from account_analytic_account_hierarchy
+                )
                 AND ap.id in (
                     SELECT id
                     from account_period
