@@ -30,9 +30,9 @@ class Office365Error(Exception):
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
-    office_365_access_token = fields.Char()
-    office_365_refresh_token = fields.Char()
-    office_365_expiration = fields.Datetime()
+    office_365_access_token = fields.Char(copy=False)
+    office_365_refresh_token = fields.Char(copy=False)
+    office_365_expiration = fields.Datetime(copy=False)
 
     def __init__(self, pool, cr):
         super(ResUsers, self).__init__(pool, cr)
