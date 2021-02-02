@@ -55,7 +55,7 @@ class ResUsers(models.Model):
         self.ensure_one()
 
         url = self.office_365_authorization_url(
-            [
+            [  # list of scopes
                 'User.Read',
                 'Calendars.ReadWrite',
                 'offline_access'
@@ -84,7 +84,11 @@ class ResUsers(models.Model):
         redirect_uri = config.get_param('web.base.url') + '/office-365-oauth/success'
 
         token = None
-        if self.office_365_access_token and self.office_365_expiration > fields.Datetime.now():
+        if (
+                self.office_365_access_token and
+                self.office_365_expiration and
+                self.office_365_expiration > fields.Datetime.now()
+        ):
             token = {
                 'access_token': self.office_365_access_token,
                 'refresh_token': self.office_365_refresh_token,
