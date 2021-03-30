@@ -93,6 +93,6 @@ class HolidaysRequest(models.Model):
             ).action_refuse()
             # don't flood the user with activities
             if rec.user_id not in activity_scheduled:
-                self._office_365_activity_require_auth()
+                rec._office_365_activity_require_auth()
                 activity_scheduled.add(rec.user_id)
         return res
