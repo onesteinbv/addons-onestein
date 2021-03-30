@@ -102,7 +102,7 @@ class ResUsers(models.Model):
     def office_365_authorization_url(self, scope=None):
         session = self._office_365_get_session(scope=scope)
         config = self.env['ir.config_parameter'].sudo()
-        tenant_id = config.get_param('office_365.tenant_id')
+        tenant_id = config.get_param('office_365.tenant_id') or 'common'
         return session.authorization_url(
             url=BASE_URL + tenant_id + AUTH_URI
         )
@@ -111,7 +111,7 @@ class ResUsers(models.Model):
     def office_365_get_token(self, authorization_response):
         config = self.env['ir.config_parameter'].sudo()
         client_secret = config.get_param('office_365.client_secret')
-        tenant_id = config.get_param('office_365.tenant_id')
+        tenant_id = config.get_param('office_365.tenant_id') or 'common'
 
         session = self._office_365_get_session()
         return session.fetch_token(
@@ -143,7 +143,7 @@ class ResUsers(models.Model):
             session = self._office_365_get_session()
 
             config = self.env['ir.config_parameter'].sudo()
-            tenant_id = config.get_param('office_365.tenant_id')
+            tenant_id = config.get_param('office_365.tenant_id') or 'common'
             client_id = config.get_param('office_365.client_id')
             client_secret = config.get_param('office_365.client_secret')
 
