@@ -72,7 +72,7 @@ class HolidaysRequest(models.Model):
         activity_scheduled = set()
         now = fields.Datetime.now()
         leaves_non_expired_tokens = self.filtered(
-            lambda r: r.meeting_id.user.office_365_access_token and
+            lambda r: r.meeting_id.user_id.office_365_access_token and
             r.meeting_id.office_365_expiration > now
         )
         leaves_expired_tokens = self - leaves_non_expired_tokens
