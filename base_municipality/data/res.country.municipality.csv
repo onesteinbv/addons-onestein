@@ -1,0 +1,345 @@
+id,country_id:id,state_id:id,name,code
+municipality_nl_dr_1680,base.nl,base.state_nl_dr,Aa en Hunze,1680
+municipality_nl_dr_0106,base.nl,base.state_nl_dr,Assen,0106
+municipality_nl_dr_1681,base.nl,base.state_nl_dr,Borger-Odoorn,1681
+municipality_nl_dr_0109,base.nl,base.state_nl_dr,Coevorden,0109
+municipality_nl_dr_0114,base.nl,base.state_nl_dr,Emmen,0114
+municipality_nl_dr_0118,base.nl,base.state_nl_dr,Hoogeveen,0118
+municipality_nl_dr_0119,base.nl,base.state_nl_dr,Meppel,0119
+municipality_nl_dr_1731,base.nl,base.state_nl_dr,Midden-Drenthe,1731
+municipality_nl_dr_1699,base.nl,base.state_nl_dr,Noordenveld,1699
+municipality_nl_dr_1730,base.nl,base.state_nl_dr,Tynaarlo,1730
+municipality_nl_dr_1701,base.nl,base.state_nl_dr,Westerveld,1701
+municipality_nl_dr_1690,base.nl,base.state_nl_dr,De Wolden,1690
+municipality_nl_fl_0034,base.nl,base.state_nl_fl,Almere,0034
+municipality_nl_fl_0303,base.nl,base.state_nl_fl,Dronten,0303
+municipality_nl_fl_0995,base.nl,base.state_nl_fl,Lelystad,0995
+municipality_nl_fl_0171,base.nl,base.state_nl_fl,Noordoostpolder,0171
+municipality_nl_fl_0184,base.nl,base.state_nl_fl,Urk,0184
+municipality_nl_fl_0050,base.nl,base.state_nl_fl,Zeewolde,0050
+municipality_nl_fr_0059,base.nl,base.state_nl_fr,Achtkarspelen,0059
+municipality_nl_fr_0060,base.nl,base.state_nl_fr,Ameland,0060
+municipality_nl_fr_1891,base.nl,base.state_nl_fr,Dantumadiel,1891
+municipality_nl_fr_1940,base.nl,base.state_nl_fr,De Fryske Marren,1940
+municipality_nl_fr_0072,base.nl,base.state_nl_fr,Harlingen,0072
+municipality_nl_fr_0074,base.nl,base.state_nl_fr,Heerenveen,0074
+municipality_nl_fr_0080,base.nl,base.state_nl_fr,Leeuwarden,0080
+municipality_nl_fr_1970,base.nl,base.state_nl_fr,Noardeast-Fryslân,1970
+municipality_nl_fr_0085,base.nl,base.state_nl_fr,Ooststellingwerf,0085
+municipality_nl_fr_0086,base.nl,base.state_nl_fr,Opsterland,0086
+municipality_nl_fr_0088,base.nl,base.state_nl_fr,Schiermonnikoog,0088
+municipality_nl_fr_0090,base.nl,base.state_nl_fr,Smallingerland,0090
+municipality_nl_fr_1900,base.nl,base.state_nl_fr,Súdwest-Fryslân,1900
+municipality_nl_fr_0093,base.nl,base.state_nl_fr,Terschelling,0093
+municipality_nl_fr_0737,base.nl,base.state_nl_fr,Tytsjerksteradiel,0737
+municipality_nl_fr_0096,base.nl,base.state_nl_fr,Vlieland,0096
+municipality_nl_fr_1949,base.nl,base.state_nl_fr,Waadhoeke,1949
+municipality_nl_fr_0098,base.nl,base.state_nl_fr,Weststellingwerf,0098
+municipality_nl_ge_0197,base.nl,base.state_nl_ge,Aalten,0197
+municipality_nl_ge_0200,base.nl,base.state_nl_ge,Apeldoorn,0200
+municipality_nl_ge_0202,base.nl,base.state_nl_ge,Arnhem,0202
+municipality_nl_ge_0203,base.nl,base.state_nl_ge,Barneveld,0203
+municipality_nl_ge_1945,base.nl,base.state_nl_ge,Berg en Dal,1945
+municipality_nl_ge_1859,base.nl,base.state_nl_ge,Berkelland,1859
+municipality_nl_ge_0209,base.nl,base.state_nl_ge,Beuningen,0209
+municipality_nl_ge_1876,base.nl,base.state_nl_ge,Bronckhorst,1876
+municipality_nl_ge_0213,base.nl,base.state_nl_ge,Brummen,0213
+municipality_nl_ge_0214,base.nl,base.state_nl_ge,Buren,0214
+municipality_nl_ge_0216,base.nl,base.state_nl_ge,Culemborg,0216
+municipality_nl_ge_0221,base.nl,base.state_nl_ge,Doesburg,0221
+municipality_nl_ge_0222,base.nl,base.state_nl_ge,Doetinchem,0222
+municipality_nl_ge_0225,base.nl,base.state_nl_ge,Druten,0225
+municipality_nl_ge_0226,base.nl,base.state_nl_ge,Duiven,0226
+municipality_nl_ge_0228,base.nl,base.state_nl_ge,Ede,0228
+municipality_nl_ge_0230,base.nl,base.state_nl_ge,Elburg,0230
+municipality_nl_ge_0232,base.nl,base.state_nl_ge,Epe,0232
+municipality_nl_ge_0233,base.nl,base.state_nl_ge,Ermelo,0233
+municipality_nl_ge_0243,base.nl,base.state_nl_ge,Harderwijk,0243
+municipality_nl_ge_0244,base.nl,base.state_nl_ge,Hattem,0244
+municipality_nl_ge_0246,base.nl,base.state_nl_ge,Heerde,0246
+municipality_nl_ge_0252,base.nl,base.state_nl_ge,Heumen,0252
+municipality_nl_ge_1705,base.nl,base.state_nl_ge,Lingewaard,1705
+municipality_nl_ge_0262,base.nl,base.state_nl_ge,Lochem,0262
+municipality_nl_ge_0263,base.nl,base.state_nl_ge,Maasdriel,0263
+municipality_nl_ge_1955,base.nl,base.state_nl_ge,Montferland,1955
+municipality_nl_ge_1740,base.nl,base.state_nl_ge,Neder-Betuwe,1740
+municipality_nl_ge_0267,base.nl,base.state_nl_ge,Nijkerk,0267
+municipality_nl_ge_0268,base.nl,base.state_nl_ge,Nijmegen,0268
+municipality_nl_ge_0302,base.nl,base.state_nl_ge,Nunspeet,0302
+municipality_nl_ge_0269,base.nl,base.state_nl_ge,Oldebroek,0269
+municipality_nl_ge_1586,base.nl,base.state_nl_ge,Oost Gelre,1586
+municipality_nl_ge_1509,base.nl,base.state_nl_ge,Oude Ijsselstreek,1509
+municipality_nl_ge_1734,base.nl,base.state_nl_ge,Overbetuwe,1734
+municipality_nl_ge_0273,base.nl,base.state_nl_ge,Putten,0273
+municipality_nl_ge_0274,base.nl,base.state_nl_ge,Renkum,0274
+municipality_nl_ge_0275,base.nl,base.state_nl_ge,Rheden,0275
+municipality_nl_ge_0277,base.nl,base.state_nl_ge,Rozendaal,0277
+municipality_nl_ge_0279,base.nl,base.state_nl_ge,Scherpenzeel,0279
+municipality_nl_ge_0281,base.nl,base.state_nl_ge,Tiel,0281
+municipality_nl_ge_0285,base.nl,base.state_nl_ge,Voorst,0285
+municipality_nl_ge_0289,base.nl,base.state_nl_ge,Wageningen,0289
+municipality_nl_ge_1960,base.nl,base.state_nl_ge,West Betuwe,1960
+municipality_nl_ge_0668,base.nl,base.state_nl_ge,West Maas en Waal,0668
+municipality_nl_ge_0293,base.nl,base.state_nl_ge,Westervoort,0293
+municipality_nl_ge_0296,base.nl,base.state_nl_ge,Wijchen,0296
+municipality_nl_ge_0294,base.nl,base.state_nl_ge,Winterswijk,0294
+municipality_nl_ge_0297,base.nl,base.state_nl_ge,Zaltbommel,0297
+municipality_nl_ge_0299,base.nl,base.state_nl_ge,Zevenaar,0299
+municipality_nl_ge_0301,base.nl,base.state_nl_ge,Zutphen,0301
+municipality_nl_gr_1979,base.nl,base.state_nl_gr,Eemsdelta,1979
+municipality_nl_gr_0014,base.nl,base.state_nl_gr,Groningen,0014
+municipality_nl_gr_1966,base.nl,base.state_nl_gr,Het Hogeland,1966
+municipality_nl_gr_1952,base.nl,base.state_nl_gr,Midden-Groningen,1952
+municipality_nl_gr_1895,base.nl,base.state_nl_gr,Oldambt,1895
+municipality_nl_gr_0765,base.nl,base.state_nl_gr,Pekela,0765
+municipality_nl_gr_0037,base.nl,base.state_nl_gr,Stadskanaal,0037
+municipality_nl_gr_0047,base.nl,base.state_nl_gr,Veendam,0047
+municipality_nl_gr_1969,base.nl,base.state_nl_gr,Westerkwartier,1969
+municipality_nl_gr_1950,base.nl,base.state_nl_gr,Westerwolde,1950
+municipality_nl_li_0888,base.nl,base.state_nl_li,Beek,0888
+municipality_nl_li_1954,base.nl,base.state_nl_li,Beekdaelen,1954
+municipality_nl_li_0889,base.nl,base.state_nl_li,Beesel,0889
+municipality_nl_li_0893,base.nl,base.state_nl_li,Bergen,0893
+municipality_nl_li_0899,base.nl,base.state_nl_li,Brunssum,0899
+municipality_nl_li_1711,base.nl,base.state_nl_li,Echt-Susteren,1711
+municipality_nl_li_1903,base.nl,base.state_nl_li,Eijsden-Margraten,1903
+municipality_nl_li_0907,base.nl,base.state_nl_li,Gennep,0907
+municipality_nl_li_1729,base.nl,base.state_nl_li,Gulpen-Wittem,1729
+municipality_nl_li_0917,base.nl,base.state_nl_li,Heerlen,0917
+municipality_nl_li_1507,base.nl,base.state_nl_li,Horst aan de Maas,1507
+municipality_nl_li_0928,base.nl,base.state_nl_li,Kerkrade,0928
+municipality_nl_li_0882,base.nl,base.state_nl_li,Landgraaf,0882
+municipality_nl_li_1640,base.nl,base.state_nl_li,Leudal,1640
+municipality_nl_li_1641,base.nl,base.state_nl_li,Maasgouw,1641
+municipality_nl_li_0935,base.nl,base.state_nl_li,Maastricht,0935
+municipality_nl_li_0938,base.nl,base.state_nl_li,Meerssen,0938
+municipality_nl_li_0944,base.nl,base.state_nl_li,Mook en Middelaar,0944
+municipality_nl_li_0946,base.nl,base.state_nl_li,Nederweert,0946
+municipality_nl_li_1894,base.nl,base.state_nl_li,Peel en Maas,1894
+municipality_nl_li_1669,base.nl,base.state_nl_li,Roerdalen,1669
+municipality_nl_li_0957,base.nl,base.state_nl_li,Roermond,0957
+municipality_nl_li_0965,base.nl,base.state_nl_li,Simpelveld,0965
+municipality_nl_li_1883,base.nl,base.state_nl_li,Sittard-Geleen,1883
+municipality_nl_li_0971,base.nl,base.state_nl_li,Stein,0971
+municipality_nl_li_0981,base.nl,base.state_nl_li,Vaals,0981
+municipality_nl_li_0994,base.nl,base.state_nl_li,Valkenburg aan de Geul,0994
+municipality_nl_li_0983,base.nl,base.state_nl_li,Venlo,0983
+municipality_nl_li_0984,base.nl,base.state_nl_li,Venray,0984
+municipality_nl_li_0986,base.nl,base.state_nl_li,Voerendaal,0986
+municipality_nl_li_0988,base.nl,base.state_nl_li,Weert,0988
+municipality_nl_nb_1723,base.nl,base.state_nl_nb,Alphen-Chaam,1723
+municipality_nl_nb_1959,base.nl,base.state_nl_nb,Altena,1959
+municipality_nl_nb_0743,base.nl,base.state_nl_nb,Asten,0743
+municipality_nl_nb_0744,base.nl,base.state_nl_nb,Baarle-Nassau,0744
+municipality_nl_nb_1724,base.nl,base.state_nl_nb,Bergeijk,1724
+municipality_nl_nb_0748,base.nl,base.state_nl_nb,Bergen op Zoom,0748
+municipality_nl_nb_1721,base.nl,base.state_nl_nb,Bernheze,1721
+municipality_nl_nb_0753,base.nl,base.state_nl_nb,Best,0753
+municipality_nl_nb_1728,base.nl,base.state_nl_nb,Bladel,1728
+municipality_nl_nb_0755,base.nl,base.state_nl_nb,Boekel,0755
+municipality_nl_nb_0757,base.nl,base.state_nl_nb,Boxtel,0757
+municipality_nl_nb_0758,base.nl,base.state_nl_nb,Breda,0758
+municipality_nl_nb_1706,base.nl,base.state_nl_nb,Cranendonck,1706
+municipality_nl_nb_0762,base.nl,base.state_nl_nb,Deurne,0762
+municipality_nl_nb_0766,base.nl,base.state_nl_nb,Dongen,0766
+municipality_nl_nb_1719,base.nl,base.state_nl_nb,Drimmelen,1719
+municipality_nl_nb_0770,base.nl,base.state_nl_nb,Eersel,0770
+municipality_nl_nb_0772,base.nl,base.state_nl_nb,Eindhoven,0772
+municipality_nl_nb_0777,base.nl,base.state_nl_nb,Etten-Leur,0777
+municipality_nl_nb_0779,base.nl,base.state_nl_nb,Geertruidenberg,0779
+municipality_nl_nb_1771,base.nl,base.state_nl_nb,Geldrop-Mierlo,1771
+municipality_nl_nb_1652,base.nl,base.state_nl_nb,Gemert-Bakel,1652
+municipality_nl_nb_0784,base.nl,base.state_nl_nb,Gilze en Rijen,0784
+municipality_nl_nb_0785,base.nl,base.state_nl_nb,Goirle,0785
+municipality_nl_nb_1655,base.nl,base.state_nl_nb,Halderberge,1655
+municipality_nl_nb_1658,base.nl,base.state_nl_nb,Heeze-Leende,1658
+municipality_nl_nb_0794,base.nl,base.state_nl_nb,Helmond,0794
+municipality_nl_nb_0796,base.nl,base.state_nl_nb,'s-Hertogenbosch,0796
+municipality_nl_nb_0797,base.nl,base.state_nl_nb,Heusden,0797
+municipality_nl_nb_0798,base.nl,base.state_nl_nb,Hilvarenbeek,0798
+municipality_nl_nb_1659,base.nl,base.state_nl_nb,Laarbeek,1659
+municipality_nl_nb_1684,base.nl,base.state_nl_nb,Cuijk,1684
+municipality_nl_nb_0809,base.nl,base.state_nl_nb,Loon op Zand,0809
+municipality_nl_nb_1991,base.nl,base.state_nl_nb,Maashorst,1991
+municipality_nl_nb_1948,base.nl,base.state_nl_nb,Meierijstad,1948
+municipality_nl_nb_1709,base.nl,base.state_nl_nb,Moerdijk,1709
+municipality_nl_nb_0820,base.nl,base.state_nl_nb,Nuenen,0820
+municipality_nl_nb_0823,base.nl,base.state_nl_nb,Oirschot,0823
+municipality_nl_nb_0824,base.nl,base.state_nl_nb,Oisterwijk,0824
+municipality_nl_nb_0826,base.nl,base.state_nl_nb,Oosterhout,0826
+municipality_nl_nb_0828,base.nl,base.state_nl_nb,Oss,0828
+municipality_nl_nb_1667,base.nl,base.state_nl_nb,Reusel-De Mierden,1667
+municipality_nl_nb_1674,base.nl,base.state_nl_nb,Roosendaal,1674
+municipality_nl_nb_0840,base.nl,base.state_nl_nb,Rucphen,0840
+municipality_nl_nb_0845,base.nl,base.state_nl_nb,Sint-Michielsgestel,0845
+municipality_nl_nb_0847,base.nl,base.state_nl_nb,Someren,0847
+municipality_nl_nb_0848,base.nl,base.state_nl_nb,Son en Breugel,0848
+municipality_nl_nb_0851,base.nl,base.state_nl_nb,Steenbergen,0851
+municipality_nl_nb_0855,base.nl,base.state_nl_nb,Tilburg,0855
+municipality_nl_nb_0858,base.nl,base.state_nl_nb,Valkenswaard,0858
+municipality_nl_nb_0861,base.nl,base.state_nl_nb,Veldhoven,0861
+municipality_nl_nb_0865,base.nl,base.state_nl_nb,Vught,0865
+municipality_nl_nb_0866,base.nl,base.state_nl_nb,Waalre,0866
+municipality_nl_nb_0867,base.nl,base.state_nl_nb,Waalwijk,0867
+municipality_nl_nb_0873,base.nl,base.state_nl_nb,Woensdrecht,0873
+municipality_nl_nb_0879,base.nl,base.state_nl_nb,Zundert,0879
+municipality_nl_nh_0358,base.nl,base.state_nl_nh,Aalsmeer,0358
+municipality_nl_nh_0361,base.nl,base.state_nl_nh,Alkmaar,0361
+municipality_nl_nh_0362,base.nl,base.state_nl_nh,Amstelveen,0362
+municipality_nl_nh_0363,base.nl,base.state_nl_nh,Amsterdam,0363
+municipality_nl_nh_0373,base.nl,base.state_nl_nh,Bergen,0373
+municipality_nl_nh_0375,base.nl,base.state_nl_nh,Beverwijk,0375
+municipality_nl_nh_0376,base.nl,base.state_nl_nh,Blaricum,0376
+municipality_nl_nh_0377,base.nl,base.state_nl_nh,Bloemendaal,0377
+municipality_nl_nh_0383,base.nl,base.state_nl_nh,Castricum,0383
+municipality_nl_nh_0400,base.nl,base.state_nl_nh,Den Helder,0400
+municipality_nl_nh_0384,base.nl,base.state_nl_nh,Diemen,0384
+municipality_nl_nh_1980,base.nl,base.state_nl_nh,Dijk en Waard,1980
+municipality_nl_nh_0498,base.nl,base.state_nl_nh,Drechterland,0498
+municipality_nl_nh_0385,base.nl,base.state_nl_nh,Edam-Volendam,0385
+municipality_nl_nh_0388,base.nl,base.state_nl_nh,Enkhuizen,0388
+municipality_nl_nh_1942,base.nl,base.state_nl_nh,Gooise Meren,1942
+municipality_nl_nh_0392,base.nl,base.state_nl_nh,Haarlem,0392
+municipality_nl_nh_0394,base.nl,base.state_nl_nh,Haarlemmermeer,0394
+municipality_nl_nh_0396,base.nl,base.state_nl_nh,Heemskerk,0396
+municipality_nl_nh_0397,base.nl,base.state_nl_nh,Heemstede,0397
+municipality_nl_nh_0399,base.nl,base.state_nl_nh,Heiloo,0399
+municipality_nl_nh_0402,base.nl,base.state_nl_nh,Hilversum,0402
+municipality_nl_nh_1911,base.nl,base.state_nl_nh,Hollands Kroon,1911
+municipality_nl_nh_0405,base.nl,base.state_nl_nh,Hoorn,0405
+municipality_nl_nh_0406,base.nl,base.state_nl_nh,Huizen,0406
+municipality_nl_nh_1598,base.nl,base.state_nl_nh,Koggenland,1598
+municipality_nl_nh_0415,base.nl,base.state_nl_nh,Landsmeer,0415
+municipality_nl_nh_0417,base.nl,base.state_nl_nh,Laren,0417
+municipality_nl_nh_0420,base.nl,base.state_nl_nh,Medemblik,0420
+municipality_nl_nh_0431,base.nl,base.state_nl_nh,Oostzaan,0431
+municipality_nl_nh_0432,base.nl,base.state_nl_nh,Opmeer,0432
+municipality_nl_nh_0437,base.nl,base.state_nl_nh,Ouder-Amstel,0437
+municipality_nl_nh_0439,base.nl,base.state_nl_nh,Purmerend,0439
+municipality_nl_nh_0441,base.nl,base.state_nl_nh,Schagen,0441
+municipality_nl_nh_0532,base.nl,base.state_nl_nh,Stede Broec,0532
+municipality_nl_nh_0448,base.nl,base.state_nl_nh,Texel,0448
+municipality_nl_nh_0450,base.nl,base.state_nl_nh,Uitgeest,0450
+municipality_nl_nh_0451,base.nl,base.state_nl_nh,Uithoorn,0451
+municipality_nl_nh_0453,base.nl,base.state_nl_nh,Velsen,0453
+municipality_nl_nh_0852,base.nl,base.state_nl_nh,Waterland,0852
+municipality_nl_nh_1696,base.nl,base.state_nl_nh,Wijdemeren,1696
+municipality_nl_nh_0880,base.nl,base.state_nl_nh,Wormerland,0880
+municipality_nl_nh_0479,base.nl,base.state_nl_nh,Zaanstad,0479
+municipality_nl_nh_0473,base.nl,base.state_nl_nh,Zandvoort,0473
+municipality_nl_ov_0141,base.nl,base.state_nl_ov,Almelo,0141
+municipality_nl_ov_0147,base.nl,base.state_nl_ov,Borne,0147
+municipality_nl_ov_0148,base.nl,base.state_nl_ov,Dalfsen,0148
+municipality_nl_ov_0150,base.nl,base.state_nl_ov,Deventer,0150
+municipality_nl_ov_1774,base.nl,base.state_nl_ov,Dinkelland,1774
+municipality_nl_ov_0153,base.nl,base.state_nl_ov,Enschede,0153
+municipality_nl_ov_0158,base.nl,base.state_nl_ov,Haaksbergen,0158
+municipality_nl_ov_0160,base.nl,base.state_nl_ov,Hardenberg,0160
+municipality_nl_ov_0163,base.nl,base.state_nl_ov,Hellendoorn,0163
+municipality_nl_ov_0164,base.nl,base.state_nl_ov,Hengelo,0164
+municipality_nl_ov_1735,base.nl,base.state_nl_ov,Hof van Twente,1735
+municipality_nl_ov_0166,base.nl,base.state_nl_ov,Kampen,0166
+municipality_nl_ov_0168,base.nl,base.state_nl_ov,Losser,0168
+municipality_nl_ov_0173,base.nl,base.state_nl_ov,Oldenzaal,0173
+municipality_nl_ov_1773,base.nl,base.state_nl_ov,Olst-Wijhe,1773
+municipality_nl_ov_0175,base.nl,base.state_nl_ov,Ommen,0175
+municipality_nl_ov_0177,base.nl,base.state_nl_ov,Raalte,0177
+municipality_nl_ov_1742,base.nl,base.state_nl_ov,Rijssen-Holten,1742
+municipality_nl_ov_0180,base.nl,base.state_nl_ov,Staphorst,0180
+municipality_nl_ov_1708,base.nl,base.state_nl_ov,Steenwijkerland,1708
+municipality_nl_ov_0183,base.nl,base.state_nl_ov,Tubbergen,0183
+municipality_nl_ov_1700,base.nl,base.state_nl_ov,Twenterand,1700
+municipality_nl_ov_0189,base.nl,base.state_nl_ov,Wierden,0189
+municipality_nl_ov_1896,base.nl,base.state_nl_ov,Zwartewaterland,1896
+municipality_nl_ov_0193,base.nl,base.state_nl_ov,Zwolle,0193
+municipality_nl_ut_0307,base.nl,base.state_nl_ut,Amersfoort,0307
+municipality_nl_ut_0308,base.nl,base.state_nl_ut,Baarn,0308
+municipality_nl_ut_0310,base.nl,base.state_nl_ut,De Bilt,0310
+municipality_nl_ut_0312,base.nl,base.state_nl_ut,Bunnik,0312
+municipality_nl_ut_0313,base.nl,base.state_nl_ut,Bunschoten,0313
+municipality_nl_ut_0317,base.nl,base.state_nl_ut,Eemnes,0317
+municipality_nl_ut_0321,base.nl,base.state_nl_ut,Houten,0321
+municipality_nl_ut_0353,base.nl,base.state_nl_ut,Ijsselstein,0353
+municipality_nl_ut_0327,base.nl,base.state_nl_ut,Leusden,0327
+municipality_nl_ut_0331,base.nl,base.state_nl_ut,Lopik,0331
+municipality_nl_ut_0335,base.nl,base.state_nl_ut,Montfoort,0335
+municipality_nl_ut_0356,base.nl,base.state_nl_ut,Nieuwegein,0356
+municipality_nl_ut_0589,base.nl,base.state_nl_ut,Oudewater,0589
+municipality_nl_ut_0339,base.nl,base.state_nl_ut,Renswoude,0339
+municipality_nl_ut_0340,base.nl,base.state_nl_ut,Rhenen,0340
+municipality_nl_ut_0736,base.nl,base.state_nl_ut,De Ronde Venen,0736
+municipality_nl_ut_0342,base.nl,base.state_nl_ut,Soest,0342
+municipality_nl_ut_1904,base.nl,base.state_nl_ut,Stichtse Vecht,1904
+municipality_nl_ut_0344,base.nl,base.state_nl_ut,Utrecht,0344
+municipality_nl_ut_1581,base.nl,base.state_nl_ut,Utrechtse Heuvelrug,1581
+municipality_nl_ut_0345,base.nl,base.state_nl_ut,Veenendaal,0345
+municipality_nl_ut_1961,base.nl,base.state_nl_ut,Vijfheerenlanden,1961
+municipality_nl_ut_0352,base.nl,base.state_nl_ut,Wijk bij Duurstede,0352
+municipality_nl_ut_0632,base.nl,base.state_nl_ut,Woerden,0632
+municipality_nl_ut_0351,base.nl,base.state_nl_ut,Woudenberg,0351
+municipality_nl_ut_0355,base.nl,base.state_nl_ut,Zeist,0355
+municipality_nl_ze_0654,base.nl,base.state_nl_ze,Borsele,0654
+municipality_nl_ze_0664,base.nl,base.state_nl_ze,Goes,0664
+municipality_nl_ze_0677,base.nl,base.state_nl_ze,Hulst,0677
+municipality_nl_ze_0678,base.nl,base.state_nl_ze,Kapelle,0678
+municipality_nl_ze_0687,base.nl,base.state_nl_ze,Middelburg,0687
+municipality_nl_ze_1695,base.nl,base.state_nl_ze,Noord-Beveland,1695
+municipality_nl_ze_0703,base.nl,base.state_nl_ze,Reimerswaal,0703
+municipality_nl_ze_1676,base.nl,base.state_nl_ze,Schouwen-Duivenland,1676
+municipality_nl_ze_1714,base.nl,base.state_nl_ze,Sluis,1714
+municipality_nl_ze_0715,base.nl,base.state_nl_ze,Terneuzen,0715
+municipality_nl_ze_0716,base.nl,base.state_nl_ze,Tholen,0716
+municipality_nl_ze_0717,base.nl,base.state_nl_ze,Veere,0717
+municipality_nl_ze_0718,base.nl,base.state_nl_ze,Vlissingen,0718
+municipality_nl_zh_0482,base.nl,base.state_nl_zh,Alblasserdam,0482
+municipality_nl_zh_0613,base.nl,base.state_nl_zh,Albrandswaard,0613
+municipality_nl_zh_0484,base.nl,base.state_nl_zh,Alphen aan den Rijn,0484
+municipality_nl_zh_0489,base.nl,base.state_nl_zh,Barendrecht,0489
+municipality_nl_zh_1901,base.nl,base.state_nl_zh,Bodegraven-Reeuwijk,1901
+municipality_nl_zh_0501,base.nl,base.state_nl_zh,Brielle,0501
+municipality_nl_zh_0502,base.nl,base.state_nl_zh,Capelle aan den Ijssel,0502
+municipality_nl_zh_0503,base.nl,base.state_nl_zh,Delft,0503
+municipality_nl_zh_0518,base.nl,base.state_nl_zh,Den Haag,0518
+municipality_nl_zh_0505,base.nl,base.state_nl_zh,Dordrecht,0505
+municipality_nl_zh_1924,base.nl,base.state_nl_zh,Goeree-Overflakkee,1924
+municipality_nl_zh_0512,base.nl,base.state_nl_zh,Gorinchem,0512
+municipality_nl_zh_0513,base.nl,base.state_nl_zh,Gouda,0513
+municipality_nl_zh_0523,base.nl,base.state_nl_zh,Hardinxveld-Giessendam,0523
+municipality_nl_zh_0530,base.nl,base.state_nl_zh,Hellevoetsluis,0530
+municipality_nl_zh_0531,base.nl,base.state_nl_zh,Hendrik-Ido-Ambacht,0531
+municipality_nl_zh_0534,base.nl,base.state_nl_zh,Hillegom,0534
+municipality_nl_zh_1963,base.nl,base.state_nl_zh,Hoeksche Waard,1963
+municipality_nl_zh_1884,base.nl,base.state_nl_zh,Kaag en Braassem,1884
+municipality_nl_zh_0537,base.nl,base.state_nl_zh,Katwijk,0537
+municipality_nl_zh_0542,base.nl,base.state_nl_zh,Krimpen aan den Ijssel,0542
+municipality_nl_zh_1931,base.nl,base.state_nl_zh,Krimpenerwaard,1931
+municipality_nl_zh_1621,base.nl,base.state_nl_zh,Lansingerland,1621
+municipality_nl_zh_0546,base.nl,base.state_nl_zh,Leiden,0546
+municipality_nl_zh_0547,base.nl,base.state_nl_zh,Leiderdorp,0547
+municipality_nl_zh_1916,base.nl,base.state_nl_zh,Leidschendam-Voorburg,1916
+municipality_nl_zh_0553,base.nl,base.state_nl_zh,Lisse,0553
+municipality_nl_zh_0556,base.nl,base.state_nl_zh,Maassluis,0556
+municipality_nl_zh_1842,base.nl,base.state_nl_zh,Midden-Delfland,1842
+municipality_nl_zh_1978,base.nl,base.state_nl_zh,Molenlanden,1978
+municipality_nl_zh_0569,base.nl,base.state_nl_zh,Nieuwkoop,0569
+municipality_nl_zh_1930,base.nl,base.state_nl_zh,Nissewaard,1930
+municipality_nl_zh_0575,base.nl,base.state_nl_zh,Noordwijk,0575
+municipality_nl_zh_0579,base.nl,base.state_nl_zh,Oegstgeest,0579
+municipality_nl_zh_0590,base.nl,base.state_nl_zh,Papendrecht,0590
+municipality_nl_zh_1926,base.nl,base.state_nl_zh,Pijnacker-Nootdorp,1926
+municipality_nl_zh_0597,base.nl,base.state_nl_zh,Ridderkerk,0597
+municipality_nl_zh_0603,base.nl,base.state_nl_zh,Rijswijk,0603
+municipality_nl_zh_0599,base.nl,base.state_nl_zh,Rotterdam,0599
+municipality_nl_zh_0606,base.nl,base.state_nl_zh,Schiedam,0606
+municipality_nl_zh_0610,base.nl,base.state_nl_zh,Sliedrecht,0610
+municipality_nl_zh_1525,base.nl,base.state_nl_zh,Teylingen,1525
+municipality_nl_zh_0622,base.nl,base.state_nl_zh,Vlaardingen,0622
+municipality_nl_zh_0626,base.nl,base.state_nl_zh,Voorschoten,0626
+municipality_nl_zh_0627,base.nl,base.state_nl_zh,Waddinxveen,0627
+municipality_nl_zh_0629,base.nl,base.state_nl_zh,Wassenaar,0629
+municipality_nl_zh_1783,base.nl,base.state_nl_zh,Westland,1783
+municipality_nl_zh_0614,base.nl,base.state_nl_zh,Westvoorne,0614
+municipality_nl_zh_0637,base.nl,base.state_nl_zh,Zoetermeer,0637
+municipality_nl_zh_0638,base.nl,base.state_nl_zh,Zoeterwoude,0638
+municipality_nl_zh_1892,base.nl,base.state_nl_zh,Zuidplas,1892
+municipality_nl_zh_0642,base.nl,base.state_nl_zh,Zwijndrecht,0642
