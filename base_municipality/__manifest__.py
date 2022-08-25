@@ -5,7 +5,7 @@
     "summary": "Manage municipality informations on contacts",
     "version": "15.0.1.0.0",
     "category": "Partner Management",
-    "website": "https://github.com/OCA/partner-contact",
+    "website": "http://www.onestein.eu",
     'author': 'Onestein',
     "license": "AGPL-3",
     "depends": [
